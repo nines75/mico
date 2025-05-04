@@ -1,0 +1,52 @@
+name: release
+
+on:
+    push:
+        tags:
+            - "v*"
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+                  run_install: false
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: 一つ前のタグを取得してURLを生成
+              run: |
+                  git fetch --tags
+                  previous_tag=$(git tag | sort -V --reverse | sed -n 2p)
+                  echo "一つ前のタグ: $previous_tag"
+                  if [ -n "$previous_tag" ]; then
+                      echo "url=https://github.com/${{ github.repository }}/compare/$previous_tag...${{ github.ref_name }}" >> $GITHUB_ENV
+                  else
+                      echo "url=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
+                  fi
+
+            - name: 依存関係をインストール
+              run: pnpm install
+
+            - name: ビルド
+              run: pnpm run zip
+
+            - name: リリース作成
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: .output/firefox.xpi
+                  name: ${{ github.ref_name }}
+                  tag_name: ${{ github.ref_name }}
+                  body: |
+                      **Full Changelog**: ${{ env.url }}

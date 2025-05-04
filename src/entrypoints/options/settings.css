@@ -1,0 +1,131 @@
+@import "../../assets/global.css";
+
+body {
+    background: #292a2d;
+    color: white;
+    padding: 50px;
+    margin: 0;
+}
+h1 {
+    margin: 0;
+    color: lightgray;
+    font-weight: lighter;
+}
+h2,
+h3,
+h4 {
+    border-bottom: 2px solid gray;
+}
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.experimental {
+    color: lightgreen;
+    margin-left: 10px;
+    padding: 3px;
+    border: 2px solid lightgreen;
+    border-radius: 15px;
+    font-size: 10px;
+}
+.settings-container {
+    margin-left: 20px;
+}
+.setting {
+    margin: 12px;
+    > label,
+    summary,
+    .color-picker {
+        font-weight: bold;
+    }
+}
+.setting-details {
+    color: var(--dim-white);
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 25px;
+    padding: 4px;
+}
+.checkbox-input {
+    margin-left: 20px;
+    font-size: 13px;
+    font-weight: normal;
+}
+.backup {
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 10px;
+    border: gray 3px solid;
+    border-radius: 10px;
+}
+.small-button {
+    padding: 2px 4px;
+    margin: 5px;
+}
+.color-picker {
+    display: flex;
+    align-items: center;
+    margin: 12px;
+    padding: 8px;
+    border: 2px gray solid;
+    border-radius: 20px;
+    width: fit-content;
+    button {
+        border: none;
+        font-size: 18px;
+        color: gray;
+        margin: 0 4px;
+    }
+    label {
+        width: auto;
+        margin: 0 10px;
+    }
+    input[type="color"] {
+        margin-right: 20px;
+    }
+}
+.always-open {
+    font-weight: normal;
+    margin: 6px;
+}
+.nicoru-form {
+    margin: 10px;
+    input {
+        width: 200px;
+    }
+    label {
+        font-size: 13px;
+        font-weight: bold;
+    }
+}
+.link {
+    display: flex;
+    align-items: center;
+}
+.cm-editor {
+    width: var(--textarea-width);
+    height: var(--textarea-height);
+    resize: both;
+    overflow: auto; /* resizeを使うために必要 */
+    .cm-vim-panel {
+        font-family: var(--font);
+    }
+    .cm-trailingSpace {
+        background: transparent;
+    }
+    .cm-line:not(.cm-activeLine) .cm-trailingSpace {
+        border: 1px solid white;
+    }
+}
+.cm-editor:not(.cm-focused) {
+    .cm-fat-cursor {
+        outline: none;
+    }
+}
+.cm-content,
+.cm-gutter,
+.cm-tooltip-autocomplete {
+    font-family: var(--font);
+    font-weight: normal;
+}

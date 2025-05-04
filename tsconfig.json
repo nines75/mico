@@ -1,0 +1,10 @@
+{
+    "extends": "./.wxt/tsconfig.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "incremental": true,
+        "outDir": "./.output",
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true
+    }
+}

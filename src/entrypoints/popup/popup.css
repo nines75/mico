@@ -1,0 +1,80 @@
+@import "../../assets/global.css";
+
+body {
+    margin: 0;
+    padding: 0;
+}
+header {
+    background: #3b3c4a;
+    width: 100%;
+    height: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+button {
+    padding: 3px 10px;
+    margin: 5px;
+    border: gray 2px solid;
+    border-radius: 8px;
+    color: var(--lighter-gray);
+    font-size: 15px;
+}
+section {
+    margin: 10px 30px;
+}
+summary {
+    color: gray;
+    font-size: 13px;
+    padding: 6px 0;
+}
+.container {
+    background: #292a2d;
+    color: var(--dim-white);
+    width: auto;
+    height: auto;
+    text-align: center;
+}
+.filtering-type {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+.info {
+    font-size: 15px;
+    color: var(--lighter-gray);
+    margin: 0px 5px;
+}
+.value {
+    font-weight: bold;
+}
+.strict-symbol {
+    color: red;
+}
+.clickable {
+    cursor: pointer;
+}
+.link-container {
+    display: flex;
+    margin-right: 14px;
+    gap: 8px;
+}
+.link {
+    display: flex;
+    align-items: center;
+}
+#video-id {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--lighter-gray);
+}
+#version {
+    font-size: 15px;
+    color: var(--lighter-gray);
+    margin: 0 8px;
+}
+#message {
+    margin: 20px;
+    font-weight: bold;
+}

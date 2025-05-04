@@ -1,0 +1,154 @@
+import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+import { Settings } from "@/types/storage/settings.types.js";
+import { WordLog } from "@/types/storage/log.types.js";
+import { sortCommentId } from "../sort-log.js";
+import {
+    analyzeCustomRule,
+    checkHasTagRule,
+    CustomFilter,
+    CustomRule,
+    CustomRuleData,
+} from "../filter.js";
+
+type NgWordData = CustomRuleData<NgWord>;
+
+interface NgWord extends CustomRule {
+    regex: RegExp;
+}
+
+export class WordFilter extends CustomFilter<WordLog> {
+    protected filter: NgWordData;
+    protected log: WordLog = new Map();
+
+    constructor(settings: Settings, ngUserIds: Set<string>) {
+        super(settings, ngUserIds);
+
+        this.filter = getNgWordData(settings);
+    }
+
+    filtering(threads: Thread[], isStrictOnly = false): void {
+        const rules = isStrictOnly
+            ? this.filter.rules.filter((rule) => rule.isStrict)
+            : this.filter.rules.filter((rule) => !rule.isStrict);
+
+        if (rules.length === 0) return;
+
+        threads.forEach((thread) => {
+            thread.comments = thread.comments.filter((comment) => {
+                const { id, body, nicoruCount: nicoru } = comment;
+
+                if (
+                    this.settings.isIgnoreByNicoru &&
+                    nicoru >= this.settings.IgnoreByNicoruCount
+                )
+                    return true;
+
+                for (const { regex } of rules) {
+                    if (regex.test(body)) {
+                        const regexStr = regex.toString();
+
+                        if (isStrictOnly) {
+                            if (!this.ngUserIds.has(comment.userId)) {
+                                this.strictNgUserIds.push(comment.userId);
+                            }
+
+                            // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
+                            return true;
+                        }
+
+                        if (this.log.has(regexStr)) {
+                            const map = this.log.get(regexStr) as Map<
+                                string,
+                                string[]
+                            >;
+
+                            if (map.has(body)) {
+                                map.get(body)?.push(id);
+                            } else {
+                                map.set(body, [id]);
+                            }
+                        } else {
+                            this.log.set(regexStr, new Map([[body, [id]]]));
+                        }
+
+                        this.filteredComments.set(comment.id, comment);
+
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        });
+    }
+
+    protected sortLog(): void {
+        const log: WordLog = new Map();
+        const ngWords = getNgWordSet(this.filter.rules);
+
+        // フィルター昇順にソート
+        ngWords.forEach((word) => {
+            if (this.log.has(word)) {
+                log.set(word, this.log.get(word) ?? new Map());
+            }
+        });
+
+        this.log = log;
+
+        // 各ルールのコメントをソート
+        this.log.forEach((map, word) => {
+            const sampleIds = [...map.values()].map((ids) => ids[0] as string); // コメントIDは必ず一つ以上存在する
+            const sortedMap = new Map(
+                sortCommentId(sampleIds, this.filteredComments).map((id) => {
+                    const comment = this.filteredComments.get(
+                        id
+                    ) as NiconicoComment;
+                    const ids = map.get(comment.body) as string[];
+
+                    return [comment.body, ids];
+                })
+            );
+
+            this.log.set(word, sortedMap);
+        });
+    }
+
+    getCount(): number {
+        return this.log
+            .values()
+            .reduce(
+                (sum, map) =>
+                    sum +
+                    map
+                        .values()
+                        .reduce((tmpSum, ids) => tmpSum + ids.length, 0),
+                0
+            );
+    }
+}
+
+export function getNgWordData(settings: Settings): NgWordData {
+    const ngWords = analyzeCustomRule(settings, "ngWord").map(
+        (data): NgWord => {
+            const regex = settings.isCaseInsensitive
+                ? RegExp(data.rule, "i")
+                : RegExp(data.rule);
+
+            return {
+                regex,
+                isStrict: data.isStrict,
+                include: data.include,
+                exclude: data.exclude,
+            };
+        }
+    );
+
+    return {
+        rules: ngWords,
+        hasTagRule: checkHasTagRule(ngWords),
+    };
+}
+
+function getNgWordSet(ngWords: NgWord[]) {
+    return new Set(ngWords.map((ngWord) => ngWord.regex.toString()));
+}

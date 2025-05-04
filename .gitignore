@@ -1,0 +1,5 @@
+/.output
+/node_modules
+/.vscode
+/.wxt
+/web-ext.config.ts
