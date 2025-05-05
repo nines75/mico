@@ -1,4 +1,6 @@
 import { defineConfig } from "wxt";
+import license from "rollup-plugin-license";
+import path from "node:path";
 
 export default defineConfig({
     modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
@@ -6,6 +8,29 @@ export default defineConfig({
     imports: false,
     zip: {
         artifactTemplate: "firefox.xpi", // 出力ファイル名を変更
+    },
+    vite: ({ mode }) => {
+        const isProd = mode === "production";
+
+        return {
+            plugins: isProd
+                ? [
+                      license({
+                          thirdParty: {
+                              multipleVersions: true,
+                              output: {
+                                  file: path.resolve(
+                                      __dirname,
+                                      ".output",
+                                      "firefox-mv2",
+                                      "third-party-notices.txt"
+                                  ),
+                              },
+                          },
+                      }),
+                  ]
+                : [],
+        };
     },
     manifest: ({ mode }) => {
         const isDev = mode === "development";
