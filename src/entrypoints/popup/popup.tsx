@@ -6,8 +6,8 @@ import ProcessingTime from "./components/ProcessingTime.js";
 import Details from "./components/Details.js";
 import { popupConfig, texts, urls } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
-import { IoMdSettings } from "react-icons/io";
-import { FaGithub } from "react-icons/fa";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { SettingsIcon } from "lucide-react";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -54,10 +54,10 @@ function Page() {
                 <span id="version">{`${name} ${version}`}</span>
                 <div className="link-container">
                     <a className="link" href={urls.repository}>
-                        <FaGithub size={"24"} color="var(--dim-white)" />
+                        <SiGithub size={24} color="var(--dim-white)" />
                     </a>
                     <a className="link" href="/options.html" target="_blank">
-                        <IoMdSettings size={"24"} color="var(--dim-white)" />
+                        <SettingsIcon size={24} color="var(--dim-white)" />
                     </a>
                 </div>
             </header>

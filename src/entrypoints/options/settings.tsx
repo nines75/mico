@@ -5,7 +5,7 @@ import CommentFilter from "./components/sections/CommentFilter.js";
 import ExpandNicoru from "./components/sections/ExpandNicoru.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { urls } from "@/utils/config.js";
-import { FaGithub } from "react-icons/fa";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -50,7 +50,7 @@ function Page() {
                     target="_blank"
                     rel="noreferrer"
                 >
-                    <FaGithub size={"38"} color="var(--dim-white)" />
+                    <SiGithub size={38} color="var(--dim-white)" />
                 </a>
             </div>
             <CommentFilter />
