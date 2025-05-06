@@ -13,17 +13,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v4
-
-            - uses: pnpm/action-setup@v4
-              with:
-                  version: 10
-                  run_install: false
-
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-                  cache: "pnpm"
+            - uses: nines75/composite-action/setup-pnpm@main
 
             - name: 一つ前のタグを取得してURLを生成
               run: |
@@ -35,9 +25,6 @@ jobs:
                   else
                       echo "url=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
                   fi
-
-            - name: 依存関係をインストール
-              run: pnpm install
 
             - name: ビルド
               run: pnpm run zip

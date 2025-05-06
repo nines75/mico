@@ -11,20 +11,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v4
-
-            - uses: pnpm/action-setup@v4
-              with:
-                  version: 10
-                  run_install: false
-
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-                  cache: "pnpm"
-
-            - name: 依存関係をインストール
-              run: pnpm install
+            - uses: nines75/composite-action/setup-pnpm@main
 
             - name: tsc
               run: tsc --noEmit
