@@ -15,19 +15,19 @@ jobs:
         steps:
             - uses: nines75/composite-action/setup-pnpm@main
 
-            - name: 一つ前のタグを取得してURLを生成
+            - name: URL生成
               run: |
-                  git fetch --tags
-                  previous_tag=$(git tag | sort -V --reverse | sed -n 2p)
-                  echo "一つ前のタグ: $previous_tag"
-                  if [ -n "$previous_tag" ]; then
-                      echo "url=https://github.com/${{ github.repository }}/compare/$previous_tag...${{ github.ref_name }}" >> $GITHUB_ENV
+                  git fetch --tags -f
+                  PREVIOUS_TAG=$(git tag | sort -V --reverse | sed -n 2p)
+                  echo "一つ前のタグ: $PREVIOUS_TAG"
+                  if [ -n "$PREVIOUS_TAG" ]; then
+                      echo "URL=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_ENV
                   else
-                      echo "url=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
+                      echo "URL=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
                   fi
 
             - name: ビルド
-              run: pnpm run zip
+              run: pnpm zip
 
             - name: リリース作成
               uses: softprops/action-gh-release@v2
@@ -36,4 +36,4 @@ jobs:
                   name: ${{ github.ref_name }}
                   tag_name: ${{ github.ref_name }}
                   body: |
-                      **Full Changelog**: ${{ env.url }}
+                      **Full Changelog**: ${{ env.URL }}
