@@ -35,11 +35,10 @@ export default ts.config(
         rules: {
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
-            "no-empty": "warn",
             "no-implicit-coercion": "error", // 暗黙的な型強制を検出
             "require-await": "off", // @typescript-eslint/require-awaitを使用するため無効化
             "@typescript-eslint/no-unused-vars": [
-                "warn",
+                "error",
                 { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
             ],
             // booleanへの型強制を検出
@@ -79,7 +78,7 @@ export default ts.config(
                     ignoreIIFE: true,
                 },
             ],
-            "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
+            "@typescript-eslint/no-unnecessary-condition": "error", // 不要なオプショナルチェーンなどを検出
             "react/prop-types": "off", // TypeScriptでは不要
         },
     },

@@ -7,11 +7,13 @@ on:
     pull_request:
 
 jobs:
-    tsc:
+    test:
+        name: ${{ matrix.task }}
         runs-on: ubuntu-latest
-
+        strategy:
+            fail-fast: false
+            matrix:
+                task: [compile, lint, format]
         steps:
             - uses: nines75/composite-action/setup-pnpm@main
-
-            - name: tsc
-              run: tsc --noEmit
+            - run: pnpm ${{ matrix.task }}
