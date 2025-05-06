@@ -24,6 +24,23 @@
 
 基準となるニコるの数は変更可能です
 
+## Development
+
+### Requirements
+
+- Node.js
+- pnpm
+
+### Build
+
+```sh
+# Install dependencies
+pnpm install
+
+# Build and create a zip file (.output/firefox.xpi)
+pnpm zip
+```
+
 ## クレジット
 
 [nicoExpansion](https://addons.mozilla.org/ja/firefox/addon/nicoexpansion/): 拡張ニコるのアイデアを参考にさせていただきました
