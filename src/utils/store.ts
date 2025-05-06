@@ -67,12 +67,12 @@ export const useStorageStore = create<StorageState>()(
                 console.error(e);
             }
         },
-    }))
+    })),
 );
 
 export function storageChangeHandler(
     changes: Record<string, browser.storage.StorageChange>,
-    area: string
+    area: string,
 ) {
     if (area !== "local") return;
 

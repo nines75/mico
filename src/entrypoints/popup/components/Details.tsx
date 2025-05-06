@@ -11,7 +11,7 @@ interface DetailsProps {
 
 export default function Details({ id, summary, children }: DetailsProps) {
     const [isOpen, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings])
+        useShallow((state) => [state.settings[id], state.saveSettings]),
     );
 
     return (

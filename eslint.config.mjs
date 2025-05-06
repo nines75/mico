@@ -84,5 +84,5 @@ export default ts.config(
     },
 
     // eslintとprettierの整合性を取る
-    prettier
+    prettier,
 );

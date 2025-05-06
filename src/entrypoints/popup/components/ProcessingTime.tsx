@@ -2,7 +2,7 @@ import { useStorageStore } from "@/utils/store.js";
 
 export default function ProcessingTime() {
     const processingTime = useStorageStore(
-        (state) => state.log?.processingTime
+        (state) => state.log?.processingTime,
     );
 
     return (

@@ -23,7 +23,7 @@ export default defineConfig({
                                       __dirname,
                                       ".output",
                                       "firefox-mv2",
-                                      "third-party-notices.txt"
+                                      "third-party-notices.txt",
                                   ),
                               },
                           },

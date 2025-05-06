@@ -12,7 +12,7 @@ export default function CustomNicoru({ id }: CustomNicoruProps) {
             state.settings.nicoruColors[id]?.isGradate ?? false,
             state.settings.nicoruCounts,
             state.saveSettings,
-        ])
+        ]),
     );
 
     const removeNicoruCount = (target: number) => {

@@ -52,7 +52,7 @@ export interface CommentContent {
 }
 
 export function getCommentContent(
-    element: HTMLElement
+    element: HTMLElement,
 ): CommentContent | undefined {
     // コメント本文
     const textElement = element.querySelector(selectors.commentText);

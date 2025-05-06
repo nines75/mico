@@ -64,7 +64,7 @@ export default function Backup() {
 
 function importBackup(
     event: React.ChangeEvent<HTMLInputElement>,
-    saveSettings: (settings: PartialDeep<Settings>) => void
+    saveSettings: (settings: PartialDeep<Settings>) => void,
 ) {
     const reader = new FileReader();
     reader.onload = (f) => {

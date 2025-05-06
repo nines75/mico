@@ -4,7 +4,7 @@ import { CommentData } from "@/types/storage/log.types.js";
 export function sortCommentId(
     ids: string[],
     comments: CommentData,
-    isSortByScore = false
+    isSortByScore = false,
 ): string[] {
     // ソートによって元のデータが破壊されないようにシャローコピーを行う
     // そのままだと元の配列自体の参照が渡されるが、コピーすることで個々のオブジェクトの参照が新たな配列に入るため元のデータが破壊されない

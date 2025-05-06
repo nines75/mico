@@ -15,7 +15,7 @@ export interface FilterAreaProps {
 
 export default function FilterArea({ id, name }: FilterAreaProps) {
     const [text, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings])
+        useShallow((state) => [state.settings[id], state.saveSettings]),
     );
 
     const saveUpdate = (value: string) => {
@@ -36,7 +36,7 @@ export default function FilterArea({ id, name }: FilterAreaProps) {
                                 const confirmText =
                                     texts.settings.messagePopHeadRule.replace(
                                         "{target}",
-                                        data.deletedRule ?? ""
+                                        data.deletedRule ?? "",
                                     );
                                 if (!confirm(confirmText)) return;
 

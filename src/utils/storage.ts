@@ -54,7 +54,7 @@ export async function getAllData() {
 async function setValue(
     value: object | (() => Promise<object>),
     type: StorageType,
-    tabId?: number
+    tabId?: number,
 ) {
     await queue.add(async () => {
         if (typeof value === "function") {
@@ -72,7 +72,7 @@ async function setValue(
 
         await storage.setItem(
             `${storageArea}:${type}`,
-            customMerge(data, value)
+            customMerge(data, value),
         );
     });
 }
@@ -86,13 +86,13 @@ export async function getLogData(tabId: number) {
 
 export async function setLog(
     value: PartialDeep<LogData> | (() => Promise<PartialDeep<LogData>>),
-    tabId: number
+    tabId: number,
 ) {
     await setValue(value, `log-${tabId}`, tabId);
 }
 
 const settingsStorage = storage.defineItem<PartialDeep<Settings> | null>(
-    `${storageArea}:${"settings" satisfies StorageType}`
+    `${storageArea}:${"settings" satisfies StorageType}`,
 );
 
 export async function getSettingsData() {
@@ -102,7 +102,7 @@ export async function getSettingsData() {
 }
 
 export async function setSettings(
-    value: PartialDeep<Settings> | (() => Promise<PartialDeep<Settings>>)
+    value: PartialDeep<Settings> | (() => Promise<PartialDeep<Settings>>),
 ) {
     await setValue(value, "settings");
 }

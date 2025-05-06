@@ -26,7 +26,7 @@ export default function Checkbox({
     children,
 }: CheckboxProps) {
     const [isChecked, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings])
+        useShallow((state) => [state.settings[id], state.saveSettings]),
     );
 
     return (

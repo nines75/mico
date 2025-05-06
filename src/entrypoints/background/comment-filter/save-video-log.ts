@@ -23,7 +23,7 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
             settings.isPartialBadgeCount
                 ? (count.blocked - count.items.easyComment).toString()
                 : count.blocked.toString(),
-            tabId
+            tabId,
         ),
     ]);
 
@@ -38,7 +38,7 @@ function getVideoLog(filteredData: FilteredData): VideoData["log"] {
     const comments = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getComments(),
-        ])
+        ]),
     );
 
     return {

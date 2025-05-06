@@ -26,7 +26,7 @@ export interface FilteredData {
 export async function filterComment(
     threads: Thread[],
     settings: Settings,
-    videoId: string | undefined
+    videoId: string | undefined,
 ): Promise<FilteredData | undefined> {
     if (!settings.isCommentFilterEnabled || videoId === undefined) return;
 
@@ -38,14 +38,14 @@ export async function filterComment(
 
     const noToUserId = new Map(
         threads.flatMap((thread) =>
-            thread.comments.map((comment) => [comment.no, comment.userId])
-        )
+            thread.comments.map((comment) => [comment.no, comment.userId]),
+        ),
     );
 
     // 動画の総コメント数を取得
     const loadedCommentCount = threads.reduce(
         (sum, thread) => sum + thread.comments.length,
-        0
+        0,
     );
 
     // -------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ export async function filterComment(
     // タグ取得
     const { tags, fetchTagTime } = await getTags(
         videoId,
-        Object.values(customFilters).some((filter) => filter.getHasTagRule())
+        Object.values(customFilters).some((filter) => filter.getHasTagRule()),
     );
 
     // tagルール適用
@@ -100,14 +100,14 @@ export async function filterComment(
 
     // strictルールのみでフィルタリング
     Object.values(customFilters).forEach((filter) =>
-        filter.filtering(threads, true)
+        filter.filtering(threads, true),
     );
 
     // strictルールによって追加されたユーザーIDを反映
     const strictNgUserIds = new Set(
         Object.values(customFilters).flatMap((filter) =>
-            filter.getStrictNgUserIds()
-        )
+            filter.getStrictNgUserIds(),
+        ),
     );
     userIdFilter.updateFilter(strictNgUserIds);
 
@@ -129,7 +129,7 @@ export async function filterComment(
 
 async function getTags(
     videoId: string,
-    hasTagRule: boolean
+    hasTagRule: boolean,
 ): Promise<{
     tags: string[];
     fetchTagTime?: number;
@@ -140,7 +140,7 @@ async function getTags(
 
     const start = performance.now();
     const res = await fetch(
-        `https://ext.nicovideo.jp/api/getthumbinfo/${videoId}`
+        `https://ext.nicovideo.jp/api/getthumbinfo/${videoId}`,
     );
     const end = performance.now();
 

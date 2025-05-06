@@ -17,7 +17,7 @@ export default function CheckboxInput({
     max,
 }: CheckboxInputProps) {
     const [input, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings])
+        useShallow((state) => [state.settings[id], state.saveSettings]),
     );
 
     return (

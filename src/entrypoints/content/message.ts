@@ -8,7 +8,7 @@ export interface Message {
 
 export function contentMessageHandler(
     message: Message,
-    sender: browser.runtime.MessageSender
+    sender: browser.runtime.MessageSender,
 ) {
     if (sender.id !== browser.runtime.id) return;
 

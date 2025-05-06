@@ -99,7 +99,7 @@ const theme = EditorView.theme(
             backgroundColor: "transparent",
         },
     },
-    { dark: true }
+    { dark: true },
 );
 
 const baseExtensions = [
@@ -138,7 +138,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
     const parent = useRef<HTMLDivElement | null>(null);
     const initialEditorState = useRef<EditorState | null>(null);
     const isVimCurrent = useStorageStore(
-        (state) => state.settings.isUseVimKeybindings
+        (state) => state.settings.isUseVimKeybindings,
     );
 
     const getExtensions = (isVim: boolean) => {
@@ -149,7 +149,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
                 update.transactions.some(
                     (transaction) =>
                         transaction.annotation(Transaction.userEvent) !==
-                        undefined
+                        undefined,
                 )
             )
                 onChange(update.state.doc.toString());
@@ -221,7 +221,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             effects: StateEffect.reconfigure.of(
                 (isVimCurrent
                     ? vimExtensions.current
-                    : defaultExtensions.current) ?? []
+                    : defaultExtensions.current) ?? [],
             ),
         });
     }, [isVimCurrent]);
@@ -247,13 +247,13 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
                 update(update: ViewUpdate) {
                     this.decorations = decorator.updateDeco(
                         update,
-                        this.decorations
+                        this.decorations,
                     );
                 }
             },
             {
                 decorations: (v) => v.decorations,
-            }
+            },
         );
     });
 }

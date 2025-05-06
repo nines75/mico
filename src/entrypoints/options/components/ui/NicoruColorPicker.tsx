@@ -14,7 +14,7 @@ export default function NicoruColorPicker({
         useShallow((state) => [
             state.settings.nicoruColors[id]?.[type] ?? "",
             state.saveSettings,
-        ])
+        ]),
     );
 
     return (

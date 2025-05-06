@@ -20,7 +20,7 @@ export default function CommentFilter() {
                         {commentFilterSettings.checkbox.filtering.map(
                             (props) => (
                                 <Checkbox key={props.id} {...props} />
-                            )
+                            ),
                         )}
                         <section>
                             <div className="header-container">
@@ -56,7 +56,7 @@ export default function CommentFilter() {
                         {commentFilterSettings.checkbox.notification.map(
                             (props) => (
                                 <Checkbox key={props.id} {...props} />
-                            )
+                            ),
                         )}
                     </div>
                 </section>

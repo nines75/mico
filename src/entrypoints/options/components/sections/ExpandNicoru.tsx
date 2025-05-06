@@ -12,7 +12,10 @@ import { useStorageStore } from "@/utils/store.js";
 
 export default function ExpandNicoru() {
     const [nicoruCounts, save] = useStorageStore(
-        useShallow((state) => [state.settings.nicoruCounts, state.saveSettings])
+        useShallow((state) => [
+            state.settings.nicoruCounts,
+            state.saveSettings,
+        ]),
     );
     const [input, setInput] = useState("");
 
@@ -40,7 +43,7 @@ export default function ExpandNicoru() {
         }
 
         const newNicoruCounts = [...nicoruCounts, newCount].sort(
-            (a, b) => b - a
+            (a, b) => b - a,
         );
 
         save({ nicoruCounts: newNicoruCounts });
@@ -66,7 +69,7 @@ export default function ExpandNicoru() {
                             onClick={() => {
                                 if (
                                     !confirm(
-                                        texts.settings.messageResetNicoruCounts
+                                        texts.settings.messageResetNicoruCounts,
                                     )
                                 )
                                     return;

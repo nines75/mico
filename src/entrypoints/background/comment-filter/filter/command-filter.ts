@@ -33,10 +33,10 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
             ? this.filter.rules.filter(
-                  (rule) => rule.isStrict && !rule.isDisable // strictルールと無効化ルールが併用されている場合、strictルールを無視する
+                  (rule) => rule.isStrict && !rule.isDisable, // strictルールと無効化ルールが併用されている場合、strictルールを無視する
               )
             : this.filter.rules.filter(
-                  (rule) => !(rule.isStrict && !rule.isDisable)
+                  (rule) => !(rule.isStrict && !rule.isDisable),
               );
 
         if (rules.length === 0) return;
@@ -54,7 +54,9 @@ export class CommandFilter extends CustomFilter<CommandLog> {
                 // コマンドを小文字に変換し重複を排除
                 comment.commands = [
                     ...new Set(
-                        comment.commands.map((command) => command.toLowerCase())
+                        comment.commands.map((command) =>
+                            command.toLowerCase(),
+                        ),
                     ),
                 ];
 
@@ -80,7 +82,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
                                 if (isStrictOnly) {
                                     if (!this.ngUserIds.has(comment.userId)) {
                                         this.strictNgUserIds.push(
-                                            comment.userId
+                                            comment.userId,
                                         );
                                     }
 
@@ -131,7 +133,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
                 command,
                 this.settings.isShowNgScoreInLog
                     ? sortCommentId([...ids], this.filteredComments, true)
-                    : sortCommentId([...ids], this.filteredComments)
+                    : sortCommentId([...ids], this.filteredComments),
             );
         });
     }

@@ -43,7 +43,7 @@ export async function savePlaybackTime(tabId: number, time: number) {
 
 export async function saveProcessingTime(
     times: [keyof ProcessingTimeData, number | undefined][],
-    tabId: number
+    tabId: number,
 ) {
     if (times.length === 0) return;
 

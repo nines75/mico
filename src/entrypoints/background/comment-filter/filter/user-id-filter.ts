@@ -72,7 +72,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
                 userId,
                 this.settings.isShowNgScoreInLog
                     ? sortCommentId([...ids], this.filteredComments, true)
-                    : sortCommentId([...ids], this.filteredComments)
+                    : sortCommentId([...ids], this.filteredComments),
             );
         });
     }
@@ -131,7 +131,7 @@ export async function removeNgUserId(userIds: Set<string>) {
         const toRemoveLines = new Set(
             getNgUserId(settings)
                 .filter((data) => userIds.has(data.rule))
-                .map((data) => data.index)
+                .map((data) => data.index),
         );
         const value = settings.ngUserId
             .split("\n")

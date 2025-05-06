@@ -16,7 +16,7 @@ export default defineBackground(() => {
             urls: ["https://public.nvcomment.nicovideo.jp/v1/threads"],
             types: ["xmlhttprequest", "main_frame"],
         },
-        ["blocking"]
+        ["blocking"],
     );
 
     // ショートカットキーが押された際の処理

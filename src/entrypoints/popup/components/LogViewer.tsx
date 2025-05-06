@@ -41,7 +41,7 @@ export default function LogViewer({ id, name }: LogViewerProps) {
         useShallow((state) => [
             state.log?.videoData?.log,
             state.log?.videoData?.count,
-        ])
+        ]),
     );
 
     const settings = useStorageStore.getState().settings;
@@ -97,8 +97,8 @@ async function undoStrictNgUserIds(videoLog: VideoLog | undefined) {
         !confirm(
             texts.popup.messageUndoStrictNgUserIds.replace(
                 "{target}",
-                [...userIds].join("\n")
-            )
+                [...userIds].join("\n"),
+            ),
         )
     )
         return;
@@ -120,7 +120,7 @@ function getRuleCount(rule: FilterId, settings: Settings) {
 function getLog(
     id: Exclude<LogId, "easyComment">,
     videoLog: VideoLog | undefined,
-    settings: Settings
+    settings: Settings,
 ) {
     if (videoLog === undefined) return null;
 
@@ -132,7 +132,7 @@ function getLog(
                 videoLog.ngUserId,
                 comments,
                 settings,
-                videoLog.strictNgUserIds
+                videoLog.strictNgUserIds,
             );
         case "ngScore":
             return renderScoreLog(videoLog.ngScore, comments, settings);
@@ -147,7 +147,7 @@ function renderUserIdLog(
     userIdLog: UserIdLog,
     comments: CommentData,
     settings: Settings,
-    strictNgUserIds?: Set<string>
+    strictNgUserIds?: Set<string>,
 ) {
     const renderLog = (userId: string, elements: JSX.Element[]) => {
         const onClickUserId = async () => {
@@ -156,8 +156,8 @@ function renderUserIdLog(
                     !confirm(
                         texts.popup.messageRemoveNgUserId.replace(
                             "{target}",
-                            userId
-                        )
+                            userId,
+                        ),
                     )
                 )
                     return;
@@ -182,7 +182,7 @@ function renderUserIdLog(
                 >
                     {userId}
                 </span>
-            </div>
+            </div>,
         );
 
         const ids = userIdLog.get(userId) ?? [];
@@ -192,7 +192,7 @@ function renderUserIdLog(
             elements.push(
                 <div key={commentId} className="log-line">
                     {formatComment(comment, settings, false)}
-                </div>
+                </div>,
             );
         });
 
@@ -211,7 +211,7 @@ function renderUserIdLog(
 function renderScoreLog(
     scoreLog: ScoreLog,
     comments: CommentData,
-    settings: Settings
+    settings: Settings,
 ) {
     const elements: JSX.Element[] = [];
 
@@ -226,9 +226,9 @@ function renderScoreLog(
                         ...settings,
                         ...{ isShowNgScoreInLog: true },
                     },
-                    true
+                    true,
                 )}
-            </div>
+            </div>,
         );
     });
 
@@ -238,14 +238,14 @@ function renderScoreLog(
 function renderCommandLog(
     commandLog: CommandLog,
     comments: CommentData,
-    settings: Settings
+    settings: Settings,
 ) {
     const renderLog = (command: string, elements: JSX.Element[]) => {
         elements.push(
             <div
                 key={command}
                 className="log-line comment"
-            >{`# ${command}`}</div>
+            >{`# ${command}`}</div>,
         );
 
         const ids = commandLog.get(command) ?? [];
@@ -255,7 +255,7 @@ function renderCommandLog(
             elements.push(
                 <div key={commentId} className="log-line">
                     {formatComment(comment, settings, true)}
-                </div>
+                </div>,
             );
         });
 
@@ -274,11 +274,11 @@ function renderCommandLog(
 function renderWordLog(
     wordLog: WordLog,
     comments: CommentData,
-    settings: Settings
+    settings: Settings,
 ) {
     const renderLog = (word: string, elements: JSX.Element[]) => {
         elements.push(
-            <div key={word} className="log-line comment">{`# ${word}`}</div>
+            <div key={word} className="log-line comment">{`# ${word}`}</div>,
         );
 
         const map = wordLog.get(word) ?? new Map<string, string[]>();
@@ -290,9 +290,9 @@ function renderWordLog(
                     {formatCommentWithDuplicate(
                         ids.map((id) => comments.get(id) as NiconicoComment),
                         body,
-                        settings
+                        settings,
                     )}
-                </div>
+                </div>,
             );
         });
 
@@ -311,7 +311,7 @@ function renderWordLog(
 function formatComment(
     comment: NiconicoComment,
     settings: Settings,
-    isClickable: boolean
+    isClickable: boolean,
 ) {
     const [body, nicoru, score] = [
         comment.body,
@@ -327,12 +327,15 @@ function formatComment(
 
     if (isNgScore) {
         elements.push(
-            <span key={`ng-score`} className="ng-score">{`[🚫:${score}]`}</span>
+            <span
+                key={`ng-score`}
+                className="ng-score"
+            >{`[🚫:${score}]`}</span>,
         );
     }
     if (isNicoru) {
         elements.push(
-            <span key={`nicoru`} className="nicoru">{`[👍:${nicoru}]`}</span>
+            <span key={`nicoru`} className="nicoru">{`[👍:${nicoru}]`}</span>,
         );
     }
 
@@ -350,7 +353,7 @@ function formatComment(
             >
                 {escapeNewline(body)}
             </span>
-        </Fragment>
+        </Fragment>,
     );
 
     return elements;
@@ -359,7 +362,7 @@ function formatComment(
 function formatCommentWithDuplicate(
     comments: NiconicoComment[],
     body: string,
-    settings: Settings
+    settings: Settings,
 ) {
     const elements: JSX.Element[] = [];
     const cnt = comments.length;
@@ -369,7 +372,7 @@ function formatCommentWithDuplicate(
         cnt >= settings.showDuplicateInLogCount
     ) {
         elements.push(
-            <span key={`cnt`} className="duplicate">{`[${cnt}回]`}</span>
+            <span key={`cnt`} className="duplicate">{`[${cnt}回]`}</span>,
         );
     }
 
@@ -383,7 +386,7 @@ function formatCommentWithDuplicate(
             >
                 {escapeNewline(body)}
             </span>
-        </Fragment>
+        </Fragment>,
     );
 
     return elements;
@@ -397,7 +400,7 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     const targetUserIds = new Set(
         (Array.isArray(comments) ? comments : [comments])
             .filter((comment) => !ngUserIds.has(comment.userId))
-            .map((comment) => comment.userId)
+            .map((comment) => comment.userId),
     );
 
     if (targetUserIds.size === 0) {
@@ -409,8 +412,8 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
         !confirm(
             texts.popup.messageAddNgUserId.replace(
                 "{target}",
-                [...targetUserIds].join("\n")
-            )
+                [...targetUserIds].join("\n"),
+            ),
         )
     )
         return;

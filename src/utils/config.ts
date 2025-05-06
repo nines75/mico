@@ -140,7 +140,7 @@ export const colors = {
 } as const;
 
 export const urls = {
-    repository: "https://github.com/nines75/mico"
+    repository: "https://github.com/nines75/mico",
 } as const;
 
 export const pattern = {

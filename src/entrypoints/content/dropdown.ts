@@ -12,7 +12,7 @@ export function addButtonToDropdown(element: HTMLElement) {
     if (dropdownContent === undefined) return;
 
     const commentNo = dropdownContent.commentNoText.match(
-        pattern.regex.extractCommentNo
+        pattern.regex.extractCommentNo,
     )?.[1];
     if (commentNo === undefined) return;
 
@@ -20,13 +20,13 @@ export function addButtonToDropdown(element: HTMLElement) {
         dropdownContent,
         commentNo,
         texts.content.textAddNgUserIdButton,
-        false
+        false,
     );
     appendButton(
         dropdownContent,
         commentNo,
         texts.content.textAddSpecificNgUserIdButton,
-        true
+        true,
     );
 }
 
@@ -34,13 +34,13 @@ function appendButton(
     dropdownContent: DropdownContent,
     commentNo: string,
     textContent: string,
-    specific: boolean
+    specific: boolean,
 ) {
     const button = document.createElement("button");
 
     button.textContent = textContent.replace(
         "{target}",
-        browser.runtime.getManifest().name
+        browser.runtime.getManifest().name,
     );
     [...dropdownContent.sampleButtonElement.attributes].forEach((attribute) => {
         button.setAttribute(attribute.name, attribute.value);
@@ -73,7 +73,7 @@ function getButtonCallback(commentNo: string, specific: boolean) {
 
 function getDropdownContent(element: HTMLElement): DropdownContent | undefined {
     const buttonsParentElement = element.querySelector(
-        selectors.dropdownButtonsParent
+        selectors.dropdownButtonsParent,
     );
     const commentNoElement = element.querySelector(selectors.dropdownCommentNo);
     if (
@@ -83,7 +83,7 @@ function getDropdownContent(element: HTMLElement): DropdownContent | undefined {
         return;
 
     const sampleButtonElement = buttonsParentElement.querySelector(
-        selectors.dropdownButtonSample
+        selectors.dropdownButtonSample,
     );
     if (!(sampleButtonElement instanceof HTMLButtonElement)) return;
 

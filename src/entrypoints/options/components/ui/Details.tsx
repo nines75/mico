@@ -12,12 +12,12 @@ interface DetailsProps {
 
 export default function Details({ id, summary, children }: DetailsProps) {
     const [isChecked, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings])
+        useShallow((state) => [state.settings[id], state.saveSettings]),
     );
     // インポート時などの再レンダリングの影響を受けないためにuseRefを使う
     // また、再レンダリング時に保存はされなくても取得自体は行われるため、useMemoを使って取得されないようにする
     const isOpen = useRef(
-        useMemo(() => useStorageStore.getState().settings[id], [id])
+        useMemo(() => useStorageStore.getState().settings[id], [id]),
     );
 
     return (

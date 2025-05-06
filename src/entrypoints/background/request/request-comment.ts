@@ -18,7 +18,7 @@ import {
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
 
 export default function commentRequest(
-    details: browser.webRequest._OnBeforeRequestDetails
+    details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     if (details.method !== "POST") return;
 
@@ -70,9 +70,9 @@ export default function commentRequest(
                     sendNotification(
                         texts.content.messageNotifyAddNgUserId.replace(
                             "{target}",
-                            strictNgUserIds.size.toString()
-                        )
-                    )
+                            strictNgUserIds.size.toString(),
+                        ),
+                    ),
                 );
             }
 
@@ -83,8 +83,8 @@ export default function commentRequest(
                         ["filtering", filteredData.filteringTime],
                         ["fetchTag", filteredData.fetchTagTime],
                     ],
-                    tabId
-                )
+                    tabId,
+                ),
             );
 
             await Promise.all(tasks);
@@ -106,7 +106,7 @@ async function restorePlaybackTime(tabId: number) {
             browser.tabs.sendMessage(tabId, {
                 type: "set-playback-time",
                 data: playbackTime,
-            })
+            }),
         );
     }
 

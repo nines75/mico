@@ -101,12 +101,12 @@ export class WordFilter extends CustomFilter<WordLog> {
             const sortedMap = new Map(
                 sortCommentId(sampleIds, this.filteredComments).map((id) => {
                     const comment = this.filteredComments.get(
-                        id
+                        id,
                     ) as NiconicoComment;
                     const ids = map.get(comment.body) as string[];
 
                     return [comment.body, ids];
-                })
+                }),
             );
 
             this.log.set(word, sortedMap);
@@ -122,7 +122,7 @@ export class WordFilter extends CustomFilter<WordLog> {
                     map
                         .values()
                         .reduce((tmpSum, ids) => tmpSum + ids.length, 0),
-                0
+                0,
             );
     }
 }
@@ -140,7 +140,7 @@ export function getNgWordData(settings: Settings): NgWordData {
                 include: data.include,
                 exclude: data.exclude,
             };
-        }
+        },
     );
 
     return {

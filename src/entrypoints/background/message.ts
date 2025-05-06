@@ -6,7 +6,7 @@ import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
 
 export async function backgroundMessageHandler(
     message: Message,
-    sender: browser.runtime.MessageSender
+    sender: browser.runtime.MessageSender,
 ) {
     try {
         if (sender.id !== browser.runtime.id) return;
@@ -28,7 +28,7 @@ export async function backgroundMessageHandler(
 
 async function saveNgUserId(
     message: Message,
-    sender: browser.runtime.MessageSender
+    sender: browser.runtime.MessageSender,
 ) {
     const data = message.data as {
         videoId: string;
@@ -53,7 +53,7 @@ async function saveNgUserId(
     }
 
     await addNgUserId(
-        new Set([data.specific ? `${data.videoId}@${userId}` : userId])
+        new Set([data.specific ? `${data.videoId}@${userId}` : userId]),
     );
 
     const settings = await loadSettings();
@@ -64,7 +64,7 @@ async function saveNgUserId(
             browser.tabs.sendMessage(tabId, {
                 type: "auto-reload",
                 data: tabId,
-            })
+            }),
         );
     }
 

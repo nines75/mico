@@ -91,7 +91,7 @@ type CustomFilterType = ConditionalPick<
 >;
 
 export function getCustomFilters(
-    filters: FilteredData["filters"]
+    filters: FilteredData["filters"],
 ): CustomFilterType {
     return {
         commandFilter: filters.commandFilter,
@@ -137,7 +137,7 @@ export function extractRuleFromFilter(filter: string) {
 
 export function analyzeCustomRule(
     settings: Settings,
-    id: keyof ConditionalPick<Settings, string>
+    id: keyof ConditionalPick<Settings, string>,
 ) {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
@@ -226,6 +226,6 @@ export function analyzeCustomRule(
 
 export function checkHasTagRule(rules: CustomRule[]) {
     return rules.some(
-        (rule) => rule.include.length > 0 || rule.exclude.length > 0
+        (rule) => rule.include.length > 0 || rule.exclude.length > 0,
     );
 }
