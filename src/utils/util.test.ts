@@ -22,6 +22,12 @@ describe("util", () => {
         ].forEach(([url, videoId]) => {
             expect(extractVideoId(url)).toBe(videoId);
         });
+
+        ["https://www.nicovideo.jp/watch/ab1234", "undefined"].forEach(
+            (url) => {
+                expect(extractVideoId(url)).toBe(undefined);
+            },
+        );
     });
 
     it("escapeNewline()", () => {
@@ -36,7 +42,7 @@ describe("util", () => {
 
     it("saveProcessingTime", async () => {
         await saveProcessingTime([], 1);
-        expect(await getLogData(1)).toEqual(undefined);
+        expect(await getLogData(1)).toBe(undefined);
 
         await saveProcessingTime(
             [
