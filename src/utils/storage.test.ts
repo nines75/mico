@@ -8,7 +8,7 @@ import {
     setSettings,
 } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
-import { testLog } from "../data.js";
+import { testLog } from "./data.js";
 
 describe("storage", () => {
     beforeEach(() => {
