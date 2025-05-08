@@ -40,7 +40,7 @@ describe("util", () => {
         expect(await getLogData(1)).toEqual({ playbackTime: 100 });
     });
 
-    it("saveProcessingTime", async () => {
+    it("saveProcessingTime()", async () => {
         await saveProcessingTime([], 1);
         expect(await getLogData(1)).toBe(undefined);
 
