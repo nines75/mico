@@ -5,6 +5,7 @@ import { deepmergeCustom, type DeepMergeLeafURI } from "deepmerge-ts";
 import { PartialDeep } from "type-fest";
 import { defaultSettings } from "./config.js";
 import { storage } from "#imports";
+import { stringify, parse } from "superjson";
 
 export type LogType = `log-${number}`;
 export type StorageType = LogType | "settings";
@@ -55,6 +56,7 @@ async function setValue(
     value: object | (() => Promise<object>),
     type: StorageType,
     tabId?: number,
+    isStringify = false,
 ) {
     await queue.add(async () => {
         if (typeof value === "function") {
@@ -69,26 +71,27 @@ async function setValue(
                 return getSettingsData();
             }
         })();
+        const mergedValue = customMerge(data, value);
 
         await storage.setItem(
             `${storageArea}:${type}`,
-            customMerge(data, value),
+            isStringify ? stringify(mergedValue) : mergedValue,
         );
     });
 }
 
 export async function getLogData(tabId: number) {
     const key: StorageType = `log-${tabId}` as const;
-    const res = await storage.getItem<LogData>(`${storageArea}:${key}`);
+    const res = await storage.getItem<string>(`${storageArea}:${key}`);
 
-    return res ?? undefined;
+    return res === null ? undefined : parse<LogData>(res);
 }
 
 export async function setLog(
     value: PartialDeep<LogData> | (() => Promise<PartialDeep<LogData>>),
     tabId: number,
 ) {
-    await setValue(value, `log-${tabId}`, tabId);
+    await setValue(value, `log-${tabId}`, tabId, true);
 }
 
 const settingsStorage = storage.defineItem<PartialDeep<Settings> | null>(
