@@ -1,3 +1,4 @@
+import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { LogData } from "@/types/storage/log.types.js";
 
 export const testLog = {
@@ -76,3 +77,74 @@ export const testLog = {
         },
     },
 } as const satisfies LogData;
+
+export const testThreads = (() => {
+    const base = {
+        id: "1000",
+        no: 1,
+        vposMs: 0,
+        body: "test",
+        commands: ["184"],
+        isMyPost: false,
+        isPremium: false,
+        nicoruCount: 0,
+        nicoruId: null,
+        postedAt: "2025-05-07T15:00:00+09:00",
+        score: 0,
+        source: "trunk",
+        userId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
+    } satisfies NiconicoComment;
+    const forks = ["owner", "main", "easy"] as const;
+
+    const getComment = (comment: Partial<NiconicoComment>): NiconicoComment => {
+        return {
+            ...base,
+            ...comment,
+        };
+    };
+
+    return forks.map((fork): Thread => {
+        switch (fork) {
+            case "owner":
+                return {
+                    fork: fork,
+                    commentCount: 2,
+                    comments: [
+                        getComment({}),
+                        getComment({ id: "1001", no: 2 }),
+                    ],
+                };
+            case "main":
+                return {
+                    fork: fork,
+                    commentCount: 3,
+                    comments: [
+                        getComment({
+                            id: "1002",
+                            no: 3,
+                            commands: ["big", "184"],
+                            userId: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+                        }),
+                        getComment({
+                            id: "1003",
+                            no: 4,
+                            commands: ["184", "device:Switch"],
+                            userId: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
+                        }),
+                        getComment({
+                            id: "1004",
+                            no: 5,
+                            commands: ["big", "184", "device:Switch"],
+                            userId: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
+                        }),
+                    ],
+                };
+            case "easy":
+                return {
+                    fork: fork,
+                    commentCount: 0,
+                    comments: [],
+                };
+        }
+    });
+})();
