@@ -38,10 +38,9 @@ export class CommandFilter extends CustomFilter<CommandLog> {
             : this.filter.rules.filter(
                   (rule) => !(rule.isStrict && !rule.isDisable),
               );
-
-        if (rules.length === 0) return;
-
         const { hasAll } = this.filter;
+
+        if (rules.length === 0 && !hasAll) return;
 
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment) => {
