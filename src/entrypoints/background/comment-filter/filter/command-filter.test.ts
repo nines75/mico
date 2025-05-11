@@ -5,10 +5,10 @@ import { testThreads } from "@/utils/data.js";
 import { Thread } from "@/types/api/comment.types.js";
 
 describe("command filter", () => {
-    let copyTestThread: Thread[];
+    let testThreadCopy: Thread[];
 
     beforeEach(() => {
-        copyTestThread = structuredClone(testThreads);
+        testThreadCopy = structuredClone(testThreads);
     });
 
     const filtering = (
@@ -22,22 +22,27 @@ describe("command filter", () => {
             ngUserIds,
         );
         commandFilter.filterRuleByTag(tags);
-        commandFilter.filtering(copyTestThread, isStrictOnly);
+        commandFilter.filtering(testThreadCopy, isStrictOnly);
 
         return commandFilter;
     };
 
     const hasCommand = () =>
-        copyTestThread.some((thread) =>
+        testThreadCopy.some((thread) =>
             thread.comments.some((comment) => comment.commands.length > 0),
         );
     const hasSpecificCommand = (targets: string[]) =>
-        copyTestThread.some((thread) =>
+        testThreadCopy.some((thread) =>
             thread.comments.some((comment) =>
                 comment.commands.some((command) =>
                     targets.includes(command.toLowerCase()),
                 ),
             ),
+        );
+
+    const hasComment = (ids: string[]) =>
+        testThreadCopy.some((thread) =>
+            thread.comments.some((comment) => ids.includes(comment.id)),
         );
 
     it("一般的なフィルター", () => {
@@ -52,6 +57,7 @@ device:Switch
                 ["device:switch", ["1003"]],
             ]),
         );
+        expect(hasComment(["1002", "1003", "1004"])).toBe(false);
     });
 
     it("大小文字が異なるフィルター", () => {
@@ -66,6 +72,7 @@ Device:switch
                 ["device:switch", ["1003"]],
             ]),
         );
+        expect(hasComment(["1002", "1003", "1004"])).toBe(false);
     });
 
     it("完全に一致していないフィルター", () => {
@@ -100,9 +107,13 @@ big
     });
 
     it.each([
-        ["include", new Map([["big", ["1002", "1004"]]])],
-        ["exclude", new Map([["device:switch", ["1003", "1004"]]])],
-    ])("@%s", (type, expected) => {
+        ["include", new Map([["big", ["1002", "1004"]]]), ["1002", "1004"]],
+        [
+            "exclude",
+            new Map([["device:switch", ["1003", "1004"]]]),
+            ["1003", "1004"],
+        ],
+    ])("@%s", (type, expected, ids) => {
         const isExclude = type === "exclude";
 
         const filter = `
@@ -123,6 +134,7 @@ device:switch
         );
 
         expect(commandFilter.getLog()).toEqual(expected);
+        expect(hasComment(ids)).toBe(false);
     });
 
     it("@disable", () => {
@@ -136,16 +148,15 @@ device:switch
         expect(hasSpecificCommand(["big", "device:switch"])).toBe(false);
     });
 
-    // ToDo: フィルターにallしかない場合にルールが有効化されないバグがあるため落ちる
-    //     it("all", () => {
-    //         const filter = `
-    // @disable
-    // all
-    // `;
+    it("all", () => {
+        const filter = `
+@disable
+all
+`;
 
-    //         expect(filtering(filter).getLog()).toEqual(new Map());
-    //         expect(hasCommand()).toBe(false);
-    //     });
+        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(hasCommand()).toBe(false);
+    });
 
     it("無効なall", () => {
         const filter = `all`;
@@ -167,5 +178,22 @@ big
         expect(strictCommandFilter.getStrictNgUserIds()).toEqual([]);
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(hasSpecificCommand(["big"])).toBe(false);
+    });
+
+    it("動画タグが存在しないときのtagルール判定", () => {
+        const filter = `
+@include tag0
+big
+@end
+
+@exclude tag1
+device:switch
+@end
+`;
+
+        expect(filtering(filter).getLog()).toEqual(
+            new Map([["device:switch", ["1003", "1004"]]]),
+        );
+        expect(hasComment(["1003", "1004"])).toBe(false);
     });
 });
