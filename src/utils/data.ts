@@ -124,18 +124,21 @@ export const testThreads = (() => {
                             no: 3,
                             commands: ["big", "184"],
                             userId: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+                            score: -1001,
                         }),
                         getComment({
                             id: "1003",
                             no: 4,
                             commands: ["184", "device:Switch"],
                             userId: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
+                            score: -1000,
                         }),
                         getComment({
                             id: "1004",
                             no: 5,
                             commands: ["big", "184", "device:Switch"],
                             userId: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
+                            score: -999,
                         }),
                     ],
                 };
@@ -148,3 +151,9 @@ export const testThreads = (() => {
         }
     });
 })();
+
+export function hasComment(threads: Thread[], ids: string[]) {
+    return threads.some((thread) =>
+        thread.comments.some((comment) => ids.includes(comment.id)),
+    );
+}

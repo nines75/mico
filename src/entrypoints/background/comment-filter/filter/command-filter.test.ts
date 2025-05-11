@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { testThreads } from "@/utils/data.js";
+import { hasComment, testThreads } from "@/utils/data.js";
 import { Thread } from "@/types/api/comment.types.js";
 
 describe("command filter", () => {
@@ -40,11 +40,6 @@ describe("command filter", () => {
             ),
         );
 
-    const hasComment = (ids: string[]) =>
-        testThreadCopy.some((thread) =>
-            thread.comments.some((comment) => ids.includes(comment.id)),
-        );
-
     it("一般的なフィルター", () => {
         const filter = `
 big
@@ -57,7 +52,9 @@ device:Switch
                 ["device:switch", ["1003"]],
             ]),
         );
-        expect(hasComment(["1002", "1003", "1004"])).toBe(false);
+        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
+            false,
+        );
     });
 
     it("大小文字が異なるフィルター", () => {
@@ -72,7 +69,9 @@ Device:switch
                 ["device:switch", ["1003"]],
             ]),
         );
-        expect(hasComment(["1002", "1003", "1004"])).toBe(false);
+        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
+            false,
+        );
     });
 
     it("完全に一致していないフィルター", () => {
@@ -134,7 +133,7 @@ device:switch
         );
 
         expect(commandFilter.getLog()).toEqual(expected);
-        expect(hasComment(ids)).toBe(false);
+        expect(hasComment(testThreadCopy, ids)).toBe(false);
     });
 
     it("@disable", () => {
@@ -194,6 +193,6 @@ device:switch
         expect(filtering(filter).getLog()).toEqual(
             new Map([["device:switch", ["1003", "1004"]]]),
         );
-        expect(hasComment(["1003", "1004"])).toBe(false);
+        expect(hasComment(testThreadCopy, ["1003", "1004"])).toBe(false);
     });
 });
