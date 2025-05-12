@@ -160,3 +160,7 @@ export function hasComment(threads: Thread[], ids: string[]) {
         thread.comments.some((comment) => ids.includes(comment.id)),
     );
 }
+
+export function replaceInclude(filter: string) {
+    return filter.replace(/include/g, "exclude");
+}

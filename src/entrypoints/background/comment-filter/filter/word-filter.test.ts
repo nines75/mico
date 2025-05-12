@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { hasComment, testThreads } from "@/utils/data.js";
+import { hasComment, replaceInclude, testThreads } from "@/utils/data.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
 
-describe("word filter", () => {
+describe("WordFilter", () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -155,7 +155,7 @@ TesT
 `;
 
         const wordFilter = filtering({
-            filter: isExclude ? filter.replace(/include/g, "exclude") : filter,
+            filter: isExclude ? replaceInclude(filter) : filter,
             tags: ["tag0"],
         });
 

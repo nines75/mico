@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter.js";
 import { defaultSettings } from "@/utils/config.js";
 
-describe("score filter", () => {
+describe("ScoreFilter", () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {

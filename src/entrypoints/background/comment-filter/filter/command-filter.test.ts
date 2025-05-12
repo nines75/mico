@@ -1,28 +1,28 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { hasComment, testThreads } from "@/utils/data.js";
+import { hasComment, replaceInclude, testThreads } from "@/utils/data.js";
 import { Thread } from "@/types/api/comment.types.js";
 
-describe("command filter", () => {
+describe("CommandFilter", () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
         testThreadCopy = structuredClone(testThreads);
     });
 
-    const filtering = (
-        filter: string,
-        isStrictOnly = false,
-        ngUserIds = new Set<string>(),
-        tags: string[] = [],
-    ) => {
+    const filtering = (options: {
+        filter: string;
+        tags?: string[];
+        isStrictOnly?: boolean;
+        ngUserIds?: Set<string>;
+    }) => {
         const commandFilter = new CommandFilter(
-            { ...defaultSettings, ...{ ngCommand: filter } },
-            ngUserIds,
+            { ...defaultSettings, ...{ ngCommand: options.filter } },
+            options.ngUserIds ?? new Set(),
         );
-        commandFilter.filterRuleByTag(tags);
-        commandFilter.filtering(testThreadCopy, isStrictOnly);
+        commandFilter.filterRuleByTag(options.tags ?? []);
+        commandFilter.filtering(testThreadCopy, options.isStrictOnly ?? false);
 
         return commandFilter;
     };
@@ -46,7 +46,7 @@ big
 device:Switch
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 ["big", ["1002", "1004"]],
                 ["device:switch", ["1003"]],
@@ -63,7 +63,7 @@ BiG
 Device:switch
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 ["big", ["1002", "1004"]],
                 ["device:switch", ["1003"]],
@@ -80,7 +80,7 @@ bi
 device:
 `;
 
-        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
     });
 
     it("@strict/!", () => {
@@ -92,11 +92,11 @@ big
 !device:switch
 `;
 
-        const commandFilter = filtering(
+        const commandFilter = filtering({
             filter,
-            true,
-            new Set(["nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj"]),
-        );
+            isStrictOnly: true,
+            ngUserIds: new Set(["nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj"]),
+        });
 
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(commandFilter.getStrictNgUserIds()).toEqual([
@@ -125,12 +125,10 @@ device:switch
 @end
 `;
 
-        const commandFilter = filtering(
-            isExclude ? filter.replace(/include/g, "exclude") : filter,
-            false,
-            new Set(),
-            ["tag0"],
-        );
+        const commandFilter = filtering({
+            filter: isExclude ? replaceInclude(filter) : filter,
+            tags: ["tag0"],
+        });
 
         expect(commandFilter.getLog()).toEqual(expected);
         expect(hasComment(testThreadCopy, ids)).toBe(false);
@@ -143,7 +141,7 @@ big
 device:switch
 `;
 
-        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasSpecificCommand(["big", "device:switch"])).toBe(false);
     });
 
@@ -153,14 +151,14 @@ device:switch
 all
 `;
 
-        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasCommand()).toBe(false);
     });
 
     it("無効なall", () => {
         const filter = `all`;
 
-        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasCommand()).toBe(true);
     });
 
@@ -171,8 +169,8 @@ all
 big
 `;
 
-        const strictCommandFilter = filtering(filter, true);
-        const commandFilter = filtering(filter);
+        const strictCommandFilter = filtering({ filter, isStrictOnly: true });
+        const commandFilter = filtering({ filter });
 
         expect(strictCommandFilter.getStrictNgUserIds()).toEqual([]);
         expect(commandFilter.getLog()).toEqual(new Map());
@@ -190,7 +188,7 @@ device:switch
 @end
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([["device:switch", ["1003", "1004"]]]),
         );
         expect(hasComment(testThreadCopy, ["1003", "1004"])).toBe(false);

@@ -11,7 +11,7 @@ import {
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { fakeBrowser } from "#imports";
 
-describe("userId filter", () => {
+describe("UserIdFilter", () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {

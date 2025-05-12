@@ -7,6 +7,7 @@ import {
     extractRuleFromFilter,
 } from "./filter.js";
 import { defaultSettings } from "@/utils/config.js";
+import { replaceInclude } from "@/utils/data.js";
 
 describe("extractRuleFromFilter()", () => {
     it("一般的なケース", () => {
@@ -171,9 +172,7 @@ rule
         };
 
         expect(
-            getFunction(
-                isExclude ? filter.replace(/include/g, "exclude") : filter,
-            ),
+            getFunction(isExclude ? replaceInclude(filter) : filter),
         ).toEqual([...Array(3).fill(correct), wrong]);
     });
 
@@ -323,14 +322,14 @@ describe("checkHasTagRule()", () => {
     } satisfies CustomRule;
 
     it.each([
-        ["neither", [neither], false],
-        ["include", [include], true],
-        ["include+", [include, neither], true],
-        ["exclude", [exclude], true],
-        ["exclude+", [exclude, neither], true],
-        ["both", [both], true],
-        ["both+", [include, exclude, neither], true],
-    ])("%s", (_, rules, expected) => {
-        expect(checkHasTagRule(rules)).toBe(expected);
+        { name: "neither", rules: [neither], expected: false },
+        { name: "include", rules: [include] },
+        { name: "include+", rules: [include, neither] },
+        { name: "exclude", rules: [exclude] },
+        { name: "exclude+", rules: [exclude, neither] },
+        { name: "both", rules: [both] },
+        { name: "both+", rules: [include, exclude, neither] },
+    ])("$name", ({ rules, expected }) => {
+        expect(checkHasTagRule(rules)).toBe(expected ?? true);
     });
 });
