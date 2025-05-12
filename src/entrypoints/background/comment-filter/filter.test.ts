@@ -7,7 +7,7 @@ import {
     extractRuleFromFilter,
 } from "./filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { replaceInclude } from "@/utils/data.js";
+import { replaceInclude } from "@/utils/test.js";
 
 describe("extractRuleFromFilter()", () => {
     it("一般的なケース", () => {

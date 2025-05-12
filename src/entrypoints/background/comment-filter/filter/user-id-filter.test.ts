@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { hasComment, testThreads } from "@/utils/data.js";
+import { hasComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import {
     addNgUserId,

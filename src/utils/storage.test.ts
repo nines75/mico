@@ -12,7 +12,7 @@ import {
     setSettings,
 } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
-import { testLog } from "./data.js";
+import { testLog } from "./test.js";
 import { stringify } from "superjson";
 import { Settings } from "@/types/storage/settings.types.js";
 import { PartialDeep } from "type-fest";
