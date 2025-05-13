@@ -10,6 +10,8 @@ import {
 } from "./user-id-filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { fakeBrowser } from "#imports";
+import { PartialDeep } from "type-fest";
+import { Settings } from "@/types/storage/settings.types.js";
 
 describe("UserIdFilter", () => {
     let testThreadCopy: Thread[];
@@ -18,10 +20,17 @@ describe("UserIdFilter", () => {
         testThreadCopy = structuredClone(testThreads);
     });
 
-    const filtering = (filter: string, videoId = "sm1") => {
+    const filtering = (options: {
+        filter: string;
+        settings?: PartialDeep<Settings>;
+    }) => {
         const userIdFilter = new UserIdFilter(
-            { ...defaultSettings, ...{ ngUserId: filter } },
-            videoId,
+            {
+                ...defaultSettings,
+                ...{ ngUserId: options.filter },
+                ...options.settings,
+            },
+            "sm1",
         );
         userIdFilter.filtering(testThreadCopy);
 
@@ -34,7 +43,7 @@ nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
@@ -50,13 +59,13 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 nvc:RpBQf40dpW85ue3CiT8UZ6AUer
 `;
 
-        expect(filtering(filter).getLog()).toEqual(new Map());
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
     });
 
     it("後からフィルターを更新", async () => {
         const userIds = new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]);
 
-        const userIdFilter = filtering("");
+        const userIdFilter = filtering({ filter: "" });
         userIdFilter.updateFilter(userIds);
         userIdFilter.filtering(testThreadCopy);
 
@@ -78,7 +87,7 @@ sm1@nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
         );
         expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
@@ -93,7 +102,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 `;
 
-        expect(filtering(filter).getLog()).toEqual(
+        expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
@@ -102,6 +111,22 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(hasComment(testThreadCopy, ["1000", "1001", "1002"])).toBe(
             false,
         );
+    });
+
+    it("Settings.isIgnoreByNicoru", () => {
+        const filter = `
+nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
+nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj
+nvc:llNBacJJPE6wbyKKEioq3lO6515
+`;
+
+        expect(
+            filtering({
+                filter,
+                settings: { isIgnoreByNicoru: true },
+            }).getLog(),
+        ).toEqual(new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]));
+        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
 });
 

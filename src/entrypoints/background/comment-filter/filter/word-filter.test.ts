@@ -3,6 +3,8 @@ import { defaultSettings } from "@/utils/config.js";
 import { hasComment, replaceInclude, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
+import { PartialDeep } from "type-fest";
+import { Settings } from "@/types/storage/settings.types.js";
 
 describe("WordFilter", () => {
     let testThreadCopy: Thread[];
@@ -15,16 +17,16 @@ describe("WordFilter", () => {
         filter: string;
         tags?: string[];
         isStrictOnly?: boolean;
-        isCaseInsensitive?: boolean;
         ngUserIds?: Set<string>;
+        settings?: PartialDeep<Settings>;
     }) => {
         const wordFilter = new WordFilter(
             {
                 ...defaultSettings,
                 ...{
                     ngWord: options.filter,
-                    isCaseInsensitive: options.isCaseInsensitive ?? true,
                 },
+                ...options.settings,
             },
             options.ngUserIds ?? new Set(),
         );
@@ -74,16 +76,6 @@ TesT
             new Map([["/TesT/i", new Map([["test", ["1000", "1001"]]])]]),
         );
         expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
-    });
-
-    it("大小文字を区別するケース", () => {
-        const filter = `
-TesT
-`;
-
-        expect(
-            filtering({ filter, isCaseInsensitive: false }).getLog(),
-        ).toEqual(new Map());
     });
 
     it("正規表現", () => {
@@ -178,5 +170,33 @@ TesT
             new Map([["/^コメント$/i", new Map([["コメント", ["1004"]]])]]),
         );
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
+    });
+
+    it("Settings.isCaseInsensitive", () => {
+        const filter = `
+TesT
+`;
+
+        expect(
+            filtering({
+                filter,
+                settings: { isCaseInsensitive: false },
+            }).getLog(),
+        ).toEqual(new Map());
+    });
+
+    it("Settings.isIgnoreByNicoru", () => {
+        const filter = `
+テスト
+コメント
+`;
+
+        expect(
+            filtering({
+                filter,
+                settings: { isIgnoreByNicoru: true },
+            }).getLog(),
+        ).toEqual(new Map([["/テスト/i", new Map([["テスト", ["1002"]]])]]));
+        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
 });

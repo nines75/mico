@@ -126,6 +126,7 @@ export const testThreads = (() => {
                             userId: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
                             score: -1001,
                             body: "テスト",
+                            nicoruCount: 29,
                         }),
                         getComment({
                             id: "1003",
@@ -134,6 +135,7 @@ export const testThreads = (() => {
                             userId: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
                             score: -1000,
                             body: "テストコメント",
+                            nicoruCount: 30,
                         }),
                         getComment({
                             id: "1004",
@@ -142,6 +144,7 @@ export const testThreads = (() => {
                             userId: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
                             score: -999,
                             body: "コメント",
+                            nicoruCount: 31,
                         }),
                     ],
                 };

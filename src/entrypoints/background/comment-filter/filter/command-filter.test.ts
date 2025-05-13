@@ -3,6 +3,8 @@ import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
 import { hasComment, replaceInclude, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
+import { PartialDeep } from "type-fest";
+import { Settings } from "@/types/storage/settings.types.js";
 
 describe("CommandFilter", () => {
     let testThreadCopy: Thread[];
@@ -16,9 +18,16 @@ describe("CommandFilter", () => {
         tags?: string[];
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
+        settings?: PartialDeep<Settings>;
     }) => {
         const commandFilter = new CommandFilter(
-            { ...defaultSettings, ...{ ngCommand: options.filter } },
+            {
+                ...defaultSettings,
+                ...{
+                    ngCommand: options.filter,
+                },
+                ...options.settings,
+            },
             options.ngUserIds ?? new Set(),
         );
         commandFilter.filterRuleByTag(options.tags ?? []);
@@ -192,5 +201,20 @@ device:switch
             new Map([["device:switch", ["1003", "1004"]]]),
         );
         expect(hasComment(testThreadCopy, ["1003", "1004"])).toBe(false);
+    });
+
+    it("Settings.isIgnoreByNicoru", () => {
+        const filter = `
+big
+device:switch
+`;
+
+        expect(
+            filtering({
+                filter,
+                settings: { isIgnoreByNicoru: true },
+            }).getLog(),
+        ).toEqual(new Map([["big", ["1002"]]]));
+        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
 });
