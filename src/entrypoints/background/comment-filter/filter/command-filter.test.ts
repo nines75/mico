@@ -83,7 +83,7 @@ Device:switch
         );
     });
 
-    it("完全に一致していないフィルター", () => {
+    it("部分一致", () => {
         const filter = `
 bi
 device:

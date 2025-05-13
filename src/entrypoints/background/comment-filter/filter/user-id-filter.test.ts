@@ -62,7 +62,7 @@ nvc:RpBQf40dpW85ue3CiT8UZ6AUer
         expect(filtering({ filter }).getLog()).toEqual(new Map());
     });
 
-    it("後からフィルターを更新", async () => {
+    it("後からフィルターを更新するケース", async () => {
         const userIds = new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]);
 
         const userIdFilter = filtering({ filter: "" });
