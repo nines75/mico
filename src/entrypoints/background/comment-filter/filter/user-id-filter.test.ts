@@ -81,7 +81,7 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(filtering(filter).getLog()).toEqual(
             new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
         );
-        expect(hasComment(testThreadCopy, ["1000"])).toBe(false);
+        expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
     });
 
     it("通常ルールと動画限定ルールが競合するケース", () => {
