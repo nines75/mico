@@ -27,11 +27,11 @@ describe("CommandFilter", () => {
         return commandFilter;
     };
 
-    const hasCommand = () =>
+    const hasAnyCommand = () =>
         testThreadCopy.some((thread) =>
             thread.comments.some((comment) => comment.commands.length > 0),
         );
-    const hasSpecificCommand = (targets: string[]) =>
+    const hasCommand = (targets: string[]) =>
         testThreadCopy.some((thread) =>
             thread.comments.some((comment) =>
                 comment.commands.some((command) =>
@@ -142,7 +142,7 @@ device:switch
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasSpecificCommand(["big", "device:switch"])).toBe(false);
+        expect(hasCommand(["big", "device:switch"])).toBe(false);
     });
 
     it("all", () => {
@@ -152,14 +152,14 @@ all
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasCommand()).toBe(false);
+        expect(hasAnyCommand()).toBe(false);
     });
 
     it("無効なall", () => {
         const filter = `all`;
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasCommand()).toBe(true);
+        expect(hasAnyCommand()).toBe(true);
     });
 
     it("@strictと@disableの競合", () => {
@@ -174,7 +174,7 @@ big
 
         expect(strictCommandFilter.getStrictNgUserIds()).toEqual([]);
         expect(commandFilter.getLog()).toEqual(new Map());
-        expect(hasSpecificCommand(["big"])).toBe(false);
+        expect(hasCommand(["big"])).toBe(false);
     });
 
     it("動画タグが存在しないときのtagルール判定", () => {
