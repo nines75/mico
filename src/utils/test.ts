@@ -152,7 +152,20 @@ export const testThreads = (() => {
                 return {
                     fork: fork,
                     commentCount: 0,
-                    comments: [],
+                    comments: [
+                        getComment({
+                            id: "1005",
+                            no: 6,
+                            userId: "4QhgYaZbMAYEUOdwDQ7a8KeX96p",
+                            body: "！？",
+                        }),
+                        getComment({
+                            id: "1006",
+                            no: 7,
+                            userId: "4QhgYaZbMAYEUOdwDQ7a8KeX96p",
+                            body: "うぽつ",
+                        }),
+                    ],
                 };
         }
     });
