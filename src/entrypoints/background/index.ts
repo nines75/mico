@@ -1,9 +1,5 @@
 import { pattern } from "@/utils/config.js";
-import {
-    getSettingsData,
-    removeAllData,
-    setSettings,
-} from "@/utils/storage.js";
+import { getAllData, LogType, removeData } from "@/utils/storage.js";
 import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
@@ -55,12 +51,16 @@ export default defineBackground(() => {
     // ブラウザの起動時に実行する処理
     browser.runtime.onStartup.addListener(async () => {
         try {
-            const settingsData = await getSettingsData();
-            await removeAllData();
+            const data = await getAllData();
 
-            if (settingsData !== undefined) {
-                await setSettings(settingsData);
+            const keys: LogType[] = [];
+            for (const key of Object.keys(data)) {
+                if (key.startsWith("log-")) {
+                    keys.push(key as LogType);
+                }
             }
+
+            await removeData(keys);
         } catch (e) {
             console.error(e);
         }
