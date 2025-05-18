@@ -7,7 +7,6 @@ import {
     CustomRule,
     extractRule,
 } from "./filter.js";
-import { defaultSettings } from "@/utils/config.js";
 import { replaceInclude } from "@/utils/test.js";
 
 describe("extractRule()", () => {
@@ -86,13 +85,6 @@ describe("extractCustomRule()", () => {
         },
     } satisfies BaseCustomRule;
 
-    const getFunction = (filter: string) => {
-        return extractCustomRule(
-            { ...defaultSettings, ...{ ngCommand: filter } },
-            "ngCommand", // 内部で値を読みだすだけなのでidは何でもいい
-        );
-    };
-
     it("@end", () => {
         const filter = `
 @strict
@@ -108,7 +100,7 @@ rule
 rule
 `;
 
-        expect(getFunction(filter)).toEqual([
+        expect(extractCustomRule(filter)).toEqual([
             ...Array(2).fill(baseCustomRule),
             strict,
         ]);
@@ -132,7 +124,7 @@ rule
 @end
 `;
 
-        expect(getFunction(filter)).toEqual(Array(5).fill(strict));
+        expect(extractCustomRule(filter)).toEqual(Array(5).fill(strict));
     });
 
     it.each([["include"], ["exclude"]])("@%s", (type) => {
@@ -173,7 +165,7 @@ rule
         } satisfies BaseCustomRule;
 
         expect(
-            getFunction(isExclude ? replaceInclude(filter) : filter),
+            extractCustomRule(isExclude ? replaceInclude(filter) : filter),
         ).toEqual([...Array(3).fill(correct), wrong]);
     });
 
@@ -195,7 +187,7 @@ rule
             },
         } satisfies BaseCustomRule;
 
-        expect(getFunction(filter)).toEqual(Array(2).fill(disable));
+        expect(extractCustomRule(filter)).toEqual(Array(2).fill(disable));
     });
 
     it("ネスト", () => {
@@ -265,7 +257,7 @@ rule
             },
         } satisfies BaseCustomRule;
 
-        expect(getFunction(filter)).toEqual([
+        expect(extractCustomRule(filter)).toEqual([
             expected,
             expected2,
             expected3,
@@ -284,7 +276,7 @@ rule
 rule
 `;
 
-        expect(getFunction(filter)).toEqual([{ ...baseCustomRule }]);
+        expect(extractCustomRule(filter)).toEqual([{ ...baseCustomRule }]);
     });
 
     it("@endがないケース", () => {
@@ -293,7 +285,7 @@ rule
 rule
 `;
 
-        expect(getFunction(filter)).toEqual([strict]);
+        expect(extractCustomRule(filter)).toEqual([strict]);
     });
 });
 

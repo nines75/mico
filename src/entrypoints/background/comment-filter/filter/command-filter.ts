@@ -148,7 +148,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
 
 export function getNgCommandData(settings: Settings): NgCommandData {
     let hasAll = false;
-    const ngCommands = extractCustomRule(settings, "ngCommand")
+    const ngCommands = extractCustomRule(settings.ngCommand)
         .map((data): NgCommand => {
             return {
                 rule: data.rule.toLowerCase(),

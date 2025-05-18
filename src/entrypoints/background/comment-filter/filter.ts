@@ -143,10 +143,7 @@ export function extractRule(filter: string) {
         });
 }
 
-export function extractCustomRule(
-    settings: Settings,
-    id: keyof ConditionalPick<Settings, string>,
-) {
+export function extractCustomRule(filter: string) {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
         value: RegExp[];
@@ -163,7 +160,7 @@ export function extractCustomRule(
             .map((rule) => RegExp(rule, "i"));
     };
 
-    extractRule(settings[id]).forEach((data) => {
+    extractRule(filter).forEach((data) => {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 
