@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import {
     analyzeCustomRule,
+    AnalyzedRule,
     checkHasTagRule,
     CustomRule,
     extractRuleFromFilter,
@@ -68,7 +69,7 @@ const tags = [
     new RegExp("tag1", "i"),
     new RegExp("tag2", "i"),
     new RegExp("tag3", "i"),
-];
+] as const;
 
 describe("analyzeCustomRule()", () => {
     const baseAnalyzedRule = {
@@ -77,13 +78,13 @@ describe("analyzeCustomRule()", () => {
         isDisable: false,
         include: [],
         exclude: [],
-    };
+    } satisfies AnalyzedRule;
     const strict = {
         ...baseAnalyzedRule,
         ...{
             isStrict: true,
         },
-    };
+    } satisfies AnalyzedRule;
 
     const getFunction = (filter: string) => {
         return analyzeCustomRule(
@@ -161,7 +162,7 @@ rule
                 include: isExclude ? [] : tags.slice(0, 2),
                 exclude: isExclude ? tags.slice(0, 2) : [],
             },
-        };
+        } satisfies AnalyzedRule;
         const wrongTags = [tags[1], new RegExp("tag2　tag3", "i")];
         const wrong = {
             ...baseAnalyzedRule,
@@ -169,7 +170,7 @@ rule
                 include: isExclude ? [] : wrongTags,
                 exclude: isExclude ? wrongTags : [],
             },
-        };
+        } satisfies AnalyzedRule;
 
         expect(
             getFunction(isExclude ? replaceInclude(filter) : filter),
@@ -192,7 +193,7 @@ rule
             ...{
                 isDisable: true,
             },
-        };
+        } satisfies AnalyzedRule;
 
         expect(getFunction(filter)).toEqual(Array(2).fill(disable));
     });
@@ -232,37 +233,37 @@ rule
             ...{
                 include: [tags[0]],
             },
-        };
+        } satisfies AnalyzedRule;
         const expected2 = {
             ...expected,
             ...{
                 exclude: [tags[1]],
             },
-        };
+        } satisfies AnalyzedRule;
         const expected3 = {
             ...expected2,
             ...{
                 isStrict: true,
             },
-        };
+        } satisfies AnalyzedRule;
         const expected4 = {
             ...expected3,
             ...{
                 isDisable: true,
             },
-        };
+        } satisfies AnalyzedRule;
         const expected5 = {
             ...expected2,
             ...{
                 include: [...expected2.include, tags[2]],
             },
-        };
+        } satisfies AnalyzedRule;
         const expected6 = {
             ...expected2,
             ...{
                 exclude: [...expected2.exclude, tags[3]],
             },
-        };
+        } satisfies AnalyzedRule;
 
         expect(getFunction(filter)).toEqual([
             expected,
@@ -305,19 +306,19 @@ describe("checkHasTagRule()", () => {
     const include = {
         ...neither,
         ...{
-            include: [tags[0] as RegExp],
+            include: [tags[0]],
         },
     } satisfies CustomRule;
     const exclude = {
         ...neither,
         ...{
-            exclude: [tags[1] as RegExp],
+            exclude: [tags[1]],
         },
     } satisfies CustomRule;
     const both = {
         ...include,
         ...{
-            exclude: [tags[1] as RegExp],
+            exclude: [tags[1]],
         },
     } satisfies CustomRule;
 

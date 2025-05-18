@@ -135,6 +135,14 @@ export function extractRuleFromFilter(filter: string) {
         });
 }
 
+export interface AnalyzedRule {
+    rule: string;
+    isStrict: boolean;
+    isDisable: boolean;
+    include: RegExp[];
+    exclude: RegExp[];
+}
+
 export function analyzeCustomRule(
     settings: Settings,
     id: keyof ConditionalPick<Settings, string>,
@@ -142,13 +150,6 @@ export function analyzeCustomRule(
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
         value: RegExp[];
-    }
-    interface AnalyzedRule {
-        rule: string;
-        isStrict: boolean;
-        isDisable: boolean;
-        include: RegExp[];
-        exclude: RegExp[];
     }
 
     const section: Section[] = [];
