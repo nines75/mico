@@ -13,7 +13,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                task: [compile, lint, format]
+                task: [compile, lint, format:ci, test:ci]
         steps:
             - uses: nines75/composite-action/setup-pnpm@main
             - run: pnpm ${{ matrix.task }}
