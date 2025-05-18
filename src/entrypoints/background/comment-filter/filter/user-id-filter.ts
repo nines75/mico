@@ -2,7 +2,7 @@ import { UserIdLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { sortCommentId } from "../sort-log.js";
-import { extractRuleFromFilter, Filter, Rule } from "../filter.js";
+import { extractRule, Filter, Rule } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 
 export class UserIdFilter extends Filter<UserIdLog> {
@@ -85,7 +85,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
 function getNgUserId(settings: Settings, videoId?: string) {
     const res: Rule[] = [];
 
-    extractRuleFromFilter(settings.ngUserId).forEach((data) => {
+    extractRule(settings.ngUserId).forEach((data) => {
         const rule = data.rule;
         const index = rule.indexOf("@");
 

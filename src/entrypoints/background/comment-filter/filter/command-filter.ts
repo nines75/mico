@@ -3,8 +3,8 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { CommandLog } from "@/types/storage/log.types.js";
 import { sortCommentId } from "../sort-log.js";
 import {
-    analyzeCustomRule,
-    checkHasTagRule,
+    extractCustomRule,
+    hasTagRule,
     CustomFilter,
     CustomRule,
     CustomRuleData,
@@ -148,7 +148,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
 
 export function getNgCommandData(settings: Settings): NgCommandData {
     let hasAll = false;
-    const ngCommands = analyzeCustomRule(settings, "ngCommand")
+    const ngCommands = extractCustomRule(settings, "ngCommand")
         .map((data): NgCommand => {
             return {
                 rule: data.rule.toLowerCase(),
@@ -171,7 +171,7 @@ export function getNgCommandData(settings: Settings): NgCommandData {
     return {
         rules: ngCommands,
         hasAll,
-        hasTagRule: checkHasTagRule(ngCommands),
+        hasTagRule: hasTagRule(ngCommands),
     };
 }
 

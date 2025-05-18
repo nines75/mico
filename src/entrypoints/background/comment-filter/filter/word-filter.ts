@@ -3,8 +3,8 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { WordLog } from "@/types/storage/log.types.js";
 import { sortCommentId } from "../sort-log.js";
 import {
-    analyzeCustomRule,
-    checkHasTagRule,
+    extractCustomRule,
+    hasTagRule,
     CustomFilter,
     CustomRule,
     CustomRuleData,
@@ -128,7 +128,7 @@ export class WordFilter extends CustomFilter<WordLog> {
 }
 
 export function getNgWordData(settings: Settings): NgWordData {
-    const ngWords = analyzeCustomRule(settings, "ngWord").map(
+    const ngWords = extractCustomRule(settings, "ngWord").map(
         (data): NgWord => {
             const regex = settings.isCaseInsensitive
                 ? RegExp(data.rule, "i")
@@ -145,7 +145,7 @@ export function getNgWordData(settings: Settings): NgWordData {
 
     return {
         rules: ngWords,
-        hasTagRule: checkHasTagRule(ngWords),
+        hasTagRule: hasTagRule(ngWords),
     };
 }
 

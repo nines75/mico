@@ -1,4 +1,4 @@
-import { extractRuleFromFilter } from "@/entrypoints/background/comment-filter/filter.js";
+import { extractRule } from "@/entrypoints/background/comment-filter/filter.js";
 import { getNgCommandData } from "@/entrypoints/background/comment-filter/filter/command-filter.js";
 import {
     addNgUserId,
@@ -109,7 +109,7 @@ async function undoStrictNgUserIds(videoLog: VideoLog | undefined) {
 function getRuleCount(rule: FilterId, settings: Settings) {
     switch (rule) {
         case "ngUserId":
-            return extractRuleFromFilter(settings.ngUserId).length;
+            return extractRule(settings.ngUserId).length;
         case "ngCommand":
             return getNgCommandData(settings).rules.length;
         case "ngWord":

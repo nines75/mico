@@ -1,16 +1,16 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, expect, it } from "vitest";
 import {
-    analyzeCustomRule,
-    AnalyzedRule,
-    checkHasTagRule,
+    extractCustomRule,
+    BaseCustomRule,
+    hasTagRule,
     CustomRule,
-    extractRuleFromFilter,
+    extractRule,
 } from "./filter.js";
 import { defaultSettings } from "@/utils/config.js";
 import { replaceInclude } from "@/utils/test.js";
 
-describe("extractRuleFromFilter()", () => {
+describe("extractRule()", () => {
     it("一般的なケース", () => {
         const filter = `
 rule
@@ -22,7 +22,7 @@ rule    # comment
 @include tag0 tag1 # comment
 `;
 
-        expect(extractRuleFromFilter(filter)).toEqual(
+        expect(extractRule(filter)).toEqual(
             [
                 ["rule", 1],
                 ["rule", 2],
@@ -40,7 +40,7 @@ rule　　　　# comment
 rule 　 　# comment
 `;
 
-        expect(extractRuleFromFilter(filter)).toEqual(
+        expect(extractRule(filter)).toEqual(
             [
                 ["rule", 1],
                 ["rule", 2],
@@ -55,7 +55,7 @@ rule 　 　# comment
 \\#rule\\#rule2\\# # comment
 `;
 
-        expect(extractRuleFromFilter(filter)).toEqual(
+        expect(extractRule(filter)).toEqual(
             [
                 ["#rule#rule2#", 1],
                 ["#rule#rule2#", 2],
@@ -71,23 +71,23 @@ const tags = [
     new RegExp("tag3", "i"),
 ] as const;
 
-describe("analyzeCustomRule()", () => {
-    const baseAnalyzedRule = {
+describe("extractCustomRule()", () => {
+    const baseCustomRule = {
         rule: "rule",
         isStrict: false,
         isDisable: false,
         include: [],
         exclude: [],
-    } satisfies AnalyzedRule;
+    } satisfies BaseCustomRule;
     const strict = {
-        ...baseAnalyzedRule,
+        ...baseCustomRule,
         ...{
             isStrict: true,
         },
-    } satisfies AnalyzedRule;
+    } satisfies BaseCustomRule;
 
     const getFunction = (filter: string) => {
-        return analyzeCustomRule(
+        return extractCustomRule(
             { ...defaultSettings, ...{ ngCommand: filter } },
             "ngCommand", // 内部で値を読みだすだけなのでidは何でもいい
         );
@@ -109,7 +109,7 @@ rule
 `;
 
         expect(getFunction(filter)).toEqual([
-            ...Array(2).fill(baseAnalyzedRule),
+            ...Array(2).fill(baseCustomRule),
             strict,
         ]);
     });
@@ -157,20 +157,20 @@ rule
 `;
 
         const correct = {
-            ...baseAnalyzedRule,
+            ...baseCustomRule,
             ...{
                 include: isExclude ? [] : tags.slice(0, 2),
                 exclude: isExclude ? tags.slice(0, 2) : [],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const wrongTags = [tags[1], new RegExp("tag2　tag3", "i")];
         const wrong = {
-            ...baseAnalyzedRule,
+            ...baseCustomRule,
             ...{
                 include: isExclude ? [] : wrongTags,
                 exclude: isExclude ? wrongTags : [],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
 
         expect(
             getFunction(isExclude ? replaceInclude(filter) : filter),
@@ -189,11 +189,11 @@ rule
 `;
 
         const disable = {
-            ...baseAnalyzedRule,
+            ...baseCustomRule,
             ...{
                 isDisable: true,
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
 
         expect(getFunction(filter)).toEqual(Array(2).fill(disable));
     });
@@ -229,41 +229,41 @@ rule
 `;
 
         const expected = {
-            ...baseAnalyzedRule,
+            ...baseCustomRule,
             ...{
                 include: [tags[0]],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const expected2 = {
             ...expected,
             ...{
                 exclude: [tags[1]],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const expected3 = {
             ...expected2,
             ...{
                 isStrict: true,
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const expected4 = {
             ...expected3,
             ...{
                 isDisable: true,
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const expected5 = {
             ...expected2,
             ...{
                 include: [...expected2.include, tags[2]],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
         const expected6 = {
             ...expected2,
             ...{
                 exclude: [...expected2.exclude, tags[3]],
             },
-        } satisfies AnalyzedRule;
+        } satisfies BaseCustomRule;
 
         expect(getFunction(filter)).toEqual([
             expected,
@@ -272,7 +272,7 @@ rule
             expected4,
             expected5,
             expected6,
-            baseAnalyzedRule,
+            baseCustomRule,
         ]);
     });
 
@@ -284,7 +284,7 @@ rule
 rule
 `;
 
-        expect(getFunction(filter)).toEqual([{ ...baseAnalyzedRule }]);
+        expect(getFunction(filter)).toEqual([{ ...baseCustomRule }]);
     });
 
     it("@endがないケース", () => {
@@ -331,6 +331,6 @@ describe("checkHasTagRule()", () => {
         { name: "both", rules: [both] },
         { name: "both+", rules: [include, exclude, neither] },
     ])("$name", ({ rules, expected }) => {
-        expect(checkHasTagRule(rules)).toBe(expected ?? true);
+        expect(hasTagRule(rules)).toBe(expected ?? true);
     });
 });

@@ -116,7 +116,15 @@ export interface CustomRule {
     exclude: RegExp[];
 }
 
-export function extractRuleFromFilter(filter: string) {
+export interface BaseCustomRule {
+    rule: string;
+    isStrict: boolean;
+    isDisable: boolean;
+    include: RegExp[];
+    exclude: RegExp[];
+}
+
+export function extractRule(filter: string) {
     return filter
         .split("\n")
         .map((str, index): Rule => {
@@ -135,15 +143,7 @@ export function extractRuleFromFilter(filter: string) {
         });
 }
 
-export interface AnalyzedRule {
-    rule: string;
-    isStrict: boolean;
-    isDisable: boolean;
-    include: RegExp[];
-    exclude: RegExp[];
-}
-
-export function analyzeCustomRule(
+export function extractCustomRule(
     settings: Settings,
     id: keyof ConditionalPick<Settings, string>,
 ) {
@@ -153,7 +153,7 @@ export function analyzeCustomRule(
     }
 
     const section: Section[] = [];
-    const rules: AnalyzedRule[] = [];
+    const rules: BaseCustomRule[] = [];
 
     const extractTagRules = (str: string) => {
         return str
@@ -163,7 +163,7 @@ export function analyzeCustomRule(
             .map((rule) => RegExp(rule, "i"));
     };
 
-    extractRuleFromFilter(settings[id]).forEach((data) => {
+    extractRule(settings[id]).forEach((data) => {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 
@@ -225,7 +225,7 @@ export function analyzeCustomRule(
     return rules;
 }
 
-export function checkHasTagRule(rules: CustomRule[]) {
+export function hasTagRule(rules: CustomRule[]) {
     return rules.some(
         (rule) => rule.include.length > 0 || rule.exclude.length > 0,
     );
