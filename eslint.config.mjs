@@ -33,15 +33,22 @@ export default ts.config(
             },
         },
         rules: {
-            eqeqeq: "error",
-            "no-shadow": ["error", { allow: ["_"] }],
+            // 既に有効化されているルール
+
             "no-empty": "warn",
-            "no-implicit-coercion": "error", // 暗黙的な型強制を検出
-            "require-await": "off", // @typescript-eslint/require-awaitを使用するため無効化
+            "@typescript-eslint/no-empty-function": "warn",
+            "@typescript-eslint/no-empty-object-type": "warn",
             "@typescript-eslint/no-unused-vars": [
                 "warn",
                 { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
             ],
+            "react/prop-types": "off", // TypeScriptでは不要
+
+            // 新たに有効化するルール
+
+            eqeqeq: "error",
+            "no-shadow": ["error", { allow: ["_"] }],
+            "no-implicit-coercion": "error", // 暗黙的な型強制を検出
             // booleanへの型強制を検出
             "@typescript-eslint/strict-boolean-expressions": [
                 "error",
@@ -80,7 +87,6 @@ export default ts.config(
                 },
             ],
             "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
-            "react/prop-types": "off", // TypeScriptでは不要
         },
     },
 
