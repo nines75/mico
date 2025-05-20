@@ -157,7 +157,16 @@ export function extractCustomRule(filter: string) {
             .split(" ")
             .filter((rule) => rule !== "")
             .slice(1)
-            .map((rule) => RegExp(rule, "i"));
+            .reduce<RegExp[]>((res, rule) => {
+                try {
+                    const regex = RegExp(rule, "i");
+                    res.push(regex);
+                } catch {
+                    // todo
+                }
+
+                return res;
+            }, []);
     };
 
     extractRule(filter).forEach((data) => {
