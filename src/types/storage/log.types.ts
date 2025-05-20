@@ -21,18 +21,24 @@ export interface LogData {
 
 export interface VideoData {
     count: {
-        items: {
+        rule: {
+            ngUserId: number;
+            ngCommand: number;
+            ngWord: number;
+        };
+        blocked: {
             easyComment: number;
             ngUserId: number;
             ngScore: number;
             ngCommand: number;
             ngWord: number;
         };
-        blocked: number;
+        totalBlocked: number;
         loaded: number;
         include: number;
         exclude: number;
         disable: number;
+        invalid: number;
     };
     log: VideoLog;
 }

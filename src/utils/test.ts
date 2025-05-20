@@ -100,18 +100,24 @@ export const testLog = {
     processingTime: { filtering: 51, fetchTag: 50, saveVideoLog: 5 },
     videoData: {
         count: {
-            items: {
+            rule: {
+                ngUserId: 1,
+                ngCommand: 1,
+                ngWord: 1,
+            },
+            blocked: {
                 easyComment: 2,
                 ngUserId: 2,
                 ngScore: 1,
                 ngCommand: 1,
                 ngWord: 1,
             },
-            blocked: 7,
+            totalBlocked: 7,
             loaded: 7,
             include: 0,
             exclude: 0,
             disable: 0,
+            invalid: 0,
         },
         log: {
             ngUserId: new Map([

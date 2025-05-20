@@ -1,12 +1,8 @@
-import { extractRule } from "@/entrypoints/background/comment-filter/filter.js";
-import { getNgCommandData } from "@/entrypoints/background/comment-filter/filter/command-filter.js";
 import {
     addNgUserId,
     getNgUserIdSet,
     removeNgUserId,
 } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import { getNgWordData } from "@/entrypoints/background/comment-filter/filter/word-filter.js";
-import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
 import { NiconicoComment } from "@/types/api/comment.types.js";
 import {
     CommandLog,
@@ -27,7 +23,7 @@ import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 
 type LogId = keyof ConditionalPick<
-    VideoData["count"]["items"],
+    VideoData["count"]["blocked"],
     number | undefined
 >; // VideoLogには存在しない可能性があるので、必ず値を持つcountのキーを指定する
 
@@ -57,14 +53,12 @@ export default function LogViewer({ id, name }: LogViewerProps) {
                 {id !== "easyComment" && id !== "ngScore" && (
                     <span className="info">
                         <span>ルール数:</span>
-                        <span className="value">
-                            {getRuleCount(id, settings)}
-                        </span>
+                        <span className="value">{count?.rule[id] ?? 0}</span>
                     </span>
                 )}
                 <span className="info">
                     <span>ブロック数:</span>
-                    <span className="value">{count?.items[id] ?? 0}</span>
+                    <span className="value">{count?.blocked[id] ?? 0}</span>
                 </span>
             </div>
             {id === "ngUserId" && (videoLog?.strictNgUserIds.size ?? 0) > 0 && (
@@ -104,17 +98,6 @@ async function undoStrictNgUserIds(videoLog: VideoLog | undefined) {
         return;
 
     await removeNgUserId(userIds);
-}
-
-function getRuleCount(rule: FilterId, settings: Settings) {
-    switch (rule) {
-        case "ngUserId":
-            return extractRule(settings.ngUserId).length;
-        case "ngCommand":
-            return getNgCommandData(settings).rules.length;
-        case "ngWord":
-            return getNgWordData(settings).rules.length;
-    }
 }
 
 function getLog(

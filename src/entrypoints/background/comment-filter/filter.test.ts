@@ -100,7 +100,7 @@ rule
 rule
 `;
 
-        expect(extractCustomRule(filter)).toEqual([
+        expect(extractCustomRule(filter).rules).toEqual([
             ...Array(2).fill(baseCustomRule),
             strict,
         ]);
@@ -124,7 +124,7 @@ rule
 @end
 `;
 
-        expect(extractCustomRule(filter)).toEqual(Array(5).fill(strict));
+        expect(extractCustomRule(filter).rules).toEqual(Array(5).fill(strict));
     });
 
     it.each([["include"], ["exclude"]])("@%s", (type) => {
@@ -165,7 +165,8 @@ rule
         } satisfies BaseCustomRule;
 
         expect(
-            extractCustomRule(isExclude ? replaceInclude(filter) : filter),
+            extractCustomRule(isExclude ? replaceInclude(filter) : filter)
+                .rules,
         ).toEqual([...Array(3).fill(correct), wrong]);
     });
 
@@ -187,7 +188,7 @@ rule
             },
         } satisfies BaseCustomRule;
 
-        expect(extractCustomRule(filter)).toEqual(Array(2).fill(disable));
+        expect(extractCustomRule(filter).rules).toEqual(Array(2).fill(disable));
     });
 
     it("ネスト", () => {
@@ -257,7 +258,7 @@ rule
             },
         } satisfies BaseCustomRule;
 
-        expect(extractCustomRule(filter)).toEqual([
+        expect(extractCustomRule(filter).rules).toEqual([
             expected,
             expected2,
             expected3,
@@ -276,7 +277,9 @@ rule
 rule
 `;
 
-        expect(extractCustomRule(filter)).toEqual([{ ...baseCustomRule }]);
+        expect(extractCustomRule(filter).rules).toEqual([
+            { ...baseCustomRule },
+        ]);
     });
 
     it("@endがないケース", () => {
@@ -285,7 +288,7 @@ rule
 rule
 `;
 
-        expect(extractCustomRule(filter)).toEqual([strict]);
+        expect(extractCustomRule(filter).rules).toEqual([strict]);
     });
 });
 

@@ -27,7 +27,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);
 
-        this.filter = getNgCommandData(settings);
+        this.filter = this.getNgCommandData(settings);
     }
 
     filtering(threads: Thread[], isStrictOnly = false): void {
@@ -115,7 +115,9 @@ export class CommandFilter extends CustomFilter<CommandLog> {
 
     protected sortLog(): void {
         const log: CommandLog = new Map();
-        const ngCommands = getNgCommandSet(this.filter);
+        const ngCommands = new Set(
+            this.filter.rules.map((ngCommand) => ngCommand.rule),
+        );
 
         // フィルター昇順にソート
         ngCommands.forEach((command) => {
@@ -144,37 +146,36 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     getDisableCount(): number {
         return this.disableCount;
     }
-}
 
-export function getNgCommandData(settings: Settings): NgCommandData {
-    let hasAll = false;
-    const ngCommands = extractCustomRule(settings.ngCommand)
-        .map((data): NgCommand => {
-            return {
-                rule: data.rule.toLowerCase(),
-                isStrict: data.isStrict,
-                isDisable: data.isDisable,
-                include: data.include,
-                exclude: data.exclude,
-            };
-        })
-        .filter((ngCommand) => {
-            if (ngCommand.rule === "all" && ngCommand.isDisable) {
-                hasAll = true;
+    getNgCommandData(settings: Settings): NgCommandData {
+        let hasAll = false;
+        const ruleData = extractCustomRule(settings.ngCommand);
+        const ngCommands = ruleData.rules
+            .map((data): NgCommand => {
+                return {
+                    rule: data.rule.toLowerCase(),
+                    isStrict: data.isStrict,
+                    isDisable: data.isDisable,
+                    include: data.include,
+                    exclude: data.exclude,
+                };
+            })
+            .filter((ngCommand) => {
+                if (ngCommand.rule === "all" && ngCommand.isDisable) {
+                    hasAll = true;
 
-                return false;
-            }
+                    return false;
+                }
 
-            return true;
-        });
+                return true;
+            });
 
-    return {
-        rules: ngCommands,
-        hasAll,
-        hasTagRule: hasTagRule(ngCommands),
-    };
-}
+        this.invalidCount += ruleData.invalidCount;
 
-function getNgCommandSet(ngCommandData: NgCommandData) {
-    return new Set(ngCommandData.rules.map((ngCommand) => ngCommand.rule));
+        return {
+            rules: ngCommands,
+            hasAll,
+            hasTagRule: hasTagRule(ngCommands),
+        };
+    }
 }

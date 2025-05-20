@@ -3,12 +3,26 @@ import { useStorageStore } from "@/utils/store.js";
 export default function Count() {
     const count = useStorageStore((state) => state.log?.videoData?.count);
 
-    const blocked = count?.blocked ?? 0;
+    const blocked = count?.totalBlocked ?? 0;
     const loaded = count?.loaded ?? 0;
     const percentage = loaded === 0 ? 0 : Math.floor((blocked / loaded) * 100);
 
     return (
         <>
+            <section>
+                <span className="info">
+                    <span>総ブロック数:</span>
+                    <span className="value">{`${blocked}/${loaded} (${percentage}%)`}</span>
+                </span>
+            </section>
+            {count?.invalid !== undefined && count.invalid > 0 && (
+                <section>
+                    <span className="info">
+                        <span>無効なルールの数:</span>
+                        <span className="value">{count.invalid}</span>
+                    </span>
+                </section>
+            )}
             {count?.include !== undefined && count.include > 0 && (
                 <section>
                     <span className="info">
@@ -33,12 +47,6 @@ export default function Count() {
                     </span>
                 </section>
             )}
-            <section>
-                <span className="info">
-                    <span>総ブロック数:</span>
-                    <span className="value">{`${blocked}/${loaded} (${percentage}%)`}</span>
-                </span>
-            </section>
         </>
     );
 }

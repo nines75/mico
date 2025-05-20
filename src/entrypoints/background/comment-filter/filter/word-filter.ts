@@ -23,7 +23,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);
 
-        this.filter = getNgWordData(settings);
+        this.filter = this.getNgWordData(settings);
     }
 
     filtering(threads: Thread[], isStrictOnly = false): void {
@@ -84,7 +84,9 @@ export class WordFilter extends CustomFilter<WordLog> {
 
     protected sortLog(): void {
         const log: WordLog = new Map();
-        const ngWords = getNgWordSet(this.filter.rules);
+        const ngWords = new Set(
+            this.filter.rules.map((ngWord) => ngWord.regex.toString()),
+        );
 
         // フィルター昇順にソート
         ngWords.forEach((word) => {
@@ -125,11 +127,10 @@ export class WordFilter extends CustomFilter<WordLog> {
                 0,
             );
     }
-}
 
-export function getNgWordData(settings: Settings): NgWordData {
-    const ngWords = extractCustomRule(settings.ngWord).reduce<NgWord[]>(
-        (res, data) => {
+    getNgWordData(settings: Settings): NgWordData {
+        const ruleData = extractCustomRule(settings.ngWord);
+        const ngWords = ruleData.rules.reduce<NgWord[]>((res, data) => {
             try {
                 const regex = settings.isCaseInsensitive
                     ? RegExp(data.rule, "i")
@@ -142,20 +143,17 @@ export function getNgWordData(settings: Settings): NgWordData {
                     exclude: data.exclude,
                 });
             } catch {
-                // todo
+                this.invalidCount++;
             }
 
             return res;
-        },
-        [],
-    );
+        }, []);
 
-    return {
-        rules: ngWords,
-        hasTagRule: hasTagRule(ngWords),
-    };
-}
+        this.invalidCount += ruleData.invalidCount;
 
-function getNgWordSet(ngWords: NgWord[]) {
-    return new Set(ngWords.map((ngWord) => ngWord.regex.toString()));
+        return {
+            rules: ngWords,
+            hasTagRule: hasTagRule(ngWords),
+        };
+    }
 }

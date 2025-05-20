@@ -2,7 +2,8 @@ import { VideoData } from "@/types/storage/log.types.js";
 import { FilteredData } from "./filter-comment.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { changeBadgeState, saveProcessingTime } from "@/utils/util.js";
-import { getCustomFilters } from "./filter.js";
+import { extractRule, getCustomFilters } from "./filter.js";
+import { Settings } from "@/types/storage/settings.types.js";
 
 export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
@@ -11,7 +12,7 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
     const settings = await loadSettings();
     filteredData.filters.userIdFilter.setSettings(settings);
 
-    const count = getCount(filteredData);
+    const count = getCount(filteredData, settings);
     const videoLog = getVideoLog(filteredData);
 
     // 各関数ですべてのプロパティが存在することは保証されているのでRequiredDeepは不要
@@ -21,8 +22,8 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
         setLog({ videoData: value }, tabId),
         changeBadgeState(
             settings.isPartialBadgeCount
-                ? (count.blocked - count.items.easyComment).toString()
-                : count.blocked.toString(),
+                ? (count.totalBlocked - count.blocked.easyComment).toString()
+                : count.totalBlocked.toString(),
             tabId,
         ),
     ]);
@@ -52,11 +53,19 @@ function getVideoLog(filteredData: FilteredData): VideoData["log"] {
     };
 }
 
-function getCount(filteredData: FilteredData): VideoData["count"] {
+function getCount(
+    filteredData: FilteredData,
+    settings: Settings,
+): VideoData["count"] {
     const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
         filteredData.filters;
 
-    const items: VideoData["count"]["items"] = {
+    const rule: VideoData["count"]["rule"] = {
+        ngUserId: extractRule(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
+        ngCommand: commandFilter.getRuleCount(),
+        ngWord: wordFilter.getRuleCount(),
+    };
+    const blocked: VideoData["count"]["blocked"] = {
         easyComment: filteredData.easyCommentCount,
         ngUserId: userIdFilter.getCount(),
         ngScore: scoreFilter.getCount(),
@@ -66,8 +75,12 @@ function getCount(filteredData: FilteredData): VideoData["count"] {
     const customFilters = getCustomFilters(filteredData.filters);
 
     return {
-        items,
-        blocked: Object.values(items).reduce((sum, value) => sum + value, 0),
+        rule,
+        blocked,
+        totalBlocked: Object.values(blocked).reduce(
+            (sum, value) => sum + value,
+            0,
+        ),
         loaded: filteredData.loadedCommentCount,
         include: Object.values(customFilters)
             .map((filter) => filter.getIncludeCount())
@@ -76,5 +89,8 @@ function getCount(filteredData: FilteredData): VideoData["count"] {
             .map((filter) => filter.getExcludeCount())
             .reduce((sum, current) => sum + current, 0),
         disable: commandFilter.getDisableCount(),
+        invalid: Object.values(customFilters)
+            .map((filter) => filter.getInvalidCount())
+            .reduce((sum, current) => sum + current, 0),
     };
 }

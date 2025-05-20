@@ -31,6 +31,7 @@ export abstract class Filter<T> {
 export abstract class CustomFilter<T> extends Filter<T> {
     private excludeCount = 0;
     private includeCount = 0;
+    protected invalidCount = 0;
     protected ngUserIds: Set<string>;
     protected strictNgUserIds: string[] = [];
     protected abstract filter: CustomRuleData<CustomRule>;
@@ -46,6 +47,14 @@ export abstract class CustomFilter<T> extends Filter<T> {
 
     getExcludeCount(): number {
         return this.excludeCount;
+    }
+
+    getInvalidCount(): number {
+        return this.invalidCount;
+    }
+
+    getRuleCount(): number {
+        return this.filter.rules.length;
     }
 
     getStrictNgUserIds(): string[] {
@@ -116,6 +125,11 @@ export interface CustomRule {
     exclude: RegExp[];
 }
 
+interface BaseCustomRuleData {
+    rules: BaseCustomRule[];
+    invalidCount: number;
+}
+
 export interface BaseCustomRule {
     rule: string;
     isStrict: boolean;
@@ -143,12 +157,13 @@ export function extractRule(filter: string) {
         });
 }
 
-export function extractCustomRule(filter: string) {
+export function extractCustomRule(filter: string): BaseCustomRuleData {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
         value: RegExp[];
     }
 
+    let invalidCount = 0;
     const section: Section[] = [];
     const rules: BaseCustomRule[] = [];
 
@@ -162,7 +177,7 @@ export function extractCustomRule(filter: string) {
                     const regex = RegExp(rule, "i");
                     res.push(regex);
                 } catch {
-                    // todo
+                    invalidCount++;
                 }
 
                 return res;
@@ -228,7 +243,7 @@ export function extractCustomRule(filter: string) {
         });
     });
 
-    return rules;
+    return { rules, invalidCount };
 }
 
 export function hasTagRule(rules: CustomRule[]) {
