@@ -290,6 +290,26 @@ rule
 
         expect(extractCustomRule(filter).rules).toEqual([strict]);
     });
+
+    it("無効な正規表現", () => {
+        const filter = `
+@include (tag0
+@include tag1 (tag2
+rule
+`;
+
+        const ruleData = extractCustomRule(filter);
+
+        expect(ruleData.rules).toEqual([
+            {
+                ...baseCustomRule,
+                ...{
+                    include: [tags[1]],
+                },
+            },
+        ]);
+        expect(ruleData.invalidCount).toBe(2);
+    });
 });
 
 describe("checkHasTagRule()", () => {

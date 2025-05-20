@@ -100,6 +100,31 @@ TesT
         );
     });
 
+    it("無効な正規表現", () => {
+        const filter = `
+@include (tag0
+(テスト
+@end
+
+(テスト
+
+@include tag0
+^コメント$
+@end
+`;
+
+        const wordFilter = filtering({
+            filter,
+            tags: ["tag0"],
+        });
+
+        expect(wordFilter.getLog()).toEqual(
+            new Map([["/^コメント$/i", new Map([["コメント", ["1004"]]])]]),
+        );
+        expect(wordFilter.getInvalidCount()).toBe(3);
+        expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
+    });
+
     it("@strict/!", () => {
         const filter = `
 @strict
