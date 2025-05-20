@@ -178,4 +178,22 @@ describe(`${removeNgUserId.name}()`, () => {
 
         expect(userIds.some((id) => ngUserIds.has(id))).toBe(false);
     });
+
+    it("動画限定ルールを削除しないケース", async () => {
+        await setSettings({
+            ...defaultSettings,
+            ...{
+                ngUserId: [...userIds, ...videoUserIds].join("\n"),
+            },
+        });
+
+        await removeNgUserId(new Set(userIds), false);
+
+        const settings = await loadSettings();
+        const ngUserIds = getNgUserIdSet(settings, "");
+        const videoNgUserIds = getNgUserIdSet(settings, "sm1");
+
+        expect(userIds.some((id) => ngUserIds.has(id))).toBe(false);
+        expect(userIds.every((id) => videoNgUserIds.has(id))).toBe(true);
+    });
 });
