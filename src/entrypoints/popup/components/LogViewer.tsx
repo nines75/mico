@@ -97,7 +97,7 @@ async function undoStrictNgUserIds(videoLog: VideoLog | undefined) {
     )
         return;
 
-    await removeNgUserId(userIds);
+    await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
 }
 
 function getLog(

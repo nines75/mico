@@ -122,14 +122,17 @@ export async function addNgUserId(userIds: Set<string>) {
     await setSettings(func);
 }
 
-export async function removeNgUserId(userIds: Set<string>) {
+export async function removeNgUserId(
+    userIds: Set<string>,
+    isRemoveSpecific = true,
+) {
     if (userIds.size === 0) return;
 
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            getNgUserId(settings)
+            getNgUserId(settings, isRemoveSpecific ? undefined : "")
                 .filter((data) => userIds.has(data.rule))
                 .map((data) => data.index),
         );
