@@ -13,7 +13,7 @@ describe("util", () => {
         fakeBrowser.reset();
     });
 
-    it("extractVideoId()", () => {
+    it(`${extractVideoId.name}()`, () => {
         [
             ["https://www.nicovideo.jp/watch/sm1234", "sm1234"],
             ["https://www.nicovideo.jp/watch/so1234", "so1234"],
@@ -30,17 +30,17 @@ describe("util", () => {
         );
     });
 
-    it("escapeNewline()", () => {
+    it(`${escapeNewline.name}()`, () => {
         expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
     });
 
-    it("savePlaybackTime()", async () => {
+    it(`${savePlaybackTime.name}()`, async () => {
         await savePlaybackTime(1, 100);
 
         expect(await getLogData(1)).toEqual({ playbackTime: 100 });
     });
 
-    it("saveProcessingTime()", async () => {
+    it(`${saveProcessingTime.name}()`, async () => {
         await saveProcessingTime([], 1);
         expect(await getLogData(1)).toBe(undefined);
 

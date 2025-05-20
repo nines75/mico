@@ -13,7 +13,7 @@ import { fakeBrowser } from "#imports";
 import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
-describe("UserIdFilter", () => {
+describe(UserIdFilter.name, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -113,7 +113,7 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         );
     });
 
-    it("Settings.isIgnoreByNicoru", () => {
+    it(`Settings.${"IgnoreByNicoruCount" satisfies keyof Settings}`, () => {
         const filter = `
 nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj
@@ -136,7 +136,7 @@ const userIds = [
 ];
 const videoUserIds = userIds.map((id) => `sm1@${id}`);
 
-describe("addNgUserId()", () => {
+describe(`${addNgUserId.name}()`, () => {
     beforeEach(() => {
         fakeBrowser.reset();
     });
@@ -154,7 +154,7 @@ describe("addNgUserId()", () => {
     });
 });
 
-describe("removeNgUserId()", () => {
+describe(`${removeNgUserId.name}()`, () => {
     beforeEach(() => {
         fakeBrowser.reset();
     });

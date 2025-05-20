@@ -9,7 +9,7 @@ import {
 } from "./filter.js";
 import { replaceInclude } from "@/utils/test.js";
 
-describe("extractRule()", () => {
+describe(`${extractRule.name}()`, () => {
     it("一般的なケース", () => {
         const filter = `
 rule
@@ -70,7 +70,7 @@ const tags = [
     new RegExp("tag3", "i"),
 ] as const;
 
-describe("extractCustomRule()", () => {
+describe(`${extractCustomRule.name}()`, () => {
     const baseCustomRule = {
         rule: "rule",
         isStrict: false,
@@ -312,7 +312,7 @@ rule
     });
 });
 
-describe("checkHasTagRule()", () => {
+describe(`${hasTagRule.name}()`, () => {
     const neither = {
         isStrict: false,
         include: [],

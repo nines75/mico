@@ -6,7 +6,7 @@ import { WordFilter } from "./word-filter.js";
 import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
-describe("WordFilter", () => {
+describe(WordFilter.name, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -197,7 +197,7 @@ TesT
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
     });
 
-    it("Settings.isCaseInsensitive", () => {
+    it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
         const filter = `
 TesT
 `;
@@ -210,7 +210,7 @@ TesT
         ).toEqual(new Map());
     });
 
-    it("Settings.isIgnoreByNicoru", () => {
+    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         const filter = `
 テスト
 コメント

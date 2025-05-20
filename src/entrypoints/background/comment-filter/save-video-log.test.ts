@@ -14,7 +14,7 @@ beforeAll(() => {
     vi.spyOn(util, "changeBadgeState").mockResolvedValue();
 });
 
-describe("saveVideoLog()", () => {
+describe(`${saveVideoLog.name}()`, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {

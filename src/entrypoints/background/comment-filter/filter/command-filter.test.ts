@@ -6,7 +6,7 @@ import { Thread } from "@/types/api/comment.types.js";
 import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
-describe("CommandFilter", () => {
+describe(CommandFilter.name, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -233,7 +233,7 @@ device:switch
         );
     });
 
-    it("Settings.isIgnoreByNicoru", () => {
+    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         const filter = `
 big
 device:switch

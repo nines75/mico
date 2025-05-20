@@ -9,7 +9,7 @@ import { loadSettings, setSettings } from "@/utils/storage.js";
 import { addNgUserId } from "./filter/user-id-filter.js";
 import { fakeBrowser } from "#imports";
 
-describe("filterComment()", () => {
+describe(`${filterComment.name}()`, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {

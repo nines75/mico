@@ -6,7 +6,7 @@ import { defaultSettings } from "@/utils/config.js";
 import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
-describe("ScoreFilter", () => {
+describe(ScoreFilter.name, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -42,7 +42,7 @@ describe("ScoreFilter", () => {
         expect(hasComment(testThreadCopy, ids)).toBe(false);
     });
 
-    it("Settings.isIgnoreByNicoru", () => {
+    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         expect(
             filtering({
                 score: -500,

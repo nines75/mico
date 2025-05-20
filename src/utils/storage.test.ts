@@ -51,7 +51,7 @@ describe("storage", () => {
         });
     });
 
-    it("loadSettings()", async () => {
+    it(`${loadSettings.name}()`, async () => {
         const newSettings = {
             isCommentFilterEnabled: false,
         } satisfies PartialDeep<Settings>;
@@ -64,7 +64,7 @@ describe("storage", () => {
         });
     });
 
-    it("removeAllData()", async () => {
+    it(`${removeAllData.name}()`, async () => {
         await setSettings(defaultSettings);
         await setLog(testLog, 1);
 
@@ -73,7 +73,7 @@ describe("storage", () => {
         expect(await getAllData()).toEqual({});
     });
 
-    it("removeData()", async () => {
+    it(`${removeData.name}()`, async () => {
         await setSettings(defaultSettings);
         await setLog(testLog, 1);
 
@@ -82,7 +82,7 @@ describe("storage", () => {
         expect(await getAllData()).toEqual({ settings: defaultSettings });
     });
 
-    it("getAllData()", async () => {
+    it(`${getAllData.name}()`, async () => {
         await setSettings(defaultSettings);
         await setLog(testLog, 1);
 
@@ -92,13 +92,13 @@ describe("storage", () => {
         });
     });
 
-    it("getLogData()", async () => {
+    it(`${getLogData.name}()`, async () => {
         await setLog(testLog, 1);
 
         expect(await getLogData(1)).toEqual(testLog);
     });
 
-    it("getSettingsData()", async () => {
+    it(`${getSettingsData.name}()`, async () => {
         await setSettings(defaultSettings);
 
         expect(await getSettingsData()).toEqual(defaultSettings);
