@@ -27,10 +27,11 @@ export default function CommentFilter() {
                                 <h4>フィルター</h4>
                             </div>
                             <div className="settings-container">
-                                <Checkbox
-                                    id={"isUseVimKeybindings"}
-                                    label={"Vimのキーバインドを使用する"}
-                                />
+                                {commentFilterSettings.checkbox.filter.map(
+                                    (props) => (
+                                        <Checkbox key={props.id} {...props} />
+                                    ),
+                                )}
                                 {commentFilterSettings.filter.map((props) => (
                                     <FilterArea key={props.id} {...props} />
                                 ))}

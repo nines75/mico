@@ -65,7 +65,7 @@ export default function commentRequest(
             }
 
             // 通知を送信
-            if (strictNgUserIds.size > 0 && settings.isNotifyStrictRule) {
+            if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
                 tasks.push(
                     sendNotification(
                         texts.content.messageNotifyAddNgUserId.replace(

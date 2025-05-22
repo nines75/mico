@@ -138,7 +138,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
     const parent = useRef<HTMLDivElement | null>(null);
     const initialEditorState = useRef<EditorState | null>(null);
     const isVimCurrent = useStorageStore(
-        (state) => state.settings.isUseVimKeybindings,
+        (state) => state.settings.isVimKeybindingsEnabled,
     );
 
     const getExtensions = (isVim: boolean) => {

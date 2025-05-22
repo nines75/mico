@@ -10,7 +10,7 @@ export interface Settings {
     IgnoreByNicoruCount: number;
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
-    isUseVimKeybindings: boolean;
+    isVimKeybindingsEnabled: boolean;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;
@@ -24,8 +24,8 @@ export interface Settings {
     showDuplicateInLogCount: number;
 
     /// 通知
-    isNotifyStrictRule: boolean;
     isNotifyAddNgUserId: boolean;
+    isNotifyAutoAddNgUserId: boolean;
 
     /// その他
     isAutoReload: boolean;

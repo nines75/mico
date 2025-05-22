@@ -15,7 +15,7 @@ export const defaultSettings: Settings = {
     IgnoreByNicoruCount: 30,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
-    isUseVimKeybindings: false,
+    isVimKeybindingsEnabled: false,
     ngUserId: "",
     ngCommand: "",
     ngWord: "",
@@ -29,8 +29,8 @@ export const defaultSettings: Settings = {
     showDuplicateInLogCount: 2,
 
     /// 通知
-    isNotifyStrictRule: true,
-    isNotifyAddNgUserId: true,
+    isNotifyAddNgUserId: false,
+    isNotifyAutoAddNgUserId: true,
 
     /// その他
     isAutoReload: true,
@@ -163,23 +163,8 @@ export const commentFilterSettings = {
         ],
         filtering: [
             {
-                id: "isCaseInsensitive",
-                label: "正規表現で英字の大文字小文字を区別しない",
-            },
-            {
                 id: "isHideEasyComment",
                 label: "かんたんコメントを非表示にする",
-                details:
-                    "この設定はニコるの数に応じてフィルタ適用の対象外にする設定より優先されます。",
-            },
-            {
-                id: "isIgnoreByNicoru",
-                label: "ニコるの数に応じてフィルタ適用の対象外にする",
-                input: {
-                    id: "IgnoreByNicoruCount",
-                    label: "回以上ニコられていた場合に除外",
-                    min: 0,
-                },
             },
             {
                 id: "isScoreFilterEnabled",
@@ -191,6 +176,28 @@ export const commentFilterSettings = {
                     label: "以下のNGスコアだった場合にフィルタリング",
                     max: 0,
                 },
+            },
+            {
+                id: "isIgnoreByNicoru",
+                label: "ニコるの数に応じてフィルタ適用の対象外にする",
+                details: "かんたんコメントの非表示には影響しません。",
+                input: {
+                    id: "IgnoreByNicoruCount",
+                    label: "回以上ニコられていた場合に除外",
+                    min: 0,
+                },
+            },
+        ],
+        filter: [
+            {
+                id: "isCaseInsensitive",
+                label: "大小文字を区別しない",
+                details:
+                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
+            },
+            {
+                id: "isVimKeybindingsEnabled",
+                label: "Vimのキーバインドを有効にする",
             },
         ],
         log: [
@@ -227,24 +234,25 @@ export const commentFilterSettings = {
         ],
         notification: [
             {
-                id: "isNotifyStrictRule",
-                label: "strictルールによってユーザーIDがフィルターに追加されたときに通知を送信する",
+                id: "isNotifyAddNgUserId",
+                label: "NGユーザーIDの手動追加時に通知する",
             },
             {
-                id: "isNotifyAddNgUserId",
-                label: "ドロップダウンのユーザーNGボタンからユーザーIDをフィルターに追加したときに通知を送信する",
+                id: "isNotifyAutoAddNgUserId",
+                label: "NGユーザーIDの自動追加時に通知する",
             },
         ],
         other: [
             {
                 id: "isAutoReload",
-                label: "ドロップダウンのユーザーNGボタンを押した際に自動でリロードする",
-                details:
-                    "読み込み後、リロードする前の再生時間が自動で再設定されます。",
+                label: "自動リロードを有効にする",
+                details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
+                読み込み後、リロードする前の再生時間が自動で再設定されます。`,
             },
             {
                 id: "isPartialBadgeCount",
-                label: "バッジに表示する総ブロック数にかんたんコメントのブロック数を加算しない",
+                label: "バッジに表示する値をログの数にする",
+                details: `デフォルトでは総ブロック数が表示されますが、その値からログを保存しないコメントの数を引いた値が表示されます。`,
             },
         ],
     },
@@ -266,6 +274,7 @@ export const commentFilterSettings = {
     checkbox: {
         top: CheckboxProps[];
         filtering: CheckboxProps[];
+        filter: CheckboxProps[];
         log: CheckboxProps[];
         notification: CheckboxProps[];
         other: CheckboxProps[];
