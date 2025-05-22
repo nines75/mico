@@ -117,22 +117,7 @@ async function exportBackup() {
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-    const day = now.getDate().toString().padStart(2, "0");
-    const time = now
-        .toLocaleTimeString(["en-US"], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-        })
-        .replace(/:/g, "."); // ファイル名に:は使用できないので.に置換
-
-    const filename = `${
-        browser.runtime.getManifest().name
-    }-backup_${year}-${month}-${day}-${time}.json`;
+    const filename = `${browser.runtime.getManifest().name}-backup.json`;
 
     // downloads権限なしでダウンロード
     const a = document.createElement("a");
