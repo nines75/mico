@@ -108,8 +108,6 @@ export const texts = {
             "{target}件のユーザーIDがNGリストに追加されました",
     },
     settings: {
-        messagePopHeadRule:
-            "空行やコメント行を除いた先頭のルールを削除します。\n以下のルールを削除しますか？\n\n{target}",
         messageNeverReset: "設定が一度も変更されていません",
         messageReset:
             "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
