@@ -103,9 +103,19 @@ h4 {
     display: flex;
     align-items: center;
 }
+.filter-button {
+    font-weight: bold;
+    padding: 7px 12px;
+    margin: 10px;
+    border: gray 3px solid;
+    border-radius: 10px;
+}
+.selected-filter-button {
+    border-color: lightskyblue;
+}
 .cm-editor {
-    width: var(--textarea-width);
-    height: var(--textarea-height);
+    width: 800px;
+    height: 600px;
     resize: both;
     overflow: auto; /* resizeを使うために必要 */
     .cm-vim-panel {

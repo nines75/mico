@@ -1,3 +1,5 @@
+import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
+
 export interface Settings {
     // コメントフィルター
 
@@ -11,6 +13,7 @@ export interface Settings {
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
     isVimKeybindingsEnabled: boolean;
+    defaultFilter: FilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;

@@ -16,6 +16,7 @@ export const defaultSettings: Settings = {
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
     isVimKeybindingsEnabled: false,
+    defaultFilter: "ngUserId",
     ngUserId: "",
     ngCommand: "",
     ngWord: "",

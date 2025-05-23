@@ -32,9 +32,7 @@ export default function CommentFilter() {
                                         <Checkbox key={props.id} {...props} />
                                     ),
                                 )}
-                                {commentFilterSettings.filter.map((props) => (
-                                    <FilterArea key={props.id} {...props} />
-                                ))}
+                                <FilterArea />
                             </div>
                         </section>
                     </div>
