@@ -21,38 +21,30 @@ h4 {
     align-items: center;
     justify-content: space-between;
 }
-.experimental {
-    color: lightgreen;
-    margin-left: 10px;
-    padding: 3px;
-    border: 2px solid lightgreen;
-    border-radius: 15px;
-    font-size: 10px;
-}
 .settings-container {
     margin-left: 20px;
-}
-.setting {
-    margin: 12px;
-    > label,
-    summary,
-    .color-picker {
-        font-weight: bold;
+    .setting {
+        margin: 12px;
+        > label,
+        summary,
+        .color-picker {
+            font-weight: bold;
+        }
+        .setting-details {
+            color: var(--dim-white);
+            font-size: 12px;
+            font-weight: normal;
+            margin-left: 25px;
+            padding: 4px;
+        }
     }
-}
-.setting-details {
-    color: var(--dim-white);
-    font-size: 12px;
-    font-weight: normal;
-    margin-left: 25px;
-    padding: 4px;
 }
 .checkbox-input {
     margin-left: 20px;
     font-size: 13px;
     font-weight: normal;
 }
-.backup {
+.backup-button {
     font-weight: bold;
     padding: 10px 20px;
     margin: 10px;

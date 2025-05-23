@@ -45,24 +45,51 @@ summary {
     font-size: 15px;
     color: var(--lighter-gray);
     margin: 0px 5px;
-}
-.value {
-    font-weight: bold;
-}
-.strict-symbol {
-    color: red;
-}
-.clickable {
-    cursor: pointer;
+    .value {
+        font-weight: bold;
+    }
 }
 .link-container {
     display: flex;
     margin-right: 14px;
     gap: 8px;
+    .link {
+        display: flex;
+        align-items: center;
+    }
 }
-.link {
-    display: flex;
-    align-items: center;
+.log {
+    width: 550px;
+    height: 400px;
+    resize: both;
+    overflow: auto;
+    background: black;
+    color: lightgray;
+    font-family: var(--font);
+    padding: 4px 0;
+    white-space: pre; /* 折り返しを無効化 */
+    text-align: start;
+    .log-line {
+        padding: 0 2px 0 6px;
+        .ng-score {
+            color: pink;
+        }
+        .nicoru {
+            color: yellow;
+        }
+        .duplicate {
+            color: aqua;
+        }
+        .strict-symbol {
+            color: red;
+        }
+        .clickable {
+            cursor: pointer;
+        }
+    }
+    .comment {
+        color: gray;
+    }
 }
 #video-id {
     font-size: 20px;

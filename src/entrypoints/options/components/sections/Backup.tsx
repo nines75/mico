@@ -17,7 +17,7 @@ export default function Backup() {
             </div>
             <div className="settings-container">
                 <button
-                    className="backup"
+                    className="backup-button"
                     onClick={() => {
                         if (input.current !== null) input.current.click();
                     }}
@@ -25,7 +25,7 @@ export default function Backup() {
                     インポート
                 </button>
                 <button
-                    className="backup"
+                    className="backup-button"
                     onClick={async () => {
                         try {
                             await exportBackup();
@@ -37,7 +37,7 @@ export default function Backup() {
                     エクスポート
                 </button>
                 <button
-                    className="backup"
+                    className="backup-button"
                     onClick={async () => {
                         try {
                             if (!confirm(texts.settings.messageReset)) return;
