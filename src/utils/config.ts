@@ -75,9 +75,6 @@ export const defaultSettings: Settings = {
     },
 
     // 設定の開閉設定
-    isOpenNgUserIdFilter: false,
-    isOpenNgCommandFilter: false,
-    isOpenNgWordFilter: false,
     isOpenCustomColor: false,
 
     // ポップアップの開閉設定

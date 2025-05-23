@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Checkbox from "../ui/Checkbox.js";
-import Details from "../ui/Details.js";
 import { useShallow } from "zustand/shallow";
 import CustomNicoru from "../ui/CustomNicoru.js";
 import {
@@ -9,6 +8,7 @@ import {
     expandNicoruSettings,
 } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
+import Details from "@/components/Details.js";
 
 export default function ExpandNicoru() {
     const [nicoruCounts, save] = useStorageStore(

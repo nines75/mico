@@ -40,9 +40,6 @@ export interface Settings {
     nicoruColors: Record<string, NicoruColor | undefined>; // undefinedとのユニオン型にしないとimportBackup関数でエラーになる
 
     // 設定の開閉設定
-    isOpenNgUserIdFilter: boolean;
-    isOpenNgCommandFilter: boolean;
-    isOpenNgWordFilter: boolean;
     isOpenCustomColor: boolean;
 
     // ポップアップの開閉設定

@@ -3,11 +3,11 @@ import { createRoot } from "react-dom/client";
 import Count from "./components/Count.js";
 import LogViewer from "./components/LogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
-import Details from "./components/Details.js";
 import { popupConfig, texts, urls } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
+import Details from "@/components/Details.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
