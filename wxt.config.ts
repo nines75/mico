@@ -50,7 +50,7 @@ export default defineConfig({
                     description: "動画プレイヤーにフォーカスする",
                     suggested_key: isDev
                         ? {
-                              default: "Ctrl+Alt+P",
+                              default: "Ctrl+Alt+L",
                           }
                         : {},
                 },
@@ -59,6 +59,14 @@ export default defineConfig({
                     suggested_key: isDev
                         ? {
                               default: "Ctrl+Alt+O",
+                          }
+                        : {},
+                },
+                _execute_browser_action: {
+                    description: "ポップアップを開く",
+                    suggested_key: isDev
+                        ? {
+                              default: "Ctrl+Alt+P",
                           }
                         : {},
                 },
