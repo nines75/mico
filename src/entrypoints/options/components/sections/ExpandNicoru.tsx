@@ -81,13 +81,9 @@ export default function ExpandNicoru() {
                         </button>
                         <form
                             className="nicoru-form"
-                            onSubmit={async (event) => {
-                                try {
-                                    event.preventDefault();
-                                    await handleSubmit();
-                                } catch (e) {
-                                    console.error(e);
-                                }
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit();
                             }}
                         >
                             <label>

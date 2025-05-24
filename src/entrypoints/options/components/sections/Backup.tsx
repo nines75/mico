@@ -55,7 +55,7 @@ export default function Backup() {
                     accept=".json"
                     style={{ display: "none" }}
                     ref={input}
-                    onChange={(event) => importBackup(event, saveSettings)}
+                    onChange={(e) => importBackup(e, saveSettings)}
                 />
             </div>
         </section>

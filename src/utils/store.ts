@@ -78,17 +78,21 @@ export function storageChangeHandler(
     const tabId = useStorageStore.getState().tabId;
 
     Object.entries(changes).forEach(async ([key, value]) => {
-        const type = key as StorageType;
+        try {
+            const type = key as StorageType;
 
-        if (tabId !== undefined && type === `log-${tabId}`) {
-            useStorageStore.setState({
-                log: await getLogData(tabId, value.newValue),
-            });
-        }
-        if (type === "settings") {
-            useStorageStore.setState({
-                settings: await loadSettings(value.newValue),
-            });
+            if (tabId !== undefined && type === `log-${tabId}`) {
+                useStorageStore.setState({
+                    log: await getLogData(tabId, value.newValue),
+                });
+            }
+            if (type === "settings") {
+                useStorageStore.setState({
+                    settings: await loadSettings(value.newValue),
+                });
+            }
+        } catch (e) {
+            console.error(e);
         }
     });
 }
