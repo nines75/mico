@@ -29,8 +29,8 @@ export const customMerge = deepmergeCustom<
     mergeSets: false,
 });
 
-export async function loadSettings() {
-    const data = await getSettingsData();
+export async function loadSettings(settings?: PartialDeep<Settings>) {
+    const data = settings ?? (await getSettingsData());
     return customMerge(defaultSettings, data) as Settings;
 }
 
@@ -80,9 +80,9 @@ async function setValue(
     });
 }
 
-export async function getLogData(tabId: number) {
+export async function getLogData(tabId: number, log?: string) {
     const key: StorageType = `log-${tabId}` as const;
-    const res = await storage.getItem<string>(`${storageArea}:${key}`);
+    const res = log ?? (await storage.getItem<string>(`${storageArea}:${key}`));
 
     return res === null ? undefined : parse<LogData>(res);
 }

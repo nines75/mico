@@ -6,7 +6,6 @@ import {
     loadSettings,
     StorageType,
     setSettings,
-    customMerge,
     getLogData,
 } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
@@ -78,15 +77,17 @@ export function storageChangeHandler(
 
     const tabId = useStorageStore.getState().tabId;
 
-    Object.entries(changes).forEach(([key, value]) => {
+    Object.entries(changes).forEach(async ([key, value]) => {
         const type = key as StorageType;
 
         if (tabId !== undefined && type === `log-${tabId}`) {
-            useStorageStore.setState({ log: value.newValue });
+            useStorageStore.setState({
+                log: await getLogData(tabId, value.newValue),
+            });
         }
         if (type === "settings") {
             useStorageStore.setState({
-                settings: customMerge(defaultSettings, value.newValue),
+                settings: await loadSettings(value.newValue),
             });
         }
     });
