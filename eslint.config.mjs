@@ -78,7 +78,8 @@ export default ts.config(
                 },
             ],
             "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅できているかチェックする
-            "@typescript-eslint/require-await": "error", // async関数内でawaitを使用していない場合を検出
+            "@typescript-eslint/require-await": "error", // awaitを使用していないasync関数を検出
+            "@typescript-eslint/await-thenable": "error", // 不要なawaitを検出
             // awaitを使用していないPromiseを検出
             "@typescript-eslint/no-floating-promises": [
                 "error",
