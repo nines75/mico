@@ -1,0 +1,21 @@
+@import "../../assets/global.css";
+
+body {
+    background: rgba(10, 10, 10, 0.6);
+    height: 100vh; /* 100%にすると親要素を基準にするため余分な余白ができる */
+    box-sizing: border-box; /* paddingを考慮 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color-scheme: dark; /* 設定と異なりHTMLでcolor-schemeをdarkにしていないためここで指定する(HTMLで指定すると背景色が変えられない) */
+}
+#root {
+    background: var(--background);
+    border: gray 2px solid;
+    border-radius: 10px;
+    overflow: auto; /* スクロール可能にする */
+    max-height: 100%; /* 高さ上限をbodyに合わせ、高さが縮まった時にスクロールできるようにする */
+}
+.setting {
+    padding: 15px;
+}

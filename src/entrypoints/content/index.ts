@@ -1,6 +1,6 @@
 import { addButtonToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
-import { contentMessageHandler } from "./message.js";
+import { createContentMessageHandler } from "./message.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
@@ -13,7 +13,7 @@ export interface customObserver extends MutationObserver {
 export default defineContentScript({
     matches: [pattern.topPageUrlGlob],
 
-    async main() {
+    async main(ctx) {
         const observer: customObserver = new MutationObserver(observerCallback);
         const settings = await loadSettings();
         observer.settings = settings;
@@ -23,7 +23,7 @@ export default defineContentScript({
             subtree: true,
         });
 
-        browser.runtime.onMessage.addListener(contentMessageHandler);
+        browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
     },
 });
 

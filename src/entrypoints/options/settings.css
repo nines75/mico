@@ -1,7 +1,7 @@
 @import "../../assets/global.css";
 
 body {
-    background: #292a2d;
+    background: var(--background);
     color: white;
     padding: 50px;
     margin: 0;

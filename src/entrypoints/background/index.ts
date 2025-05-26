@@ -18,7 +18,7 @@ export default defineBackground(() => {
     // ショートカットキーが押された際の処理
     browser.commands.onCommand.addListener(async (command) => {
         try {
-            if (command === "focus-player") {
+            if (command === "focus-player" || command === "quick-edit") {
                 const tabs = await browser.tabs.query({
                     active: true,
                     currentWindow: true,
@@ -30,7 +30,7 @@ export default defineBackground(() => {
                     if (!tab.url.startsWith(pattern.watchPageUrl)) return;
 
                     await browser.tabs.sendMessage(tab.id, {
-                        type: "focus-player",
+                        type: command,
                     });
                 }
             }

@@ -36,6 +36,11 @@ export default defineConfig({
         const isDev = mode === "development";
 
         return {
+            web_accessible_resources: [
+                {
+                    resources: ["quick-edit.html"],
+                },
+            ],
             permissions: [
                 "notifications",
                 "storage",
@@ -48,17 +53,20 @@ export default defineConfig({
             commands: {
                 "focus-player": {
                     description: "動画プレイヤーにフォーカスする",
-                    suggested_key: isDev
-                        ? {
-                              default: "Ctrl+Alt+L",
-                          }
-                        : {},
                 },
                 "open-settings": {
                     description: "設定ページを開く",
                     suggested_key: isDev
                         ? {
-                              default: "Ctrl+Alt+O",
+                              default: "Alt+O",
+                          }
+                        : {},
+                },
+                "quick-edit": {
+                    description: "クイック編集を開く",
+                    suggested_key: isDev
+                        ? {
+                              default: "Alt+I",
                           }
                         : {},
                 },
@@ -66,7 +74,7 @@ export default defineConfig({
                     description: "ポップアップを開く",
                     suggested_key: isDev
                         ? {
-                              default: "Ctrl+Alt+P",
+                              default: "Alt+L",
                           }
                         : {},
                 },

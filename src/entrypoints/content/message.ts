@@ -1,3 +1,4 @@
+import { ContentScriptContext, createIframeUi } from "#imports";
 import { selectors } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
@@ -6,16 +7,16 @@ export interface Message {
     data: unknown;
 }
 
-export function contentMessageHandler(
-    message: Message,
-    sender: browser.runtime.MessageSender,
-) {
-    if (sender.id !== browser.runtime.id) return;
+export function createContentMessageHandler(ctx: ContentScriptContext) {
+    return (message: Message, sender: browser.runtime.MessageSender) => {
+        if (sender.id !== browser.runtime.id) return;
 
-    if (message.type === "auto-reload") autoReload(message.data as number);
-    if (message.type === "focus-player") focusPlayer();
-    if (message.type === "set-playback-time")
-        setPlaybackTime(message.data as number);
+        if (message.type === "auto-reload") autoReload(message.data as number);
+        if (message.type === "focus-player") focusPlayer();
+        if (message.type === "set-playback-time")
+            setPlaybackTime(message.data as number);
+        if (message.type === "quick-edit") openQuickEdit(ctx);
+    };
 }
 
 function autoReload(tabId: number) {
@@ -59,4 +60,61 @@ function setPlaybackTime(time: number) {
             video.currentTime = time;
         }
     }, 10);
+}
+
+function openQuickEdit(ctx: ContentScriptContext) {
+    const id = `${browser.runtime.getManifest().name}-quick-edit`;
+    if (document.getElementById(id) !== null) return;
+
+    const callback = (e: KeyboardEvent) => {
+        if (e.key === "Escape") ui.remove();
+    };
+    const ui = createIframeUi(ctx, {
+        page: "/quick-edit.html",
+        position: "modal",
+        zIndex: 2147483647, // 最大値
+        onMount: (_, iframe) => {
+            iframe.id = id;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.addEventListener("load", () => {
+                // iframe内の要素にfocusがある場合に反応するショートカットを設定
+                iframe.contentDocument?.addEventListener("keydown", callback);
+
+                // 背景をクリックしたらiframeを閉じる
+                const body = iframe.contentDocument?.body;
+                if (body !== undefined) {
+                    body.addEventListener("click", (e) => {
+                        // クリックしたのが背景要素自体か判定
+                        if (e.target === body) ui.remove();
+                    });
+                }
+
+                // エディタにフォーカスを当てる
+                const intervalId = setInterval(() => {
+                    const element =
+                        iframe.contentDocument?.querySelector(".cm-content");
+                    const iframeDivElement =
+                        element?.ownerDocument.defaultView?.HTMLDivElement; // iframe内の要素がdivか判定するにはiframeのHTMLDivElementが必要
+
+                    if (
+                        iframeDivElement !== undefined &&
+                        element instanceof iframeDivElement
+                    ) {
+                        element.focus();
+                        clearInterval(intervalId);
+                    }
+                }, 10);
+            });
+        },
+        onRemove: () => {
+            // iframe外のリスナーは自動で消えないのでここで消す
+            document.removeEventListener("keydown", callback);
+        },
+    });
+
+    ui.mount();
+
+    // iframe外の要素にfocusがある場合に反応するショートカットを設定
+    document.addEventListener("keydown", callback);
 }
