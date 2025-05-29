@@ -34,7 +34,7 @@ import {
     completionKeymap,
     CompletionResult,
 } from "@codemirror/autocomplete";
-import { vim } from "@replit/codemirror-vim";
+import { getCM, vim } from "@replit/codemirror-vim";
 import { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 
@@ -102,6 +102,23 @@ const theme = EditorView.theme(
     { dark: true },
 );
 
+// ノーマルモードやビジュアルモードで全角入力した後に挿入モードに入るとに正しく入力できなくなる不具合を修正する拡張
+const vimImeIssueFixer = EditorView.domEventHandlers({
+    input(_, view) {
+        const vimState = getCM(view)?.state.vim;
+        if (vimState === undefined || vimState === null) return false;
+
+        if (!(vimState.insertMode || vimState.mode === "replace")) {
+            // IMEによる入力をキャンセル
+            view.contentDOM.blur();
+            view.contentDOM.focus();
+
+            return true;
+        }
+
+        return false;
+    },
+});
 const baseExtensions = [
     keymap.of([
         ...standardKeymap,
@@ -125,6 +142,7 @@ const vimBaseExtensions = [
     vim({ status: true }),
     drawSelection({ cursorBlinkRate: 0 }),
     EditorState.allowMultipleSelections.of(true),
+    vimImeIssueFixer,
 ];
 
 interface EditorProps {
