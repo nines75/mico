@@ -105,7 +105,7 @@ async function restorePlaybackTime(tabId: number) {
         tasks.push(
             browser.tabs.sendMessage(tabId, {
                 type: "set-playback-time",
-                data: playbackTime,
+                data: playbackTime satisfies number,
             }),
         );
     }

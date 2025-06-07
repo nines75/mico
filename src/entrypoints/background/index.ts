@@ -35,7 +35,9 @@ export default defineBackground(() => {
 
                     await browser.tabs.sendMessage(tab.id, {
                         type: command,
-                        ...(command === "reload" ? { data: tab.id } : {}),
+                        ...(command === "reload"
+                            ? { data: tab.id satisfies number }
+                            : {}),
                     });
                 }
             }

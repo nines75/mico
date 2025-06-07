@@ -36,6 +36,9 @@ function reload(tabId: number) {
                     data: {
                         tabId,
                         time: Math.floor(video.currentTime),
+                    } satisfies {
+                        tabId: number;
+                        time: number;
                     },
                 });
 

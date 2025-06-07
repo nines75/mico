@@ -83,7 +83,7 @@ async function saveNgUserId(
         tasks.push(
             browser.tabs.sendMessage(tabId, {
                 type: "reload",
-                data: tabId,
+                data: tabId satisfies number,
             }),
         );
     }

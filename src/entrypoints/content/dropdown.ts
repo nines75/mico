@@ -36,7 +36,7 @@ export async function mountContentToDropdown(
     if (settings.isShowUserIdInDropdown) {
         await browser.runtime.sendMessage({
             type: "get-user-id",
-            data: Number(commentNo),
+            data: Number(commentNo) satisfies number,
         });
     }
 }
@@ -74,6 +74,10 @@ function getButtonCallback(commentNo: string, specific: boolean) {
                     videoId,
                     commentNo: Number(commentNo),
                     specific,
+                } satisfies {
+                    videoId: string;
+                    commentNo: number;
+                    specific: boolean;
                 },
             });
         } catch (e) {
