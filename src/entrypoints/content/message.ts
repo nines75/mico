@@ -11,7 +11,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
     return (message: Message, sender: browser.runtime.MessageSender) => {
         if (sender.id !== browser.runtime.id) return;
 
-        if (message.type === "auto-reload") autoReload(message.data as number);
+        if (message.type === "reload") reload(message.data as number);
         if (message.type === "focus-player") focusPlayer();
         if (message.type === "set-playback-time")
             setPlaybackTime(message.data as number);
@@ -19,7 +19,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
     };
 }
 
-function autoReload(tabId: number) {
+function reload(tabId: number) {
     const id = setInterval(async () => {
         try {
             const video = document.querySelector("video");

@@ -70,6 +70,9 @@ export default defineConfig({
                           }
                         : {},
                 },
+                reload: {
+                    description: "リロードして現在の再生時間を復元",
+                },
                 _execute_browser_action: {
                     description: "ポップアップを開く",
                     suggested_key: isDev

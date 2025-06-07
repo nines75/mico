@@ -62,7 +62,7 @@ async function saveNgUserId(
     if (settings.isAutoReload) {
         tasks.push(
             browser.tabs.sendMessage(tabId, {
-                type: "auto-reload",
+                type: "reload",
                 data: tabId,
             }),
         );
