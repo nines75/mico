@@ -33,6 +33,7 @@ export interface Settings {
     /// その他
     isAutoReload: boolean;
     isPartialBadgeCount: boolean;
+    isShowUserIdInDropdown: boolean;
 
     // 拡張ニコる
     isExpandNicoruEnabled: boolean;

@@ -36,6 +36,7 @@ export const defaultSettings: Settings = {
     /// その他
     isAutoReload: true,
     isPartialBadgeCount: false,
+    isShowUserIdInDropdown: true,
 
     // 拡張ニコる
     isExpandNicoruEnabled: false,
@@ -91,6 +92,8 @@ export const selectors = {
     dropdownButtonsParent: ":scope > div > div:last-of-type",
     dropdownButtonSample: ":scope > button",
     dropdownCommentNo: ":scope > div > div:nth-child(2) > p:last-of-type",
+    dropdownMain: ".z_dropdown > div > div > div",
+    dropdownMainSample: ":scope > p:last-of-type",
 } as const;
 
 export const texts = {
@@ -249,6 +252,10 @@ export const commentFilterSettings = {
                 id: "isPartialBadgeCount",
                 label: "バッジに表示する値をログの数にする",
                 details: `デフォルトでは総ブロック数が表示されますが、その値からログを保存しないコメントの数を引いた値が表示されます。`,
+            },
+            {
+                id: "isShowUserIdInDropdown",
+                label: "ドロップダウンにユーザーIDを表示する",
             },
         ],
     },

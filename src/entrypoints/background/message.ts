@@ -21,9 +21,29 @@ export async function backgroundMessageHandler(
         }
         if (message.type === "save-ng-user-id")
             await saveNgUserId(message, sender);
+        if (message.type === "get-user-id") await getUserId(message, sender);
     } catch (e) {
         console.error(e);
     }
+}
+
+async function getUserId(
+    message: Message,
+    sender: browser.runtime.MessageSender,
+) {
+    const commentNo = message.data as number;
+
+    const tabId = sender.tab?.id;
+    if (tabId === undefined) return;
+
+    const logData = await getLogData(tabId);
+    const userId = logData?.videoData?.log.noToUserId.get(commentNo);
+    if (userId === undefined) return;
+
+    await browser.tabs.sendMessage(tabId, {
+        type: "mount-user-id",
+        data: userId satisfies string,
+    });
 }
 
 async function saveNgUserId(

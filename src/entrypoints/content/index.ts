@@ -1,4 +1,4 @@
-import { addButtonToDropdown } from "./dropdown.js";
+import { mountContentToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
 import { createContentMessageHandler } from "./message.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -27,7 +27,10 @@ export default defineContentScript({
     },
 });
 
-function observerCallback(records: MutationRecord[], observer: customObserver) {
+async function observerCallback(
+    records: MutationRecord[],
+    observer: customObserver,
+) {
     const settings = observer.settings;
     if (
         !location.href.startsWith(pattern.watchPageUrl) ||
@@ -62,7 +65,7 @@ function observerCallback(records: MutationRecord[], observer: customObserver) {
 
             // ドロップダウンが開かれた場合
             else if (node.className === "z_dropdown") {
-                addButtonToDropdown(node);
+                await mountContentToDropdown(node, settings);
             }
         }
     }

@@ -16,6 +16,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
         if (message.type === "set-playback-time")
             setPlaybackTime(message.data as number);
         if (message.type === "quick-edit") openQuickEdit(ctx);
+        if (message.type === "mount-user-id")
+            mountUserId(message.data as string);
     };
 }
 
@@ -117,4 +119,20 @@ function openQuickEdit(ctx: ContentScriptContext) {
 
     // iframe外の要素にfocusがある場合に反応するショートカットを設定
     document.addEventListener("keydown", callback);
+}
+
+function mountUserId(userId: string) {
+    const dropdown = document.querySelector(selectors.dropdownMain);
+    if (dropdown === null) return;
+
+    const sampleElement = dropdown.querySelector(selectors.dropdownMainSample);
+    if (sampleElement === null) return;
+
+    const p = document.createElement("p");
+    p.textContent = userId;
+    [...sampleElement.attributes].forEach((attribute) => {
+        p.setAttribute(attribute.name, attribute.value);
+    });
+
+    dropdown.appendChild(p);
 }

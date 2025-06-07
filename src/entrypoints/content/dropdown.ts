@@ -1,3 +1,4 @@
+import { Settings } from "@/types/storage/settings.types.js";
 import { pattern, texts, selectors } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
@@ -7,7 +8,10 @@ interface DropdownContent {
     commentNoText: string;
 }
 
-export function addButtonToDropdown(element: HTMLElement) {
+export async function mountContentToDropdown(
+    element: HTMLElement,
+    settings: Settings,
+) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
@@ -28,6 +32,13 @@ export function addButtonToDropdown(element: HTMLElement) {
         texts.content.textAddSpecificNgUserIdButton,
         true,
     );
+
+    if (settings.isShowUserIdInDropdown) {
+        await browser.runtime.sendMessage({
+            type: "get-user-id",
+            data: Number(commentNo),
+        });
+    }
 }
 
 function appendButton(
