@@ -2,6 +2,7 @@ import { LogViewerProps } from "@/entrypoints/popup/components/LogViewer.js";
 import { Settings } from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { FilterAreaProps } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
 export const defaultSettings: Settings = {
     // コメントフィルター
@@ -37,6 +38,16 @@ export const defaultSettings: Settings = {
     isAutoReload: true,
     isPartialBadgeCount: false,
     isShowUserIdInDropdown: true,
+
+    // 動画フィルター
+
+    isVideoFilterEnabled: true,
+
+    /// フィルタリング
+    defaultVideoFilter: "ngVideoFilterId",
+    ngVideoFilterId: "",
+    ngTitle: "",
+    ngUserName: "",
 
     // 拡張ニコる
     isExpandNicoruEnabled: false,
@@ -283,6 +294,36 @@ export const commentFilterSettings = {
         other: CheckboxProps[];
     };
     filter: FilterAreaProps[];
+};
+
+export const videoFilterSettings = {
+    checkbox: {
+        top: [
+            {
+                id: "isVideoFilterEnabled",
+                label: "動画フィルターを有効にする",
+            },
+        ],
+    },
+    filter: [
+        {
+            id: "ngVideoFilterId",
+            name: "NGユーザーID/動画ID",
+        },
+        {
+            id: "ngUserName",
+            name: "NGユーザー名(正規表現)",
+        },
+        {
+            id: "ngTitle",
+            name: "NGタイトル(正規表現)",
+        },
+    ],
+} as const satisfies {
+    checkbox: {
+        top: CheckboxProps[];
+    };
+    filter: VideoFilterAreaProps[];
 };
 
 export const expandNicoruSettings = {

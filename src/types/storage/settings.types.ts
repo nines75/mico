@@ -1,4 +1,5 @@
 import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
 export interface Settings {
     // コメントフィルター
@@ -34,6 +35,16 @@ export interface Settings {
     isAutoReload: boolean;
     isPartialBadgeCount: boolean;
     isShowUserIdInDropdown: boolean;
+
+    // 動画フィルター
+
+    isVideoFilterEnabled: boolean;
+
+    /// フィルタリング
+    defaultVideoFilter: VideoFilterId;
+    ngVideoFilterId: string;
+    ngUserName: string;
+    ngTitle: string;
 
     // 拡張ニコる
     isExpandNicoruEnabled: boolean;
