@@ -3,6 +3,7 @@ import { getAllData, LogType, removeData } from "@/utils/storage.js";
 import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
+import { recommendRequest } from "./request/request-recommend.js";
 
 export default defineBackground(() => {
     // コメントAPIのリクエストを監視
@@ -10,6 +11,18 @@ export default defineBackground(() => {
         commentRequest,
         {
             urls: ["https://public.nvcomment.nicovideo.jp/v1/threads"],
+            types: ["xmlhttprequest", "main_frame"],
+        },
+        ["blocking"],
+    );
+
+    // おすすめ動画APIのリクエストを監視
+    browser.webRequest.onBeforeRequest.addListener(
+        recommendRequest,
+        {
+            urls: [
+                "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
+            ],
             types: ["xmlhttprequest", "main_frame"],
         },
         ["blocking"],
