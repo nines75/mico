@@ -6,17 +6,17 @@ export interface RecommendDataContainer {
     data: RecommendData;
 }
 
-interface RecommendData {
+export interface RecommendData {
     items: RecommendItem[];
 }
 
-interface RecommendItem {
+export interface RecommendItem {
     id: string;
     contentType: "video" | "mylist";
-    content: RecommendContent;
+    content: NiconicoVideo;
 }
 
-interface RecommendContent {
+export interface NiconicoVideo {
     id: string;
     title: string;
     registeredAt: string;

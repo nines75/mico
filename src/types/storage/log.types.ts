@@ -1,4 +1,5 @@
 import { NiconicoComment } from "../api/comment.types.js";
+import { NiconicoVideo } from "../api/recommend.types.js";
 
 /** Map<comment.userId, comment.id[]> */
 export type UserIdLog = Map<string, string[]>;
@@ -12,6 +13,18 @@ export type WordLog = Map<string, Map<string, string[]>>;
 export type CommentData = Map<string, NiconicoComment>;
 
 export type NoToUserId = Map<number, string>;
+
+/** Map<rule, videoId[]> */
+export type CommonVideoFilterLog = Map<string, string[]>;
+
+export interface IdLog {
+    /** Map<userId, videoId[]> */
+    userId: Map<string, string[]>;
+    /** videoId[] */
+    videoId: string[];
+}
+
+export type NiconicoVideoData = Map<string, NiconicoVideo>;
 
 export interface LogData {
     videoData?: VideoData;
