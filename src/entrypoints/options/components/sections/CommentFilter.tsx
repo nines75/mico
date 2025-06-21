@@ -22,19 +22,7 @@ export default function CommentFilter() {
                                 <Checkbox key={props.id} {...props} />
                             ),
                         )}
-                        <section>
-                            <div className="header-container">
-                                <h4>フィルター</h4>
-                            </div>
-                            <div className="settings-container">
-                                {commentFilterSettings.checkbox.filter.map(
-                                    (props) => (
-                                        <Checkbox key={props.id} {...props} />
-                                    ),
-                                )}
-                                <FilterArea />
-                            </div>
-                        </section>
+                        <FilterArea />
                     </div>
                 </section>
                 <section>

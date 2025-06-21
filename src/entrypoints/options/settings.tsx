@@ -7,6 +7,7 @@ import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import VideoFilter from "./components/sections/VideoFilter.js";
+import General from "./components/sections/General.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -54,6 +55,7 @@ function Page() {
                     <SiGithub size={38} color="var(--dim-white)" />
                 </a>
             </div>
+            <General />
             <CommentFilter />
             <VideoFilter />
             <ExpandNicoru />

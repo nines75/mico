@@ -173,6 +173,36 @@ export const pattern = {
     },
 } as const;
 
+export const generalSettings = {
+    checkbox: {
+        filter: [
+            {
+                id: "isCaseInsensitive",
+                label: "大小文字を区別しない",
+                details:
+                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
+            },
+            {
+                id: "isVimKeybindingsEnabled",
+                label: "Vimのキーバインドを有効にする",
+            },
+        ],
+        log: [
+            {
+                id: "isSaveFilteringLog",
+                label: "フィルタリングログを保存する",
+                details:
+                    "有効になっている場合でもフィルタリングログはブラウザを起動するたびに削除されます。",
+            },
+        ],
+    },
+} as const satisfies {
+    checkbox: {
+        filter: CheckboxProps[];
+        log: CheckboxProps[];
+    };
+};
+
 export const commentFilterSettings = {
     checkbox: {
         top: [
@@ -208,25 +238,7 @@ export const commentFilterSettings = {
                 },
             },
         ],
-        filter: [
-            {
-                id: "isCaseInsensitive",
-                label: "大小文字を区別しない",
-                details:
-                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
-            },
-            {
-                id: "isVimKeybindingsEnabled",
-                label: "Vimのキーバインドを有効にする",
-            },
-        ],
         log: [
-            {
-                id: "isSaveFilteringLog",
-                label: "フィルタリングログを保存する",
-                details:
-                    "有効になっている場合でもフィルタリングログはブラウザを起動するたびに削除されます。",
-            },
             {
                 id: "isShowNgScoreInLog",
                 label: "NGスコアを表示する",
@@ -298,7 +310,6 @@ export const commentFilterSettings = {
     checkbox: {
         top: CheckboxProps[];
         filtering: CheckboxProps[];
-        filter: CheckboxProps[];
         log: CheckboxProps[];
         notification: CheckboxProps[];
         other: CheckboxProps[];

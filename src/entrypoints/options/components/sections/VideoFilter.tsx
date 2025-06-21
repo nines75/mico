@@ -12,21 +12,7 @@ export default function VideoFilter() {
                 {videoFilterSettings.checkbox.top.map((props) => (
                     <Checkbox key={props.id} {...props} />
                 ))}
-                <section>
-                    <div className="header-container">
-                        <h3>フィルタリング</h3>
-                    </div>
-                    <div className="settings-container">
-                        <section>
-                            <div className="header-container">
-                                <h4>フィルター</h4>
-                            </div>
-                            <div className="settings-container">
-                                <VideoFilterArea />
-                            </div>
-                        </section>
-                    </div>
-                </section>
+                <VideoFilterArea />
             </div>
         </section>
     );
