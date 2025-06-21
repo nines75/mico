@@ -1,7 +1,7 @@
 import { RecommendData } from "@/types/api/recommend.types.js";
 import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
-import { TitleFilter } from "./filter/video-title-filter.js";
+import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
 export interface FilteredData {
