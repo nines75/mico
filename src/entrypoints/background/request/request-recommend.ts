@@ -2,6 +2,7 @@ import { RecommendDataContainer } from "@/types/api/recommend.types.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
+
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
