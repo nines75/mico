@@ -18,6 +18,8 @@ export function filterVideo(
     recommendData: RecommendData,
     settings: Settings,
 ): FilteredData | undefined {
+    if (!settings.isVideoFilterEnabled) return;
+
     const start = performance.now();
 
     const loadedVideoCount = recommendData.items.length;

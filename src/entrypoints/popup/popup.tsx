@@ -10,6 +10,7 @@ import { SettingsIcon } from "lucide-react";
 import Details from "@/components/Details.js";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
+import { Settings } from "@/types/storage/settings.types.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -37,6 +38,7 @@ function Init() {
 
 function Page() {
     const videoId = useStorageStore.getState().videoId;
+    const settings = useStorageStore.getState().settings;
     const [selectedTab, save] = useStorageStore(
         useShallow((state) => [
             state.settings.popupSelectedTab,
@@ -46,7 +48,17 @@ function Page() {
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(videoId);
+    const message = getMessage(videoId, settings);
+
+    const getDisabledMessage = (text: string) => (
+        <section>
+            <span id="filter-disabled">
+                {text}
+                <br />
+                {texts.popup.messageOutdatedLog}
+            </span>
+        </section>
+    );
 
     useEffect(() => {
         browser.storage.onChanged.addListener(storageChangeHandler);
@@ -89,6 +101,23 @@ function Page() {
                             </button>
                         ))}
                     </div>
+                    {(() => {
+                        switch (selectedTab) {
+                            case "commentFilter":
+                                if (settings.isCommentFilterEnabled)
+                                    return null;
+
+                                return getDisabledMessage(
+                                    texts.popup.messageCommentFilterDisabled,
+                                );
+                            case "videoFilter":
+                                if (settings.isVideoFilterEnabled) return null;
+
+                                return getDisabledMessage(
+                                    texts.popup.messageVideoFilterDisabled,
+                                );
+                        }
+                    })()}
                     <Details id={"isOpenProcessingTime"} summary="処理時間">
                         <ProcessingTime />
                     </Details>
@@ -122,14 +151,12 @@ function Page() {
     );
 }
 
-const getMessage = (videoId: string | undefined): string | undefined => {
-    const settings = useStorageStore.getState().settings;
-
+const getMessage = (
+    videoId: string | undefined,
+    settings: Settings,
+): string | undefined => {
     if (videoId === undefined) return texts.popup.messageNotWork;
 
-    if (!settings.isCommentFilterEnabled) {
-        return texts.popup.messageCommentFilterDisabled;
-    }
     if (!settings.isSaveFilteringLog) {
         return texts.popup.messageFilteringLogDisabled;
     }

@@ -137,6 +137,9 @@ export const texts = {
     popup: {
         messageNotWork: "このページでは動作しません",
         messageCommentFilterDisabled: "コメントフィルターが無効になっています",
+        messageVideoFilterDisabled: "動画フィルターが無効になっています",
+        messageOutdatedLog:
+            "表示されているログは古いものである可能性があります",
         messageFilteringLogDisabled:
             "フィルタリングログを保存しない設定になっています",
         titleUndoStrictNgUserIds:

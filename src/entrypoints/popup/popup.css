@@ -108,3 +108,8 @@ summary {
     margin: 20px;
     font-weight: bold;
 }
+#filter-disabled {
+    color: var(--lighter-gray);
+    font-size: 13px;
+    color: red;
+}
