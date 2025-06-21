@@ -1,6 +1,8 @@
 import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
 import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
+export type PopupTab = "comment-filter" | "video-filter";
+
 export interface Settings {
     // コメントフィルター
 
@@ -54,10 +56,15 @@ export interface Settings {
     // 設定の開閉設定
     isOpenCustomColor: boolean;
 
-    // ポップアップの開閉設定
+    // ポップアップ
+
+    /// 開閉設定
     isOpenProcessingTime: boolean;
     isOpenCount: boolean;
     isOpenVideoLog: boolean;
+
+    // タブ
+    popupSelectedTab: PopupTab;
 }
 
 interface NicoruColor {

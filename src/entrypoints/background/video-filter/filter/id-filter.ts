@@ -4,6 +4,7 @@ import { extractRule } from "../../comment-filter/filter.js";
 import { IdLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
+import { loadSettings, setSettings } from "@/utils/storage.js";
 
 interface NgIds {
     userIds: Set<string>;
@@ -111,4 +112,51 @@ export class IdFilter extends Filter<IdLog> {
             videoIds,
         };
     }
+
+    getRuleCount(): number {
+        return this.filter.userIds.size + this.filter.videoIds.size;
+    }
+}
+
+export async function addNgId(ids: Set<string>) {
+    if (ids.size === 0) return;
+
+    const str = [...ids].join("\n");
+    const func = async (): Promise<Partial<Settings>> => {
+        const settings = await loadSettings();
+        const value =
+            settings.ngVideoFilterId === ""
+                ? str
+                : `${str}\n${settings.ngVideoFilterId}`;
+
+        return {
+            ngVideoFilterId: value,
+        };
+    };
+
+    await setSettings(func);
+}
+
+export async function removeNgId(ids: Set<string>) {
+    if (ids.size === 0) return;
+
+    const func = async (): Promise<Partial<Settings>> => {
+        const settings = await loadSettings();
+
+        const toRemoveLines = new Set(
+            extractRule(settings.ngVideoFilterId)
+                .filter((data) => ids.has(data.rule))
+                .map((data) => data.index),
+        );
+        const value = settings.ngVideoFilterId
+            .split("\n")
+            .filter((_, index) => !toRemoveLines.has(index))
+            .join("\n");
+
+        return {
+            ngVideoFilterId: value,
+        };
+    };
+
+    await setSettings(func);
 }

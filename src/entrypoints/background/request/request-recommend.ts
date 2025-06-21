@@ -1,6 +1,7 @@
 import { RecommendDataContainer } from "@/types/api/recommend.types.js";
-import { loadSettings } from "@/utils/storage.js";
+import { loadSettings, setLog } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
+import { saveLog } from "../video-filter/save-log.js";
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
@@ -19,11 +20,32 @@ export function recommendRequest(
         try {
             const settings = await loadSettings();
             const recommendData = JSON.parse(buf) as RecommendDataContainer;
+            const tabId = details.tabId;
 
-            filterVideo(recommendData.data, settings);
+            const filteredData = filterVideo(recommendData.data, settings);
 
             filter.write(encoder.encode(JSON.stringify(recommendData)));
             filter.disconnect();
+
+            if (filteredData === undefined) return;
+
+            const tasks: Promise<void>[] = [];
+
+            tasks.push(saveLog(filteredData, tabId));
+            tasks.push(
+                setLog(
+                    {
+                        videoFilterLog: {
+                            processingTime: {
+                                filtering: filteredData.filteringTime,
+                            },
+                        },
+                    },
+                    tabId,
+                ),
+            );
+
+            await Promise.all(tasks);
         } catch (e) {
             console.error(e);
         }

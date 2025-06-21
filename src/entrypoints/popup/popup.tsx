@@ -8,6 +8,8 @@ import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
 import Details from "@/components/Details.js";
+import { useShallow } from "zustand/shallow";
+import VideoLogViewer from "./components/VideoLogViewer.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -35,6 +37,12 @@ function Init() {
 
 function Page() {
     const videoId = useStorageStore.getState().videoId;
+    const [selectedTab, save] = useStorageStore(
+        useShallow((state) => [
+            state.settings.popupSelectedTab,
+            state.saveSettings,
+        ]),
+    );
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
@@ -68,6 +76,19 @@ function Page() {
                     <section>
                         <span id="video-id">{videoId ?? ""}</span>
                     </section>
+                    <div>
+                        {popupConfig.tab.map((filter) => (
+                            <button
+                                key={filter.id}
+                                className={`${selectedTab === filter.id ? "selected-button" : ""}`}
+                                onClick={() =>
+                                    save({ popupSelectedTab: filter.id })
+                                }
+                            >
+                                <span>{filter.name}</span>
+                            </button>
+                        ))}
+                    </div>
                     <Details id={"isOpenProcessingTime"} summary="処理時間">
                         <ProcessingTime />
                     </Details>
@@ -75,9 +96,25 @@ function Page() {
                         <Count />
                     </Details>
                     <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
-                        {popupConfig.log.map((log) => (
-                            <LogViewer key={log.id} {...log} />
-                        ))}
+                        {(() => {
+                            switch (selectedTab) {
+                                case "comment-filter":
+                                    return popupConfig.commentFilter.log.map(
+                                        (log) => (
+                                            <LogViewer key={log.id} {...log} />
+                                        ),
+                                    );
+                                case "video-filter":
+                                    return popupConfig.videoFilter.log.map(
+                                        (log) => (
+                                            <VideoLogViewer
+                                                key={log.id}
+                                                {...log}
+                                            />
+                                        ),
+                                    );
+                            }
+                        })()}
                     </Details>
                 </main>
             )}

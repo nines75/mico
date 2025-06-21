@@ -29,7 +29,7 @@ export interface NiconicoVideo {
     };
     owner: {
         id: string;
-        name: string;
-        visibility: string;
+        name: string | null;
+        visibility: "visible" | "hidden";
     };
 }

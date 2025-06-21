@@ -9,6 +9,8 @@ import {
 } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { extractRule } from "../comment-filter/filter.js";
+import { ConditionalPick } from "type-fest";
+import { FilteredData } from "./filter-video.js";
 
 export abstract class Filter<T> {
     protected filteredVideos: NiconicoVideoData = new Map();
@@ -38,7 +40,7 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
     protected abstract rawFilter: string;
     protected override log: CommonVideoFilterLog = new Map();
 
-    protected abstract getTargetValue(item: RecommendItem): string;
+    protected abstract getTargetValue(item: RecommendItem): string | null;
 
     getInvalidCount(): number {
         return this.invalidCount;
@@ -46,14 +48,16 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
 
     override filtering(recommendData: RecommendData): void {
         recommendData.items = recommendData.items.filter((item) => {
-            if (item.contentType === "mylist") return true;
+            if (item.contentType !== "video") return true;
 
             const videoId = item.id;
+            const target = this.getTargetValue(item);
+            if (target === null) return true;
 
             for (const regex of this.filter) {
                 const regexStr = regex.toString();
 
-                if (regex.test(this.getTargetValue(item))) {
+                if (regex.test(target)) {
                     if (this.log.has(regexStr)) {
                         this.log.get(regexStr)?.push(videoId);
                     } else {
@@ -109,6 +113,21 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
 
         return res;
     }
+
+    getRuleCount(): number {
+        return this.filter.length;
+    }
+}
+
+type CommonFilterType = ConditionalPick<FilteredData["filters"], CommonFilter>;
+
+export function getCommonFilters(
+    filters: FilteredData["filters"],
+): CommonFilterType {
+    return {
+        userNameFilter: filters.userNameFilter,
+        titleFilter: filters.titleFilter,
+    };
 }
 
 export function sortVideoId(

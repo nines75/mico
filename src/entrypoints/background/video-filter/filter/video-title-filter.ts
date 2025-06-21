@@ -2,7 +2,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { CommonFilter } from "../filter.js";
 import { RecommendItem } from "@/types/api/recommend.types.js";
 
-export class VideoTitleFilter extends CommonFilter {
+export class TitleFilter extends CommonFilter {
     protected override filter: RegExp[];
     protected override rawFilter: string = this.settings.ngTitle;
 

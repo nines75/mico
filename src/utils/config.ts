@@ -1,8 +1,9 @@
 import { LogViewerProps } from "@/entrypoints/popup/components/LogViewer.js";
-import { Settings } from "../types/storage/settings.types.js";
+import { PopupTab, Settings } from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { FilterAreaProps } from "@/entrypoints/options/components/ui/FilterArea.js";
 import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
 
 export const defaultSettings: Settings = {
     // コメントフィルター
@@ -89,10 +90,15 @@ export const defaultSettings: Settings = {
     // 設定の開閉設定
     isOpenCustomColor: false,
 
-    // ポップアップの開閉設定
+    // ポップアップ
+
+    /// 開閉設定
     isOpenProcessingTime: false,
     isOpenCount: true,
     isOpenVideoLog: true,
+
+    /// タブ
+    popupSelectedTab: "comment-filter",
 } as const;
 
 export const selectors = {
@@ -138,8 +144,11 @@ export const texts = {
         messageUndoStrictNgUserIds:
             "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
         titleRemoveNgUserId: "クリックしてNGユーザーIDを削除",
+        titleRemoveNgVideoId: "クリックしてNG動画IDを削除",
         messageRemoveNgUserId: "以下のNGユーザーIDを削除しますか？\n\n{target}",
+        messageRemoveNgVideoId: "以下のNG動画IDを削除しますか？\n\n{target}",
         titleAddNgUserId: "クリックしてこのコメントを投稿したユーザーをNG登録",
+        titleAddVideoNgUserId: "クリックしてこの動画を投稿したユーザーをNG登録",
         messageAddNgUserId: "以下のユーザーIDをNG登録しますか？\n\n{target}",
         messageNgUserIdAlreadyExists: "このユーザーIDは既にNG登録されています",
     },
@@ -339,28 +348,65 @@ export const expandNicoruSettings = {
 };
 
 export const popupConfig = {
-    log: [
+    tab: [
         {
-            id: "easyComment",
-            name: "かんたんコメント",
+            id: "comment-filter",
+            name: "コメントフィルター",
         },
         {
-            id: "ngUserId",
-            name: "NGユーザーID",
-        },
-        {
-            id: "ngScore",
-            name: "NGスコア",
-        },
-        {
-            id: "ngCommand",
-            name: "NGコマンド",
-        },
-        {
-            id: "ngWord",
-            name: "NGワード",
+            id: "video-filter",
+            name: "動画フィルター",
         },
     ],
+    commentFilter: {
+        log: [
+            {
+                id: "easyComment",
+                name: "かんたんコメント",
+            },
+            {
+                id: "ngUserId",
+                name: "NGユーザーID",
+            },
+            {
+                id: "ngScore",
+                name: "NGスコア",
+            },
+            {
+                id: "ngCommand",
+                name: "NGコマンド",
+            },
+            {
+                id: "ngWord",
+                name: "NGワード",
+            },
+        ],
+    },
+    videoFilter: {
+        log: [
+            {
+                id: "ngId",
+                name: "NGユーザーID/動画ID",
+            },
+            {
+                id: "ngUserName",
+                name: "NGユーザー名",
+            },
+            {
+                id: "ngTitle",
+                name: "NGタイトル",
+            },
+        ],
+    },
 } as const satisfies {
-    log: LogViewerProps[];
+    tab: {
+        id: PopupTab;
+        name: string;
+    }[];
+    commentFilter: {
+        log: LogViewerProps[];
+    };
+    videoFilter: {
+        log: VideoLogViewerProps[];
+    };
 };

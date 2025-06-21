@@ -91,6 +91,9 @@ summary {
         color: gray;
     }
 }
+.selected-button {
+    border-color: lightskyblue;
+}
 #video-id {
     font-size: 20px;
     font-weight: bold;

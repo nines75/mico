@@ -1,9 +1,17 @@
 import { useStorageStore } from "@/utils/store.js";
 
 export default function ProcessingTime() {
-    const processingTime = useStorageStore(
-        (state) => state.log?.processingTime,
+    const selectedTab = useStorageStore(
+        (state) => state.settings.popupSelectedTab,
     );
+    const processingTime = useStorageStore((state) => {
+        switch (selectedTab) {
+            case "comment-filter":
+                return state.log?.processingTime;
+            case "video-filter":
+                return state.log?.videoFilterLog?.processingTime;
+        }
+    });
 
     return (
         <>

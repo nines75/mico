@@ -30,6 +30,7 @@ export interface LogData {
     videoData?: VideoData;
     playbackTime?: number;
     processingTime?: ProcessingTimeData;
+    videoFilterLog?: VideoFilterLog;
 }
 
 export interface VideoData {
@@ -70,4 +71,33 @@ export interface ProcessingTimeData {
     filtering?: number;
     fetchTag?: number;
     saveVideoLog?: number;
+}
+
+export interface VideoFilterLog {
+    count: VideoCount;
+    filtering: VideoFiltering;
+    processingTime: ProcessingTimeData;
+}
+
+export interface VideoCount {
+    rule: {
+        ngId: number;
+        ngUserName: number;
+        ngTitle: number;
+    };
+    blocked: {
+        ngId: number;
+        ngUserName: number;
+        ngTitle: number;
+    };
+    totalBlocked: number;
+    loaded: number;
+    invalid: number;
+}
+
+export interface VideoFiltering {
+    ngId: IdLog;
+    ngUserName: CommonVideoFilterLog;
+    ngTitle: CommonVideoFilterLog;
+    videos: NiconicoVideoData;
 }

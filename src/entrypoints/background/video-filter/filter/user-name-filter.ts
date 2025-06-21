@@ -12,7 +12,7 @@ export class UserNameFilter extends CommonFilter {
         this.filter = this.getFilter();
     }
 
-    protected override getTargetValue(item: RecommendItem): string {
+    protected override getTargetValue(item: RecommendItem): string | null {
         return item.content.owner.name;
     }
 }
