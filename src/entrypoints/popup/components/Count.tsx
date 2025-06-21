@@ -6,9 +6,9 @@ export default function Count() {
     );
     const count = useStorageStore((state) => {
         switch (selectedTab) {
-            case "comment-filter":
+            case "commentFilter":
                 return state.log?.videoData?.count;
-            case "video-filter":
+            case "videoFilter":
                 return state.log?.videoFilterLog?.count;
         }
     });

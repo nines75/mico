@@ -6,9 +6,9 @@ export default function ProcessingTime() {
     );
     const processingTime = useStorageStore((state) => {
         switch (selectedTab) {
-            case "comment-filter":
+            case "commentFilter":
                 return state.log?.processingTime;
-            case "video-filter":
+            case "videoFilter":
                 return state.log?.videoFilterLog?.processingTime;
         }
     });

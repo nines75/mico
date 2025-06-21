@@ -98,7 +98,7 @@ export const defaultSettings: Settings = {
     isOpenVideoLog: true,
 
     /// タブ
-    popupSelectedTab: "comment-filter",
+    popupSelectedTab: "commentFilter",
 } as const;
 
 export const selectors = {
@@ -350,11 +350,11 @@ export const expandNicoruSettings = {
 export const popupConfig = {
     tab: [
         {
-            id: "comment-filter",
+            id: "commentFilter",
             name: "コメントフィルター",
         },
         {
-            id: "video-filter",
+            id: "videoFilter",
             name: "動画フィルター",
         },
     ],

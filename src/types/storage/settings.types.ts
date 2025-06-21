@@ -1,7 +1,7 @@
 import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
 import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
-export type PopupTab = "comment-filter" | "video-filter";
+export type PopupTab = "commentFilter" | "videoFilter";
 
 export interface Settings {
     // コメントフィルター

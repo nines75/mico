@@ -98,13 +98,13 @@ function Page() {
                     <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
                         {(() => {
                             switch (selectedTab) {
-                                case "comment-filter":
+                                case "commentFilter":
                                     return popupConfig.commentFilter.log.map(
                                         (log) => (
                                             <LogViewer key={log.id} {...log} />
                                         ),
                                     );
-                                case "video-filter":
+                                case "videoFilter":
                                     return popupConfig.videoFilter.log.map(
                                         (log) => (
                                             <VideoLogViewer
