@@ -3,7 +3,7 @@ import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
 import { videoFilterSettings } from "@/utils/config.js";
 
-export type VideoFilterId = "ngVideoFilterId" | "ngTitle" | "ngUserName";
+export type VideoFilterId = "ngId" | "ngTitle" | "ngUserName";
 
 export interface VideoFilterAreaProps {
     id: VideoFilterId;

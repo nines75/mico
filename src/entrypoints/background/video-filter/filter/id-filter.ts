@@ -93,7 +93,7 @@ export class IdFilter extends Filter<IdLog> {
     }
 
     getFilter(): NgIds {
-        const rules = extractRule(this.settings.ngVideoFilterId);
+        const rules = extractRule(this.settings.ngId);
         const userIds = new Set<string>();
         const videoIds = new Set<string>();
 
@@ -124,13 +124,10 @@ export async function addNgId(ids: Set<string>) {
     const str = [...ids].join("\n");
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
-        const value =
-            settings.ngVideoFilterId === ""
-                ? str
-                : `${str}\n${settings.ngVideoFilterId}`;
+        const value = settings.ngId === "" ? str : `${str}\n${settings.ngId}`;
 
         return {
-            ngVideoFilterId: value,
+            ngId: value,
         };
     };
 
@@ -144,17 +141,17 @@ export async function removeNgId(ids: Set<string>) {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            extractRule(settings.ngVideoFilterId)
+            extractRule(settings.ngId)
                 .filter((data) => ids.has(data.rule))
                 .map((data) => data.index),
         );
-        const value = settings.ngVideoFilterId
+        const value = settings.ngId
             .split("\n")
             .filter((_, index) => !toRemoveLines.has(index))
             .join("\n");
 
         return {
-            ngVideoFilterId: value,
+            ngId: value,
         };
     };
 

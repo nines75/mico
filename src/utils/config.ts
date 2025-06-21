@@ -45,8 +45,8 @@ export const defaultSettings: Settings = {
     isVideoFilterEnabled: true,
 
     /// フィルタリング
-    defaultVideoFilter: "ngVideoFilterId",
-    ngVideoFilterId: "",
+    defaultVideoFilter: "ngId",
+    ngId: "",
     ngTitle: "",
     ngUserName: "",
 
@@ -317,7 +317,7 @@ export const videoFilterSettings = {
     },
     filter: [
         {
-            id: "ngVideoFilterId",
+            id: "ngId",
             name: "NGユーザーID/動画ID",
         },
         {

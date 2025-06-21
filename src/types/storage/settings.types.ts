@@ -44,7 +44,7 @@ export interface Settings {
 
     /// フィルタリング
     defaultVideoFilter: VideoFilterId;
-    ngVideoFilterId: string;
+    ngId: string;
     ngUserName: string;
     ngTitle: string;
 
