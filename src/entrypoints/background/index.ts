@@ -4,8 +4,19 @@ import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
+import { mainRequest } from "./request/request-main.js";
 
 export default defineBackground(() => {
+    // メインリクエストを監視
+    browser.webRequest.onBeforeRequest.addListener(
+        mainRequest,
+        {
+            urls: ["https://www.nicovideo.jp/watch/*"],
+            types: ["main_frame", "xmlhttprequest"],
+        },
+        ["blocking"],
+    );
+
     // コメントAPIのリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
         commentRequest,

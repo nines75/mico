@@ -1,4 +1,4 @@
-import { RecommendData } from "@/types/api/recommend.types.js";
+import { NiconicoVideo, RecommendData } from "@/types/api/recommend.types.js";
 import { Filter, sortVideoId } from "../filter.js";
 import { extractRule } from "../../comment-filter/filter.js";
 import { IdLog } from "@/types/storage/log.types.js";
@@ -56,6 +56,20 @@ export class IdFilter extends Filter<IdLog> {
 
             return true;
         });
+    }
+
+    override isNgVideo(video: NiconicoVideo): boolean {
+        const userId = video.owner.id;
+        const videoId = video.id;
+
+        if (
+            this.filter.userIds.has(userId) ||
+            this.filter.videoIds.has(videoId)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     override sortLog(): void {

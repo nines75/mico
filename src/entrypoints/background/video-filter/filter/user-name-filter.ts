@@ -1,6 +1,6 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { CommonFilter } from "../filter.js";
-import { RecommendItem } from "@/types/api/recommend.types.js";
+import { NiconicoVideo } from "@/types/api/recommend.types.js";
 
 export class UserNameFilter extends CommonFilter {
     protected override filter: RegExp[];
@@ -12,7 +12,7 @@ export class UserNameFilter extends CommonFilter {
         this.filter = this.getFilter();
     }
 
-    protected override getTargetValue(item: RecommendItem): string | null {
-        return item.content.owner.name;
+    protected override getTargetValue(video: NiconicoVideo): string | null {
+        return video.owner.name;
     }
 }

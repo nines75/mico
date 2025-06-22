@@ -1,8 +1,4 @@
-import {
-    NiconicoVideo,
-    RecommendData,
-    RecommendItem,
-} from "@/types/api/recommend.types.js";
+import { NiconicoVideo, RecommendData } from "@/types/api/recommend.types.js";
 import {
     CommonVideoFilterLog,
     NiconicoVideoData,
@@ -22,6 +18,7 @@ export abstract class Filter<T> {
     }
 
     abstract filtering(recommendData: RecommendData): void;
+    abstract isNgVideo(video: NiconicoVideo): boolean;
     abstract getCount(): number;
     abstract sortLog(): void;
 
@@ -40,7 +37,7 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
     protected abstract rawFilter: string;
     protected override log: CommonVideoFilterLog = new Map();
 
-    protected abstract getTargetValue(item: RecommendItem): string | null;
+    protected abstract getTargetValue(video: NiconicoVideo): string | null;
 
     getInvalidCount(): number {
         return this.invalidCount;
@@ -51,7 +48,7 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
             if (item.contentType !== "video") return true;
 
             const videoId = item.id;
-            const target = this.getTargetValue(item);
+            const target = this.getTargetValue(item.content);
             if (target === null) return true;
 
             for (const regex of this.filter) {
@@ -72,6 +69,19 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
 
             return true;
         });
+    }
+
+    override isNgVideo(video: NiconicoVideo): boolean {
+        const target = this.getTargetValue(video);
+        if (target === null) return false;
+
+        for (const regex of this.filter) {
+            if (regex.test(target)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     override getCount(): number {

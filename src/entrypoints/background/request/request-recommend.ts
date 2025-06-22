@@ -1,5 +1,5 @@
 import { RecommendDataContainer } from "@/types/api/recommend.types.js";
-import { loadSettings, setLog } from "@/utils/storage.js";
+import { getLogData, loadSettings, setLog } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 
@@ -19,11 +19,14 @@ export function recommendRequest(
 
     filter.onstop = async () => {
         try {
-            const settings = await loadSettings();
+            const [settings, log] = await Promise.all([
+                loadSettings(),
+                getLogData(details.tabId),
+            ]);
             const recommendData = JSON.parse(buf) as RecommendDataContainer;
             const tabId = details.tabId;
 
-            const filteredData = filterVideo(recommendData.data, settings);
+            const filteredData = filterVideo(recommendData.data, settings, log);
 
             filter.write(encoder.encode(JSON.stringify(recommendData)));
             filter.disconnect();

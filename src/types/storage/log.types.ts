@@ -31,6 +31,7 @@ export interface LogData {
     playbackTime?: number;
     processingTime?: ProcessingTimeData;
     videoFilterLog?: VideoFilterLog;
+    series?: SeriesData;
 }
 
 export interface VideoData {
@@ -100,4 +101,9 @@ export interface VideoFiltering {
     ngUserName: CommonVideoFilterLog;
     ngTitle: CommonVideoFilterLog;
     videos: NiconicoVideoData;
+}
+
+interface SeriesData {
+    hasNext: boolean;
+    data?: NiconicoVideo;
 }
