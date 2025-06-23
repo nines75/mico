@@ -26,7 +26,7 @@ export class IdFilter extends Filter<IdLog> {
 
     override filtering(recommendData: RecommendData): void {
         recommendData.items = recommendData.items.filter((item) => {
-            if (item.contentType === "mylist") return true;
+            if (item.contentType !== "video") return true;
 
             const userId = item.content.owner.id;
             const videoId = item.id;
