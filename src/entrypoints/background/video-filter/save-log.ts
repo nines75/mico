@@ -4,7 +4,6 @@ import {
     VideoFiltering,
     VideoFilterLog,
 } from "@/types/storage/log.types.js";
-import { getCommonFilters } from "./filter.js";
 import { setLog } from "@/utils/storage.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
@@ -57,8 +56,6 @@ function getCount(filteredData: FilteredData): VideoCount {
         ngTitle: filteredData.filters.titleFilter.getCount(),
     };
 
-    const commonFilters = getCommonFilters(filteredData.filters);
-
     return {
         rule,
         blocked,
@@ -67,7 +64,7 @@ function getCount(filteredData: FilteredData): VideoCount {
             0,
         ),
         loaded: filteredData.loadedVideoCount,
-        invalid: Object.values(commonFilters)
+        invalid: Object.values(filteredData.filters)
             .map((filter) => filter.getInvalidCount())
             .reduce((sum, current) => sum + current, 0),
     };

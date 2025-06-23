@@ -5,10 +5,9 @@ import {
 } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { extractRule } from "../comment-filter/filter.js";
-import { ConditionalPick } from "type-fest";
-import { FilteredData } from "./filter-video.js";
 
 export abstract class Filter<T> {
+    protected invalidCount = 0;
     protected filteredVideos: NiconicoVideoData = new Map();
     protected settings: Settings;
     protected abstract log: T;
@@ -22,6 +21,10 @@ export abstract class Filter<T> {
     abstract getCount(): number;
     abstract sortLog(): void;
 
+    getInvalidCount(): number {
+        return this.invalidCount;
+    }
+
     getLog() {
         return this.log;
     }
@@ -32,16 +35,11 @@ export abstract class Filter<T> {
 }
 
 export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
-    invalidCount = 0;
     protected abstract filter: RegExp[];
     protected abstract rawFilter: string;
     protected override log: CommonVideoFilterLog = new Map();
 
     protected abstract getTargetValue(video: NiconicoVideo): string | null;
-
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
 
     override filtering(recommendData: RecommendData): void {
         recommendData.items = recommendData.items.filter((item) => {
@@ -127,17 +125,6 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
     getRuleCount(): number {
         return this.filter.length;
     }
-}
-
-type CommonFilterType = ConditionalPick<FilteredData["filters"], CommonFilter>;
-
-export function getCommonFilters(
-    filters: FilteredData["filters"],
-): CommonFilterType {
-    return {
-        userNameFilter: filters.userNameFilter,
-        titleFilter: filters.titleFilter,
-    };
 }
 
 export function sortVideoId(

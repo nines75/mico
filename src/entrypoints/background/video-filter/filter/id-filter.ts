@@ -12,7 +12,7 @@ interface NgIds {
 }
 
 export class IdFilter extends Filter<IdLog> {
-    filter: NgIds;
+    private filter: NgIds;
     protected override log: IdLog = {
         userId: new Map(),
         videoId: [],
@@ -114,10 +114,12 @@ export class IdFilter extends Filter<IdLog> {
         rules
             .map((rule) => rule.rule)
             .forEach((ruleStr) => {
-                if (pattern.regex.checkVideoId.test(ruleStr)) {
+                if (pattern.regex.checkRawUserId.test(ruleStr)) {
+                    userIds.add(ruleStr);
+                } else if (pattern.regex.checkVideoId.test(ruleStr)) {
                     videoIds.add(ruleStr);
                 } else {
-                    userIds.add(ruleStr);
+                    this.invalidCount++;
                 }
             });
 
