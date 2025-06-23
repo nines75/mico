@@ -1,5 +1,5 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
-import { selectors } from "@/utils/config.js";
+import { attributes, selectors } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
 export interface Message {
@@ -18,6 +18,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
         if (message.type === "quick-edit") openQuickEdit(ctx);
         if (message.type === "mount-user-id")
             mountUserId(message.data as string);
+        if (message.type === "remove-recommend")
+            removeRecommend(message.data as string[]);
     };
 }
 
@@ -138,4 +140,20 @@ function mountUserId(userId: string) {
     });
 
     dropdown.appendChild(p);
+}
+
+function removeRecommend(ids: string[]) {
+    const elements = document.querySelectorAll(
+        "a[data-anchor-area='related_content,recommendation'][href^='/watch/']",
+    );
+
+    for (const element of elements) {
+        const videoId = element.getAttribute(attributes.recommendVideoId);
+        if (videoId === null || !(element instanceof HTMLAnchorElement))
+            continue;
+
+        if (ids.includes(videoId)) {
+            element.style.display = "none";
+        }
+    }
 }

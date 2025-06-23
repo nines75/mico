@@ -84,14 +84,11 @@ async function mainDataFilter(
     const series = mainData.data.response.series?.video;
     const video = series?.next;
 
-    if (
-        series !== undefined &&
-        video !== null &&
-        video !== undefined &&
-        isNgVideo(video, settings)
-    ) {
-        series.next = null;
-        meta?.setAttribute("content", JSON.stringify(mainData));
+    if (series !== undefined && video !== null && video !== undefined) {
+        if (isNgVideo(video, settings)) {
+            series.next = null;
+            meta?.setAttribute("content", JSON.stringify(mainData));
+        }
 
         await setLog({ series: { hasNext: true, data: video } }, details.tabId);
     } else {

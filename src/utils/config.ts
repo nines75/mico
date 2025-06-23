@@ -111,6 +111,11 @@ export const selectors = {
     dropdownCommentNo: ":scope > div > div:nth-child(2) > p:last-of-type",
     dropdownMain: ".z_dropdown > div > div > div",
     dropdownMainSample: ":scope > p:last-of-type",
+    recommendAnchor: ":scope > a[href^='/watch/']",
+} as const;
+
+export const attributes = {
+    recommendVideoId: "data-decoration-video-id",
 } as const;
 
 export const texts = {
@@ -124,6 +129,9 @@ export const texts = {
         messageAddNgUserId: "ユーザーのNG登録に成功しました",
         messageNotifyAddNgUserId:
             "{target}件のユーザーIDがNGリストに追加されました",
+        messageAddVideoNgUserId: "この動画を投稿したユーザーをNG登録しますか？",
+        messageAddNgVideoId: "この動画をNG登録しますか？",
+        titleAddNgVideo: "クリックしてこの動画ををNG登録",
     },
     settings: {
         messageNeverReset: "設定が一度も変更されていません",

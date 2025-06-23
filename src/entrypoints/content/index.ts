@@ -5,6 +5,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
+import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -66,6 +67,26 @@ async function observerCallback(
             // ドロップダウンが開かれた場合
             else if (node.className === "z_dropdown") {
                 await mountContentToDropdown(node, settings);
+            }
+
+            // 関連動画が追加された場合(初回ロード時)
+            else if (
+                node
+                    .querySelector(":scope > a")
+                    ?.getAttribute("data-anchor-area") ===
+                "related_content,recommendation"
+            ) {
+                mountToRecommendHandler(node);
+            }
+
+            // 関連動画が追加された場合(遷移時)
+            else if (
+                node.getAttribute("data-anchor-area") ===
+                "related_content,recommendation"
+            ) {
+                const href = node.getAttribute("href");
+                if (href !== null && href.startsWith("/watch/"))
+                    mountToRecommend(node);
             }
         }
     }

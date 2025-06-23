@@ -26,6 +26,8 @@ export interface IdLog {
 
 export type NiconicoVideoData = Map<string, NiconicoVideo>;
 
+export type VideoIdToUserId = Map<string, string>;
+
 export interface LogData {
     videoData?: VideoData;
     playbackTime?: number;
@@ -101,6 +103,7 @@ export interface VideoFiltering {
     ngUserName: CommonVideoFilterLog;
     ngTitle: CommonVideoFilterLog;
     videos: NiconicoVideoData;
+    videoIdToUserId: VideoIdToUserId;
 }
 
 interface SeriesData {

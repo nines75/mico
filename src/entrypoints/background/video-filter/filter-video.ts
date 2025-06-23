@@ -3,7 +3,7 @@ import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
 import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { LogData } from "@/types/storage/log.types.js";
+import { LogData, VideoIdToUserId } from "@/types/storage/log.types.js";
 
 export interface FilteredData {
     filters: {
@@ -13,6 +13,7 @@ export interface FilteredData {
     };
     loadedVideoCount: number;
     filteringTime: number;
+    videoIdToUserId: VideoIdToUserId;
 }
 
 export function filterVideo(
@@ -52,12 +53,19 @@ export function filterVideo(
 
     Object.values(filters).forEach((filter) => filter.filtering(recommendData));
 
+    const videoIdToUserId = new Map(
+        recommendData.items
+            .filter((item) => item.contentType === "video")
+            .map((item) => [item.id, item.content.owner.id]),
+    );
+
     const end = performance.now();
 
     return {
         filters,
         loadedVideoCount,
         filteringTime: end - start,
+        videoIdToUserId,
     };
 }
 
