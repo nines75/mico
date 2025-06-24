@@ -72,7 +72,7 @@ function renderIdLog(idLog: IdLog, videos: NiconicoVideoData) {
         const sampleVideo = videos.get(
             idLog.userId.get(userId)?.[0] as string,
         ) as NiconicoVideo;
-        const owner = sampleVideo.owner.name;
+        const userName = sampleVideo.owner.name;
 
         elements.push(
             <div key={userId} className="log-line comment">
@@ -82,7 +82,7 @@ function renderIdLog(idLog: IdLog, videos: NiconicoVideoData) {
                     title={texts.popup.titleRemoveNgUserId}
                     onClick={() => onClickId(userId, "user")}
                 >
-                    {`${userId}${owner === null ? "" : `(${owner})`}`}
+                    {`${userId}${userName === null ? "" : `(${userName})`}`}
                 </span>
             </div>,
         );
