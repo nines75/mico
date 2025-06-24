@@ -52,7 +52,7 @@ function Page() {
 
     const getDisabledMessage = (text: string) => (
         <section>
-            <span id="filter-disabled">
+            <span id="disabled-message">
                 {text}
                 <br />
                 {texts.popup.messageOutdatedLog}

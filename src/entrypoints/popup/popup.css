@@ -108,7 +108,7 @@ summary {
     margin: 20px;
     font-weight: bold;
 }
-#filter-disabled {
+#disabled-message {
     color: var(--lighter-gray);
     font-size: 13px;
     color: red;
