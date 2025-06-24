@@ -146,13 +146,14 @@ function removeRecommend(ids: string[]) {
     const elements = document.querySelectorAll(
         "a[data-anchor-area='related_content,recommendation'][href^='/watch/']",
     );
+    const idsSet = new Set(ids);
 
     for (const element of elements) {
         const videoId = element.getAttribute(attributes.recommendVideoId);
         if (videoId === null || !(element instanceof HTMLAnchorElement))
             continue;
 
-        if (ids.includes(videoId)) {
+        if (idsSet.has(videoId)) {
             element.style.display = "none";
         }
     }
