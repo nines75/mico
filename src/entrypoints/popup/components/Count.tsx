@@ -1,10 +1,9 @@
 import { useStorageStore } from "@/utils/store.js";
 
 export default function Count() {
-    const selectedTab = useStorageStore(
-        (state) => state.settings.popupSelectedTab,
-    );
     const count = useStorageStore((state) => {
+        const selectedTab = state.settings.popupSelectedTab;
+
         switch (selectedTab) {
             case "commentFilter":
                 return state.log?.videoData?.count;
