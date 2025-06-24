@@ -1,4 +1,7 @@
 import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+
+export type PopupTab = "commentFilter" | "videoFilter";
 
 export interface Settings {
     // コメントフィルター
@@ -35,6 +38,16 @@ export interface Settings {
     isPartialBadgeCount: boolean;
     isShowUserIdInDropdown: boolean;
 
+    // 動画フィルター
+
+    isVideoFilterEnabled: boolean;
+
+    /// フィルタリング
+    defaultVideoFilter: VideoFilterId;
+    ngId: string;
+    ngUserName: string;
+    ngTitle: string;
+
     // 拡張ニコる
     isExpandNicoruEnabled: boolean;
     nicoruCounts: number[];
@@ -43,10 +56,15 @@ export interface Settings {
     // 設定の開閉設定
     isOpenCustomColor: boolean;
 
-    // ポップアップの開閉設定
+    // ポップアップ
+
+    /// 開閉設定
     isOpenProcessingTime: boolean;
     isOpenCount: boolean;
     isOpenVideoLog: boolean;
+
+    // タブ
+    popupSelectedTab: PopupTab;
 }
 
 interface NicoruColor {

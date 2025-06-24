@@ -23,6 +23,7 @@
         "@icons-pack/react-simple-icons": "^13.0.0",
         "@replit/codemirror-vim": "^6.3.0",
         "deepmerge-ts": "^7.1.5",
+        "lucide": "^0.522.0",
         "lucide-react": "^0.513.0",
         "p-queue": "^8.1.0",
         "react": "^19.1.0",

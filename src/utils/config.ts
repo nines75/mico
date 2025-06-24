@@ -1,7 +1,9 @@
 import { LogViewerProps } from "@/entrypoints/popup/components/LogViewer.js";
-import { Settings } from "../types/storage/settings.types.js";
+import { PopupTab, Settings } from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { FilterAreaProps } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
 
 export const defaultSettings: Settings = {
     // コメントフィルター
@@ -37,6 +39,16 @@ export const defaultSettings: Settings = {
     isAutoReload: true,
     isPartialBadgeCount: false,
     isShowUserIdInDropdown: true,
+
+    // 動画フィルター
+
+    isVideoFilterEnabled: true,
+
+    /// フィルタリング
+    defaultVideoFilter: "ngId",
+    ngId: "",
+    ngTitle: "",
+    ngUserName: "",
 
     // 拡張ニコる
     isExpandNicoruEnabled: false,
@@ -78,10 +90,15 @@ export const defaultSettings: Settings = {
     // 設定の開閉設定
     isOpenCustomColor: false,
 
-    // ポップアップの開閉設定
+    // ポップアップ
+
+    /// 開閉設定
     isOpenProcessingTime: false,
     isOpenCount: true,
     isOpenVideoLog: true,
+
+    /// タブ
+    popupSelectedTab: "commentFilter",
 } as const;
 
 export const selectors = {
@@ -94,6 +111,11 @@ export const selectors = {
     dropdownCommentNo: ":scope > div > div:nth-child(2) > p:last-of-type",
     dropdownMain: ".z_dropdown > div > div > div",
     dropdownMainSample: ":scope > p:last-of-type",
+    recommendAnchor: ":scope > a[href^='/watch/']",
+} as const;
+
+export const attributes = {
+    recommendVideoId: "data-decoration-video-id",
 } as const;
 
 export const texts = {
@@ -107,6 +129,9 @@ export const texts = {
         messageAddNgUserId: "ユーザーのNG登録に成功しました",
         messageNotifyAddNgUserId:
             "{target}件のユーザーIDがNGリストに追加されました",
+        messageAddVideoNgUserId: "この動画を投稿したユーザーをNG登録しますか？",
+        messageAddNgVideoId: "この動画をNG登録しますか？",
+        titleAddNgVideo: "クリックしてこの動画ををNG登録",
     },
     settings: {
         messageNeverReset: "設定が一度も変更されていません",
@@ -120,6 +145,9 @@ export const texts = {
     popup: {
         messageNotWork: "このページでは動作しません",
         messageCommentFilterDisabled: "コメントフィルターが無効になっています",
+        messageVideoFilterDisabled: "動画フィルターが無効になっています",
+        messageOutdatedLog:
+            "表示されているログは古いものである可能性があります",
         messageFilteringLogDisabled:
             "フィルタリングログを保存しない設定になっています",
         titleUndoStrictNgUserIds:
@@ -127,8 +155,11 @@ export const texts = {
         messageUndoStrictNgUserIds:
             "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
         titleRemoveNgUserId: "クリックしてNGユーザーIDを削除",
+        titleRemoveNgVideoId: "クリックしてNG動画IDを削除",
         messageRemoveNgUserId: "以下のNGユーザーIDを削除しますか？\n\n{target}",
+        messageRemoveNgVideoId: "以下のNG動画IDを削除しますか？\n\n{target}",
         titleAddNgUserId: "クリックしてこのコメントを投稿したユーザーをNG登録",
+        titleAddVideoNgUserId: "クリックしてこの動画を投稿したユーザーをNG登録",
         messageAddNgUserId: "以下のユーザーIDをNG登録しますか？\n\n{target}",
         messageNgUserIdAlreadyExists: "このユーザーIDは既にNG登録されています",
     },
@@ -147,10 +178,42 @@ export const pattern = {
     watchPageUrl: "https://www.nicovideo.jp/watch/",
     watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",
     regex: {
+        checkRawUserId: /^\d+$/,
+        checkVideoId: /^(sm|so|nl|nm)\d+$/,
         extractVideoId: /(sm|so|nl|nm)\d+/,
         extractCommentNo: /(\d+)$/,
     },
 } as const;
+
+export const generalSettings = {
+    checkbox: {
+        filter: [
+            {
+                id: "isCaseInsensitive",
+                label: "大小文字を区別しない",
+                details:
+                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
+            },
+            {
+                id: "isVimKeybindingsEnabled",
+                label: "Vimのキーバインドを有効にする",
+            },
+        ],
+        log: [
+            {
+                id: "isSaveFilteringLog",
+                label: "フィルタリングログを保存する",
+                details:
+                    "有効になっている場合でもフィルタリングログはブラウザを起動するたびに削除されます。",
+            },
+        ],
+    },
+} as const satisfies {
+    checkbox: {
+        filter: CheckboxProps[];
+        log: CheckboxProps[];
+    };
+};
 
 export const commentFilterSettings = {
     checkbox: {
@@ -187,25 +250,7 @@ export const commentFilterSettings = {
                 },
             },
         ],
-        filter: [
-            {
-                id: "isCaseInsensitive",
-                label: "大小文字を区別しない",
-                details:
-                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
-            },
-            {
-                id: "isVimKeybindingsEnabled",
-                label: "Vimのキーバインドを有効にする",
-            },
-        ],
         log: [
-            {
-                id: "isSaveFilteringLog",
-                label: "フィルタリングログを保存する",
-                details:
-                    "有効になっている場合でもフィルタリングログはブラウザを起動するたびに削除されます。",
-            },
             {
                 id: "isShowNgScoreInLog",
                 label: "NGスコアを表示する",
@@ -277,12 +322,41 @@ export const commentFilterSettings = {
     checkbox: {
         top: CheckboxProps[];
         filtering: CheckboxProps[];
-        filter: CheckboxProps[];
         log: CheckboxProps[];
         notification: CheckboxProps[];
         other: CheckboxProps[];
     };
     filter: FilterAreaProps[];
+};
+
+export const videoFilterSettings = {
+    checkbox: {
+        top: [
+            {
+                id: "isVideoFilterEnabled",
+                label: "動画フィルターを有効にする",
+            },
+        ],
+    },
+    filter: [
+        {
+            id: "ngId",
+            name: "NGユーザーID/動画ID",
+        },
+        {
+            id: "ngUserName",
+            name: "NGユーザー名(正規表現)",
+        },
+        {
+            id: "ngTitle",
+            name: "NGタイトル(正規表現)",
+        },
+    ],
+} as const satisfies {
+    checkbox: {
+        top: CheckboxProps[];
+    };
+    filter: VideoFilterAreaProps[];
 };
 
 export const expandNicoruSettings = {
@@ -297,28 +371,65 @@ export const expandNicoruSettings = {
 };
 
 export const popupConfig = {
-    log: [
+    tab: [
         {
-            id: "easyComment",
-            name: "かんたんコメント",
+            id: "commentFilter",
+            name: "コメントフィルター",
         },
         {
-            id: "ngUserId",
-            name: "NGユーザーID",
-        },
-        {
-            id: "ngScore",
-            name: "NGスコア",
-        },
-        {
-            id: "ngCommand",
-            name: "NGコマンド",
-        },
-        {
-            id: "ngWord",
-            name: "NGワード",
+            id: "videoFilter",
+            name: "動画フィルター",
         },
     ],
+    commentFilter: {
+        log: [
+            {
+                id: "easyComment",
+                name: "かんたんコメント",
+            },
+            {
+                id: "ngUserId",
+                name: "NGユーザーID",
+            },
+            {
+                id: "ngScore",
+                name: "NGスコア",
+            },
+            {
+                id: "ngCommand",
+                name: "NGコマンド",
+            },
+            {
+                id: "ngWord",
+                name: "NGワード",
+            },
+        ],
+    },
+    videoFilter: {
+        log: [
+            {
+                id: "ngId",
+                name: "NGユーザーID/動画ID",
+            },
+            {
+                id: "ngUserName",
+                name: "NGユーザー名",
+            },
+            {
+                id: "ngTitle",
+                name: "NGタイトル",
+            },
+        ],
+    },
 } as const satisfies {
-    log: LogViewerProps[];
+    tab: {
+        id: PopupTab;
+        name: string;
+    }[];
+    commentFilter: {
+        log: LogViewerProps[];
+    };
+    videoFilter: {
+        log: VideoLogViewerProps[];
+    };
 };

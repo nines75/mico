@@ -8,6 +8,9 @@ import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
 import Details from "@/components/Details.js";
+import { useShallow } from "zustand/shallow";
+import VideoLogViewer from "./components/VideoLogViewer.js";
+import { Settings } from "@/types/storage/settings.types.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -35,10 +38,27 @@ function Init() {
 
 function Page() {
     const videoId = useStorageStore.getState().videoId;
+    const settings = useStorageStore.getState().settings;
+    const [selectedTab, save] = useStorageStore(
+        useShallow((state) => [
+            state.settings.popupSelectedTab,
+            state.saveSettings,
+        ]),
+    );
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(videoId);
+    const message = getMessage(videoId, settings);
+
+    const getDisabledMessage = (text: string) => (
+        <section>
+            <span id="disabled-message">
+                {text}
+                <br />
+                {texts.popup.messageOutdatedLog}
+            </span>
+        </section>
+    );
 
     useEffect(() => {
         browser.storage.onChanged.addListener(storageChangeHandler);
@@ -68,6 +88,36 @@ function Page() {
                     <section>
                         <span id="video-id">{videoId ?? ""}</span>
                     </section>
+                    <div>
+                        {popupConfig.tab.map((filter) => (
+                            <button
+                                key={filter.id}
+                                className={`${selectedTab === filter.id ? "selected-button" : ""}`}
+                                onClick={() =>
+                                    save({ popupSelectedTab: filter.id })
+                                }
+                            >
+                                <span>{filter.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                    {(() => {
+                        switch (selectedTab) {
+                            case "commentFilter":
+                                if (settings.isCommentFilterEnabled)
+                                    return null;
+
+                                return getDisabledMessage(
+                                    texts.popup.messageCommentFilterDisabled,
+                                );
+                            case "videoFilter":
+                                if (settings.isVideoFilterEnabled) return null;
+
+                                return getDisabledMessage(
+                                    texts.popup.messageVideoFilterDisabled,
+                                );
+                        }
+                    })()}
                     <Details id={"isOpenProcessingTime"} summary="処理時間">
                         <ProcessingTime />
                     </Details>
@@ -75,9 +125,25 @@ function Page() {
                         <Count />
                     </Details>
                     <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
-                        {popupConfig.log.map((log) => (
-                            <LogViewer key={log.id} {...log} />
-                        ))}
+                        {(() => {
+                            switch (selectedTab) {
+                                case "commentFilter":
+                                    return popupConfig.commentFilter.log.map(
+                                        (log) => (
+                                            <LogViewer key={log.id} {...log} />
+                                        ),
+                                    );
+                                case "videoFilter":
+                                    return popupConfig.videoFilter.log.map(
+                                        (log) => (
+                                            <VideoLogViewer
+                                                key={log.id}
+                                                {...log}
+                                            />
+                                        ),
+                                    );
+                            }
+                        })()}
                     </Details>
                 </main>
             )}
@@ -85,14 +151,12 @@ function Page() {
     );
 }
 
-const getMessage = (videoId: string | undefined): string | undefined => {
-    const settings = useStorageStore.getState().settings;
-
+const getMessage = (
+    videoId: string | undefined,
+    settings: Settings,
+): string | undefined => {
     if (videoId === undefined) return texts.popup.messageNotWork;
 
-    if (!settings.isCommentFilterEnabled) {
-        return texts.popup.messageCommentFilterDisabled;
-    }
     if (!settings.isSaveFilteringLog) {
         return texts.popup.messageFilteringLogDisabled;
     }

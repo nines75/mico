@@ -1,4 +1,5 @@
 import { NiconicoComment } from "../api/comment.types.js";
+import { NiconicoVideo } from "../api/recommend.types.js";
 
 /** Map<comment.userId, comment.id[]> */
 export type UserIdLog = Map<string, string[]>;
@@ -13,10 +14,26 @@ export type CommentData = Map<string, NiconicoComment>;
 
 export type NoToUserId = Map<number, string>;
 
+/** Map<rule, videoId[]> */
+export type CommonVideoFilterLog = Map<string, string[]>;
+
+export interface IdLog {
+    /** Map<userId, videoId[]> */
+    userId: Map<string, string[]>;
+    /** videoId[] */
+    videoId: string[];
+}
+
+export type NiconicoVideoData = Map<string, NiconicoVideo>;
+
+export type VideoIdToUserId = Map<string, string>;
+
 export interface LogData {
     videoData?: VideoData;
     playbackTime?: number;
     processingTime?: ProcessingTimeData;
+    videoFilterLog?: VideoFilterLog;
+    series?: SeriesData;
 }
 
 export interface VideoData {
@@ -57,4 +74,39 @@ export interface ProcessingTimeData {
     filtering?: number;
     fetchTag?: number;
     saveVideoLog?: number;
+}
+
+export interface VideoFilterLog {
+    count: VideoCount;
+    filtering: VideoFiltering;
+    processingTime: ProcessingTimeData;
+}
+
+export interface VideoCount {
+    rule: {
+        ngId: number;
+        ngUserName: number;
+        ngTitle: number;
+    };
+    blocked: {
+        ngId: number;
+        ngUserName: number;
+        ngTitle: number;
+    };
+    totalBlocked: number;
+    loaded: number;
+    invalid: number;
+}
+
+export interface VideoFiltering {
+    ngId: IdLog;
+    ngUserName: CommonVideoFilterLog;
+    ngTitle: CommonVideoFilterLog;
+    videos: NiconicoVideoData;
+    videoIdToUserId: VideoIdToUserId;
+}
+
+interface SeriesData {
+    hasNext: boolean;
+    data?: NiconicoVideo;
 }
