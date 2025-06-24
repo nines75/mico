@@ -37,10 +37,11 @@ function Init() {
 }
 
 function Page() {
-    const videoId = useStorageStore.getState().videoId;
     const settings = useStorageStore.getState().settings;
-    const [selectedTab, save] = useStorageStore(
+    const isNiconico = useStorageStore.getState().isNiconico;
+    const [videoId, selectedTab, save] = useStorageStore(
         useShallow((state) => [
+            state.log?.videoId,
             state.settings.popupSelectedTab,
             state.saveSettings,
         ]),
@@ -48,7 +49,7 @@ function Page() {
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(videoId, settings);
+    const message = getMessage(isNiconico, settings);
 
     const getDisabledMessage = (text: string) => (
         <section>
@@ -152,10 +153,10 @@ function Page() {
 }
 
 const getMessage = (
-    videoId: string | undefined,
+    isNiconico: boolean,
     settings: Settings,
 ): string | undefined => {
-    if (videoId === undefined) return texts.popup.messageNotWork;
+    if (!isNiconico) return texts.popup.messageNotWork;
 
     if (!settings.isSaveFilteringLog) {
         return texts.popup.messageFilteringLogDisabled;

@@ -15,9 +15,9 @@ import { extractVideoId } from "./util.js";
 interface StorageState {
     settings: Settings;
     log: LogData | undefined;
-    videoId: string | undefined;
     tabId: number | undefined;
     isLoading: boolean;
+    isNiconico: boolean;
     loadSettingsPageData: () => Promise<void>;
     loadPopupPageData: () => Promise<void>;
     saveSettings: (settings: PartialDeep<Settings>) => void;
@@ -27,9 +27,9 @@ export const useStorageStore = create<StorageState>()(
     subscribeWithSelector((set) => ({
         settings: defaultSettings,
         log: undefined,
-        videoId: undefined,
         tabId: undefined,
         isLoading: true,
+        isNiconico: false,
         loadSettingsPageData: async () => {
             const settings = await loadSettings();
 
@@ -54,7 +54,7 @@ export const useStorageStore = create<StorageState>()(
             set({
                 settings,
                 log,
-                videoId,
+                isNiconico: videoId !== undefined,
                 tabId,
                 isLoading: false,
             });

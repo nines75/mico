@@ -34,6 +34,7 @@ export interface LogData {
     processingTime?: ProcessingTimeData;
     videoFilterLog?: VideoFilterLog;
     series?: SeriesData;
+    videoId?: string | null;
 }
 
 export interface VideoData {

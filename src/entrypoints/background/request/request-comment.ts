@@ -8,6 +8,7 @@ import {
     getAllData,
     removeData,
     LogType,
+    setLog,
 } from "@/utils/storage.js";
 import {
     extractVideoId,
@@ -44,6 +45,7 @@ export default function commentRequest(
             const [filteredData] = await Promise.all([
                 filterComment(commentData.data.threads, settings, videoId),
                 restorePlaybackTime(tabId),
+                setLog({ videoId: videoId ?? null }, tabId),
             ]);
 
             filter.write(encoder.encode(JSON.stringify(commentData)));
