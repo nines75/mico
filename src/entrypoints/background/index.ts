@@ -34,7 +34,7 @@ export default defineBackground(() => {
             urls: [
                 "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
             ],
-            types: ["xmlhttprequest", "main_frame"],
+            types: ["xmlhttprequest"],
         },
         ["blocking"],
     );
