@@ -9,6 +9,7 @@ import {
     CustomRuleData,
     sortCommentId,
 } from "../filter.js";
+import { countCommonLog } from "@/utils/util.js";
 
 type NgWordData = CustomRuleData<NgWord>;
 
@@ -118,14 +119,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     override getCount(): number {
         return this.log
             .values()
-            .reduce(
-                (sum, map) =>
-                    sum +
-                    map
-                        .values()
-                        .reduce((tmpSum, ids) => tmpSum + ids.length, 0),
-                0,
-            );
+            .reduce((sum, map) => sum + countCommonLog(map), 0);
     }
 
     createFilter(settings: Settings): NgWordData {

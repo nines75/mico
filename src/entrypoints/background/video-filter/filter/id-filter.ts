@@ -5,6 +5,7 @@ import { IdLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
+import { countCommonLog } from "@/utils/util.js";
 
 interface NgIds {
     userIds: Set<string>;
@@ -100,10 +101,7 @@ export class IdFilter extends Filter<IdLog> {
     }
 
     override getCount(): number {
-        return (
-            this.log.userId.values().reduce((sum, ids) => sum + ids.length, 0) +
-            this.log.videoId.length
-        );
+        return countCommonLog(this.log.userId) + this.log.videoId.length;
     }
 
     createFilter(): NgIds {

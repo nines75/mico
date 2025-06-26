@@ -1,12 +1,14 @@
 import { NiconicoComment } from "../api/comment.types.js";
 import { NiconicoVideo } from "../api/recommend.types.js";
 
+export type CommonLog = Map<string, string[]>;
+
 /** Map<comment.userId, comment.id[]> */
-export type UserIdLog = Map<string, string[]>;
+export type UserIdLog = CommonLog;
 /** comment.id[] */
 export type ScoreLog = string[];
 /** Map<rule, comment.id[]> */
-export type CommandLog = Map<string, string[]>;
+export type CommandLog = CommonLog;
 /** Map<rule, Map<comment.body, comment.id[]>> */
 export type WordLog = Map<string, Map<string, string[]>>;
 
@@ -14,12 +16,9 @@ export type CommentData = Map<string, NiconicoComment>;
 
 export type NoToUserId = Map<number, string>;
 
-/** Map<rule, videoId[]> */
-export type CommonVideoFilterLog = Map<string, string[]>;
-
 export interface IdLog {
     /** Map<userId, videoId[]> */
-    userId: Map<string, string[]>;
+    userId: CommonLog;
     /** videoId[] */
     videoId: string[];
 }
@@ -101,8 +100,10 @@ export interface VideoCount {
 
 export interface VideoFiltering {
     ngId: IdLog;
-    ngUserName: CommonVideoFilterLog;
-    ngTitle: CommonVideoFilterLog;
+    /** Map<rule, videoId[]> */
+    ngUserName: CommonLog;
+    /** Map<rule, videoId[]> */
+    ngTitle: CommonLog;
     videos: NiconicoVideoData;
     videoIdToUserId: VideoIdToUserId;
 }

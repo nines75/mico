@@ -1,10 +1,8 @@
 import { NiconicoVideo, RecommendData } from "@/types/api/recommend.types.js";
-import {
-    CommonVideoFilterLog,
-    NiconicoVideoData,
-} from "@/types/storage/log.types.js";
+import { CommonLog, NiconicoVideoData } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { extractRule } from "../comment-filter/filter.js";
+import { countCommonLog } from "@/utils/util.js";
 
 export abstract class Filter<T> {
     protected invalidCount = 0;
@@ -34,10 +32,10 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
+export abstract class CommonFilter extends Filter<CommonLog> {
     protected abstract filter: RegExp[];
     protected abstract rawFilter: string;
-    protected override log: CommonVideoFilterLog = new Map();
+    protected override log: CommonLog = new Map();
 
     protected abstract getTargetValue(video: NiconicoVideo): string | null;
 
@@ -83,11 +81,11 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
     }
 
     override getCount(): number {
-        return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
+        return countCommonLog(this.log);
     }
 
     override sortLog(): void {
-        const log: CommonVideoFilterLog = new Map();
+        const log: CommonLog = new Map();
 
         // フィルター昇順にソート
         this.filter.forEach((rule) => {

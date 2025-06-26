@@ -9,6 +9,7 @@ import {
     CustomRuleData,
     sortCommentId,
 } from "../filter.js";
+import { countCommonLog } from "@/utils/util.js";
 
 interface NgCommandData extends CustomRuleData<NgCommand> {
     hasAll: boolean;
@@ -140,7 +141,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     }
 
     override getCount(): number {
-        return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
+        return countCommonLog(this.log);
     }
 
     getDisableCount(): number {

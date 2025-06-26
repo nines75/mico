@@ -1,5 +1,5 @@
 import {
-    CommonVideoFilterLog,
+    CommonLog,
     IdLog,
     NiconicoVideoData,
     VideoCount,
@@ -136,10 +136,7 @@ function renderIdLog(idLog: IdLog, videos: NiconicoVideoData) {
     return elements;
 }
 
-function renderCommonLog(
-    commonLog: CommonVideoFilterLog,
-    videos: NiconicoVideoData,
-) {
+function renderCommonLog(commonLog: CommonLog, videos: NiconicoVideoData) {
     const renderLog = (rule: string, elements: JSX.Element[]) => {
         elements.push(
             <div key={rule} className="log-line comment">{`# ${rule}`}</div>,

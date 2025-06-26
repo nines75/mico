@@ -3,6 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { extractRule, Filter, Rule, sortCommentId } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
+import { countCommonLog } from "@/utils/util.js";
 
 export class UserIdFilter extends Filter<UserIdLog> {
     private filter = new Set<string>();
@@ -69,7 +70,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
     }
 
     override getCount(): number {
-        return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
+        return countCommonLog(this.log);
     }
 
     updateFilter(userIds: Set<string>) {

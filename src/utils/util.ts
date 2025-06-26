@@ -1,4 +1,4 @@
-import { ProcessingTimeData } from "../types/storage/log.types.js";
+import { CommonLog, ProcessingTimeData } from "../types/storage/log.types.js";
 import { pattern, colors } from "./config.js";
 import { setLog } from "./storage.js";
 
@@ -53,4 +53,8 @@ export async function saveProcessingTime(
     });
 
     await setLog({ processingTime }, tabId);
+}
+
+export function countCommonLog(log: CommonLog) {
+    return log.values().reduce((sum, array) => sum + array.length, 0);
 }
