@@ -82,7 +82,7 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
     }
 
-    protected sortLog(): void {
+    sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
             this.filter.rules.map((ngWord) => ngWord.regex.toString()),

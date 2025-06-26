@@ -113,7 +113,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
         });
     }
 
-    protected sortLog(): void {
+    sortLog(): void {
         const log: CommandLog = new Map();
         const ngCommands = new Set(
             this.filter.rules.map((ngCommand) => ngCommand.rule),

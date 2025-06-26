@@ -15,11 +15,9 @@ export abstract class Filter<T> {
 
     abstract filtering(threads: Thread[], isStrictOnly: boolean): void;
     abstract getCount(): number;
-    protected abstract sortLog(): void;
+    abstract sortLog(): void;
 
     getLog() {
-        this.sortLog();
-
         return this.log;
     }
 

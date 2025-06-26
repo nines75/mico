@@ -27,13 +27,13 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
 
 function getLog(filteredData: FilteredData): VideoFiltering {
     const { idFilter, userNameFilter, titleFilter } = filteredData.filters;
-
-    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
     const videos = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getVideos(),
         ]),
     );
+
+    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
     return {
         ngId: idFilter.getLog(),

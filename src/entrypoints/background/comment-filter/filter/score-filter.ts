@@ -29,7 +29,7 @@ export class ScoreFilter extends Filter<ScoreLog> {
         });
     }
 
-    protected sortLog(): void {
+    sortLog(): void {
         this.log = sortCommentId(this.log, this.filteredComments, true);
     }
 

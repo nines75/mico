@@ -53,7 +53,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
         });
     }
 
-    protected sortLog(): void {
+    sortLog(): void {
         const log: UserIdLog = new Map();
         const ngUserIds = getNgUserIdSet(this.settings); // strictルールによってユーザーIDが追加されている場合があるので改めて取得する
 

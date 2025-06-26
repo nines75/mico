@@ -35,12 +35,13 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
 function getVideoLog(filteredData: FilteredData): VideoData["log"] {
     const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
         filteredData.filters;
-
     const comments = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getComments(),
         ]),
     );
+
+    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
     return {
         ngUserId: userIdFilter.getLog(),
