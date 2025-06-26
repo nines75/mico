@@ -1,13 +1,13 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { CommandLog } from "@/types/storage/log.types.js";
-import { sortCommentId } from "../sort-log.js";
 import {
     extractCustomRule,
     hasTagRule,
     CustomFilter,
     CustomRule,
     CustomRuleData,
+    sortCommentId,
 } from "../filter.js";
 
 interface NgCommandData extends CustomRuleData<NgCommand> {
