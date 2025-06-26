@@ -64,6 +64,15 @@ export default function commentRequest(
             // ログを保存
             if (settings.isSaveFilteringLog) {
                 tasks.push(saveVideoLog(filteredData, tabId));
+                tasks.push(
+                    saveProcessingTime(
+                        [
+                            ["filtering", filteredData.filteringTime],
+                            ["fetchTag", filteredData.fetchTagTime],
+                        ],
+                        tabId,
+                    ),
+                );
             }
 
             // 通知を送信
@@ -77,17 +86,6 @@ export default function commentRequest(
                     ),
                 );
             }
-
-            // フィルタリングの処理時間を保存
-            tasks.push(
-                saveProcessingTime(
-                    [
-                        ["filtering", filteredData.filteringTime],
-                        ["fetchTag", filteredData.fetchTagTime],
-                    ],
-                    tabId,
-                ),
-            );
 
             await Promise.all(tasks);
             await cleanupStorage();
