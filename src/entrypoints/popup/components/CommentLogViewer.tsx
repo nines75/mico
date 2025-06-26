@@ -21,11 +21,9 @@ import { JSX } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
+import { LogFrame } from "./LogFrame.js";
 
-type LogId = keyof ConditionalPick<
-    VideoData["count"]["blocked"],
-    number | undefined
->; // VideoLogには存在しない可能性があるので、必ず値を持つcountのキーを指定する
+type LogId = keyof ConditionalPick<VideoData["count"]["blocked"], number>;
 
 export interface CommentLogViewerProps {
     id: LogId;
@@ -47,20 +45,15 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     if (id === "ngScore" && !settings.isScoreFilterEnabled) return null;
 
     return (
-        <section>
-            <div className="filtering-type">{name}</div>
-            <div>
-                {id !== "easyComment" && id !== "ngScore" && (
-                    <span className="info">
-                        <span>ルール数:</span>
-                        <span className="value">{count?.rule[id] ?? 0}</span>
-                    </span>
-                )}
-                <span className="info">
-                    <span>ブロック数:</span>
-                    <span className="value">{count?.blocked[id] ?? 0}</span>
-                </span>
-            </div>
+        <LogFrame
+            rule={
+                id !== "easyComment" && id !== "ngScore"
+                    ? count?.rule[id]
+                    : undefined
+            }
+            blocked={count?.blocked[id] ?? 0}
+            {...{ name }}
+        >
             {id === "ngUserId" && (videoLog?.strictNgUserIds.size ?? 0) > 0 && (
                 <div>
                     <button
@@ -80,7 +73,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             {id !== "easyComment" && (
                 <div className="log">{getLog(id, videoLog, settings)}</div>
             )}
-        </section>
+        </LogFrame>
     );
 }
 
@@ -133,24 +126,6 @@ function renderUserIdLog(
     strictNgUserIds?: Set<string>,
 ) {
     const renderLog = (userId: string, elements: JSX.Element[]) => {
-        const onClickUserId = async () => {
-            try {
-                if (
-                    !confirm(
-                        texts.popup.messageRemoveNgUserId.replace(
-                            "{target}",
-                            userId,
-                        ),
-                    )
-                )
-                    return;
-
-                await removeNgUserId(new Set([userId]));
-            } catch (e) {
-                console.error(e);
-            }
-        };
-
         elements.push(
             <div key={userId} className="log-line comment">
                 {"# "}
@@ -161,7 +136,7 @@ function renderUserIdLog(
                 <span
                     className="clickable"
                     title={texts.popup.titleRemoveNgUserId}
-                    onClick={onClickUserId}
+                    onClick={() => onClickUserId(userId)}
                 >
                     {userId}
                 </span>
@@ -375,31 +350,50 @@ function formatCommentWithDuplicate(
     return elements;
 }
 
-async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
-    // 最新の設定を取得
-    const settings = useStorageStore.getState().settings;
-
-    const ngUserIds = getNgUserIdSet(settings, ""); // 動画限定ルールではないNGユーザーIDを取得
-    const targetUserIds = new Set(
-        (Array.isArray(comments) ? comments : [comments])
-            .filter((comment) => !ngUserIds.has(comment.userId))
-            .map((comment) => comment.userId),
-    );
-
-    if (targetUserIds.size === 0) {
-        alert(texts.popup.messageNgUserIdAlreadyExists);
-        return;
-    }
-
-    if (
-        !confirm(
-            texts.popup.messageAddNgUserId.replace(
-                "{target}",
-                [...targetUserIds].join("\n"),
-            ),
+async function onClickUserId(userId: string) {
+    try {
+        if (
+            !confirm(
+                texts.popup.messageRemoveNgUserId.replace("{target}", userId),
+            )
         )
-    )
-        return;
+            return;
 
-    await addNgUserId(new Set(targetUserIds));
+        await removeNgUserId(new Set([userId]));
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
+    try {
+        // 最新の設定を取得
+        const settings = useStorageStore.getState().settings;
+
+        const ngUserIds = getNgUserIdSet(settings, ""); // 動画限定ルールではないNGユーザーIDを取得
+        const targetUserIds = new Set(
+            (Array.isArray(comments) ? comments : [comments])
+                .filter((comment) => !ngUserIds.has(comment.userId))
+                .map((comment) => comment.userId),
+        );
+
+        if (targetUserIds.size === 0) {
+            alert(texts.popup.messageNgUserIdAlreadyExists);
+            return;
+        }
+
+        if (
+            !confirm(
+                texts.popup.messageAddNgUserId.replace(
+                    "{target}",
+                    [...targetUserIds].join("\n"),
+                ),
+            )
+        )
+            return;
+
+        await addNgUserId(new Set(targetUserIds));
+    } catch (e) {
+        console.error(e);
+    }
 }
