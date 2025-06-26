@@ -1,4 +1,4 @@
-import { LogViewerProps } from "@/entrypoints/popup/components/LogViewer.js";
+import { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
 import { PopupTab, Settings } from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { FilterAreaProps } from "@/entrypoints/options/components/ui/FilterArea.js";
@@ -427,7 +427,7 @@ export const popupConfig = {
         name: string;
     }[];
     commentFilter: {
-        log: LogViewerProps[];
+        log: CommentLogViewerProps[];
     };
     videoFilter: {
         log: VideoLogViewerProps[];

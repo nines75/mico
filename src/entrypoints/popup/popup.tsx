@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import Count from "./components/Count.js";
-import LogViewer from "./components/LogViewer.js";
+import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
 import { popupConfig, texts, urls } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
@@ -131,7 +131,10 @@ function Page() {
                                 case "commentFilter":
                                     return popupConfig.commentFilter.log.map(
                                         (log) => (
-                                            <LogViewer key={log.id} {...log} />
+                                            <CommentLogViewer
+                                                key={log.id}
+                                                {...log}
+                                            />
                                         ),
                                     );
                                 case "videoFilter":

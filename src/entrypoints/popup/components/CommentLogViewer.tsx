@@ -27,12 +27,12 @@ type LogId = keyof ConditionalPick<
     number | undefined
 >; // VideoLogには存在しない可能性があるので、必ず値を持つcountのキーを指定する
 
-export interface LogViewerProps {
+export interface CommentLogViewerProps {
     id: LogId;
     name: string;
 }
 
-export default function LogViewer({ id, name }: LogViewerProps) {
+export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     const [videoLog, count] = useStorageStore(
         useShallow((state) => [
             state.log?.videoData?.log,
