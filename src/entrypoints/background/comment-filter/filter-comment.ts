@@ -36,12 +36,6 @@ export async function filterComment(
     // フィルタリングと関係ない処理
     // -------------------------------------------------------------------------------------------
 
-    const noToUserId = new Map(
-        threads.flatMap((thread) =>
-            thread.comments.map((comment) => [comment.no, comment.userId]),
-        ),
-    );
-
     // 動画の総コメント数を取得
     const loadedCommentCount = threads.reduce(
         (sum, thread) => sum + thread.comments.length,
@@ -113,6 +107,16 @@ export async function filterComment(
 
     // フィルタリング
     Object.values(filters).forEach((filter) => filter.filtering(threads));
+
+    // -------------------------------------------------------------------------------------------
+    // フィルタリングの後処理
+    // -------------------------------------------------------------------------------------------
+
+    const noToUserId = new Map(
+        threads.flatMap((thread) =>
+            thread.comments.map((comment) => [comment.no, comment.userId]),
+        ),
+    );
 
     const end = performance.now();
 
