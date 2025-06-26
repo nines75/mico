@@ -10,7 +10,7 @@ export type NoToUserId = Map<number, string>;
 export interface CommentFilterLog {
     count: CommentCount;
     filtering: CommentFiltering;
-    processingTime: ProcessingTimeData;
+    processingTime?: ProcessingTimeData;
 }
 
 export interface CommentCount {

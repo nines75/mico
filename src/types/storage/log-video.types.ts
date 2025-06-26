@@ -14,7 +14,7 @@ export type VideoIdToUserId = Map<string, string>;
 export interface VideoFilterLog {
     count: VideoCount;
     filtering: VideoFiltering;
-    processingTime: ProcessingTimeData;
+    processingTime?: ProcessingTimeData;
 }
 
 export interface VideoCount {

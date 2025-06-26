@@ -13,17 +13,17 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
     const count = getCount(filteredData);
     const filtering = getLog(filteredData);
 
-    const end = performance.now();
-
     const videoFilterLog: VideoFilterLog = {
         count,
         filtering,
-        processingTime: {
-            saveLog: end - start,
-        },
     };
-
     await setLog({ videoFilterLog }, tabId);
+
+    const end = performance.now();
+    await setLog(
+        { videoFilterLog: { processingTime: { saveLog: end - start } } },
+        tabId,
+    );
 }
 
 function getLog(filteredData: FilteredData): VideoFiltering {

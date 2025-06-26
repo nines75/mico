@@ -19,16 +19,10 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
     const count = getCount(filteredData, settings);
     const filtering = getLog(filteredData);
 
-    const end = performance.now();
-
     const commentFilterLog: CommentFilterLog = {
         count,
         filtering,
-        processingTime: {
-            saveLog: end - start,
-        },
     };
-
     await Promise.all([
         setLog({ commentFilterLog }, tabId),
         changeBadgeState(
@@ -38,6 +32,12 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
             tabId,
         ),
     ]);
+
+    const end = performance.now();
+    await setLog(
+        { commentFilterLog: { processingTime: { saveLog: end - start } } },
+        tabId,
+    );
 }
 
 function getLog(filteredData: FilteredData): CommentFiltering {
