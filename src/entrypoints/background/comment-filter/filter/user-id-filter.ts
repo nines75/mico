@@ -1,13 +1,13 @@
-import { UserIdLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { extractRule, Filter, Rule, sortCommentId } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog } from "@/utils/util.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
-export class UserIdFilter extends Filter<UserIdLog> {
+export class UserIdFilter extends Filter<CommonLog> {
     private filter = new Set<string>();
-    protected log: UserIdLog = new Map();
+    protected log: CommonLog = new Map();
 
     constructor(settings: Settings, videoId: string) {
         super(settings);
@@ -46,7 +46,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
     }
 
     override sortLog(): void {
-        const log: UserIdLog = new Map();
+        const log: CommonLog = new Map();
         const ngUserIds = getNgUserIdSet(this.settings); // strictルールによってユーザーIDが追加されている場合があるので改めて取得する
 
         // フィルター昇順にソート

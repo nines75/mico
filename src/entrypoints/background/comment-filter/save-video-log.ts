@@ -1,9 +1,13 @@
-import { VideoData } from "@/types/storage/log.types.js";
 import { FilteredData } from "./filter-comment.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
-import { changeBadgeState, saveProcessingTime } from "@/utils/util.js";
+import { changeBadgeState } from "@/utils/util.js";
 import { extractRule, getCustomFilters } from "./filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
+import {
+    CommentCount,
+    CommentFiltering,
+    CommentFilterLog,
+} from "@/types/storage/log-comment.types.js";
 
 export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
@@ -13,13 +17,20 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
     filteredData.filters.userIdFilter.setSettings(settings);
 
     const count = getCount(filteredData, settings);
-    const videoLog = getVideoLog(filteredData);
+    const filtering = getLog(filteredData);
 
-    // 各関数ですべてのプロパティが存在することは保証されているのでRequiredDeepは不要
-    const value: VideoData = { count, log: videoLog };
+    const end = performance.now();
+
+    const commentFilterLog: CommentFilterLog = {
+        count,
+        filtering,
+        processingTime: {
+            saveLog: end - start,
+        },
+    };
 
     await Promise.all([
-        setLog({ videoData: value }, tabId),
+        setLog({ commentFilterLog }, tabId),
         changeBadgeState(
             settings.isPartialBadgeCount
                 ? (count.totalBlocked - count.blocked.easyComment).toString()
@@ -27,12 +38,9 @@ export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
             tabId,
         ),
     ]);
-
-    const end = performance.now();
-    await saveProcessingTime([["saveVideoLog", end - start]], tabId);
 }
 
-function getVideoLog(filteredData: FilteredData): VideoData["log"] {
+function getLog(filteredData: FilteredData): CommentFiltering {
     const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
         filteredData.filters;
     const comments = new Map(
@@ -57,16 +65,16 @@ function getVideoLog(filteredData: FilteredData): VideoData["log"] {
 function getCount(
     filteredData: FilteredData,
     settings: Settings,
-): VideoData["count"] {
+): CommentCount {
     const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
         filteredData.filters;
 
-    const rule: VideoData["count"]["rule"] = {
+    const rule: CommentCount["rule"] = {
         ngUserId: extractRule(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
         ngCommand: commandFilter.getRuleCount(),
         ngWord: wordFilter.getRuleCount(),
     };
-    const blocked: VideoData["count"]["blocked"] = {
+    const blocked: CommentCount["blocked"] = {
         easyComment: filteredData.easyCommentCount,
         ngUserId: userIdFilter.getCount(),
         ngScore: scoreFilter.getCount(),

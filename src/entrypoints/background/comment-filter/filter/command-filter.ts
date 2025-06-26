@@ -1,6 +1,5 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CommandLog } from "@/types/storage/log.types.js";
 import {
     extractCustomRule,
     hasTagRule,
@@ -10,6 +9,7 @@ import {
     sortCommentId,
 } from "../filter.js";
 import { countCommonLog } from "@/utils/util.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
 interface NgCommandData extends CustomRuleData<NgCommand> {
     hasAll: boolean;
@@ -20,10 +20,10 @@ interface NgCommand extends CustomRule {
     isDisable: boolean;
 }
 
-export class CommandFilter extends CustomFilter<CommandLog> {
+export class CommandFilter extends CustomFilter<CommonLog> {
     private disableCount = 0;
     protected filter: NgCommandData;
-    protected log: CommandLog = new Map();
+    protected log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);
@@ -115,7 +115,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     }
 
     override sortLog(): void {
-        const log: CommandLog = new Map();
+        const log: CommonLog = new Map();
         const ngCommands = new Set(
             this.filter.rules.map((ngCommand) => ngCommand.rule),
         );

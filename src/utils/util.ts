@@ -1,4 +1,4 @@
-import { CommonLog, ProcessingTimeData } from "../types/storage/log.types.js";
+import { CommonLog } from "../types/storage/log.types.js";
 import { pattern, colors } from "./config.js";
 import { setLog } from "./storage.js";
 
@@ -39,20 +39,6 @@ export async function sendNotification(message: string) {
 
 export async function savePlaybackTime(tabId: number, time: number) {
     await setLog({ playbackTime: time }, tabId);
-}
-
-export async function saveProcessingTime(
-    times: [keyof ProcessingTimeData, number | undefined][],
-    tabId: number,
-) {
-    if (times.length === 0) return;
-
-    const processingTime: ProcessingTimeData = {};
-    times.forEach(([key, time]) => {
-        processingTime[key] = time ?? -1; // deepmerge-tsだとundefinedで上書きができないのでnullを使う必要があるが、全てのプロパティでnullチェックするのが面倒なので-1を使う
-    });
-
-    await setLog({ processingTime }, tabId);
 }
 
 export function countCommonLog(log: CommonLog) {

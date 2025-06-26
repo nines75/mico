@@ -6,7 +6,7 @@ export default function Count() {
 
         switch (selectedTab) {
             case "commentFilter":
-                return state.log?.videoData?.count;
+                return state.log?.commentFilterLog?.count;
             case "videoFilter":
                 return state.log?.videoFilterLog?.count;
         }

@@ -1,5 +1,5 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import { LogData } from "@/types/storage/log.types.js";
+import { CommentFilterLog } from "@/types/storage/log-comment.types.js";
 
 export const testThreads = (() => {
     const base = {
@@ -97,48 +97,46 @@ export const testThreads = (() => {
 })();
 
 export const testLog = {
-    processingTime: { filtering: 51, fetchTag: 50, saveVideoLog: 5 },
-    videoData: {
-        count: {
-            rule: {
-                ngUserId: 1,
-                ngCommand: 1,
-                ngWord: 1,
-            },
-            blocked: {
-                easyComment: 2,
-                ngUserId: 2,
-                ngScore: 1,
-                ngCommand: 1,
-                ngWord: 1,
-            },
-            totalBlocked: 7,
-            loaded: 7,
-            include: 0,
-            exclude: 0,
-            disable: 0,
-            invalid: 0,
+    count: {
+        rule: {
+            ngUserId: 1,
+            ngCommand: 1,
+            ngWord: 1,
         },
-        log: {
-            ngUserId: new Map([
-                ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
-            ]),
-            ngScore: ["1002"],
-            ngCommand: new Map([["big", ["1004"]]]),
-            ngWord: new Map([
-                ["/コメント/i", new Map([["テストコメント", ["1003"]]])],
-            ]),
-            strictNgUserIds: new Set(),
-            noToUserId: new Map(),
-            comments: new Map(
-                getComments(["1000", "1001", "1002", "1004", "1003"]) as [
-                    string,
-                    NiconicoComment,
-                ][],
-            ),
+        blocked: {
+            easyComment: 2,
+            ngUserId: 2,
+            ngScore: 1,
+            ngCommand: 1,
+            ngWord: 1,
         },
+        totalBlocked: 7,
+        loaded: 7,
+        include: 0,
+        exclude: 0,
+        disable: 0,
+        invalid: 0,
     },
-} as const satisfies LogData;
+    filtering: {
+        ngUserId: new Map([
+            ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
+        ]),
+        ngScore: ["1002"],
+        ngCommand: new Map([["big", ["1004"]]]),
+        ngWord: new Map([
+            ["/コメント/i", new Map([["テストコメント", ["1003"]]])],
+        ]),
+        strictNgUserIds: new Set(),
+        noToUserId: new Map(),
+        comments: new Map(
+            getComments(["1000", "1001", "1002", "1004", "1003"]) as [
+                string,
+                NiconicoComment,
+            ][],
+        ),
+    },
+    processingTime: { filtering: 51, fetchTag: 50, saveLog: 5 },
+} as const satisfies CommentFilterLog;
 
 export function hasComment(threads: Thread[], ids: string[]) {
     return threads.some((thread) =>

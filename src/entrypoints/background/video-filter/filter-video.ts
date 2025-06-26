@@ -3,7 +3,8 @@ import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
 import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { LogData, VideoIdToUserId } from "@/types/storage/log.types.js";
+import { LogData } from "@/types/storage/log.types.js";
+import { VideoIdToUserId } from "@/types/storage/log-video.types.js";
 
 export interface FilteredData {
     filters: {

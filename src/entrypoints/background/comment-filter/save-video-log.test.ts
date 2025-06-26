@@ -44,6 +44,8 @@ describe(`${saveVideoLog.name}()`, () => {
 
         const log = await getLogData(1);
 
-        expect(log?.videoData).toEqual(testLog.videoData);
+        // 処理時間のログは不定なのでそれ以外を確認
+        expect(log?.commentFilterLog?.count).toEqual(testLog.count);
+        expect(log?.commentFilterLog?.filtering).toEqual(testLog.filtering);
     });
 });

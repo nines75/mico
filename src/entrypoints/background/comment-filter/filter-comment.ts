@@ -1,5 +1,4 @@
 import { Thread } from "@/types/api/comment.types.js";
-import { NoToUserId } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { texts } from "@/utils/config.js";
 import { WordFilter } from "./filter/word-filter.js";
@@ -7,6 +6,7 @@ import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
 import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
+import { NoToUserId } from "@/types/storage/log-comment.types.js";
 
 export interface FilteredData {
     filters: {

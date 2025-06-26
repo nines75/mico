@@ -13,7 +13,6 @@ import {
 import {
     extractVideoId,
     sendNotification,
-    saveProcessingTime,
     savePlaybackTime,
 } from "@/utils/util.js";
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
@@ -65,11 +64,15 @@ export default function commentRequest(
             if (settings.isSaveFilteringLog) {
                 tasks.push(saveVideoLog(filteredData, tabId));
                 tasks.push(
-                    saveProcessingTime(
-                        [
-                            ["filtering", filteredData.filteringTime],
-                            ["fetchTag", filteredData.fetchTagTime],
-                        ],
+                    setLog(
+                        {
+                            commentFilterLog: {
+                                processingTime: {
+                                    filtering: filteredData.filteringTime,
+                                    fetchTag: filteredData.fetchTagTime ?? null,
+                                },
+                            },
+                        },
                         tabId,
                     ),
                 );

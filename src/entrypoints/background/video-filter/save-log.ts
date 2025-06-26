@@ -1,9 +1,10 @@
-import { FilteredData } from "./filter-video.js";
 import {
-    VideoCount,
-    VideoFiltering,
     VideoFilterLog,
-} from "@/types/storage/log.types.js";
+    VideoFiltering,
+    VideoCount,
+} from "@/types/storage/log-video.types.js";
+import { FilteredData } from "./filter-video.js";
+import {} from "@/types/storage/log.types.js";
 import { setLog } from "@/utils/storage.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
@@ -14,15 +15,15 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
 
     const end = performance.now();
 
-    const value: VideoFilterLog = {
+    const videoFilterLog: VideoFilterLog = {
         count,
         filtering,
         processingTime: {
-            saveVideoLog: end - start,
+            saveLog: end - start,
         },
     };
 
-    await setLog({ videoFilterLog: value }, tabId);
+    await setLog({ videoFilterLog }, tabId);
 }
 
 function getLog(filteredData: FilteredData): VideoFiltering {

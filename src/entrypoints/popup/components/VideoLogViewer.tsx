@@ -1,10 +1,4 @@
-import {
-    CommonLog,
-    IdLog,
-    NiconicoVideoData,
-    VideoCount,
-    VideoFiltering,
-} from "@/types/storage/log.types.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 import { texts } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
@@ -17,6 +11,12 @@ import {
     addNgId,
     removeNgId,
 } from "@/entrypoints/background/video-filter/filter/id-filter.js";
+import {
+    VideoCount,
+    VideoFiltering,
+    IdLog,
+    VideoData,
+} from "@/types/storage/log-video.types.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -32,7 +32,6 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
             state.log?.videoFilterLog?.count,
         ]),
     );
-    const settings = useStorageStore.getState().settings;
 
     return (
         <LogFrame
@@ -41,7 +40,7 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
             {...{ name }}
         >
             <div className="log">
-                <Log {...{ id, filtering, settings }} />
+                <Log {...{ id, filtering }} />
             </div>
         </LogFrame>
     );
@@ -67,7 +66,7 @@ function Log({ id, filtering }: LogProps) {
     }
 }
 
-function renderIdLog(idLog: IdLog, videos: NiconicoVideoData) {
+function renderIdLog(idLog: IdLog, videos: VideoData) {
     const renderUserIdLog = (userId: string, elements: JSX.Element[]) => {
         const sampleVideo = videos.get(
             idLog.userId.get(userId)?.[0] as string,
@@ -136,7 +135,7 @@ function renderIdLog(idLog: IdLog, videos: NiconicoVideoData) {
     return elements;
 }
 
-function renderCommonLog(commonLog: CommonLog, videos: NiconicoVideoData) {
+function renderCommonLog(commonLog: CommonLog, videos: VideoData) {
     const renderLog = (rule: string, elements: JSX.Element[]) => {
         elements.push(
             <div key={rule} className="log-line comment">{`# ${rule}`}</div>,

@@ -6,7 +6,7 @@ export default function ProcessingTime() {
 
         switch (selectedTab) {
             case "commentFilter":
-                return state.log?.processingTime;
+                return state.log?.commentFilterLog?.processingTime;
             case "videoFilter":
                 return state.log?.videoFilterLog?.processingTime;
         }
@@ -21,7 +21,7 @@ export default function ProcessingTime() {
                         <span className="value">
                             {processingTime.filtering}ms
                             {processingTime.fetchTag !== undefined &&
-                                processingTime.fetchTag !== -1 &&
+                                processingTime.fetchTag !== null &&
                                 `(${
                                     processingTime.filtering -
                                     processingTime.fetchTag
@@ -30,12 +30,12 @@ export default function ProcessingTime() {
                     </span>
                 </section>
             )}
-            {processingTime?.saveVideoLog !== undefined && (
+            {processingTime?.saveLog !== undefined && (
                 <section>
                     <span className="info">
                         <span>ログ:</span>
                         <span className="value">
-                            {processingTime.saveVideoLog}ms
+                            {processingTime.saveLog}ms
                         </span>
                     </span>
                 </section>

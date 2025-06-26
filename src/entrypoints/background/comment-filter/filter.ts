@@ -1,8 +1,8 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import { CommentData } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
 import { FilteredData } from "./filter-comment.js";
+import { CommentData } from "@/types/storage/log-comment.types.js";
 
 export abstract class Filter<T> {
     protected filteredComments: CommentData = new Map();

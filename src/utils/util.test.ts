@@ -1,11 +1,6 @@
 import { fakeBrowser } from "#imports";
 import { beforeEach, describe, expect, it } from "vitest";
-import {
-    escapeNewline,
-    extractVideoId,
-    savePlaybackTime,
-    saveProcessingTime,
-} from "./util.js";
+import { escapeNewline, extractVideoId, savePlaybackTime } from "./util.js";
 import { getLogData } from "./storage.js";
 
 describe("util", () => {
@@ -38,24 +33,5 @@ describe("util", () => {
         await savePlaybackTime(1, 100);
 
         expect(await getLogData(1)).toEqual({ playbackTime: 100 });
-    });
-
-    it(`${saveProcessingTime.name}()`, async () => {
-        await saveProcessingTime([], 1);
-        expect(await getLogData(1)).toBe(undefined);
-
-        await saveProcessingTime(
-            [
-                ["filtering", 10],
-                ["fetchTag", undefined],
-            ],
-            1,
-        );
-        expect(await getLogData(1)).toEqual({
-            processingTime: {
-                filtering: 10,
-                fetchTag: -1,
-            },
-        });
     });
 });

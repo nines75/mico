@@ -4,15 +4,6 @@ import {
     removeNgUserId,
 } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { NiconicoComment } from "@/types/api/comment.types.js";
-import {
-    CommandLog,
-    CommentData,
-    ScoreLog,
-    UserIdLog,
-    VideoData,
-    VideoLog,
-    WordLog,
-} from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { texts } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
@@ -22,8 +13,16 @@ import { Fragment } from "react/jsx-runtime";
 import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
+import {
+    CommentData,
+    ScoreLog,
+    WordLog,
+    CommentCount,
+    CommentFiltering,
+} from "@/types/storage/log-comment.types.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
-type LogId = keyof ConditionalPick<VideoData["count"]["blocked"], number>;
+type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
 export interface CommentLogViewerProps {
     id: LogId;
@@ -31,10 +30,10 @@ export interface CommentLogViewerProps {
 }
 
 export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
-    const [videoLog, count] = useStorageStore(
+    const [filtering, count] = useStorageStore(
         useShallow((state) => [
-            state.log?.videoData?.log,
-            state.log?.videoData?.count,
+            state.log?.commentFilterLog?.filtering,
+            state.log?.commentFilterLog?.count,
         ]),
     );
 
@@ -54,73 +53,76 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             blocked={count?.blocked[id] ?? 0}
             {...{ name }}
         >
-            {id === "ngUserId" && (videoLog?.strictNgUserIds.size ?? 0) > 0 && (
-                <div>
-                    <button
-                        title={texts.popup.titleUndoStrictNgUserIds}
-                        onClick={async () => {
-                            try {
-                                await undoStrictNgUserIds(videoLog);
-                            } catch (e) {
-                                console.error(e);
-                            }
-                        }}
-                    >
-                        undo
-                    </button>
-                </div>
-            )}
+            {id === "ngUserId" &&
+                (filtering?.strictNgUserIds.size ?? 0) > 0 && (
+                    <div>
+                        <button
+                            title={texts.popup.titleUndoStrictNgUserIds}
+                            onClick={() => undoStrictNgUserIds(filtering)}
+                        >
+                            undo
+                        </button>
+                    </div>
+                )}
             {id !== "easyComment" && (
-                <div className="log">{getLog(id, videoLog, settings)}</div>
+                <div className="log">
+                    <Log {...{ id, filtering, settings }} />
+                </div>
             )}
         </LogFrame>
     );
 }
 
-async function undoStrictNgUserIds(videoLog: VideoLog | undefined) {
-    const userIds = videoLog?.strictNgUserIds ?? new Set();
+async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
+    try {
+        const userIds = filtering?.strictNgUserIds ?? new Set();
 
-    if (
-        !confirm(
-            texts.popup.messageUndoStrictNgUserIds.replace(
-                "{target}",
-                [...userIds].join("\n"),
-            ),
+        if (
+            !confirm(
+                texts.popup.messageUndoStrictNgUserIds.replace(
+                    "{target}",
+                    [...userIds].join("\n"),
+                ),
+            )
         )
-    )
-        return;
+            return;
 
-    await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+        await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-function getLog(
-    id: Exclude<LogId, "easyComment">,
-    videoLog: VideoLog | undefined,
-    settings: Settings,
-) {
-    if (videoLog === undefined) return null;
+interface LogProps {
+    id: Exclude<LogId, "easyComment">;
+    filtering: CommentFiltering | undefined;
+    settings: Settings;
+}
 
-    const comments = videoLog.comments;
+function Log({ id, filtering, settings }: LogProps) {
+    if (filtering === undefined) return null;
+
+    const comments = filtering.comments;
 
     switch (id) {
         case "ngUserId":
             return renderUserIdLog(
-                videoLog.ngUserId,
+                filtering.ngUserId,
                 comments,
                 settings,
-                videoLog.strictNgUserIds,
+                filtering.strictNgUserIds,
             );
         case "ngScore":
-            return renderScoreLog(videoLog.ngScore, comments, settings);
+            return renderScoreLog(filtering.ngScore, comments, settings);
         case "ngCommand":
-            return renderCommandLog(videoLog.ngCommand, comments, settings);
+            return renderCommandLog(filtering.ngCommand, comments, settings);
         case "ngWord":
-            return renderWordLog(videoLog.ngWord, comments, settings);
+            return renderWordLog(filtering.ngWord, comments, settings);
     }
 }
 
 function renderUserIdLog(
-    userIdLog: UserIdLog,
+    userIdLog: CommonLog,
     comments: CommentData,
     settings: Settings,
     strictNgUserIds?: Set<string>,
@@ -194,7 +196,7 @@ function renderScoreLog(
 }
 
 function renderCommandLog(
-    commandLog: CommandLog,
+    commandLog: CommonLog,
     comments: CommentData,
     settings: Settings,
 ) {

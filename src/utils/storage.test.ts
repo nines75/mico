@@ -16,6 +16,7 @@ import { testLog } from "./test.js";
 import { stringify } from "superjson";
 import { Settings } from "@/types/storage/settings.types.js";
 import { PartialDeep } from "type-fest";
+import { LogData } from "@/types/storage/log.types.js";
 
 describe("storage", () => {
     beforeEach(() => {
@@ -66,7 +67,7 @@ describe("storage", () => {
 
     it(`${removeAllData.name}()`, async () => {
         await setSettings(defaultSettings);
-        await setLog(testLog, 1);
+        await setLog({ commentFilterLog: testLog }, 1);
 
         await removeAllData();
 
@@ -75,7 +76,7 @@ describe("storage", () => {
 
     it(`${removeData.name}()`, async () => {
         await setSettings(defaultSettings);
-        await setLog(testLog, 1);
+        await setLog({ commentFilterLog: testLog }, 1);
 
         await removeData(["log-1"]);
 
@@ -84,18 +85,19 @@ describe("storage", () => {
 
     it(`${getAllData.name}()`, async () => {
         await setSettings(defaultSettings);
-        await setLog(testLog, 1);
+        await setLog({ commentFilterLog: testLog }, 1);
 
         expect(await getAllData()).toEqual({
             settings: defaultSettings,
-            "log-1": stringify(testLog),
+            "log-1": stringify({ commentFilterLog: testLog } satisfies LogData),
         });
     });
 
     it(`${getLogData.name}()`, async () => {
-        await setLog(testLog, 1);
+        await setLog({ commentFilterLog: testLog }, 1);
+        const log = await getLogData(1);
 
-        expect(await getLogData(1)).toEqual(testLog);
+        expect(log?.commentFilterLog).toEqual(testLog);
     });
 
     it(`${getSettingsData.name}()`, async () => {

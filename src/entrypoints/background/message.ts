@@ -39,7 +39,8 @@ async function getUserId(
     if (tabId === undefined) return;
 
     const logData = await getLogData(tabId);
-    const userId = logData?.videoData?.log.noToUserId.get(commentNo);
+    const userId =
+        logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
     if (userId === undefined) return;
 
     await browser.tabs.sendMessage(tabId, {
@@ -62,7 +63,7 @@ async function saveNgUserId(
     if (tabId === undefined) return;
 
     const logData = await getLogData(tabId);
-    const ngToUserId = logData?.videoData?.log.noToUserId;
+    const ngToUserId = logData?.commentFilterLog?.filtering.noToUserId;
     if (ngToUserId === undefined) {
         await sendNotification(texts.background.messageFailedToAddNgUserId);
         return;

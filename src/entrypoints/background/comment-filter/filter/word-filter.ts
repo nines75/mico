@@ -1,6 +1,5 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { WordLog } from "@/types/storage/log.types.js";
 import {
     extractCustomRule,
     hasTagRule,
@@ -10,6 +9,7 @@ import {
     sortCommentId,
 } from "../filter.js";
 import { countCommonLog } from "@/utils/util.js";
+import { WordLog } from "@/types/storage/log-comment.types.js";
 
 type NgWordData = CustomRuleData<NgWord>;
 
