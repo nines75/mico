@@ -11,7 +11,7 @@ export interface FilterAreaProps {
 }
 
 export default function FilterArea() {
-    const id = useStorageStore((state) => state.settings.defaultFilter);
+    const id = useStorageStore((state) => state.settings.selectedCommentFilter);
     const [text, save] = useStorageStore(
         useShallow((state) => [state.settings[id], state.saveSettings]),
     );
@@ -23,7 +23,9 @@ export default function FilterArea() {
                     <button
                         key={filter.id}
                         className={`filter-button${id === filter.id ? " selected-filter-button" : ""}`}
-                        onClick={() => save({ defaultFilter: filter.id })}
+                        onClick={() =>
+                            save({ selectedCommentFilter: filter.id })
+                        }
                     >
                         <span>{filter.name}</span>
                     </button>

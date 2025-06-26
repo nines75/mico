@@ -8,7 +8,7 @@ interface DropdownContent {
     commentNoText: string;
 }
 
-export async function mountContentToDropdown(
+export async function mountToDropdown(
     element: HTMLElement,
     settings: Settings,
 ) {

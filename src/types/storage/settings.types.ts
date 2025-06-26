@@ -16,7 +16,7 @@ export interface Settings {
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
     isVimKeybindingsEnabled: boolean;
-    defaultFilter: FilterId;
+    selectedCommentFilter: FilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;
@@ -43,7 +43,7 @@ export interface Settings {
     isVideoFilterEnabled: boolean;
 
     /// フィルタリング
-    defaultVideoFilter: VideoFilterId;
+    selectedVideoFilter: VideoFilterId;
     ngId: string;
     ngUserName: string;
     ngTitle: string;

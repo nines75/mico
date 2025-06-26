@@ -23,7 +23,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);
 
-        this.filter = this.getNgWordData(settings);
+        this.filter = this.createFilter(settings);
     }
 
     filtering(threads: Thread[], isStrictOnly = false): void {
@@ -128,7 +128,7 @@ export class WordFilter extends CustomFilter<WordLog> {
             );
     }
 
-    getNgWordData(settings: Settings): NgWordData {
+    createFilter(settings: Settings): NgWordData {
         const ruleData = extractCustomRule(settings.ngWord);
         const ngWords = ruleData.rules.reduce<NgWord[]>((res, data) => {
             try {

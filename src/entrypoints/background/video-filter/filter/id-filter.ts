@@ -21,7 +21,7 @@ export class IdFilter extends Filter<IdLog> {
     constructor(settings: Settings) {
         super(settings);
 
-        this.filter = this.getFilter();
+        this.filter = this.createFilter();
     }
 
     override filtering(recommendData: RecommendData): void {
@@ -106,7 +106,7 @@ export class IdFilter extends Filter<IdLog> {
         );
     }
 
-    getFilter(): NgIds {
+    createFilter(): NgIds {
         const rules = extractRule(this.settings.ngId);
         const userIds = new Set<string>();
         const videoIds = new Set<string>();

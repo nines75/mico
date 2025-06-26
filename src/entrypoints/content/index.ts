@@ -1,4 +1,4 @@
-import { mountContentToDropdown } from "./dropdown.js";
+import { mountToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
 import { createContentMessageHandler } from "./message.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -66,7 +66,7 @@ async function observerCallback(
 
             // ドロップダウンが開かれた場合
             else if (node.className === "z_dropdown") {
-                await mountContentToDropdown(node, settings);
+                await mountToDropdown(node, settings);
             }
 
             // 関連動画が追加された場合(初回ロード時)

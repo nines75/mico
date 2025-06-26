@@ -105,7 +105,7 @@ export abstract class CommonFilter extends Filter<CommonVideoFilterLog> {
         });
     }
 
-    getFilter(): RegExp[] {
+    createFilter(): RegExp[] {
         const res: RegExp[] = [];
         extractRule(this.rawFilter).forEach((rule) => {
             try {

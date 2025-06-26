@@ -27,7 +27,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);
 
-        this.filter = this.getNgCommandData(settings);
+        this.filter = this.createFilter(settings);
     }
 
     filtering(threads: Thread[], isStrictOnly = false): void {
@@ -147,7 +147,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
         return this.disableCount;
     }
 
-    getNgCommandData(settings: Settings): NgCommandData {
+    createFilter(settings: Settings): NgCommandData {
         let hasAll = false;
         const ruleData = extractCustomRule(settings.ngCommand);
         const ngCommands = ruleData.rules

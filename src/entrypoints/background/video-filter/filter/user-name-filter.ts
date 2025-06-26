@@ -9,7 +9,7 @@ export class UserNameFilter extends CommonFilter {
     constructor(settings: Settings) {
         super(settings);
 
-        this.filter = this.getFilter();
+        this.filter = this.createFilter();
     }
 
     protected override getTargetValue(video: NiconicoVideo): string | null {

@@ -18,7 +18,7 @@ export const defaultSettings: Settings = {
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
     isVimKeybindingsEnabled: false,
-    defaultFilter: "ngUserId",
+    selectedCommentFilter: "ngUserId",
     ngUserId: "",
     ngCommand: "",
     ngWord: "",
@@ -45,7 +45,7 @@ export const defaultSettings: Settings = {
     isVideoFilterEnabled: true,
 
     /// フィルタリング
-    defaultVideoFilter: "ngId",
+    selectedVideoFilter: "ngId",
     ngId: "",
     ngTitle: "",
     ngUserName: "",
