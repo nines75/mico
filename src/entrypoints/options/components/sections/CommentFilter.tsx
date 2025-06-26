@@ -1,6 +1,6 @@
 import { commentFilterSettings } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
-import FilterArea from "../ui/FilterArea.js";
+import CommentFilterArea from "../ui/CommentFilterArea.js";
 
 export default function CommentFilter() {
     return (
@@ -22,7 +22,7 @@ export default function CommentFilter() {
                                 <Checkbox key={props.id} {...props} />
                             ),
                         )}
-                        <FilterArea />
+                        <CommentFilterArea />
                     </div>
                 </section>
                 <section>

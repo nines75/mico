@@ -3,14 +3,14 @@ import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
 import { commentFilterSettings } from "@/utils/config.js";
 
-export type FilterId = "ngUserId" | "ngCommand" | "ngWord";
+export type CommentFilterId = "ngUserId" | "ngCommand" | "ngWord";
 
-export interface FilterAreaProps {
-    id: FilterId;
+export interface CommentFilterAreaProps {
+    id: CommentFilterId;
     name: string;
 }
 
-export default function FilterArea() {
+export default function CommentFilterArea() {
     const id = useStorageStore((state) => state.settings.selectedCommentFilter);
     const [text, save] = useStorageStore(
         useShallow((state) => [state.settings[id], state.saveSettings]),

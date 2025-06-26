@@ -1,6 +1,6 @@
 import { CommentDataContainer } from "@/types/api/comment.types.js";
 import { filterComment } from "../comment-filter/filter-comment.js";
-import { saveVideoLog } from "../comment-filter/save-video-log.js";
+import { saveLog } from "../comment-filter/save-log.js";
 import { texts, pattern } from "@/utils/config.js";
 import {
     loadSettings,
@@ -62,7 +62,7 @@ export default function commentRequest(
 
             // ログを保存
             if (settings.isSaveFilteringLog) {
-                tasks.push(saveVideoLog(filteredData, tabId));
+                tasks.push(saveLog(filteredData, tabId));
                 tasks.push(
                     setLog(
                         {

@@ -1,7 +1,7 @@
 import { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
 import { PopupTab, Settings } from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
-import { FilterAreaProps } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { CommentFilterAreaProps } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
 import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
 
@@ -326,7 +326,7 @@ export const commentFilterSettings = {
         notification: CheckboxProps[];
         other: CheckboxProps[];
     };
-    filter: FilterAreaProps[];
+    filter: CommentFilterAreaProps[];
 };
 
 export const videoFilterSettings = {

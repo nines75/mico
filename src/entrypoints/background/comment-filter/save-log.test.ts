@@ -7,14 +7,14 @@ import { filterComment, FilteredData } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
 import { getLogData, setSettings } from "@/utils/storage.js";
 import { fakeBrowser } from "#imports";
-import { saveVideoLog } from "./save-video-log.js";
+import { saveLog } from "./save-log.js";
 import * as util from "@/utils/util.js";
 
 beforeAll(() => {
     vi.spyOn(util, "changeBadgeState").mockResolvedValue();
 });
 
-describe(`${saveVideoLog.name}()`, () => {
+describe(`${saveLog.name}()`, () => {
     let testThreadCopy: Thread[];
 
     beforeEach(() => {
@@ -40,7 +40,7 @@ describe(`${saveVideoLog.name}()`, () => {
         );
 
         await setSettings(settings); // ログをソートする際に必要
-        await saveVideoLog(filteredData as FilteredData, 1);
+        await saveLog(filteredData as FilteredData, 1);
 
         const log = await getLogData(1);
 

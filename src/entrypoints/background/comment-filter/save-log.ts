@@ -9,7 +9,7 @@ import {
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
 
-export async function saveVideoLog(filteredData: FilteredData, tabId: number) {
+export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
 
     // strictルールで追加されたNGユーザーIDを反映した設定を読み込んで反映

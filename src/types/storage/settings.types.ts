@@ -1,4 +1,4 @@
-import { FilterId } from "@/entrypoints/options/components/ui/FilterArea.js";
+import { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
 import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
 export type PopupTab = "commentFilter" | "videoFilter";
@@ -16,7 +16,7 @@ export interface Settings {
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
     isVimKeybindingsEnabled: boolean;
-    selectedCommentFilter: FilterId;
+    selectedCommentFilter: CommentFilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;

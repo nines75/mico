@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
-import FilterArea from "../options/components/ui/FilterArea.js";
+import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -36,5 +36,5 @@ function Page() {
         };
     }, []);
 
-    return <FilterArea />;
+    return <CommentFilterArea />;
 }
