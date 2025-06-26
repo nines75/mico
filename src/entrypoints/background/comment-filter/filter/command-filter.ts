@@ -20,9 +20,9 @@ interface NgCommand extends CustomRule {
 }
 
 export class CommandFilter extends CustomFilter<CommandLog> {
+    private disableCount = 0;
     protected filter: NgCommandData;
     protected log: CommandLog = new Map();
-    private disableCount = 0;
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds);

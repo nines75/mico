@@ -15,14 +15,6 @@ export class UserIdFilter extends Filter<UserIdLog> {
         this.filter = getNgUserIdSet(settings, videoId);
     }
 
-    updateFilter(userIds: Set<string>) {
-        userIds.forEach((id) => this.filter.add(id));
-    }
-
-    setSettings(settings: Settings) {
-        this.settings = settings;
-    }
-
     override filtering(threads: Thread[]): void {
         if (this.filter.size === 0) return;
 
@@ -79,6 +71,14 @@ export class UserIdFilter extends Filter<UserIdLog> {
 
     override getCount(): number {
         return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
+    }
+
+    updateFilter(userIds: Set<string>) {
+        userIds.forEach((id) => this.filter.add(id));
+    }
+
+    setSettings(settings: Settings) {
+        this.settings = settings;
     }
 }
 
