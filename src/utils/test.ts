@@ -129,15 +129,7 @@ export const testLog = {
                 ["/コメント/i", new Map([["テストコメント", ["1003"]]])],
             ]),
             strictNgUserIds: new Set(),
-            noToUserId: new Map([
-                [1, "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6"],
-                [2, "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6"],
-                [3, "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"],
-                [4, "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj"],
-                [5, "nvc:llNBacJJPE6wbyKKEioq3lO6515"],
-                [6, "nvc:4QhgYaZbMAYEUOdwDQ7a8KeX96p"],
-                [7, "nvc:4QhgYaZbMAYEUOdwDQ7a8KeX96p"],
-            ]),
+            noToUserId: new Map(),
             comments: new Map(
                 getComments(["1000", "1001", "1002", "1004", "1003"]) as [
                     string,
