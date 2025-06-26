@@ -26,7 +26,7 @@ export class WordFilter extends CustomFilter<WordLog> {
         this.filter = this.createFilter(settings);
     }
 
-    filtering(threads: Thread[], isStrictOnly = false): void {
+    override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
             ? this.filter.rules.filter((rule) => rule.isStrict)
             : this.filter.rules.filter((rule) => !rule.isStrict);
@@ -82,7 +82,7 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
     }
 
-    sortLog(): void {
+    override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
             this.filter.rules.map((ngWord) => ngWord.regex.toString()),
@@ -115,7 +115,7 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
     }
 
-    getCount(): number {
+    override getCount(): number {
         return this.log
             .values()
             .reduce(

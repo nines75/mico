@@ -23,7 +23,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
         this.settings = settings;
     }
 
-    filtering(threads: Thread[]): void {
+    override filtering(threads: Thread[]): void {
         if (this.filter.size === 0) return;
 
         threads.forEach((thread) => {
@@ -53,7 +53,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
         });
     }
 
-    sortLog(): void {
+    override sortLog(): void {
         const log: UserIdLog = new Map();
         const ngUserIds = getNgUserIdSet(this.settings); // strictルールによってユーザーIDが追加されている場合があるので改めて取得する
 
@@ -77,7 +77,7 @@ export class UserIdFilter extends Filter<UserIdLog> {
         });
     }
 
-    getCount(): number {
+    override getCount(): number {
         return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
     }
 }

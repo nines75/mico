@@ -6,7 +6,7 @@ import { Filter } from "../filter.js";
 export class ScoreFilter extends Filter<ScoreLog> {
     protected log: ScoreLog = [];
 
-    filtering(threads: Thread[]): void {
+    override filtering(threads: Thread[]): void {
         if (!this.settings.isScoreFilterEnabled) return;
 
         threads.forEach((thread) => {
@@ -29,11 +29,11 @@ export class ScoreFilter extends Filter<ScoreLog> {
         });
     }
 
-    sortLog(): void {
+    override sortLog(): void {
         this.log = sortCommentId(this.log, this.filteredComments, true);
     }
 
-    getCount(): number {
+    override getCount(): number {
         return this.log.length;
     }
 }

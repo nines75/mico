@@ -30,7 +30,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
         this.filter = this.createFilter(settings);
     }
 
-    filtering(threads: Thread[], isStrictOnly = false): void {
+    override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
             ? this.filter.rules.filter(
                   (rule) => rule.isStrict && !rule.isDisable, // strictルールと無効化ルールが併用されている場合、strictルールを無視する
@@ -113,7 +113,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
         });
     }
 
-    sortLog(): void {
+    override sortLog(): void {
         const log: CommandLog = new Map();
         const ngCommands = new Set(
             this.filter.rules.map((ngCommand) => ngCommand.rule),
@@ -139,7 +139,7 @@ export class CommandFilter extends CustomFilter<CommandLog> {
         });
     }
 
-    getCount(): number {
+    override getCount(): number {
         return this.log.values().reduce((sum, ids) => sum + ids.length, 0);
     }
 
