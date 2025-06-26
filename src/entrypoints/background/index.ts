@@ -22,7 +22,7 @@ export default defineBackground(() => {
         commentRequest,
         {
             urls: ["https://public.nvcomment.nicovideo.jp/v1/threads"],
-            types: ["xmlhttprequest", "main_frame"],
+            types: ["xmlhttprequest"],
         },
         ["blocking"],
     );
