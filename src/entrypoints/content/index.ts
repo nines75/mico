@@ -39,54 +39,71 @@ async function observerCallback(
     )
         return;
 
+    // 探している要素であると確定するまではcontinueしない
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof HTMLElement)) continue;
 
-            // 各コメントの最上位要素が追加された場合
-            if (node.hasAttribute("data-index")) {
-                if (!settings.isExpandNicoruEnabled) continue;
+            // コメント(最上位要素)
+            {
+                if (node.hasAttribute("data-index")) {
+                    if (!settings.isExpandNicoruEnabled) continue;
 
-                renderComment(node, settings);
-            }
-
-            // コメントの最上位要素の一つ下が追加された場合
-            // 最上位要素が使いまわされる場合はここが再レンダリングされる
-            else if (node.hasAttribute("tabindex")) {
-                if (!settings.isExpandNicoruEnabled) continue;
-
-                const parent = node.parentElement;
-                if (parent === null) continue;
-
-                // tabindex属性を持つ要素は他にも存在するため、親で検証する
-                if (parent.hasAttribute("data-index")) {
-                    renderComment(parent, settings);
+                    renderComment(node, settings);
+                    continue;
                 }
             }
 
-            // ドロップダウンが開かれた場合
-            else if (node.className === "z_dropdown") {
-                await mountToDropdown(node, settings);
+            // コメント(最上位要素の一つ下)
+            {
+                if (node.hasAttribute("tabindex")) {
+                    const parent = node.parentElement;
+
+                    // tabindex属性を持つ要素は他にも存在するため、親で検証する
+                    if (parent !== null && parent.hasAttribute("data-index")) {
+                        if (!settings.isExpandNicoruEnabled) continue;
+
+                        renderComment(parent, settings);
+                        continue;
+                    }
+                }
             }
 
-            // 関連動画が追加された場合(初回ロード時)
-            else if (
-                node
+            // ドロップダウン
+            {
+                if (node.className === "z_dropdown") {
+                    await mountToDropdown(node, settings);
+
+                    continue;
+                }
+            }
+
+            // 関連動画(初回ロード時)
+            {
+                const attr = node
                     .querySelector(":scope > a")
-                    ?.getAttribute("data-anchor-area") ===
-                "related_content,recommendation"
-            ) {
-                mountToRecommendHandler(node);
+                    ?.getAttribute("data-anchor-area");
+                if (attr === "related_content,recommendation") {
+                    mountToRecommendHandler(node);
+
+                    continue;
+                }
             }
 
-            // 関連動画が追加された場合(遷移時)
-            else if (
-                node.getAttribute("data-anchor-area") ===
-                "related_content,recommendation"
-            ) {
+            // 関連動画(遷移時)
+            {
+                const dataAnchorArea = node.getAttribute("data-anchor-area");
                 const href = node.getAttribute("href");
-                if (href !== null && href.startsWith("/watch/"))
+
+                if (
+                    dataAnchorArea === "related_content,recommendation" &&
+                    href !== null &&
+                    href.startsWith("/watch/")
+                ) {
                     mountToRecommend(node);
+
+                    continue;
+                }
             }
         }
     }
