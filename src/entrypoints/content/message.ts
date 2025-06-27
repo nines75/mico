@@ -12,7 +12,6 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
         if (sender.id !== browser.runtime.id) return;
 
         if (message.type === "reload") reload(message.data as number);
-        if (message.type === "focus-player") focusPlayer();
         if (message.type === "set-playback-time")
             setPlaybackTime(message.data as number);
         if (message.type === "quick-edit") openQuickEdit(ctx);
@@ -50,14 +49,6 @@ function reload(tabId: number) {
             console.error(e);
         }
     }, 10);
-}
-
-function focusPlayer() {
-    const player = document.querySelector(
-        "div[class='grid-area_[player]'] > div > div > div > div",
-    );
-
-    if (player instanceof HTMLDivElement) player.focus();
 }
 
 function setPlaybackTime(time: number) {

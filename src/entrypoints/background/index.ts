@@ -42,11 +42,7 @@ export default defineBackground(() => {
     // ショートカットキーが押された際の処理
     browser.commands.onCommand.addListener(async (command) => {
         try {
-            if (
-                command === "focus-player" ||
-                command === "quick-edit" ||
-                command === "reload"
-            ) {
+            if (command === "quick-edit" || command === "reload") {
                 const tabs = await browser.tabs.query({
                     active: true,
                     currentWindow: true,

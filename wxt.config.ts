@@ -52,9 +52,6 @@ export default defineConfig({
                 "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
             ],
             commands: {
-                "focus-player": {
-                    description: "動画プレイヤーにフォーカスする",
-                },
                 "open-settings": {
                     description: "設定ページを開く",
                     suggested_key: isDev
