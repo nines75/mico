@@ -26,29 +26,11 @@ export default function Backup() {
                 </button>
                 <button
                     className="backup-button"
-                    onClick={async () => {
-                        try {
-                            await exportBackup();
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    }}
+                    onClick={() => exportBackup()}
                 >
                     エクスポート
                 </button>
-                <button
-                    className="backup-button"
-                    onClick={async () => {
-                        try {
-                            if (!confirm(messages.settings.confirmReset))
-                                return;
-
-                            await removeAllData();
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    }}
-                >
+                <button className="backup-button" onClick={() => reset()}>
                     リセット
                 </button>
                 <input
@@ -102,27 +84,41 @@ function importBackup(
 }
 
 async function exportBackup() {
-    const settingsData = await getSettingsData();
-    if (settingsData === undefined) {
-        // 一度も設定が保存されていない場合
-        alert(messages.settings.neverReset);
-        return;
+    try {
+        const settingsData = await getSettingsData();
+        if (settingsData === undefined) {
+            // 一度も設定が保存されていない場合
+            alert(messages.settings.neverReset);
+            return;
+        }
+
+        // valueがundefinedの場合でもkey自体が作成されないので問題ない
+        const data: BackupData = {
+            settings: settingsData,
+        };
+        const dataStr = JSON.stringify(data);
+
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const filename = `${browser.runtime.getManifest().name}-backup.json`;
+
+        // downloads権限なしでダウンロード
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+    } catch (e) {
+        console.error(e);
     }
+}
 
-    // valueがundefinedの場合でもkey自体が作成されないので問題ない
-    const data: BackupData = {
-        settings: settingsData,
-    };
-    const dataStr = JSON.stringify(data);
+async function reset() {
+    try {
+        if (!confirm(messages.settings.confirmReset)) return;
 
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const filename = `${browser.runtime.getManifest().name}-backup.json`;
-
-    // downloads権限なしでダウンロード
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
+        await removeAllData();
+    } catch (e) {
+        console.error(e);
+    }
 }
