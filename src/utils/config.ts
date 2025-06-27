@@ -105,10 +105,6 @@ export const attributes = {
     recommendVideoId: "data-decoration-video-id",
 } as const;
 
-export const errors = {
-    getTags: "タグの取得に失敗しました",
-} as const;
-
 export const buttons = {
     AddNgUserId: "ユーザーをNG登録({target})",
     AddSpecificNgUserId: "この動画だけユーザーをNG登録({target})",

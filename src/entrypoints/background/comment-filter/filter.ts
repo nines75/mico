@@ -59,10 +59,6 @@ export abstract class CustomFilter<T> extends Filter<T> {
         return this.strictNgUserIds;
     }
 
-    getHasTagRule(): boolean {
-        return this.filter.hasTagRule;
-    }
-
     filterRuleByTag(tags: string[]) {
         const testTags = (target: string[], regex: RegExp) => {
             return target.some((tag) => regex.test(tag));
@@ -114,7 +110,6 @@ export interface Rule {
 
 export interface CustomRuleData<T extends CustomRule> {
     rules: T[];
-    hasTagRule: boolean;
 }
 
 export interface CustomRule {
@@ -242,12 +237,6 @@ export function extractCustomRule(filter: string): BaseCustomRuleData {
     });
 
     return { rules, invalidCount };
-}
-
-export function hasTagRule(rules: CustomRule[]) {
-    return rules.some(
-        (rule) => rule.include.length > 0 || rule.exclude.length > 0,
-    );
 }
 
 export function sortCommentId(

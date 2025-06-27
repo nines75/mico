@@ -1,6 +1,5 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { errors } from "@/utils/config.js";
 import { WordFilter } from "./filter/word-filter.js";
 import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
@@ -18,16 +17,16 @@ export interface FilteredData {
     easyCommentCount: number;
     loadedCommentCount: number;
     filteringTime: number;
-    fetchTagTime: number | null;
     noToUserId: NoToUserId;
     strictNgUserIds: Set<string>;
 }
 
-export async function filterComment(
+export function filterComment(
     threads: Thread[],
     settings: Settings,
+    tags: string[],
     videoId: string | undefined,
-): Promise<FilteredData | undefined> {
+): FilteredData | undefined {
     if (!settings.isCommentFilterEnabled || videoId === undefined) return;
 
     const start = performance.now();
@@ -62,12 +61,6 @@ export async function filterComment(
         wordFilter,
     };
     const customFilters = getCustomFilters(filters);
-
-    // タグ取得
-    const { tags, fetchTagTime } = await getTags(
-        videoId,
-        Object.values(customFilters).some((filter) => filter.getHasTagRule()),
-    );
 
     // tagルール適用
     Object.values(customFilters).forEach((filter) => {
@@ -125,40 +118,7 @@ export async function filterComment(
         easyCommentCount,
         loadedCommentCount,
         filteringTime: end - start,
-        fetchTagTime,
         noToUserId,
         strictNgUserIds,
     };
-}
-
-async function getTags(
-    videoId: string,
-    hasTagRule: boolean,
-): Promise<{
-    tags: string[];
-    fetchTagTime: number | null;
-}> {
-    if (!hasTagRule) {
-        return { tags: [], fetchTagTime: null };
-    }
-
-    const start = performance.now();
-    const res = await fetch(
-        `https://ext.nicovideo.jp/api/getthumbinfo/${videoId}`,
-    );
-    const end = performance.now();
-
-    if (!res.ok) throw new Error(errors.getTags);
-
-    const parser = new DOMParser();
-    const xmlStr = await res.text();
-    const xml = parser.parseFromString(xmlStr, "text/xml");
-
-    const tags: string[] = [];
-    xml.querySelectorAll("tag").forEach((element) => {
-        const tag = element.textContent;
-        if (tag !== null) tags.push(tag);
-    });
-
-    return { tags, fetchTagTime: end - start };
 }

@@ -2,7 +2,6 @@ import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
     extractCustomRule,
-    hasTagRule,
     CustomFilter,
     CustomRule,
     CustomRuleData,
@@ -176,7 +175,6 @@ export class CommandFilter extends CustomFilter<CommonLog> {
         return {
             rules: ngCommands,
             hasAll,
-            hasTagRule: hasTagRule(ngCommands),
         };
     }
 }

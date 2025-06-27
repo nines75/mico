@@ -2,7 +2,6 @@ import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
     extractCustomRule,
-    hasTagRule,
     CustomFilter,
     CustomRule,
     CustomRuleData,
@@ -147,7 +146,6 @@ export class WordFilter extends CustomFilter<WordLog> {
 
         return {
             rules: ngWords,
-            hasTagRule: hasTagRule(ngWords),
         };
     }
 }

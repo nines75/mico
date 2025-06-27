@@ -34,7 +34,10 @@ export default function commentRequest(
     filter.onstop = async () => {
         try {
             const commentData = JSON.parse(buf) as CommentDataContainer;
-            const settings = await loadSettings();
+            const [settings, log] = await Promise.all([
+                loadSettings(),
+                getLogData(details.tabId),
+            ]);
             const tabId = details.tabId;
 
             // 動画IDを取得
@@ -42,7 +45,12 @@ export default function commentRequest(
             const videoId = extractVideoId(tab.url);
 
             const [filteredData] = await Promise.all([
-                filterComment(commentData.data.threads, settings, videoId),
+                filterComment(
+                    commentData.data.threads,
+                    settings,
+                    log?.tags ?? [],
+                    videoId,
+                ),
                 restorePlaybackTime(tabId),
                 setLog({ videoId: videoId ?? null }, tabId),
             ]);
@@ -69,7 +77,6 @@ export default function commentRequest(
                             commentFilterLog: {
                                 processingTime: {
                                     filtering: filteredData.filteringTime,
-                                    fetchTag: filteredData.fetchTagTime,
                                 },
                             },
                         },

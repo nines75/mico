@@ -1,12 +1,6 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, expect, it } from "vitest";
-import {
-    extractCustomRule,
-    BaseCustomRule,
-    hasTagRule,
-    CustomRule,
-    extractRule,
-} from "./filter.js";
+import { extractCustomRule, BaseCustomRule, extractRule } from "./filter.js";
 import { replaceInclude } from "@/utils/test.js";
 
 describe(`${extractRule.name}()`, () => {
@@ -309,43 +303,5 @@ rule
             },
         ]);
         expect(ruleData.invalidCount).toBe(2);
-    });
-});
-
-describe(`${hasTagRule.name}()`, () => {
-    const neither = {
-        isStrict: false,
-        include: [],
-        exclude: [],
-    } satisfies CustomRule;
-    const include = {
-        ...neither,
-        ...{
-            include: [tags[0]],
-        },
-    } satisfies CustomRule;
-    const exclude = {
-        ...neither,
-        ...{
-            exclude: [tags[1]],
-        },
-    } satisfies CustomRule;
-    const both = {
-        ...include,
-        ...{
-            exclude: [tags[1]],
-        },
-    } satisfies CustomRule;
-
-    it.each([
-        { name: "neither", rules: [neither], expected: false },
-        { name: "include", rules: [include] },
-        { name: "include+", rules: [include, neither] },
-        { name: "exclude", rules: [exclude] },
-        { name: "exclude+", rules: [exclude, neither] },
-        { name: "both", rules: [both] },
-        { name: "both+", rules: [include, exclude, neither] },
-    ])("$name", ({ rules, expected }) => {
-        expect(hasTagRule(rules)).toBe(expected ?? true);
     });
 });

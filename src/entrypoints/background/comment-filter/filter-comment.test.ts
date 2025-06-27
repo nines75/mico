@@ -16,7 +16,7 @@ describe(`${filterComment.name}()`, () => {
         fakeBrowser.reset();
     });
 
-    it("all", async () => {
+    it("all", () => {
         const settings = {
             ...defaultSettings,
             isHideEasyComment: true,
@@ -27,7 +27,7 @@ describe(`${filterComment.name}()`, () => {
             ngWord: "コメント",
         } satisfies Partial<Settings>;
 
-        await filterComment(testThreadCopy, settings, "sm1");
+        filterComment(testThreadCopy, settings, [], "sm1");
 
         expect(
             hasComment(testThreadCopy, [
@@ -55,7 +55,7 @@ device:Switch`,
 `,
         } satisfies Partial<Settings>;
 
-        const res = await filterComment(testThreadCopy, settings, "sm1");
+        const res = filterComment(testThreadCopy, settings, [], "sm1");
 
         expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
             false,

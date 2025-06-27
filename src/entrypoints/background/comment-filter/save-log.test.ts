@@ -32,11 +32,7 @@ describe(`${saveLog.name}()`, () => {
             ngWord: "コメント",
         } satisfies Partial<Settings>;
 
-        const filteredData = await filterComment(
-            testThreadCopy,
-            settings,
-            "sm1",
-        );
+        const filteredData = filterComment(testThreadCopy, settings, [], "sm1");
 
         await setSettings(settings); // ログをソートする際に必要
         await saveLog(filteredData as FilteredData, 1);

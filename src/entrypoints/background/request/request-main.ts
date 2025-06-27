@@ -2,6 +2,7 @@ import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
+import { SeriesData } from "@/types/storage/log.types.js";
 
 interface MainData {
     data: {
@@ -11,6 +12,11 @@ interface MainData {
                     next: NiconicoVideo | null;
                 };
             } | null;
+            tag: {
+                items: {
+                    name: string;
+                }[];
+            };
         };
     };
 }
@@ -84,14 +90,19 @@ async function mainDataFilter(
     const series = mainData.data.response.series?.video;
     const video = series?.next;
 
-    if (series !== undefined && video !== null && video !== undefined) {
-        if (isNgVideo(video, settings)) {
-            series.next = null;
-            meta?.setAttribute("content", JSON.stringify(mainData));
-        }
+    const seriesData: SeriesData = (() => {
+        if (series !== undefined && video !== null && video !== undefined) {
+            if (isNgVideo(video, settings)) {
+                series.next = null;
+                meta?.setAttribute("content", JSON.stringify(mainData));
+            }
 
-        await setLog({ series: { hasNext: true, data: video } }, details.tabId);
-    } else {
-        await setLog({ series: { hasNext: false } }, details.tabId);
-    }
+            return { hasNext: true, data: video };
+        } else {
+            return { hasNext: false };
+        }
+    })();
+    const tags = mainData.data.response.tag.items.map((data) => data.name);
+
+    await setLog({ series: seriesData, tags }, details.tabId);
 }

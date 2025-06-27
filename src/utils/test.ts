@@ -135,7 +135,7 @@ export const testLog = {
             ][],
         ),
     },
-    processingTime: { filtering: 51, fetchTag: 50, saveLog: 5 },
+    processingTime: { filtering: 51, saveLog: 5 },
 } as const satisfies CommentFilterLog;
 
 export function hasComment(threads: Thread[], ids: string[]) {

@@ -18,15 +18,7 @@ export default function ProcessingTime() {
             {processingTime?.filtering !== undefined && (
                 <Info
                     name="フィルタリング:"
-                    value={`${processingTime.filtering}ms${
-                        processingTime.fetchTag !== undefined &&
-                        processingTime.fetchTag !== null
-                            ? `(${
-                                  processingTime.filtering -
-                                  processingTime.fetchTag
-                              }ms)`
-                            : ""
-                    }`}
+                    value={`${processingTime.filtering}ms`}
                 />
             )}
             {processingTime?.saveLog !== undefined && (

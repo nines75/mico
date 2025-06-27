@@ -12,15 +12,15 @@ export interface LogData {
     series?: SeriesData;
     playbackTime?: number;
     videoId?: string | null;
+    tags?: string[];
 }
 
 export interface ProcessingTimeData {
     filtering?: number;
-    fetchTag?: number | null;
     saveLog?: number;
 }
 
-interface SeriesData {
+export interface SeriesData {
     hasNext: boolean;
     data?: NiconicoVideo;
 }
