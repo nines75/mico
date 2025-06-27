@@ -1,5 +1,5 @@
 import { useStorageStore } from "@/utils/store.js";
-import { Info, InfoContent } from "./Info.js";
+import { Info } from "./Info.js";
 
 export default function Count() {
     const count = useStorageStore((state) => {
@@ -33,13 +33,13 @@ export default function Count() {
                 />
             )}
             {count !== undefined && "exclude" in count && count.exclude > 0 && (
-                <InfoContent
+                <Info
                     name="@excludeによって無効化されたルールの数:"
                     value={count.exclude}
                 />
             )}
             {count !== undefined && "disable" in count && count.disable > 0 && (
-                <InfoContent
+                <Info
                     name="@disableによって無効化されたコマンドの数:"
                     value={count.disable}
                 />
