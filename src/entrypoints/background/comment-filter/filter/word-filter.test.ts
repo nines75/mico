@@ -3,7 +3,6 @@ import { defaultSettings } from "@/utils/config.js";
 import { hasComment, replaceInclude, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
-import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(WordFilter.name, () => {
@@ -18,7 +17,7 @@ describe(WordFilter.name, () => {
         tags?: string[];
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
-        settings?: PartialDeep<Settings>;
+        settings?: Partial<Settings>;
     }) => {
         const wordFilter = new WordFilter(
             {

@@ -1,7 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { testLog, testThreads } from "@/utils/test.js";
-import { PartialDeep } from "type-fest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { filterComment, FilteredData } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
@@ -31,7 +30,7 @@ describe(`${saveLog.name}()`, () => {
             ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
             ngCommand: "big",
             ngWord: "コメント",
-        } satisfies PartialDeep<Settings>;
+        } satisfies Partial<Settings>;
 
         const filteredData = await filterComment(
             testThreadCopy,

@@ -3,7 +3,6 @@ import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
 import { hasComment, replaceInclude, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(CommandFilter.name, () => {
@@ -18,7 +17,7 @@ describe(CommandFilter.name, () => {
         tags?: string[];
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
-        settings?: PartialDeep<Settings>;
+        settings?: Partial<Settings>;
     }) => {
         const commandFilter = new CommandFilter(
             {

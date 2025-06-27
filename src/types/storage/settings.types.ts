@@ -51,7 +51,7 @@ export interface Settings {
     // 拡張ニコる
     isExpandNicoruEnabled: boolean;
     nicoruCounts: number[];
-    nicoruColors: Record<string, NicoruColor | undefined>; // undefinedとのユニオン型にしないとimportBackup関数でエラーになる
+    nicoruColors: Record<string, NicoruColor>;
 
     // 設定の開閉設定
     isOpenCustomColor: boolean;

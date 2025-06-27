@@ -15,7 +15,6 @@ import { describe, expect, it, beforeEach } from "vitest";
 import { testLog } from "./test.js";
 import { stringify } from "superjson";
 import { Settings } from "@/types/storage/settings.types.js";
-import { PartialDeep } from "type-fest";
 import { LogData } from "@/types/storage/log.types.js";
 
 describe("storage", () => {
@@ -55,7 +54,7 @@ describe("storage", () => {
     it(`${loadSettings.name}()`, async () => {
         const newSettings = {
             isCommentFilterEnabled: false,
-        } satisfies PartialDeep<Settings>;
+        } satisfies Partial<Settings>;
 
         await setSettings(newSettings);
 

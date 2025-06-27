@@ -4,7 +4,7 @@ import { texts, defaultSettings } from "@/utils/config.js";
 import { removeAllData, getSettingsData } from "@/utils/storage.js";
 import { useStorageStore } from "@/utils/store.js";
 import { useRef } from "react";
-import { PartialDeep, ValueOf } from "type-fest";
+import { ValueOf } from "type-fest";
 
 export default function Backup() {
     const input = useRef<HTMLInputElement | null>(null);
@@ -64,7 +64,7 @@ export default function Backup() {
 
 function importBackup(
     event: React.ChangeEvent<HTMLInputElement>,
-    saveSettings: (settings: PartialDeep<Settings>) => void,
+    saveSettings: (settings: Partial<Settings>) => void,
 ) {
     const reader = new FileReader();
     reader.onload = (f) => {

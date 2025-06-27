@@ -9,7 +9,6 @@ import {
     getLogData,
 } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
-import { PartialDeep } from "type-fest";
 import { extractVideoId } from "./util.js";
 
 interface StorageState {
@@ -20,7 +19,7 @@ interface StorageState {
     isNiconico: boolean;
     loadSettingsPageData: () => Promise<void>;
     loadPopupPageData: () => Promise<void>;
-    saveSettings: (settings: PartialDeep<Settings>) => void;
+    saveSettings: (settings: Partial<Settings>) => void;
 }
 
 export const useStorageStore = create<StorageState>()(

@@ -3,7 +3,6 @@ import { hasComment, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(ScoreFilter.name, () => {
@@ -15,7 +14,7 @@ describe(ScoreFilter.name, () => {
 
     const filtering = (options: {
         score: number;
-        settings?: PartialDeep<Settings>;
+        settings?: Partial<Settings>;
     }) => {
         const scoreFilter = new ScoreFilter({
             ...defaultSettings,

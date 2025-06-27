@@ -10,7 +10,6 @@ import {
 } from "./user-id-filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { fakeBrowser } from "#imports";
-import { PartialDeep } from "type-fest";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(UserIdFilter.name, () => {
@@ -22,7 +21,7 @@ describe(UserIdFilter.name, () => {
 
     const filtering = (options: {
         filter: string;
-        settings?: PartialDeep<Settings>;
+        settings?: Partial<Settings>;
     }) => {
         const userIdFilter = new UserIdFilter(
             {

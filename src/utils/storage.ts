@@ -29,7 +29,7 @@ export const customMerge = deepmergeCustom<
     mergeSets: false,
 });
 
-export async function loadSettings(settings?: PartialDeep<Settings>) {
+export async function loadSettings(settings?: Partial<Settings>) {
     const data = settings ?? (await getSettingsData());
     return customMerge(defaultSettings, data) as Settings;
 }
@@ -94,7 +94,7 @@ export async function setLog(
     await setValue(value, `log-${tabId}`, tabId, true);
 }
 
-const settingsStorage = storage.defineItem<PartialDeep<Settings> | null>(
+const settingsStorage = storage.defineItem<Partial<Settings> | null>(
     `${storageArea}:${"settings" satisfies StorageType}`,
 );
 
@@ -105,7 +105,7 @@ export async function getSettingsData() {
 }
 
 export async function setSettings(
-    value: PartialDeep<Settings> | (() => Promise<PartialDeep<Settings>>),
+    value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
     await setValue(value, "settings");
 }
