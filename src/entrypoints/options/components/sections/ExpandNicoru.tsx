@@ -9,6 +9,7 @@ import {
 } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import Details from "@/components/Details.js";
+import H2 from "../ui/H2.js";
 
 export default function ExpandNicoru() {
     const [nicoruCounts, save] = useStorageStore(
@@ -51,58 +52,46 @@ export default function ExpandNicoru() {
     };
 
     return (
-        <section>
-            <div className="header-container">
-                <h2>拡張ニコる</h2>
-            </div>
-            <div className="settings-container">
-                {expandNicoruSettings.checkbox.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-                <div className="setting">
-                    <Details
-                        id={"isOpenCustomColor"}
-                        summary={"カスタムカラー"}
-                    >
-                        <button
-                            className="small-button"
-                            onClick={() => {
-                                if (
-                                    !confirm(
-                                        messages.settings.resetNicoruCounts,
-                                    )
-                                )
-                                    return;
+        <H2 name="拡張ニコる">
+            {expandNicoruSettings.checkbox.map((props) => (
+                <Checkbox key={props.id} {...props} />
+            ))}
+            <div className="setting">
+                <Details id={"isOpenCustomColor"} summary={"カスタムカラー"}>
+                    <button
+                        className="small-button"
+                        onClick={() => {
+                            if (!confirm(messages.settings.resetNicoruCounts))
+                                return;
 
-                                saveDefault();
-                            }}
-                        >
-                            リセット
-                        </button>
-                        <form
-                            className="nicoru-form"
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleSubmit();
-                            }}
-                        >
-                            <label>
-                                <input
-                                    type="number"
-                                    value={input}
-                                    min={0}
-                                    placeholder="追加したい基準値を入力"
-                                    onChange={(e) => setInput(e.target.value)}
-                                />
-                                以上
-                            </label>
-                        </form>
-                        {nicoruCounts.map((id) => (
-                            <CustomNicoru key={id} {...{ id }} />
-                        ))}
-                    </Details>
-                </div>
+                            saveDefault();
+                        }}
+                    >
+                        リセット
+                    </button>
+                    <form
+                        className="nicoru-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSubmit();
+                        }}
+                    >
+                        <label>
+                            <input
+                                type="number"
+                                value={input}
+                                min={0}
+                                placeholder="追加したい基準値を入力"
+                                onChange={(e) => setInput(e.target.value)}
+                            />
+                            以上
+                        </label>
+                    </form>
+                    {nicoruCounts.map((id) => (
+                        <CustomNicoru key={id} {...{ id }} />
+                    ))}
+                </Details>
             </div>
-        </section>
+        </H2>
     );
 }

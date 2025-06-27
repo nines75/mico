@@ -1,3 +1,5 @@
+import { InfoContent } from "./Info.js";
+
 interface LogFrameProps {
     name: string;
     rule: number | undefined;
@@ -11,15 +13,9 @@ export function LogFrame({ name, rule, blocked, children }: LogFrameProps) {
             <div className="filtering-type">{name}</div>
             <div>
                 {rule !== undefined && (
-                    <span className="info">
-                        <span>ルール数:</span>
-                        <span className="value">{rule}</span>
-                    </span>
+                    <InfoContent name="ルール数:" value={rule} />
                 )}
-                <span className="info">
-                    <span>ブロック数:</span>
-                    <span className="value">{blocked}</span>
-                </span>
+                <InfoContent name="ブロック数:" value={blocked} />
             </div>
             {children}
         </section>

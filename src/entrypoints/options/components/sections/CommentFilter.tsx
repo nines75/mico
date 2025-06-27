@@ -1,63 +1,36 @@
 import { commentFilterSettings } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
 import CommentFilterArea from "../ui/CommentFilterArea.js";
+import H2 from "../ui/H2.js";
+import H3 from "../ui/H3.js";
 
 export default function CommentFilter() {
     return (
-        <section>
-            <div className="header-container">
-                <h2>コメントフィルター</h2>
-            </div>
-            <div className="settings-container">
-                {commentFilterSettings.checkbox.top.map((props) => (
+        <H2 name="コメントフィルター">
+            {commentFilterSettings.checkbox.top.map((props) => (
+                <Checkbox key={props.id} {...props} />
+            ))}
+            <H3 name="フィルタリング">
+                {commentFilterSettings.checkbox.filtering.map((props) => (
                     <Checkbox key={props.id} {...props} />
                 ))}
-                <section>
-                    <div className="header-container">
-                        <h3>フィルタリング</h3>
-                    </div>
-                    <div className="settings-container">
-                        {commentFilterSettings.checkbox.filtering.map(
-                            (props) => (
-                                <Checkbox key={props.id} {...props} />
-                            ),
-                        )}
-                        <CommentFilterArea />
-                    </div>
-                </section>
-                <section>
-                    <div className="header-container">
-                        <h3>ログ</h3>
-                    </div>
-                    <div className="settings-container">
-                        {commentFilterSettings.checkbox.log.map((props) => (
-                            <Checkbox key={props.id} {...props} />
-                        ))}
-                    </div>
-                </section>
-                <section>
-                    <div className="header-container">
-                        <h3>通知</h3>
-                    </div>
-                    <div className="settings-container">
-                        {commentFilterSettings.checkbox.notification.map(
-                            (props) => (
-                                <Checkbox key={props.id} {...props} />
-                            ),
-                        )}
-                    </div>
-                </section>
-                <section>
-                    <div className="header-container">
-                        <h3>その他</h3>
-                    </div>
-                    <div className="settings-container">
-                        {commentFilterSettings.checkbox.other.map((props) => (
-                            <Checkbox key={props.id} {...props} />
-                        ))}
-                    </div>
-                </section>
-            </div>
-        </section>
+                <CommentFilterArea />
+            </H3>
+            <H3 name="ログ">
+                {commentFilterSettings.checkbox.log.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
+            </H3>
+            <H3 name="通知">
+                {commentFilterSettings.checkbox.notification.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
+            </H3>
+            <H3 name="その他">
+                {commentFilterSettings.checkbox.other.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
+            </H3>
+        </H2>
     );
 }

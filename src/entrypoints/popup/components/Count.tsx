@@ -1,4 +1,5 @@
 import { useStorageStore } from "@/utils/store.js";
+import { Info, InfoContent } from "./Info.js";
 
 export default function Count() {
     const count = useStorageStore((state) => {
@@ -18,43 +19,30 @@ export default function Count() {
 
     return (
         <>
-            <section>
-                <span className="info">
-                    <span>総ブロック数:</span>
-                    <span className="value">{`${blocked}/${loaded} (${percentage}%)`}</span>
-                </span>
-            </section>
+            <Info
+                name="総ブロック数:"
+                value={`${blocked}/${loaded} (${percentage}%)`}
+            />
             {count?.invalid !== undefined && count.invalid > 0 && (
-                <section>
-                    <span className="info">
-                        <span>無効なルールの数:</span>
-                        <span className="value">{count.invalid}</span>
-                    </span>
-                </section>
+                <Info name="無効なルールの数:" value={count.invalid} />
             )}
             {count !== undefined && "include" in count && count.include > 0 && (
-                <section>
-                    <span className="info">
-                        <span>@includeによって有効化されたルールの数:</span>
-                        <span className="value">{count.include}</span>
-                    </span>
-                </section>
+                <Info
+                    name="@includeによって有効化されたルールの数:"
+                    value={count.include}
+                />
             )}
             {count !== undefined && "exclude" in count && count.exclude > 0 && (
-                <section>
-                    <span className="info">
-                        <span>@excludeによって無効化されたルールの数:</span>
-                        <span className="value">{count.exclude}</span>
-                    </span>
-                </section>
+                <InfoContent
+                    name="@excludeによって無効化されたルールの数:"
+                    value={count.exclude}
+                />
             )}
             {count !== undefined && "disable" in count && count.disable > 0 && (
-                <section>
-                    <span className="info">
-                        <span>@disableによって無効化されたコマンドの数:</span>
-                        <span className="value">{count.disable}</span>
-                    </span>
-                </section>
+                <InfoContent
+                    name="@disableによって無効化されたコマンドの数:"
+                    value={count.disable}
+                />
             )}
         </>
     );

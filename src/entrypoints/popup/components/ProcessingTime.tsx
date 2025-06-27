@@ -1,4 +1,5 @@
 import { useStorageStore } from "@/utils/store.js";
+import { Info } from "./Info.js";
 
 export default function ProcessingTime() {
     const processingTime = useStorageStore((state) => {
@@ -15,30 +16,21 @@ export default function ProcessingTime() {
     return (
         <>
             {processingTime?.filtering !== undefined && (
-                <section>
-                    <span className="info">
-                        <span>フィルタリング:</span>
-                        <span className="value">
-                            {processingTime.filtering}ms
-                            {processingTime.fetchTag !== undefined &&
-                                processingTime.fetchTag !== null &&
-                                `(${
-                                    processingTime.filtering -
-                                    processingTime.fetchTag
-                                }ms)`}
-                        </span>
-                    </span>
-                </section>
+                <Info
+                    name="フィルタリング:"
+                    value={`${processingTime.filtering}ms${
+                        processingTime.fetchTag !== undefined &&
+                        processingTime.fetchTag !== null
+                            ? `(${
+                                  processingTime.filtering -
+                                  processingTime.fetchTag
+                              }ms)`
+                            : ""
+                    }`}
+                />
             )}
             {processingTime?.saveLog !== undefined && (
-                <section>
-                    <span className="info">
-                        <span>ログ:</span>
-                        <span className="value">
-                            {processingTime.saveLog}ms
-                        </span>
-                    </span>
-                </section>
+                <Info name="ログ:" value={`${processingTime.saveLog}ms`} />
             )}
         </>
     );

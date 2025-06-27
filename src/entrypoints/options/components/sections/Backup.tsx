@@ -5,43 +5,36 @@ import { removeAllData, getSettingsData } from "@/utils/storage.js";
 import { useStorageStore } from "@/utils/store.js";
 import { useRef } from "react";
 import { ValueOf } from "type-fest";
+import H2 from "../ui/H2.js";
 
 export default function Backup() {
     const input = useRef<HTMLInputElement | null>(null);
     const saveSettings = useStorageStore((state) => state.saveSettings);
 
     return (
-        <section>
-            <div className="header-container">
-                <h2>バックアップ</h2>
-            </div>
-            <div className="settings-container">
-                <button
-                    className="backup-button"
-                    onClick={() => {
-                        if (input.current !== null) input.current.click();
-                    }}
-                >
-                    インポート
-                </button>
-                <button
-                    className="backup-button"
-                    onClick={() => exportBackup()}
-                >
-                    エクスポート
-                </button>
-                <button className="backup-button" onClick={() => reset()}>
-                    リセット
-                </button>
-                <input
-                    type="file"
-                    accept=".json"
-                    style={{ display: "none" }}
-                    ref={input}
-                    onChange={(e) => importBackup(e, saveSettings)}
-                />
-            </div>
-        </section>
+        <H2 name="バックアップ">
+            <button
+                className="backup-button"
+                onClick={() => {
+                    if (input.current !== null) input.current.click();
+                }}
+            >
+                インポート
+            </button>
+            <button className="backup-button" onClick={() => exportBackup()}>
+                エクスポート
+            </button>
+            <button className="backup-button" onClick={() => reset()}>
+                リセット
+            </button>
+            <input
+                type="file"
+                accept=".json"
+                style={{ display: "none" }}
+                ref={input}
+                onChange={(e) => importBackup(e, saveSettings)}
+            />
+        </H2>
     );
 }
 
