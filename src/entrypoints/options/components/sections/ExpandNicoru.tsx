@@ -4,8 +4,8 @@ import { useShallow } from "zustand/shallow";
 import CustomNicoru from "../ui/CustomNicoru.js";
 import {
     defaultSettings,
-    texts,
     expandNicoruSettings,
+    messages,
 } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import Details from "@/components/Details.js";
@@ -29,7 +29,7 @@ export default function ExpandNicoru() {
     const handleSubmit = () => {
         if (input === "") return;
         if (input.length > 15) {
-            alert(texts.settings.messageNumberTooBig);
+            alert(messages.settings.numberTooBig);
             setInput("");
             return;
         }
@@ -37,7 +37,7 @@ export default function ExpandNicoru() {
         const newCount = Number(input);
 
         if (nicoruCounts.includes(newCount)) {
-            alert(texts.settings.messageValueAlreadyExists);
+            alert(messages.settings.valueAlreadyExists);
             setInput("");
             return;
         }
@@ -69,7 +69,7 @@ export default function ExpandNicoru() {
                             onClick={() => {
                                 if (
                                     !confirm(
-                                        texts.settings.messageResetNicoruCounts,
+                                        messages.settings.resetNicoruCounts,
                                     )
                                 )
                                     return;

@@ -1,4 +1,4 @@
-import { texts } from "@/utils/config.js";
+import { messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import { savePlaybackTime, sendNotification } from "@/utils/util.js";
 import { Message } from "../content/message.js";
@@ -65,13 +65,13 @@ async function saveNgUserId(
     const logData = await getLogData(tabId);
     const ngToUserId = logData?.commentFilterLog?.filtering.noToUserId;
     if (ngToUserId === undefined) {
-        await sendNotification(texts.background.messageFailedToAddNgUserId);
+        await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
 
     const userId = ngToUserId.get(data.commentNo);
     if (userId === undefined) {
-        await sendNotification(texts.background.messageFailedToAddNgUserId);
+        await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
 
@@ -92,7 +92,7 @@ async function saveNgUserId(
     }
 
     if (settings.isNotifyAddNgUserId) {
-        tasks.push(sendNotification(texts.content.messageAddNgUserId));
+        tasks.push(sendNotification(messages.ngUserId.additionSuccess));
     }
 
     await Promise.all(tasks);
@@ -119,7 +119,7 @@ async function saveNgId(
     const log = await getLogData(tabId);
     const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
     if (videoIdToUserId === undefined) {
-        await sendNotification(texts.background.messageFailedToAddNgUserId);
+        await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
 

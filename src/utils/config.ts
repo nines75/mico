@@ -118,51 +118,69 @@ export const attributes = {
     recommendVideoId: "data-decoration-video-id",
 } as const;
 
-export const texts = {
-    background: {
-        errorMessageGetTags: "タグの取得に失敗しました",
-        messageFailedToAddNgUserId: "ユーザーのNG登録に失敗しました",
+export const errors = {
+    getTags: "タグの取得に失敗しました",
+} as const;
+
+export const buttons = {
+    AddNgUserId: "ユーザーをNG登録({target})",
+    AddSpecificNgUserId: "この動画だけユーザーをNG登録({target})",
+} as const;
+
+export const messages = {
+    ngUserId: {
+        // 追加
+        additionSuccess: "ユーザーのNG登録に成功しました",
+        additionFailed: "ユーザーのNG登録に失敗しました",
+        notifyAddition: "{target}件のユーザーIDがNGリストに追加されました",
+        confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n{target}",
+        confirmAdditionByVideo: "この動画を投稿したユーザーをNG登録しますか？",
+
+        // 削除
+        confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n{target}",
+
+        undoStrict:
+            "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
+        alreadyAdded: "このユーザーIDは既にNG登録されています",
     },
-    content: {
-        textAddNgUserIdButton: "ユーザーをNG登録({target})",
-        textAddSpecificNgUserIdButton: "この動画だけユーザーをNG登録({target})",
-        messageAddNgUserId: "ユーザーのNG登録に成功しました",
-        messageNotifyAddNgUserId:
-            "{target}件のユーザーIDがNGリストに追加されました",
-        messageAddVideoNgUserId: "この動画を投稿したユーザーをNG登録しますか？",
-        messageAddNgVideoId: "この動画をNG登録しますか？",
-        titleAddNgVideo: "クリックしてこの動画ををNG登録",
+    ngVideoId: {
+        confirmAddition: "この動画をNG登録しますか？",
+        confirmRemoval: "以下のNG動画IDを削除しますか？\n\n{target}",
     },
     settings: {
-        messageNeverReset: "設定が一度も変更されていません",
-        messageReset:
+        neverReset: "設定が一度も変更されていません",
+        confirmReset:
             "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
-        messageNumberTooBig: "入力された数値が大きすぎます",
-        messageValueAlreadyExists: "すでに存在する値です",
-        messageResetNicoruCounts:
+
+        // 拡張ニコる
+        numberTooBig: "入力された数値が大きすぎます",
+        valueAlreadyExists: "すでに存在する値です",
+        resetNicoruCounts:
             "拡張ニコるの基準値や配色の設定がリセットされます。\n続行しますか？",
     },
     popup: {
-        messageNotWork: "このページでは動作しません",
-        messageCommentFilterDisabled: "コメントフィルターが無効になっています",
-        messageVideoFilterDisabled: "動画フィルターが無効になっています",
-        messageOutdatedLog:
-            "表示されているログは古いものである可能性があります",
-        messageFilteringLogDisabled:
+        notWorking: "このページでは動作しません",
+        outdatedLog: "表示されているログは古いものである可能性があります",
+
+        // toggle
+        commentFilterDisabled: "コメントフィルターが無効になっています",
+        videoFilterDisabled: "動画フィルターが無効になっています",
+        filteringLogDisabled:
             "フィルタリングログを保存しない設定になっています",
-        titleUndoStrictNgUserIds:
-            "strictルールによって自動追加されたNGユーザーIDを削除します",
-        messageUndoStrictNgUserIds:
-            "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
-        titleRemoveNgUserId: "クリックしてNGユーザーIDを削除",
-        titleRemoveNgVideoId: "クリックしてNG動画IDを削除",
-        messageRemoveNgUserId: "以下のNGユーザーIDを削除しますか？\n\n{target}",
-        messageRemoveNgVideoId: "以下のNG動画IDを削除しますか？\n\n{target}",
-        titleAddNgUserId: "クリックしてこのコメントを投稿したユーザーをNG登録",
-        titleAddVideoNgUserId: "クリックしてこの動画を投稿したユーザーをNG登録",
-        messageAddNgUserId: "以下のユーザーIDをNG登録しますか？\n\n{target}",
-        messageNgUserIdAlreadyExists: "このユーザーIDは既にNG登録されています",
     },
+} as const;
+
+export const titles = {
+    // 追加
+    addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
+    addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
+    addNgVideo: "クリックしてこの動画ををNG登録",
+
+    // 削除
+    removeNgUserId: "クリックしてNGユーザーIDを削除",
+    removeNgVideoId: "クリックしてNG動画IDを削除",
+
+    undoStrict: "strictルールによって自動追加されたNGユーザーIDを削除します",
 } as const;
 
 export const colors = {

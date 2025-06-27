@@ -1,7 +1,7 @@
 import { CommentDataContainer } from "@/types/api/comment.types.js";
 import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
-import { texts, pattern } from "@/utils/config.js";
+import { pattern, messages } from "@/utils/config.js";
 import {
     loadSettings,
     getLogData,
@@ -82,7 +82,7 @@ export default function commentRequest(
             if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
                 tasks.push(
                     sendNotification(
-                        texts.content.messageNotifyAddNgUserId.replace(
+                        messages.ngUserId.notifyAddition.replace(
                             "{target}",
                             strictNgUserIds.size.toString(),
                         ),

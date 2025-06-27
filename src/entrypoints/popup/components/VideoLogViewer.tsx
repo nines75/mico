@@ -1,5 +1,5 @@
 import { CommonLog } from "@/types/storage/log.types.js";
-import { texts } from "@/utils/config.js";
+import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
 import { JSX } from "react";
@@ -78,7 +78,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
                 {"# "}
                 <span
                     className="clickable"
-                    title={texts.popup.titleRemoveNgUserId}
+                    title={titles.removeNgUserId}
                     onClick={() => onClickId(userId, "user")}
                 >
                     {`${userId}${userName === null ? "" : `(${userName})`}`}
@@ -121,7 +121,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
             elements.push(
                 <div key={videoId} className="log-line">
                     <span
-                        title={texts.popup.titleRemoveNgVideoId}
+                        title={titles.removeNgVideoId}
                         className="clickable"
                         onClick={() => onClickId(videoId, "video")}
                     >
@@ -148,7 +148,7 @@ function renderCommonLog(commonLog: CommonLog, videos: VideoData) {
             elements.push(
                 <div key={videoId} className="log-line">
                     <span
-                        title={texts.popup.titleAddVideoNgUserId}
+                        title={titles.addNgUserIdByVideo}
                         className="clickable"
                         onClick={() => onClickVideoTitle(video.owner.id)}
                     >
@@ -174,9 +174,9 @@ async function onClickId(id: string, type: "user" | "video") {
         const text = (() => {
             switch (type) {
                 case "user":
-                    return texts.popup.messageRemoveNgUserId;
+                    return messages.ngUserId.confirmRemoval;
                 case "video":
-                    return texts.popup.messageRemoveNgVideoId;
+                    return messages.ngVideoId.confirmRemoval;
             }
         })();
 
@@ -191,7 +191,9 @@ async function onClickId(id: string, type: "user" | "video") {
 async function onClickVideoTitle(userId: string) {
     try {
         if (
-            !confirm(texts.popup.messageAddNgUserId.replace("{target}", userId))
+            !confirm(
+                messages.ngUserId.confirmAddition.replace("{target}", userId),
+            )
         )
             return;
 

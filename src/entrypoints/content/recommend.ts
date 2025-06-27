@@ -1,4 +1,4 @@
-import { attributes, selectors, texts } from "@/utils/config.js";
+import { attributes, messages, selectors, titles } from "@/utils/config.js";
 import { createElement, ScreenShareOff, UserX } from "lucide";
 
 export function mountToRecommendHandler(parent: HTMLElement) {
@@ -22,12 +22,12 @@ export function mountToRecommend(element: Element) {
         element,
         10,
         createElement(UserX),
-        texts.popup.titleAddVideoNgUserId,
+        titles.addNgUserIdByVideo,
         async (event) => {
             try {
                 event.preventDefault();
 
-                if (!confirm(texts.content.messageAddVideoNgUserId)) return;
+                if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
 
                 const parent = element.parentElement;
                 if (parent === null) return;
@@ -52,11 +52,11 @@ export function mountToRecommend(element: Element) {
         element,
         40,
         createElement(ScreenShareOff),
-        texts.content.titleAddNgVideo,
+        titles.addNgVideo,
         async (event) => {
             try {
                 event.preventDefault();
-                if (!confirm(texts.content.messageAddNgVideoId)) return;
+                if (!confirm(messages.ngVideoId.confirmAddition)) return;
 
                 element.style.display = "none";
 

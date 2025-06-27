@@ -5,7 +5,7 @@ import {
 } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { NiconicoComment } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { texts } from "@/utils/config.js";
+import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
 import { JSX } from "react";
@@ -57,7 +57,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                 (filtering?.strictNgUserIds.size ?? 0) > 0 && (
                     <div>
                         <button
-                            title={texts.popup.titleUndoStrictNgUserIds}
+                            title={titles.undoStrict}
                             onClick={() => undoStrictNgUserIds(filtering)}
                         >
                             undo
@@ -79,7 +79,7 @@ async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
 
         if (
             !confirm(
-                texts.popup.messageUndoStrictNgUserIds.replace(
+                messages.ngUserId.undoStrict.replace(
                     "{target}",
                     [...userIds].join("\n"),
                 ),
@@ -137,7 +137,7 @@ function renderUserIdLog(
                     )}
                 <span
                     className="clickable"
-                    title={texts.popup.titleRemoveNgUserId}
+                    title={titles.removeNgUserId}
                     onClick={() => onClickUserId(userId)}
                 >
                     {userId}
@@ -305,7 +305,7 @@ function formatComment(
             <span
                 {...(isClickable
                     ? {
-                          title: texts.popup.titleAddNgUserId,
+                          title: titles.addNgUserIdByComment,
                           className: "clickable",
                           onClick: () => onClickComment(comment),
                       }
@@ -340,7 +340,7 @@ function formatCommentWithDuplicate(
         <Fragment key={`body`}>
             {`${elements.length > 0 ? ":" : ""}`}
             <span
-                title={texts.popup.titleAddNgUserId}
+                title={titles.addNgUserIdByComment}
                 className="clickable"
                 onClick={() => onClickComment(comments)}
             >
@@ -356,7 +356,7 @@ async function onClickUserId(userId: string) {
     try {
         if (
             !confirm(
-                texts.popup.messageRemoveNgUserId.replace("{target}", userId),
+                messages.ngUserId.confirmRemoval.replace("{target}", userId),
             )
         )
             return;
@@ -380,13 +380,13 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
         );
 
         if (targetUserIds.size === 0) {
-            alert(texts.popup.messageNgUserIdAlreadyExists);
+            alert(messages.ngUserId.alreadyAdded);
             return;
         }
 
         if (
             !confirm(
-                texts.popup.messageAddNgUserId.replace(
+                messages.ngUserId.confirmAddition.replace(
                     "{target}",
                     [...targetUserIds].join("\n"),
                 ),

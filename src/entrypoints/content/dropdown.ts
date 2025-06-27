@@ -1,5 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern, texts, selectors } from "@/utils/config.js";
+import { pattern, selectors, buttons } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
 interface DropdownContent {
@@ -20,18 +20,8 @@ export async function mountToDropdown(
     )?.[1];
     if (commentNo === undefined) return;
 
-    appendButton(
-        dropdownContent,
-        commentNo,
-        texts.content.textAddNgUserIdButton,
-        false,
-    );
-    appendButton(
-        dropdownContent,
-        commentNo,
-        texts.content.textAddSpecificNgUserIdButton,
-        true,
-    );
+    appendButton(dropdownContent, commentNo, buttons.AddNgUserId, false);
+    appendButton(dropdownContent, commentNo, buttons.AddSpecificNgUserId, true);
 
     if (settings.isShowUserIdInDropdown) {
         await browser.runtime.sendMessage({

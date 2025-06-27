@@ -1,6 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { texts } from "@/utils/config.js";
+import { errors } from "@/utils/config.js";
 import { WordFilter } from "./filter/word-filter.js";
 import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
@@ -148,7 +148,7 @@ async function getTags(
     );
     const end = performance.now();
 
-    if (!res.ok) throw new Error(texts.background.errorMessageGetTags);
+    if (!res.ok) throw new Error(errors.getTags);
 
     const parser = new DOMParser();
     const xmlStr = await res.text();

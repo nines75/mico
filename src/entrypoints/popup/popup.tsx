@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import Count from "./components/Count.js";
 import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
-import { popupConfig, texts, urls } from "@/utils/config.js";
+import { popupConfig, messages, urls } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
@@ -56,7 +56,7 @@ function Page() {
             <span id="disabled-message">
                 {text}
                 <br />
-                {texts.popup.messageOutdatedLog}
+                {messages.popup.outdatedLog}
             </span>
         </section>
     );
@@ -109,13 +109,13 @@ function Page() {
                                     return null;
 
                                 return getDisabledMessage(
-                                    texts.popup.messageCommentFilterDisabled,
+                                    messages.popup.commentFilterDisabled,
                                 );
                             case "videoFilter":
                                 if (settings.isVideoFilterEnabled) return null;
 
                                 return getDisabledMessage(
-                                    texts.popup.messageVideoFilterDisabled,
+                                    messages.popup.videoFilterDisabled,
                                 );
                         }
                     })()}
@@ -159,10 +159,10 @@ const getMessage = (
     isNiconico: boolean,
     settings: Settings,
 ): string | undefined => {
-    if (!isNiconico) return texts.popup.messageNotWork;
+    if (!isNiconico) return messages.popup.notWorking;
 
     if (!settings.isSaveFilteringLog) {
-        return texts.popup.messageFilteringLogDisabled;
+        return messages.popup.filteringLogDisabled;
     }
 
     return undefined;

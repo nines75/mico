@@ -1,6 +1,6 @@
 import { BackupData } from "@/types/storage/backup.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { texts, defaultSettings } from "@/utils/config.js";
+import { defaultSettings, messages } from "@/utils/config.js";
 import { removeAllData, getSettingsData } from "@/utils/storage.js";
 import { useStorageStore } from "@/utils/store.js";
 import { useRef } from "react";
@@ -40,7 +40,8 @@ export default function Backup() {
                     className="backup-button"
                     onClick={async () => {
                         try {
-                            if (!confirm(texts.settings.messageReset)) return;
+                            if (!confirm(messages.settings.confirmReset))
+                                return;
 
                             await removeAllData();
                         } catch (e) {
@@ -104,7 +105,7 @@ async function exportBackup() {
     const settingsData = await getSettingsData();
     if (settingsData === undefined) {
         // 一度も設定が保存されていない場合
-        alert(texts.settings.messageNeverReset);
+        alert(messages.settings.neverReset);
         return;
     }
 
