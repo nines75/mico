@@ -101,19 +101,6 @@ export const defaultSettings: Settings = {
     popupSelectedTab: "commentFilter",
 } as const;
 
-export const selectors = {
-    commentText: ":scope > div > div > p",
-    commentNicoru: ":scope > div > button > p",
-    commentTime: ":scope > div > div > p > span",
-    player: "div[class='grid-area_[player]'] > div > div > div > div",
-    dropdownButtonsParent: ":scope > div > div:last-of-type",
-    dropdownButtonSample: ":scope > button",
-    dropdownCommentNo: ":scope > div > div:nth-child(2) > p:last-of-type",
-    dropdownMain: ".z_dropdown > div > div > div",
-    dropdownMainSample: ":scope > p:last-of-type",
-    recommendAnchor: ":scope > a[href^='/watch/']",
-} as const;
-
 export const attributes = {
     recommendVideoId: "data-decoration-video-id",
 } as const;

@@ -1,5 +1,5 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
-import { attributes, selectors } from "@/utils/config.js";
+import { attributes } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
 export interface Message {
@@ -53,7 +53,9 @@ function reload(tabId: number) {
 }
 
 function focusPlayer() {
-    const player = document.querySelector(selectors.player);
+    const player = document.querySelector(
+        "div[class='grid-area_[player]'] > div > div > div > div",
+    );
 
     if (player instanceof HTMLDivElement) player.focus();
 }
@@ -127,10 +129,10 @@ function openQuickEdit(ctx: ContentScriptContext) {
 }
 
 function mountUserId(userId: string) {
-    const dropdown = document.querySelector(selectors.dropdownMain);
+    const dropdown = document.querySelector(".z_dropdown > div > div > div");
     if (dropdown === null) return;
 
-    const sampleElement = dropdown.querySelector(selectors.dropdownMainSample);
+    const sampleElement = dropdown.querySelector(":scope > p:last-of-type");
     if (sampleElement === null) return;
 
     const p = document.createElement("p");

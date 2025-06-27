@@ -1,5 +1,4 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { selectors } from "@/utils/config.js";
 
 export function renderComment(element: HTMLElement, settings: Settings) {
     const commentContent = getCommentContent(element);
@@ -55,11 +54,11 @@ export function getCommentContent(
     element: HTMLElement,
 ): CommentContent | undefined {
     // コメント本文
-    const textElement = element.querySelector(selectors.commentText);
+    const textElement = element.querySelector(":scope > div > div > p");
     // ニコられた数のテキスト
-    const nicoruElement = element.querySelector(selectors.commentNicoru);
+    const nicoruElement = element.querySelector(":scope > div > button > p");
     // タイムスタンプのテキスト
-    const timeElement = element.querySelector(selectors.commentTime);
+    const timeElement = element.querySelector(":scope > div > div > p > span");
 
     if (
         !(textElement instanceof HTMLParagraphElement) ||

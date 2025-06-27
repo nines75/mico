@@ -1,10 +1,8 @@
-import { attributes, messages, selectors, titles } from "@/utils/config.js";
+import { attributes, messages, titles } from "@/utils/config.js";
 import { createElement, ScreenShareOff, UserX } from "lucide";
 
 export function mountToRecommendHandler(parent: HTMLElement) {
-    const elements = parent.querySelectorAll(selectors.recommendAnchor);
-
-    for (const element of elements) {
+    for (const element of getAnchors(parent)) {
         mountToRecommend(element);
     }
 }
@@ -100,9 +98,11 @@ function appendButton(
 }
 
 function getVideoIds(parent: HTMLElement) {
-    const elements = parent.querySelectorAll(selectors.recommendAnchor);
-
-    return [...elements]
+    return [...getAnchors(parent)]
         .map((element) => element.getAttribute(attributes.recommendVideoId))
         .filter((id) => id !== null);
+}
+
+function getAnchors(parent: HTMLElement) {
+    return parent.querySelectorAll(":scope > a[href^='/watch/']");
 }

@@ -1,5 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern, selectors, buttons } from "@/utils/config.js";
+import { pattern, buttons } from "@/utils/config.js";
 import { extractVideoId } from "@/utils/util.js";
 
 interface DropdownContent {
@@ -78,18 +78,19 @@ function getButtonCallback(commentNo: string, specific: boolean) {
 
 function getDropdownContent(element: HTMLElement): DropdownContent | undefined {
     const buttonsParentElement = element.querySelector(
-        selectors.dropdownButtonsParent,
+        ":scope > div > div:last-of-type",
     );
-    const commentNoElement = element.querySelector(selectors.dropdownCommentNo);
+    const commentNoElement = element.querySelector(
+        ":scope > div > div:nth-child(2) > p:last-of-type",
+    );
     if (
         !(buttonsParentElement instanceof HTMLDivElement) ||
         !(commentNoElement instanceof HTMLParagraphElement)
     )
         return;
 
-    const sampleButtonElement = buttonsParentElement.querySelector(
-        selectors.dropdownButtonSample,
-    );
+    const sampleButtonElement =
+        buttonsParentElement.querySelector(":scope > button");
     if (!(sampleButtonElement instanceof HTMLButtonElement)) return;
 
     const commentNoText = commentNoElement.textContent;
