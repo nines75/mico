@@ -18,7 +18,7 @@ export interface FilteredData {
     easyCommentCount: number;
     loadedCommentCount: number;
     filteringTime: number;
-    fetchTagTime?: number;
+    fetchTagTime: number | null;
     noToUserId: NoToUserId;
     strictNgUserIds: Set<string>;
 }
@@ -136,10 +136,10 @@ async function getTags(
     hasTagRule: boolean,
 ): Promise<{
     tags: string[];
-    fetchTagTime?: number;
+    fetchTagTime: number | null;
 }> {
     if (!hasTagRule) {
-        return { tags: [] };
+        return { tags: [], fetchTagTime: null };
     }
 
     const start = performance.now();

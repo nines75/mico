@@ -69,7 +69,7 @@ export default function commentRequest(
                             commentFilterLog: {
                                 processingTime: {
                                     filtering: filteredData.filteringTime,
-                                    fetchTag: filteredData.fetchTagTime ?? null,
+                                    fetchTag: filteredData.fetchTagTime,
                                 },
                             },
                         },

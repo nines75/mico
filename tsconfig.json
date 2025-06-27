@@ -5,6 +5,7 @@
         "incremental": true,
         "outDir": "./.output",
         "noUncheckedIndexedAccess": true,
-        "noImplicitOverride": true
+        "noImplicitOverride": true,
+        "exactOptionalPropertyTypes": true
     }
 }

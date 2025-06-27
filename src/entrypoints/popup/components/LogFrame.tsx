@@ -1,6 +1,6 @@
 interface LogFrameProps {
     name: string;
-    rule?: number;
+    rule: number | undefined;
     blocked: number;
     children: React.ReactNode;
 }
