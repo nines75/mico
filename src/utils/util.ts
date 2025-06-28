@@ -2,14 +2,10 @@ import { CommonLog } from "../types/storage/log.types.js";
 import { pattern, colors } from "./config.js";
 import { setLog } from "./storage.js";
 
-export function extractVideoId(url: string | undefined) {
-    if (url === undefined) return;
+export function isWatchPage(url: string | undefined) {
+    if (url === undefined) return false;
 
-    const match = url.match(pattern.regex.extractVideoId);
-    if (match === null) return;
-
-    // nullでなければ必ず一つ以上値が入っている
-    return match[0];
+    return url.startsWith(pattern.watchPageUrl);
 }
 
 export async function changeBadgeState(text: string, tabId: number) {

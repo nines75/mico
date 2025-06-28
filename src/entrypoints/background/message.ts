@@ -54,7 +54,6 @@ async function saveNgUserId(
     sender: browser.runtime.MessageSender,
 ) {
     const data = message.data as {
-        videoId: string;
         commentNo: number;
         specific: boolean;
     };
@@ -62,21 +61,17 @@ async function saveNgUserId(
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
 
-    const logData = await getLogData(tabId);
-    const ngToUserId = logData?.commentFilterLog?.filtering.noToUserId;
-    if (ngToUserId === undefined) {
-        await sendNotification(messages.ngUserId.additionFailed);
-        return;
-    }
-
-    const userId = ngToUserId.get(data.commentNo);
-    if (userId === undefined) {
+    const log = await getLogData(tabId);
+    const userId = log?.commentFilterLog?.filtering.noToUserId.get(
+        data.commentNo,
+    );
+    if (log === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
 
     await addNgUserId(
-        new Set([data.specific ? `${data.videoId}@${userId}` : userId]),
+        new Set([data.specific ? `${log.videoId}@${userId}` : userId]),
     );
 
     const settings = await loadSettings();

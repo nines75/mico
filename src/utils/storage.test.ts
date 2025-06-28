@@ -88,7 +88,9 @@ describe("storage", () => {
 
         expect(await getAllData()).toEqual({
             settings: defaultSettings,
-            "log-1": stringify({ commentFilterLog: testLog } satisfies LogData),
+            "log-1": stringify({
+                commentFilterLog: testLog,
+            } satisfies Partial<LogData>),
         });
     });
 

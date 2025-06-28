@@ -1,10 +1,10 @@
-import { pattern } from "@/utils/config.js";
 import { getAllData, LogType, removeData } from "@/utils/storage.js";
 import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
 import { mainRequest } from "./request/request-main.js";
+import { isWatchPage } from "@/utils/util.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -49,9 +49,9 @@ export default defineBackground(() => {
                 });
                 const tab = tabs[0];
 
-                if (tab?.id !== undefined && tab.url !== undefined) {
+                if (tab?.id !== undefined) {
                     // 視聴ページでのみ実行
-                    if (!tab.url.startsWith(pattern.watchPageUrl)) return;
+                    if (!isWatchPage(tab.url)) return;
 
                     await browser.tabs.sendMessage(tab.id, {
                         type: command,

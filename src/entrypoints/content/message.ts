@@ -1,6 +1,5 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
 import { attributes } from "@/utils/config.js";
-import { extractVideoId } from "@/utils/util.js";
 
 export interface Message {
     type: string;
@@ -28,9 +27,6 @@ function reload(tabId: number) {
             const video = document.querySelector("video");
             if (video !== null) {
                 clearInterval(id);
-
-                const videoId = extractVideoId(location.href);
-                if (videoId === undefined) return;
 
                 await browser.runtime.sendMessage({
                     type: "save-playback-time",

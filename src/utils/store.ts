@@ -9,7 +9,7 @@ import {
     getLogData,
 } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
-import { extractVideoId } from "./util.js";
+import { isWatchPage } from "./util.js";
 
 interface StorageState {
     settings: Settings;
@@ -43,17 +43,14 @@ export const useStorageStore = create<StorageState>()(
                 }),
             ]);
             const tab = tabs[0];
-
             const tabId = tab?.id;
-            const videoId = extractVideoId(tab?.url);
-
             const log =
                 tabId === undefined ? undefined : await getLogData(tabId);
 
             set({
                 settings,
                 log,
-                isNiconico: videoId !== undefined,
+                isNiconico: isWatchPage(tab?.url),
                 tabId,
                 isLoading: false,
             });

@@ -1,6 +1,6 @@
 import { fakeBrowser } from "#imports";
 import { beforeEach, describe, expect, it } from "vitest";
-import { escapeNewline, extractVideoId, savePlaybackTime } from "./util.js";
+import { escapeNewline, isWatchPage, savePlaybackTime } from "./util.js";
 import { getLogData } from "./storage.js";
 
 describe("util", () => {
@@ -8,21 +8,28 @@ describe("util", () => {
         fakeBrowser.reset();
     });
 
-    it(`${extractVideoId.name}()`, () => {
+    it(`${isWatchPage.name}()`, () => {
         [
-            ["https://www.nicovideo.jp/watch/sm1234", "sm1234"],
-            ["https://www.nicovideo.jp/watch/so1234", "so1234"],
-            ["https://www.nicovideo.jp/watch/nl1234", "nl1234"],
-            ["https://www.nicovideo.jp/watch/nm1234", "nm1234"],
-        ].forEach(([url, videoId]) => {
-            expect(extractVideoId(url)).toBe(videoId);
-        });
-
-        ["https://www.nicovideo.jp/watch/ab1234", "undefined"].forEach(
-            (url) => {
-                expect(extractVideoId(url)).toBe(undefined);
+            {
+                url: "https://www.nicovideo.jp/watch/sm1234",
+                expected: true,
             },
-        );
+            // https://github.com/nines75/mico/issues/13
+            {
+                url: "https://www.nicovideo.jp/watch/1234",
+                expected: true,
+            },
+            {
+                url: "https://www.nicovideo.jp/",
+                expected: false,
+            },
+            {
+                url: undefined,
+                expected: false,
+            },
+        ].forEach(({ url, expected }) => {
+            expect(isWatchPage(url)).toBe(expected);
+        });
     });
 
     it(`${escapeNewline.name}()`, () => {

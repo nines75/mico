@@ -9,10 +9,10 @@ export interface LogData {
     commentFilterLog?: CommentFilterLog;
     videoFilterLog?: VideoFilterLog;
 
-    series?: SeriesData;
+    series: SeriesData;
+    videoId: string;
+    tags: string[];
     playbackTime?: number;
-    videoId?: string | null;
-    tags?: string[];
 }
 
 export interface ProcessingTimeData {

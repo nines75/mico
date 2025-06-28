@@ -10,11 +10,7 @@ import {
     LogType,
     setLog,
 } from "@/utils/storage.js";
-import {
-    extractVideoId,
-    sendNotification,
-    savePlaybackTime,
-} from "@/utils/util.js";
+import { sendNotification, savePlaybackTime } from "@/utils/util.js";
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
 
 export default function commentRequest(
@@ -39,10 +35,7 @@ export default function commentRequest(
                 getLogData(details.tabId),
             ]);
             const tabId = details.tabId;
-
-            // 動画IDを取得
-            const tab = await browser.tabs.get(tabId);
-            const videoId = extractVideoId(tab.url);
+            const videoId = log?.videoId;
 
             const [filteredData] = await Promise.all([
                 filterComment(
@@ -52,7 +45,6 @@ export default function commentRequest(
                     videoId,
                 ),
                 restorePlaybackTime(tabId),
-                setLog({ videoId: videoId ?? null }, tabId),
             ]);
 
             filter.write(encoder.encode(JSON.stringify(commentData)));

@@ -1,6 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { pattern, buttons } from "@/utils/config.js";
-import { extractVideoId } from "@/utils/util.js";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
@@ -55,17 +54,12 @@ function appendButton(
 function getButtonCallback(commentNo: string, specific: boolean) {
     return async () => {
         try {
-            const videoId = extractVideoId(location.href);
-            if (videoId === undefined) return;
-
             await browser.runtime.sendMessage({
                 type: "save-ng-user-id",
                 data: {
-                    videoId,
                     commentNo: Number(commentNo),
                     specific,
                 } satisfies {
-                    videoId: string;
                     commentNo: number;
                     specific: boolean;
                 },

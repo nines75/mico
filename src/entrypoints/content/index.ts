@@ -6,6 +6,7 @@ import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
+import { isWatchPage } from "@/utils/util.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -33,11 +34,7 @@ async function observerCallback(
     observer: customObserver,
 ) {
     const settings = observer.settings;
-    if (
-        !location.href.startsWith(pattern.watchPageUrl) ||
-        settings === undefined
-    )
-        return;
+    if (!isWatchPage(location.href) || settings === undefined) return;
 
     // 探している要素であると確定するまではcontinueしない
     for (const record of records) {

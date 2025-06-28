@@ -17,6 +17,9 @@ interface MainData {
                     name: string;
                 }[];
             };
+            video: {
+                id: string;
+            };
         };
     };
 }
@@ -87,10 +90,10 @@ async function mainDataFilter(
     settings: Settings,
     meta?: Element | null,
 ) {
-    const series = mainData.data.response.series?.video;
-    const video = series?.next;
-
     const seriesData: SeriesData = (() => {
+        const series = mainData.data.response.series?.video;
+        const video = series?.next;
+
         if (series !== undefined && video !== null && video !== undefined) {
             if (isNgVideo(video, settings)) {
                 series.next = null;
@@ -103,6 +106,7 @@ async function mainDataFilter(
         }
     })();
     const tags = mainData.data.response.tag.items.map((data) => data.name);
+    const videoId = mainData.data.response.video.id;
 
-    await setLog({ series: seriesData, tags }, details.tabId);
+    await setLog({ series: seriesData, tags, videoId }, details.tabId);
 }
