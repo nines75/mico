@@ -12,6 +12,7 @@ import {
 } from "@/utils/storage.js";
 import { sendNotification, savePlaybackTime } from "@/utils/util.js";
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
+import { storage } from "#imports";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -36,6 +37,18 @@ export default function commentRequest(
             ]);
             const tabId = details.tabId;
             const videoId = log?.videoId;
+
+            // 一時的なデバッグ用
+            if (import.meta.env.MODE === "development") {
+                if (
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    commentData.data === undefined ||
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    commentData.data.threads === undefined
+                ) {
+                    await storage.setItem("local:debug", commentData);
+                }
+            }
 
             const [filteredData] = await Promise.all([
                 filterComment(
