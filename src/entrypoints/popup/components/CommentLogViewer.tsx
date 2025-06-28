@@ -43,6 +43,9 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     if (id === "easyComment" && !settings.isHideEasyComment) return null;
     if (id === "ngScore" && !settings.isScoreFilterEnabled) return null;
 
+    const blocked = count?.blocked[id];
+    if (blocked === undefined || blocked === 0) return null;
+
     return (
         <LogFrame
             rule={
@@ -50,8 +53,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                     ? count?.rule[id]
                     : undefined
             }
-            blocked={count?.blocked[id] ?? 0}
-            {...{ name }}
+            {...{ name, blocked }}
         >
             {id === "ngUserId" &&
                 (filtering?.strictNgUserIds.size ?? 0) > 0 && (

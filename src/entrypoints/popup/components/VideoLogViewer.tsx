@@ -33,12 +33,11 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
         ]),
     );
 
+    const blocked = count?.blocked[id];
+    if (blocked === undefined || blocked === 0) return null;
+
     return (
-        <LogFrame
-            rule={count?.rule[id]}
-            blocked={count?.blocked[id] ?? 0}
-            {...{ name }}
-        >
+        <LogFrame rule={count?.rule[id]} {...{ name, blocked }}>
             <div className="log">
                 <Log {...{ id, filtering }} />
             </div>
