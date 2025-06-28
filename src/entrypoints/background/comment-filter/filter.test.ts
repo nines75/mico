@@ -1,7 +1,12 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, expect, it } from "vitest";
-import { extractCustomRule, BaseCustomRule, extractRule } from "./filter.js";
-import { replaceInclude } from "@/utils/test.js";
+import {
+    extractCustomRule,
+    BaseCustomRule,
+    extractRule,
+    sortCommentId,
+} from "./filter.js";
+import { replaceInclude, testCommentData } from "@/utils/test.js";
 
 describe(`${extractRule.name}()`, () => {
     it("一般的なケース", () => {
@@ -303,5 +308,33 @@ rule
             },
         ]);
         expect(ruleData.invalidCount).toBe(2);
+    });
+});
+
+describe(`${sortCommentId.name}()`, () => {
+    const ids = ["1000", "1001", "1002", "1003", "1004", "1005", "1006"];
+
+    it("default", () => {
+        expect(sortCommentId(ids, testCommentData)).toEqual([
+            "1005",
+            "1000",
+            "1001",
+            "1006",
+            "1004",
+            "1002",
+            "1003",
+        ]);
+    });
+
+    it("スコアでソート", () => {
+        expect(sortCommentId(ids, testCommentData, true)).toEqual([
+            "1002",
+            "1003",
+            "1004",
+            "1005",
+            "1000",
+            "1001",
+            "1006",
+        ]);
     });
 });

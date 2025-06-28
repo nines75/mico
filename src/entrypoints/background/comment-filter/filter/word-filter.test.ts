@@ -223,4 +223,29 @@ TesT
         ).toEqual(new Map([["/テスト/i", new Map([["テスト", ["1002"]]])]]));
         expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
+
+    it(`${WordFilter.prototype.sortLog.name}()`, () => {
+        const filter = `
+コメント
+テスト
+`;
+
+        const wordFilter = filtering({
+            filter,
+        });
+        wordFilter.sortLog();
+
+        expect(wordFilter.getLog()).toEqual(
+            new Map([
+                [
+                    "/コメント/i",
+                    new Map([
+                        ["コメント", ["1004"]],
+                        ["テストコメント", ["1003"]],
+                    ]),
+                ],
+                ["/テスト/i", new Map([["テスト", ["1002"]]])],
+            ]),
+        );
+    });
 });

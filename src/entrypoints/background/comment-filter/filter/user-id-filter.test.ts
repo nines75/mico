@@ -127,6 +127,25 @@ nvc:llNBacJJPE6wbyKKEioq3lO6515
         ).toEqual(new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]));
         expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
+
+    it(`${UserIdFilter.prototype.sortLog.name}()`, () => {
+        const filter = `
+nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
+nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
+`;
+
+        const userIdFilter = filtering({
+            filter,
+        });
+        userIdFilter.sortLog();
+
+        expect(userIdFilter.getLog()).toEqual(
+            new Map([
+                ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
+                ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
+            ]),
+        );
+    });
 });
 
 const userIds = [

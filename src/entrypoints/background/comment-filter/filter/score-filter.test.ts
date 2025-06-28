@@ -50,4 +50,21 @@ describe(ScoreFilter.name, () => {
         ).toEqual(["1002"]);
         expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
+
+    it(`${ScoreFilter.prototype.sortLog.name}()`, () => {
+        const scoreFilter = filtering({
+            score: 0,
+        });
+        scoreFilter.sortLog();
+
+        expect(scoreFilter.getLog()).toEqual([
+            "1002",
+            "1003",
+            "1004",
+            "1005",
+            "1000",
+            "1001",
+            "1006",
+        ]);
+    });
 });

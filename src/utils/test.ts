@@ -1,5 +1,8 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import { CommentFilterLog } from "@/types/storage/log-comment.types.js";
+import {
+    CommentData,
+    CommentFilterLog,
+} from "@/types/storage/log-comment.types.js";
 
 export const testThreads = (() => {
     const base = {
@@ -135,8 +138,14 @@ export const testLog = {
             ][],
         ),
     },
-    processingTime: { filtering: 51, saveLog: 5 },
+    processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;
+
+export const testCommentData: CommentData = new Map(
+    testThreads.flatMap((thread) =>
+        thread.comments.map((comment) => [comment.id, comment]),
+    ),
+);
 
 export function hasComment(threads: Thread[], ids: string[]) {
     return threads.some((thread) =>

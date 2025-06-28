@@ -246,4 +246,23 @@ device:switch
         ).toEqual(new Map([["big", ["1002"]]]));
         expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
+
+    it(`${CommandFilter.prototype.sortLog.name}()`, () => {
+        const filter = `
+device:switch
+big
+`;
+
+        const commandFilter = filtering({
+            filter,
+        });
+        commandFilter.sortLog();
+
+        expect(commandFilter.getLog()).toEqual(
+            new Map([
+                ["device:switch", ["1003", "1004"]],
+                ["big", ["1002"]],
+            ]),
+        );
+    });
 });
