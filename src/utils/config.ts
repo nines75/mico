@@ -1,5 +1,9 @@
 import { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
-import { PopupTab, Settings } from "../types/storage/settings.types.js";
+import {
+    PopupTab,
+    Settings,
+    SettingsTab,
+} from "../types/storage/settings.types.js";
 import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { CommentFilterAreaProps } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
 import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
@@ -87,8 +91,10 @@ export const defaultSettings: Settings = {
         },
     },
 
-    // 設定の開閉設定
-    isOpenCustomColor: false,
+    // 設定
+
+    /// タブ
+    settingsSelectedTab: "general",
 
     // ポップアップ
 
@@ -184,6 +190,36 @@ export const pattern = {
         extractCommentNo: /(\d+)$/,
     },
 } as const;
+
+export const settingsConfig = {
+    tab: [
+        {
+            id: "general",
+            name: "一般設定",
+        },
+        {
+            id: "commentFilter",
+            name: "コメントフィルター",
+        },
+        {
+            id: "videoFilter",
+            name: "動画フィルター",
+        },
+        {
+            id: "expandNicoru",
+            name: "拡張ニコる",
+        },
+        {
+            id: "backup",
+            name: "バックアップ",
+        },
+    ],
+} as const satisfies {
+    tab: {
+        id: SettingsTab;
+        name: string;
+    }[];
+};
 
 export const generalSettings = {
     checkbox: {

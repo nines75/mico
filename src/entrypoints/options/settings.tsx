@@ -4,10 +4,11 @@ import Backup from "./components/sections/Backup.js";
 import CommentFilter from "./components/sections/CommentFilter.js";
 import ExpandNicoru from "./components/sections/ExpandNicoru.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
-import { urls } from "@/utils/config.js";
+import { settingsConfig, urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import VideoFilter from "./components/sections/VideoFilter.js";
 import General from "./components/sections/General.js";
+import { useShallow } from "zustand/shallow";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -34,6 +35,13 @@ function Init() {
 }
 
 function Page() {
+    const [selectedTab, save] = useStorageStore(
+        useShallow((state) => [
+            state.settings.settingsSelectedTab,
+            state.saveSettings,
+        ]),
+    );
+
     useEffect(() => {
         browser.storage.onChanged.addListener(storageChangeHandler);
 
@@ -55,11 +63,31 @@ function Page() {
                     <SiGithub size={38} color="var(--dim-white)" />
                 </a>
             </div>
-            <General />
-            <CommentFilter />
-            <VideoFilter />
-            <ExpandNicoru />
-            <Backup />
+            <div className="tab-container">
+                {settingsConfig.tab.map((filter) => (
+                    <button
+                        key={filter.id}
+                        className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
+                        onClick={() => save({ settingsSelectedTab: filter.id })}
+                    >
+                        <span>{filter.name}</span>
+                    </button>
+                ))}
+            </div>
+            {(() => {
+                switch (selectedTab) {
+                    case "general":
+                        return <General />;
+                    case "commentFilter":
+                        return <CommentFilter />;
+                    case "videoFilter":
+                        return <VideoFilter />;
+                    case "expandNicoru":
+                        return <ExpandNicoru />;
+                    case "backup":
+                        return <Backup />;
+                }
+            })()}
         </>
     );
 }

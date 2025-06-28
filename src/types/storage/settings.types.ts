@@ -2,6 +2,12 @@ import { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilt
 import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
 export type PopupTab = "commentFilter" | "videoFilter";
+export type SettingsTab =
+    | "general"
+    | "commentFilter"
+    | "videoFilter"
+    | "expandNicoru"
+    | "backup";
 
 export interface Settings {
     // コメントフィルター
@@ -53,8 +59,10 @@ export interface Settings {
     nicoruCounts: number[];
     nicoruColors: Record<string, NicoruColor>;
 
-    // 設定の開閉設定
-    isOpenCustomColor: boolean;
+    // 設定
+
+    /// タブ
+    settingsSelectedTab: SettingsTab;
 
     // ポップアップ
 

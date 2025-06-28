@@ -7,10 +7,10 @@ import { popupConfig, messages, urls } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
-import Details from "@/components/Details.js";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import { Settings } from "@/types/storage/settings.types.js";
+import Details from "./components/Details.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {

@@ -8,7 +8,6 @@ import {
     messages,
 } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import Details from "@/components/Details.js";
 import H2 from "../ui/H2.js";
 
 export default function ExpandNicoru() {
@@ -52,12 +51,12 @@ export default function ExpandNicoru() {
     };
 
     return (
-        <H2 name="拡張ニコる">
+        <div className="settings-container">
             {expandNicoruSettings.checkbox.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}
-            <div className="setting">
-                <Details id={"isOpenCustomColor"} summary={"カスタムカラー"}>
+            <H2 name={"カスタムカラー"}>
+                <div className="setting">
                     <button
                         className="small-button"
                         onClick={() => {
@@ -90,8 +89,8 @@ export default function ExpandNicoru() {
                     {nicoruCounts.map((id) => (
                         <CustomNicoru key={id} {...{ id }} />
                     ))}
-                </Details>
-            </div>
-        </H2>
+                </div>
+            </H2>
+        </div>
     );
 }

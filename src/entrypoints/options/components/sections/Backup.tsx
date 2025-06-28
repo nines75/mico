@@ -5,14 +5,13 @@ import { removeAllData, getSettingsData } from "@/utils/storage.js";
 import { useStorageStore } from "@/utils/store.js";
 import { useRef } from "react";
 import { ValueOf } from "type-fest";
-import H2 from "../ui/H2.js";
 
 export default function Backup() {
     const input = useRef<HTMLInputElement | null>(null);
     const saveSettings = useStorageStore((state) => state.saveSettings);
 
     return (
-        <H2 name="バックアップ">
+        <div className="settings-container">
             <button
                 className="backup-button"
                 onClick={() => {
@@ -34,7 +33,7 @@ export default function Backup() {
                 ref={input}
                 onChange={(e) => importBackup(e, saveSettings)}
             />
-        </H2>
+        </div>
     );
 }
 

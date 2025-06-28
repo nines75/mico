@@ -11,10 +11,9 @@ h1 {
     color: lightgray;
     font-weight: lighter;
 }
-h2,
-h3,
-h4 {
+h2 {
     border-bottom: 2px solid gray;
+    font-size: 18px;
 }
 .header-container {
     display: flex;
@@ -100,6 +99,22 @@ h4 {
 }
 .selected-filter-button {
     border-color: lightskyblue;
+}
+.tab-container {
+    margin: 30px 20px;
+    border-bottom: 2px solid gray;
+    width: fit-content;
+    white-space: nowrap; /* 折り返さない */
+}
+.tab-button {
+    border: none;
+    font-size: 18px;
+    padding: 12px;
+}
+.selected-tab-button {
+    color: lightskyblue;
+    border-bottom: 2px solid lightskyblue;
+    margin-bottom: -2px; /* 親のボーダーに重ねる */
 }
 
 /* -------------------------------------------------------------------------------------------
