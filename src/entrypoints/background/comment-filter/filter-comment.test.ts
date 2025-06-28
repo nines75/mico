@@ -16,18 +16,23 @@ describe(`${filterComment.name}()`, () => {
         fakeBrowser.reset();
     });
 
-    it("all", () => {
-        const settings = {
+    const getSettings = (settings: Partial<Settings>) => {
+        const baseSettings = {
             ...defaultSettings,
-            isHideEasyComment: true,
-            isScoreFilterEnabled: true,
             scoreFilterCount: -1001,
             ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
             ngCommand: "big",
             ngWord: "コメント",
         } satisfies Partial<Settings>;
 
-        filterComment(testThreadCopy, settings, [], "sm1");
+        return {
+            ...baseSettings,
+            ...settings,
+        };
+    };
+
+    it("default", () => {
+        const res = filterComment(testThreadCopy, getSettings({}), [], "sm1");
 
         expect(
             hasComment(testThreadCopy, [
@@ -36,10 +41,9 @@ describe(`${filterComment.name}()`, () => {
                 "1002",
                 "1003",
                 "1004",
-                "1005",
-                "1006",
             ]),
         ).toBe(false);
+        expect(res?.filters.scoreFilter.getCount()).toBe(0);
     });
 
     it("strictルールが先に適用されているか", async () => {
@@ -81,5 +85,61 @@ device:Switch`,
         );
         expect(res?.filters.commandFilter.getLog()).toEqual(new Map());
         expect(res?.filters.wordFilter.getLog()).toEqual(new Map());
+    });
+
+    it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
+        filterComment(
+            testThreadCopy,
+            getSettings({ isCommentFilterEnabled: false }),
+            [],
+            "sm1",
+        );
+
+        expect(
+            Object.values(testThreadCopy)
+                .map((thread) => thread.commentCount)
+                .reduce((sum, cnt) => sum + cnt, 0),
+        ).toBe(7);
+    });
+
+    it(`Settings.${"isHideEasyComment" satisfies keyof Settings}`, () => {
+        filterComment(
+            testThreadCopy,
+            getSettings({ isHideEasyComment: true }),
+            [],
+            "sm1",
+        );
+
+        expect(
+            hasComment(testThreadCopy, [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005",
+                "1006",
+            ]),
+        ).toBe(false);
+    });
+
+    it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
+        const res = filterComment(
+            testThreadCopy,
+            getSettings({ isScoreFilterEnabled: true }),
+            [],
+            "sm1",
+        );
+
+        expect(
+            hasComment(testThreadCopy, [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+            ]),
+        ).toBe(false);
+        expect(res?.filters.scoreFilter.getLog()).toEqual(["1002"]);
     });
 });

@@ -76,7 +76,7 @@ export const testThreads = (() => {
             case "easy":
                 return {
                     fork: fork,
-                    commentCount: 0,
+                    commentCount: 2,
                     comments: [
                         createComment({
                             id: "1005",
