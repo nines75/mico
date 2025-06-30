@@ -3,7 +3,7 @@
 */
 
 export interface CommentDataContainer {
-    data: CommentData;
+    data?: CommentData;
 }
 
 interface CommentData {
