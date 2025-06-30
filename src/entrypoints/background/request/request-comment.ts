@@ -36,7 +36,7 @@ export default function commentRequest(
                 getLogData(details.tabId),
             ]);
             const tabId = details.tabId;
-            const videoId = log?.videoId;
+            const videoId = log?.videoId ?? undefined;
 
             // 一時的なデバッグ用
             if (import.meta.env.MODE === "development") {

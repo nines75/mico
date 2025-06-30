@@ -16,10 +16,10 @@ interface MainData {
                 items: {
                     name: string;
                 }[];
-            };
+            } | null;
             video: {
                 id: string;
-            };
+            } | null;
         };
     };
 }
@@ -105,8 +105,9 @@ async function mainDataFilter(
             return { hasNext: false };
         }
     })();
-    const tags = mainData.data.response.tag.items.map((data) => data.name);
-    const videoId = mainData.data.response.video.id;
+    const tags =
+        mainData.data.response.tag?.items.map((data) => data.name) ?? [];
+    const videoId = mainData.data.response.video?.id ?? null;
 
     await setLog({ series: seriesData, tags, videoId }, details.tabId);
 }

@@ -16,7 +16,7 @@ interface StorageState {
     log: LogData | undefined;
     tabId: number | undefined;
     isLoading: boolean;
-    isNiconico: boolean;
+    isWatchPage: boolean;
     loadSettingsPageData: () => Promise<void>;
     loadPopupPageData: () => Promise<void>;
     saveSettings: (settings: Partial<Settings>) => void;
@@ -28,7 +28,7 @@ export const useStorageStore = create<StorageState>()(
         log: undefined,
         tabId: undefined,
         isLoading: true,
-        isNiconico: false,
+        isWatchPage: false,
         loadSettingsPageData: async () => {
             const settings = await loadSettings();
 
@@ -50,7 +50,7 @@ export const useStorageStore = create<StorageState>()(
             set({
                 settings,
                 log,
-                isNiconico: isWatchPage(tab?.url),
+                isWatchPage: isWatchPage(tab?.url),
                 tabId,
                 isLoading: false,
             });

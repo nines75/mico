@@ -38,7 +38,7 @@ function Init() {
 
 function Page() {
     const settings = useStorageStore.getState().settings;
-    const isNiconico = useStorageStore.getState().isNiconico;
+    const isWatchPage = useStorageStore.getState().isWatchPage;
     const [videoId, selectedTab, save] = useStorageStore(
         useShallow((state) => [
             state.log?.videoId,
@@ -49,7 +49,7 @@ function Page() {
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(isNiconico, settings);
+    const message = getMessage(settings, isWatchPage, videoId);
 
     const getDisabledMessage = (text: string) => (
         <section>
@@ -155,15 +155,18 @@ function Page() {
     );
 }
 
-const getMessage = (
-    isNiconico: boolean,
+function getMessage(
     settings: Settings,
-): string | undefined => {
-    if (!isNiconico) return messages.popup.notWorking;
+    isWatchPage: boolean,
+    videoId: string | undefined | null,
+): string | undefined {
+    // 視聴ページ判定だけだと削除動画などに対応できないため動画IDでも判定を行う
+    if (!isWatchPage || videoId === undefined || videoId === null)
+        return messages.popup.notWorking;
 
     if (!settings.isSaveFilteringLog) {
         return messages.popup.filteringLogDisabled;
     }
 
     return undefined;
-};
+}

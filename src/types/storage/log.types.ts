@@ -10,7 +10,7 @@ export interface LogData {
     videoFilterLog?: VideoFilterLog;
 
     series: SeriesData;
-    videoId: string;
+    videoId: string | null;
     tags: string[];
     playbackTime?: number;
 }
