@@ -98,18 +98,32 @@ async function saveNgId(
     sender: browser.runtime.MessageSender,
 ) {
     const data = message.data as {
-        id: string;
-        allId?: string[];
+        userId?: {
+            id: string;
+            userName: string | undefined;
+            allId: string[];
+        };
+        video?: {
+            id: string;
+            title: string;
+        };
     };
+    const settings = await loadSettings();
 
     // 動画IDをNG追加
-    if (data.allId === undefined) {
-        await addNgId(new Set([data.id]));
+    if (data.video !== undefined) {
+        await addNgId(
+            new Set([
+                settings.isAddNgContext
+                    ? `${data.video.id} # ${data.video.title}`
+                    : data.video.id,
+            ]),
+        );
         return;
     }
 
     const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
+    if (tabId === undefined || data.userId === undefined) return;
 
     const log = await getLogData(tabId);
     const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
@@ -118,13 +132,19 @@ async function saveNgId(
         return;
     }
 
-    const userId = videoIdToUserId.get(data.id);
+    const userId = videoIdToUserId.get(data.userId.id);
     if (userId === undefined) return;
 
     // ユーザーIDをNG追加
-    await addNgId(new Set([userId]));
+    await addNgId(
+        new Set([
+            settings.isAddNgContext && data.userId.userName !== undefined
+                ? `${userId} # ${data.userId.userName}`
+                : userId,
+        ]),
+    );
 
-    const toRemoveVideoIds = data.allId.filter(
+    const toRemoveVideoIds = data.userId.allId.filter(
         (id) => videoIdToUserId.get(id) === userId,
     );
     await browser.tabs.sendMessage(tabId, {

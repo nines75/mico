@@ -1,6 +1,11 @@
 import { attributes, messages, titles } from "@/utils/config.js";
 import { createElement, ScreenShareOff, UserX } from "lucide";
 
+interface recommendContent {
+    title: string;
+    userName: string | undefined;
+}
+
 export function mountToRecommendHandler(parent: HTMLElement) {
     for (const element of getAnchors(parent)) {
         mountToRecommend(element);
@@ -11,7 +16,8 @@ export function mountToRecommend(element: Element) {
     if (!(element instanceof HTMLAnchorElement)) return;
 
     const videoId = element.getAttribute(attributes.recommendVideoId);
-    if (videoId === null) return;
+    const recommendContent = getRecommendContent(element);
+    if (videoId === null || recommendContent === undefined) return;
 
     // ボタンの配置にabsoluteを使うために必要
     element.style.position = "relative";
@@ -33,11 +39,17 @@ export function mountToRecommend(element: Element) {
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
-                        id: videoId,
-                        allId: getVideoIds(parent), // レンダリング時には他の関連動画がレンダリングされていない可能性があるためクリック時に取得する
+                        userId: {
+                            id: videoId,
+                            userName: recommendContent.userName,
+                            allId: getVideoIds(parent), // レンダリング時には他の関連動画がレンダリングされていない可能性があるためクリック時に取得する
+                        },
                     } satisfies {
-                        id: string;
-                        allId: string[];
+                        userId: {
+                            id: string;
+                            userName: string | undefined;
+                            allId: string[];
+                        };
                     },
                 });
             } catch (e) {
@@ -61,9 +73,15 @@ export function mountToRecommend(element: Element) {
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
-                        id: videoId,
+                        video: {
+                            id: videoId,
+                            title: recommendContent.title,
+                        },
                     } satisfies {
-                        id: string;
+                        video: {
+                            id: string;
+                            title: string;
+                        };
                     },
                 });
             } catch (e) {
@@ -105,4 +123,24 @@ function getVideoIds(parent: HTMLElement) {
 
 function getAnchors(parent: HTMLElement) {
     return parent.querySelectorAll(":scope > a[href^='/watch/']");
+}
+
+function getRecommendContent(
+    parent: HTMLElement,
+): recommendContent | undefined {
+    const titleElement = parent.querySelector(":scope > div:nth-child(2) > p");
+    const iconElement = parent.querySelector(
+        "img[src^='https://secure-dcdn.cdn.nimg.jp/nicoaccount/usericon']",
+    );
+
+    // タイトル要素は必ず存在するが、アイコン要素はユーザーが削除済みであれば存在しない
+    if (!(titleElement instanceof HTMLParagraphElement)) return;
+
+    const title = titleElement.textContent;
+    if (title === null) return;
+
+    return {
+        title,
+        userName: iconElement?.getAttribute("alt") ?? undefined,
+    };
 }

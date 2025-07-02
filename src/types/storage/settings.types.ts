@@ -47,6 +47,7 @@ export interface Settings {
     // 動画フィルター
 
     isVideoFilterEnabled: boolean;
+    isAddNgContext: boolean;
 
     /// フィルタリング
     selectedVideoFilter: VideoFilterId;

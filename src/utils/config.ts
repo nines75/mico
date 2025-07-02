@@ -47,6 +47,7 @@ export const defaultSettings: Settings = {
     // 動画フィルター
 
     isVideoFilterEnabled: true,
+    isAddNgContext: true,
 
     /// フィルタリング
     selectedVideoFilter: "ngId",
@@ -371,6 +372,12 @@ export const videoFilterSettings = {
             {
                 id: "isVideoFilterEnabled",
                 label: "動画フィルターを有効にする",
+            },
+            {
+                id: "isAddNgContext",
+                label: "NG追加時にコンテキスト情報を付与する",
+                details:
+                    "動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。",
             },
         ],
     },
