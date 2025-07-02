@@ -120,7 +120,12 @@ async function cleanupStorage() {
         browser.tabs.query({ url: pattern.watchPageUrlGlob }), // 残すのは現在視聴ページを開いてるタブのログだけでいい
         getAllData(),
     ]);
-    const aliveTabKeys = new Set(tabs.map((tab) => `log-${tab.id}`));
+    const aliveTabKeys = new Set(
+        tabs
+            .map((tab) => tab.id)
+            .filter((id) => id !== undefined)
+            .map((id) => `log-${id}`),
+    );
 
     const keys: LogType[] = [];
     for (const key of Object.keys(data)) {

@@ -88,6 +88,14 @@ export default ts.config(
                 },
             ],
             "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
+            // テンプレートリテラルで特定の型を禁止
+            "@typescript-eslint/restrict-template-expressions": [
+                "error",
+                {
+                    allowAny: false,
+                    allowNullish: false,
+                },
+            ],
         },
     },
 

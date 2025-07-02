@@ -65,7 +65,7 @@ async function saveNgUserId(
     const userId = log?.commentFilterLog?.filtering.noToUserId.get(
         data.commentNo,
     );
-    if (log === undefined || userId === undefined) {
+    if (log === undefined || log.videoId === null || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
