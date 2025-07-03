@@ -21,7 +21,7 @@ export default defineBackground(() => {
     browser.webRequest.onBeforeRequest.addListener(
         commentRequest,
         {
-            urls: ["https://public.nvcomment.nicovideo.jp/v1/threads"],
+            urls: ["https://public.nvcomment.nicovideo.jp/v1/threads*"],
             types: ["xmlhttprequest"],
         },
         ["blocking"],

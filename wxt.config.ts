@@ -47,7 +47,7 @@ export default defineConfig({
                 "webRequest",
                 "webRequestBlocking",
                 "https://www.nicovideo.jp/watch/*",
-                "https://public.nvcomment.nicovideo.jp/v1/threads",
+                "https://public.nvcomment.nicovideo.jp/v1/threads*",
                 "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
             ],
             commands: {
