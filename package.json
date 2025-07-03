@@ -7,13 +7,15 @@
         "dev": "wxt -b firefox --mv2",
         "build": "wxt build -b firefox --mv2",
         "zip": "wxt zip -b firefox --mv2",
-        "compile": "tsc --noEmit",
         "postinstall": "wxt prepare",
+        "preversion": "pnpm check",
+        "compile": "tsc --noEmit",
         "lint": "eslint src/ --max-warnings=0",
         "format": "prettier . --write",
         "format:ci": "prettier . --check",
         "test": "vitest",
-        "test:ci": "vitest run"
+        "test:ci": "vitest run",
+        "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.18.6",
@@ -40,6 +42,7 @@
         "@wxt-dev/auto-icons": "^1.0.2",
         "@wxt-dev/module-react": "^1.1.3",
         "autoprefixer": "^10.4.21",
+        "concurrently": "^9.2.0",
         "eslint": "^9.28.0",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-react": "^7.37.5",
