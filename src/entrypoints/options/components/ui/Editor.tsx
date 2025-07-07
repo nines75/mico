@@ -3,7 +3,6 @@ import {
     EditorState,
     Extension,
     RangeSet,
-    StateEffect,
     Transaction,
 } from "@codemirror/state";
 import {
@@ -228,21 +227,6 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             },
         });
     }, [value]);
-
-    // 本当はuseImperativeHandleを使ってcheckboxのクリックイベントから直接切り替える方が望ましいが、それだとimportとresetに対応できない
-    // 一応それもuseImperativeHandleを使えば解決できるがあまりにも冗長になるし、useEffectを使う方法でも初期化時に少し無駄な処理が走る程度なのでuseEffectを使う
-    useEffect(() => {
-        const current = view.current;
-        if (current === null) return;
-
-        current.dispatch({
-            effects: StateEffect.reconfigure.of(
-                (isVimCurrent
-                    ? vimExtensions.current
-                    : defaultExtensions.current) ?? [],
-            ),
-        });
-    }, [isVimCurrent]);
 
     return <div ref={parent} />;
 }
