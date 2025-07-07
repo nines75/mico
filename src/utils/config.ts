@@ -29,17 +29,17 @@ export const defaultSettings: Settings = {
 
     /// ログ
     isShowNgScoreInLog: true,
-    isShowNicoruInLog: false,
+    isShowNicoruInLog: true,
     showNicoruInLogCount: 30,
     isShowDuplicateInLog: true,
     showDuplicateInLogCount: 2,
 
     /// 通知
-    isNotifyAddNgUserId: false,
+    isNotifyAddNgUserId: true,
     isNotifyAutoAddNgUserId: true,
 
     /// その他
-    isAutoReload: true,
+    isAutoReload: false,
     isPartialBadgeCount: false,
     isShowUserIdInDropdown: true,
 
@@ -320,7 +320,7 @@ export const commentFilterSettings = {
             },
             {
                 id: "isPartialBadgeCount",
-                label: "バッジに表示する値をログの数にする",
+                label: "バッジに表示する値をログの数に変更する",
                 details: `デフォルトでは総ブロック数が表示されますが、その値からログを保存しないコメントの数を引いた値が表示されます。`,
             },
             {
