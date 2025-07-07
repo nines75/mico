@@ -45,7 +45,7 @@ export class WordFilter extends CustomFilter<WordLog> {
 
                 for (const { regex } of rules) {
                     if (regex.test(body)) {
-                        const regexStr = regex.toString();
+                        const regexStr = regex.source;
 
                         if (isStrictOnly) {
                             if (!this.ngUserIds.has(comment.userId)) {
@@ -85,7 +85,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
-            this.filter.rules.map((ngWord) => ngWord.regex.toString()),
+            this.filter.rules.map((ngWord) => ngWord.regex.source),
         );
 
         // フィルター昇順にソート

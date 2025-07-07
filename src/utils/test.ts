@@ -127,7 +127,7 @@ export const testLog = {
         ngScore: ["1002"],
         ngCommand: new Map([["big", ["1004"]]]),
         ngWord: new Map([
-            ["/コメント/i", new Map([["テストコメント", ["1003"]]])],
+            ["コメント", new Map([["テストコメント", ["1003"]]])],
         ]),
         strictNgUserIds: new Set(),
         noToUserId: new Map(),

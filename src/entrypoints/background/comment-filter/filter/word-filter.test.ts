@@ -44,15 +44,15 @@ test
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([
-                ["/test/i", new Map([["test", ["1000", "1001"]]])],
+                ["test", new Map([["test", ["1000", "1001"]]])],
                 [
-                    "/テスト/i",
+                    "テスト",
                     new Map([
                         ["テスト", ["1002"]],
                         ["テストコメント", ["1003"]],
                     ]),
                 ],
-                ["/コメント/i", new Map([["コメント", ["1004"]]])],
+                ["コメント", new Map([["コメント", ["1004"]]])],
             ]),
         );
         expect(
@@ -72,7 +72,7 @@ TesT
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["/TesT/i", new Map([["test", ["1000", "1001"]]])]]),
+            new Map([["TesT", new Map([["test", ["1000", "1001"]]])]]),
         );
         expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
     });
@@ -85,7 +85,7 @@ TesT
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 [
-                    "/テスト|コメント/i",
+                    "テスト|コメント",
                     new Map([
                         ["テスト", ["1002"]],
                         ["テストコメント", ["1003"]],
@@ -118,7 +118,7 @@ TesT
         });
 
         expect(wordFilter.getLog()).toEqual(
-            new Map([["/^コメント$/i", new Map([["コメント", ["1004"]]])]]),
+            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
         expect(wordFilter.getInvalidCount()).toBe(3);
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
@@ -149,12 +149,12 @@ TesT
     it.each([
         [
             "include",
-            new Map([["/^テスト$/i", new Map([["テスト", ["1002"]]])]]),
+            new Map([["^テスト$", new Map([["テスト", ["1002"]]])]]),
             ["1002"],
         ],
         [
             "exclude",
-            new Map([["/^コメント$/i", new Map([["コメント", ["1004"]]])]]),
+            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
             ["1004"],
         ],
     ])("@%s", (type, expected, ids) => {
@@ -191,7 +191,7 @@ TesT
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["/^コメント$/i", new Map([["コメント", ["1004"]]])]]),
+            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
     });
@@ -220,7 +220,7 @@ TesT
                 filter,
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
-        ).toEqual(new Map([["/テスト/i", new Map([["テスト", ["1002"]]])]]));
+        ).toEqual(new Map([["テスト", new Map([["テスト", ["1002"]]])]]));
         expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
     });
 
@@ -238,13 +238,13 @@ TesT
         expect(wordFilter.getLog()).toEqual(
             new Map([
                 [
-                    "/コメント/i",
+                    "コメント",
                     new Map([
                         ["コメント", ["1004"]],
                         ["テストコメント", ["1003"]],
                     ]),
                 ],
-                ["/テスト/i", new Map([["テスト", ["1002"]]])],
+                ["テスト", new Map([["テスト", ["1002"]]])],
             ]),
         );
     });
