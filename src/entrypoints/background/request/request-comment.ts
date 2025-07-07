@@ -61,21 +61,19 @@ export default function commentRequest(
             const tasks: Promise<void>[] = [];
 
             // ログを保存
-            if (settings.isSaveFilteringLog) {
-                tasks.push(saveLog(filteredData, tabId));
-                tasks.push(
-                    setLog(
-                        {
-                            commentFilterLog: {
-                                processingTime: {
-                                    filtering: filteredData.filteringTime,
-                                },
+            tasks.push(saveLog(filteredData, tabId));
+            tasks.push(
+                setLog(
+                    {
+                        commentFilterLog: {
+                            processingTime: {
+                                filtering: filteredData.filteringTime,
                             },
                         },
-                        tabId,
-                    ),
-                );
-            }
+                    },
+                    tabId,
+                ),
+            );
 
             // 通知を送信
             if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {

@@ -10,11 +10,6 @@ export default function General() {
                     <Checkbox key={props.id} {...props} />
                 ))}
             </H2>
-            <H2 name="ログ">
-                {generalSettings.checkbox.log.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
         </div>
     );
 }

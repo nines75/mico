@@ -28,7 +28,6 @@ export const defaultSettings: Settings = {
     ngWord: "",
 
     /// ログ
-    isSaveFilteringLog: true,
     isShowNgScoreInLog: true,
     isShowNicoruInLog: false,
     showNicoruInLogCount: 30,
@@ -155,8 +154,6 @@ export const messages = {
         // toggle
         commentFilterDisabled: "コメントフィルターが無効になっています",
         videoFilterDisabled: "動画フィルターが無効になっています",
-        filteringLogDisabled:
-            "フィルタリングログを保存しない設定になっています",
     },
 } as const;
 
@@ -236,19 +233,10 @@ export const generalSettings = {
                 label: "Vimのキーバインドを有効にする",
             },
         ],
-        log: [
-            {
-                id: "isSaveFilteringLog",
-                label: "フィルタリングログを保存する",
-                details:
-                    "有効になっている場合でもフィルタリングログはブラウザを起動するたびに削除されます。",
-            },
-        ],
     },
 } as const satisfies {
     checkbox: {
         filter: CheckboxProps[];
-        log: CheckboxProps[];
     };
 };
 

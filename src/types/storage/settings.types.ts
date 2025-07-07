@@ -28,7 +28,6 @@ export interface Settings {
     ngWord: string;
 
     /// ログ
-    isSaveFilteringLog: boolean;
     isShowNgScoreInLog: boolean;
     isShowNicoruInLog: boolean;
     showNicoruInLogCount: number;

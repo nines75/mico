@@ -9,7 +9,6 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { SettingsIcon } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
-import { Settings } from "@/types/storage/settings.types.js";
 import Details from "./components/Details.js";
 
 const dom = document.querySelector("#root");
@@ -49,7 +48,7 @@ function Page() {
 
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(settings, isWatchPage, videoId);
+    const message = getMessage(isWatchPage, videoId);
 
     const getDisabledMessage = (text: string) => (
         <section>
@@ -156,17 +155,12 @@ function Page() {
 }
 
 function getMessage(
-    settings: Settings,
     isWatchPage: boolean,
     videoId: string | undefined | null,
 ): string | undefined {
     // 視聴ページ判定だけだと削除動画などに対応できないため動画IDでも判定を行う
     if (!isWatchPage || videoId === undefined || videoId === null)
         return messages.popup.notWorking;
-
-    if (!settings.isSaveFilteringLog) {
-        return messages.popup.filteringLogDisabled;
-    }
 
     return undefined;
 }

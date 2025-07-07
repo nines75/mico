@@ -35,21 +35,19 @@ export function recommendRequest(
 
             const tasks: Promise<void>[] = [];
 
-            if (settings.isSaveFilteringLog) {
-                tasks.push(saveLog(filteredData, tabId));
-                tasks.push(
-                    setLog(
-                        {
-                            videoFilterLog: {
-                                processingTime: {
-                                    filtering: filteredData.filteringTime,
-                                },
+            tasks.push(saveLog(filteredData, tabId));
+            tasks.push(
+                setLog(
+                    {
+                        videoFilterLog: {
+                            processingTime: {
+                                filtering: filteredData.filteringTime,
                             },
                         },
-                        tabId,
-                    ),
-                );
-            }
+                    },
+                    tabId,
+                ),
+            );
 
             await Promise.all(tasks);
         } catch (e) {
