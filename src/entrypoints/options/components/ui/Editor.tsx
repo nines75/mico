@@ -263,29 +263,29 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
 function getHighlights(id: keyof Settings): Extension {
     if (id !== "ngCommand" && id !== "ngWord") return generalHighlights;
 
-    const getCustomHighlights = () => {
+    const customHighlights = (() => {
         switch (id) {
             case "ngCommand":
                 return ngCommandHighlights;
             case "ngWord":
                 return ngWordHighlights;
         }
-    };
+    })();
 
-    return [...generalHighlights, ...getCustomHighlights()];
+    return [...generalHighlights, ...customHighlights];
 }
 
 function getCompletions(id: keyof Settings): Extension {
     if (id !== "ngCommand" && id !== "ngWord") return [];
 
-    const getOptions = () => {
+    const options = (() => {
         switch (id) {
             case "ngCommand":
                 return ngCommandCompletions;
             case "ngWord":
                 return ngWordCompletions;
         }
-    };
+    })();
 
     return autocompletion({
         override: [
@@ -299,7 +299,7 @@ function getCompletions(id: keyof Settings): Extension {
 
                 return {
                     from: word.from,
-                    options: getOptions(),
+                    options,
                 };
             },
         ],
