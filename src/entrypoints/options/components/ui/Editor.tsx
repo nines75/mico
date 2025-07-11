@@ -101,7 +101,7 @@ const theme = EditorView.theme(
     { dark: true },
 );
 
-// ノーマルモードやビジュアルモードで全角入力した後に挿入モードに入るとに正しく入力できなくなる不具合を修正する拡張
+// ノーマルモードやビジュアルモードで全角入力した後に挿入モードに入ると正しく入力できなくなる不具合を修正する拡張
 const vimImeIssueFixer = EditorView.domEventHandlers({
     input(_, view) {
         const vimState = getCM(view)?.state.vim;
