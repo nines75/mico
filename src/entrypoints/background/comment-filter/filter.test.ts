@@ -142,7 +142,17 @@ rule
 rule
 @end
 
-@include　tag0 tag1 tag2　tag3
+@include tag0　tag1
+rule
+@end
+
+# 誤り: @includeの後は半角スペースである必要がある
+@include　tag0 tag1
+rule
+@end
+
+# 誤り: includeではなくincludesになっている
+@includes tag0 tag1
 rule
 @end
 `;
@@ -154,7 +164,7 @@ rule
                 exclude: isExclude ? tags.slice(0, 2) : [],
             },
         } satisfies BaseCustomRule;
-        const wrongTags = [tags[1], new RegExp("tag2　tag3", "i")];
+        const wrongTags = [new RegExp("tag0　tag1", "i")];
         const wrong = {
             ...baseCustomRule,
             ...{
@@ -166,7 +176,22 @@ rule
         expect(
             extractCustomRule(isExclude ? replaceInclude(filter) : filter)
                 .rules,
-        ).toEqual([...Array(3).fill(correct), wrong]);
+        ).toEqual([
+            ...Array(3).fill(correct),
+            wrong,
+            {
+                ...baseCustomRule,
+                ...{ rule: `@${isExclude ? "exclude" : "include"}　tag0 tag1` },
+            },
+            baseCustomRule,
+            {
+                ...baseCustomRule,
+                ...{
+                    rule: `@${isExclude ? "exclude" : "include"}s tag0 tag1`,
+                },
+            },
+            baseCustomRule,
+        ]);
     });
 
     it("@disable", () => {

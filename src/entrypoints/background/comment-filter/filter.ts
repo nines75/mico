@@ -182,11 +182,11 @@ export function extractCustomRule(filter: string): BaseCustomRuleData {
         const trimmedRule = rule.trimEnd();
 
         // セクション解析
-        if (rule.startsWith("@include")) {
+        if (rule.startsWith("@include ")) {
             section.push({ type: "include", value: extractTagRules(rule) });
             return;
         }
-        if (rule.startsWith("@exclude")) {
+        if (rule.startsWith("@exclude ")) {
             section.push({ type: "exclude", value: extractTagRules(rule) });
             return;
         }
