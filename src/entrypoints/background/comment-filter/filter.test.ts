@@ -334,6 +334,44 @@ rule
         ]);
         expect(ruleData.invalidCount).toBe(2);
     });
+
+    it("エスケープ", () => {
+        const filter = `
+\\@end
+\\\\@end
+\\!rule
+\\\\!rule
+\\rule
+\\\\rule
+`;
+
+        expect(extractCustomRule(filter).rules).toEqual([
+            {
+                ...baseCustomRule,
+                ...{ rule: "@end" },
+            },
+            {
+                ...baseCustomRule,
+                ...{ rule: "\\@end" },
+            },
+            {
+                ...baseCustomRule,
+                ...{ rule: "!rule" },
+            },
+            {
+                ...baseCustomRule,
+                ...{ rule: "\\!rule" },
+            },
+            {
+                ...baseCustomRule,
+                ...{ rule: "rule" },
+            },
+            {
+                ...baseCustomRule,
+                ...{ rule: "\\rule" },
+            },
+        ]);
+    });
 });
 
 describe(`${sortCommentId.name}()`, () => {

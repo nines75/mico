@@ -226,9 +226,10 @@ export function extractCustomRule(filter: string): BaseCustomRuleData {
         });
 
         const hasStrictSymbol = rule.startsWith("!");
+        const hasEscapeSymbol = rule.startsWith("\\");
 
         rules.push({
-            rule: hasStrictSymbol ? rule.slice(1) : rule,
+            rule: hasStrictSymbol || hasEscapeSymbol ? rule.slice(1) : rule,
             isStrict: isStrict || hasStrictSymbol,
             isDisable,
             include,
