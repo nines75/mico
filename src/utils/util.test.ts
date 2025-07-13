@@ -8,28 +8,13 @@ describe("util", () => {
         fakeBrowser.reset();
     });
 
-    it(`${isWatchPage.name}()`, () => {
-        [
-            {
-                url: "https://www.nicovideo.jp/watch/sm1234",
-                expected: true,
-            },
-            // https://github.com/nines75/mico/issues/13
-            {
-                url: "https://www.nicovideo.jp/watch/1234",
-                expected: true,
-            },
-            {
-                url: "https://www.nicovideo.jp/",
-                expected: false,
-            },
-            {
-                url: undefined,
-                expected: false,
-            },
-        ].forEach(({ url, expected }) => {
-            expect(isWatchPage(url)).toBe(expected);
-        });
+    it.each([
+        { url: "https://www.nicovideo.jp/watch/sm1234", expected: true },
+        { url: "https://www.nicovideo.jp/watch/1234", expected: true }, // https://github.com/nines75/mico/issues/13
+        { url: "https://www.nicovideo.jp/", expected: false },
+        { expected: false },
+    ])(`${isWatchPage.name}($url)`, ({ url, expected }) => {
+        expect(isWatchPage(url)).toBe(expected);
     });
 
     it(`${escapeNewline.name}()`, () => {

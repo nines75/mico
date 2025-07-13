@@ -16,23 +16,26 @@ describe(`${filterComment.name}()`, () => {
         fakeBrowser.reset();
     });
 
-    const getSettings = (settings: Partial<Settings>) => {
-        const baseSettings = {
-            ...defaultSettings,
-            scoreFilterCount: -1001,
-            ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
-            ngCommand: "big",
-            ngWord: "コメント",
-        } satisfies Partial<Settings>;
-
+    const createSettings = (settings: Partial<Settings>) => {
         return {
-            ...baseSettings,
+            ...{
+                ...defaultSettings,
+                scoreFilterCount: -1001,
+                ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
+                ngCommand: "big",
+                ngWord: "コメント",
+            },
             ...settings,
         };
     };
 
     it("default", () => {
-        const res = filterComment(testThreadCopy, getSettings({}), [], "sm1");
+        const res = filterComment(
+            testThreadCopy,
+            createSettings({}),
+            [],
+            "sm1",
+        );
 
         expect(
             hasComment(testThreadCopy, [
@@ -58,7 +61,6 @@ device:Switch`,
 !コメント
 `,
         } satisfies Partial<Settings>;
-
         const res = filterComment(testThreadCopy, settings, [], "sm1");
 
         expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
@@ -90,7 +92,7 @@ device:Switch`,
     it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
         filterComment(
             testThreadCopy,
-            getSettings({ isCommentFilterEnabled: false }),
+            createSettings({ isCommentFilterEnabled: false }),
             [],
             "sm1",
         );
@@ -105,7 +107,7 @@ device:Switch`,
     it(`Settings.${"isHideEasyComment" satisfies keyof Settings}`, () => {
         filterComment(
             testThreadCopy,
-            getSettings({ isHideEasyComment: true }),
+            createSettings({ isHideEasyComment: true }),
             [],
             "sm1",
         );
@@ -126,7 +128,7 @@ device:Switch`,
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
         const res = filterComment(
             testThreadCopy,
-            getSettings({ isScoreFilterEnabled: true }),
+            createSettings({ isScoreFilterEnabled: true }),
             [],
             "sm1",
         );

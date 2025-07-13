@@ -48,7 +48,7 @@ describe(CommandFilter.name, () => {
             ),
         );
 
-    it("一般的なフィルター", () => {
+    it("一般", () => {
         const filter = `
 big
 device:Switch
@@ -65,7 +65,7 @@ device:Switch
         );
     });
 
-    it("大小文字が異なるフィルター", () => {
+    it("大小文字が異なる", () => {
         const filter = `
 BiG
 Device:switch
@@ -91,38 +91,45 @@ device:
         expect(filtering({ filter }).getLog()).toEqual(new Map());
     });
 
-    it("@strict/!", () => {
-        const filter = `
+    it.each([
+        {
+            filter: `
 @strict
 big
 @end
-
-!device:switch
-`;
-
+`,
+            expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+            name: "@strict",
+        },
+        {
+            filter: "!device:switch",
+            expected: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
+            name: "!",
+        },
+    ])("$name", ({ filter, expected }) => {
         const commandFilter = filtering({
             filter,
             isStrictOnly: true,
-            ngUserIds: new Set(["nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj"]),
+            ngUserIds: new Set(["nvc:llNBacJJPE6wbyKKEioq3lO6515"]),
         });
 
         expect(commandFilter.getLog()).toEqual(new Map());
-        expect(commandFilter.getStrictNgUserIds()).toEqual([
-            "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-            "nvc:llNBacJJPE6wbyKKEioq3lO6515",
-        ]);
+        expect(commandFilter.getStrictNgUserIds()).toEqual([expected]);
     });
 
     it.each([
-        ["include", new Map([["big", ["1002", "1004"]]]), ["1002", "1004"]],
-        [
-            "exclude",
-            new Map([["device:switch", ["1003", "1004"]]]),
-            ["1003", "1004"],
-        ],
-    ])("@%s", (type, expected, ids) => {
-        const isExclude = type === "exclude";
-
+        {
+            name: "@include",
+            expected: new Map([["big", ["1002", "1004"]]]),
+            ids: ["1002", "1004"],
+        },
+        {
+            name: "@exclude",
+            expected: new Map([["device:switch", ["1003", "1004"]]]),
+            ids: ["1003", "1004"],
+        },
+    ])("$name", ({ name, expected, ids }) => {
+        const isExclude = name === "@exclude";
         const filter = `
 @include tag0
 big
@@ -132,7 +139,6 @@ big
 device:switch
 @end
 `;
-
         const commandFilter = filtering({
             filter: isExclude ? replaceInclude(filter) : filter,
             tags: ["tag0"],
@@ -164,7 +170,7 @@ all
     });
 
     it("無効なall", () => {
-        const filter = `all`;
+        const filter = "all";
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasAnyCommand()).toBe(true);
@@ -176,7 +182,6 @@ all
 @disable
 big
 `;
-
         const strictCommandFilter = filtering({ filter, isStrictOnly: true });
         const commandFilter = filtering({ filter });
 
@@ -212,7 +217,6 @@ big
 device:switch
 @end
 `;
-
         const commandFilter = filtering({
             filter,
             tags: ["tag0"],
@@ -252,7 +256,6 @@ device:switch
 device:switch
 big
 `;
-
         const commandFilter = filtering({
             filter,
         });

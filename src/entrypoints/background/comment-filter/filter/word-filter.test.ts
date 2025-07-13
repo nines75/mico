@@ -35,7 +35,7 @@ describe(WordFilter.name, () => {
         return wordFilter;
     };
 
-    it("一般的なフィルター", () => {
+    it("一般", () => {
         const filter = `
 test
 テスト
@@ -66,10 +66,8 @@ test
         ).toBe(false);
     });
 
-    it("大小文字が異なるフィルター", () => {
-        const filter = `
-TesT
-`;
+    it("大小文字が異なる", () => {
+        const filter = "TesT";
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["TesT", new Map([["test", ["1000", "1001"]]])]]),
@@ -78,9 +76,7 @@ TesT
     });
 
     it("正規表現", () => {
-        const filter = `
-テスト|コメント
-`;
+        const filter = "テスト|コメント";
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([
@@ -111,7 +107,6 @@ TesT
 ^コメント$
 @end
 `;
-
         const wordFilter = filtering({
             filter,
             tags: ["tag0"],
@@ -124,15 +119,22 @@ TesT
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
     });
 
-    it("@strict/!", () => {
-        const filter = `
+    it.each([
+        {
+            filter: `
 @strict
 テスト
 @end
-
-!コメント
-`;
-
+`,
+            expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+            name: "@strict",
+        },
+        {
+            filter: "!コメント",
+            expected: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
+            name: "!",
+        },
+    ])("$name", ({ filter, expected }) => {
         const wordFilter = filtering({
             filter,
             isStrictOnly: true,
@@ -140,26 +142,24 @@ TesT
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
-        expect(wordFilter.getStrictNgUserIds()).toEqual([
-            "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-            "nvc:llNBacJJPE6wbyKKEioq3lO6515",
-        ]);
+        expect(wordFilter.getStrictNgUserIds()).toEqual([expected]);
     });
 
     it.each([
-        [
-            "include",
-            new Map([["^テスト$", new Map([["テスト", ["1002"]]])]]),
-            ["1002"],
-        ],
-        [
-            "exclude",
-            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
-            ["1004"],
-        ],
-    ])("@%s", (type, expected, ids) => {
-        const isExclude = type === "exclude";
-
+        {
+            name: "@include",
+            expected: new Map([["^テスト$", new Map([["テスト", ["1002"]]])]]),
+            ids: ["1002"],
+        },
+        {
+            name: "@exclude",
+            expected: new Map([
+                ["^コメント$", new Map([["コメント", ["1004"]]])],
+            ]),
+            ids: ["1004"],
+        },
+    ])("$name", ({ name, expected, ids }) => {
+        const isExclude = name === "@exclude";
         const filter = `
 @include tag0
 ^テスト$
@@ -169,7 +169,6 @@ TesT
 ^コメント$
 @end
 `;
-
         const wordFilter = filtering({
             filter: isExclude ? replaceInclude(filter) : filter,
             tags: ["tag0"],
@@ -197,9 +196,7 @@ TesT
     });
 
     it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
-        const filter = `
-TesT
-`;
+        const filter = "TesT";
 
         expect(
             filtering({
@@ -229,7 +226,6 @@ TesT
 コメント
 テスト
 `;
-
         const wordFilter = filtering({
             filter,
         });

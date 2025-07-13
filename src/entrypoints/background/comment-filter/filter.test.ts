@@ -6,216 +6,250 @@ import {
     extractRule,
     sortCommentId,
 } from "./filter.js";
-import { replaceInclude, testCommentData } from "@/utils/test.js";
+import { testCommentData } from "@/utils/test.js";
 
 describe(`${extractRule.name}()`, () => {
-    it("一般的なケース", () => {
+    it.each([
+        {
+            filter: "rule",
+            expected: "rule",
+            name: "コメントなし",
+        },
+        {
+            filter: "rule # comment",
+            expected: "rule",
+            name: "コメント(1つの半角スペース)",
+        },
+        {
+            filter: "rule    # comment",
+            expected: "rule",
+            name: "コメント(複数の半角スペース)",
+        },
+        {
+            filter: "# comment",
+            name: "コメントのみ",
+        },
+        {
+            filter: "",
+            name: "空行",
+        },
+        {
+            filter: "@strict # comment",
+            expected: "@strict",
+            name: "構文指令",
+        },
+        {
+            filter: "@include tag0 tag1 # comment",
+            expected: "@include tag0 tag1",
+            name: "構文指令(パラメータあり)",
+        },
+    ])("一般($name)", ({ filter, expected }) => {
+        expect(extractRule(filter)).toEqual(
+            expected === undefined ? [] : [{ rule: expected, index: 0 }],
+        );
+    });
+
+    it.each([
+        { filter: "rule　# comment", name: "一つの全角スペース" },
+        { filter: "rule　　　　# comment", name: "複数の全角スペース" },
+        { filter: "rule 　 　# comment", name: "半角全角スペース交互" },
+    ])("コメントの前に全角を含む($name)", ({ filter }) => {
+        expect(extractRule(filter)).toEqual([{ rule: "rule", index: 0 }]);
+    });
+
+    it.each([
+        { filter: "\\#rule\\#rule2\\#", name: "コメントなし" },
+        { filter: "\\#rule\\#rule2\\# # comment", name: "コメントあり" },
+    ])("エスケープした#を含む($name)", ({ filter }) => {
+        expect(extractRule(filter)).toEqual(
+            [["#rule#rule2#", 0]].map(([rule, index]) => ({ rule, index })),
+        );
+    });
+
+    it("index", () => {
         const filter = `
 rule
-rule # comment
-rule    # comment
 # comment
+rule
 
-@strict # comment
-@include tag0 tag1 # comment
+rule
 `;
 
         expect(extractRule(filter)).toEqual(
-            [
-                ["rule", 1],
-                ["rule", 2],
-                ["rule", 3],
-                ["@strict", 6],
-                ["@include tag0 tag1", 7],
-            ].map(([rule, index]) => ({ rule, index })),
-        );
-    });
-
-    it("コメントの前に全角を含むケース", () => {
-        const filter = `
-rule　# comment
-rule　　　　# comment
-rule 　 　# comment
-`;
-
-        expect(extractRule(filter)).toEqual(
-            [
-                ["rule", 1],
-                ["rule", 2],
-                ["rule", 3],
-            ].map(([rule, index]) => ({ rule, index })),
-        );
-    });
-
-    it("エスケープした#を含むケース", () => {
-        const filter = `
-\\#rule\\#rule2\\#
-\\#rule\\#rule2\\# # comment
-`;
-
-        expect(extractRule(filter)).toEqual(
-            [
-                ["#rule#rule2#", 1],
-                ["#rule#rule2#", 2],
-            ].map(([rule, index]) => ({ rule, index })),
+            [1, 3, 5].map((index) => ({ rule: "rule", index })),
         );
     });
 });
 
+// ===========================================================================================
+
 const tags = [
-    new RegExp("tag0", "i"),
-    new RegExp("tag1", "i"),
-    new RegExp("tag2", "i"),
-    new RegExp("tag3", "i"),
+    RegExp("tag0", "i"),
+    RegExp("tag1", "i"),
+    RegExp("tag2", "i"),
+    RegExp("tag3", "i"),
 ] as const;
 
 describe(`${extractCustomRule.name}()`, () => {
-    const baseCustomRule = {
-        rule: "rule",
-        isStrict: false,
-        isDisable: false,
-        include: [],
-        exclude: [],
-    } satisfies BaseCustomRule;
-    const strict = {
-        ...baseCustomRule,
-        ...{
-            isStrict: true,
+    const createRule = (rule: Partial<BaseCustomRule>): BaseCustomRule => {
+        return {
+            ...{
+                rule: "rule",
+                isStrict: false,
+                isDisable: false,
+                include: [],
+                exclude: [],
+            },
+            ...rule,
+        };
+    };
+    const createRules = (...rules: Partial<BaseCustomRule>[]) => {
+        return rules.map((rule) => createRule(rule));
+    };
+    const base = createRule({});
+    const strict = createRule({ isStrict: true });
+
+    // -------------------------------------------------------------------------------------------
+    // @end
+    // -------------------------------------------------------------------------------------------
+
+    it.each([
+        {
+            filter: `
+@strict
+rule
+@end
+rule
+`,
+            expected: [strict, base],
+            name: "@end",
         },
-    } satisfies BaseCustomRule;
-
-    it("@end", () => {
-        const filter = `
-@strict
+        {
+            filter: `
 @end
-rule
-
-@strict
-@end # comment
-rule
-
 @end
+
+rule
+`,
+            expected: [base],
+            name: "不要な@end",
+        },
+        {
+            filter: `
 @strict
 rule
-`;
-
-        expect(extractCustomRule(filter).rules).toEqual([
-            ...Array(2).fill(baseCustomRule),
-            strict,
-        ]);
+`,
+            expected: [strict],
+            name: "@endなし",
+        },
+    ])("$name", ({ filter, expected }) => {
+        expect(extractCustomRule(filter).rules).toEqual(expected);
     });
 
-    it("@strict/!", () => {
-        const filter = `
+    // -------------------------------------------------------------------------------------------
+    // @strict/!
+    // -------------------------------------------------------------------------------------------
+
+    it.each([
+        {
+            filter: `
 @strict
 rule
 @end
-
-@strict # comment
-rule
-@end
-
-!rule
-!rule # comment
-
+`,
+            name: "@strict",
+        },
+        {
+            filter: "!rule",
+            name: "!",
+        },
+        {
+            filter: `
 @strict
 !rule
 @end
-`;
-
-        expect(extractCustomRule(filter).rules).toEqual(Array(5).fill(strict));
+`,
+            name: "@strictと!が重複",
+        },
+    ])("$name", ({ filter }) => {
+        expect(extractCustomRule(filter).rules).toEqual([strict]);
     });
 
-    it.each([["include"], ["exclude"]])("@%s", (type) => {
-        const isExclude = type === "exclude";
+    // -------------------------------------------------------------------------------------------
+    // @include/@exclude
+    // -------------------------------------------------------------------------------------------
 
-        const filter = `
+    it.each([
+        {
+            filter: `
 @include tag0 tag1
 rule
 @end
-
-@include tag0 tag1 # comment
-rule
-@end
-
+`,
+            expected: createRules({ include: tags.slice(0, 2) }),
+            name: "通常",
+        },
+        {
+            filter: `
 @include    tag0    tag1    
 rule
 @end
-
+`,
+            expected: createRules({ include: tags.slice(0, 2) }),
+            name: "タグ間に複数の半角スペースを含む",
+        },
+        {
+            filter: `
 @include tag0　tag1
 rule
 @end
-
-# 誤り: @includeの後は半角スペースである必要がある
+`,
+            expected: createRules({ include: [RegExp("tag0　tag1", "i")] }),
+            name: "誤り:タグ間に全角スペースを含む",
+        },
+        {
+            filter: `
 @include　tag0 tag1
 rule
 @end
-
-# 誤り: includeではなくincludesになっている
+`,
+            expected: createRules({ rule: "@include　tag0 tag1" }, {}),
+            name: "誤り:@includeの後が全角スペースになっている",
+        },
+        {
+            filter: `
 @includes tag0 tag1
 rule
 @end
-`;
-
-        const correct = {
-            ...baseCustomRule,
-            ...{
-                include: isExclude ? [] : tags.slice(0, 2),
-                exclude: isExclude ? tags.slice(0, 2) : [],
-            },
-        } satisfies BaseCustomRule;
-        const wrongTags = [new RegExp("tag0　tag1", "i")];
-        const wrong = {
-            ...baseCustomRule,
-            ...{
-                include: isExclude ? [] : wrongTags,
-                exclude: isExclude ? wrongTags : [],
-            },
-        } satisfies BaseCustomRule;
-
-        expect(
-            extractCustomRule(isExclude ? replaceInclude(filter) : filter)
-                .rules,
-        ).toEqual([
-            ...Array(3).fill(correct),
-            wrong,
-            {
-                ...baseCustomRule,
-                ...{ rule: `@${isExclude ? "exclude" : "include"}　tag0 tag1` },
-            },
-            baseCustomRule,
-            {
-                ...baseCustomRule,
-                ...{
-                    rule: `@${isExclude ? "exclude" : "include"}s tag0 tag1`,
-                },
-            },
-            baseCustomRule,
-        ]);
+`,
+            expected: createRules({ rule: "@includes tag0 tag1" }, {}),
+            name: "誤り:@includeではなく@includesになっている",
+        },
+    ])("@include($name)", ({ filter, expected }) => {
+        expect(extractCustomRule(filter).rules).toEqual(expected);
     });
+
+    // -------------------------------------------------------------------------------------------
+    // @disable
+    // -------------------------------------------------------------------------------------------
 
     it("@disable", () => {
         const filter = `
 @disable
 rule
 @end
-
-@disable # comment
-rule
-@end
 `;
 
-        const disable = {
-            ...baseCustomRule,
-            ...{
-                isDisable: true,
-            },
-        } satisfies BaseCustomRule;
-
-        expect(extractCustomRule(filter).rules).toEqual(Array(2).fill(disable));
+        expect(extractCustomRule(filter).rules).toEqual(
+            createRules({ isDisable: true }),
+        );
     });
 
-    it("ネスト", () => {
+    // -------------------------------------------------------------------------------------------
+    // その他
+    // -------------------------------------------------------------------------------------------
+
+    it("構文指令のネスト", () => {
         const filter = `
 @include tag0
 rule
@@ -245,74 +279,37 @@ rule
 rule
 `;
 
-        const expected = {
-            ...baseCustomRule,
-            ...{
-                include: [tags[0]],
-            },
-        } satisfies BaseCustomRule;
-        const expected2 = {
-            ...expected,
-            ...{
-                exclude: [tags[1]],
-            },
-        } satisfies BaseCustomRule;
-        const expected3 = {
-            ...expected2,
-            ...{
-                isStrict: true,
-            },
-        } satisfies BaseCustomRule;
-        const expected4 = {
-            ...expected3,
-            ...{
-                isDisable: true,
-            },
-        } satisfies BaseCustomRule;
-        const expected5 = {
-            ...expected2,
-            ...{
-                include: [...expected2.include, tags[2]],
-            },
-        } satisfies BaseCustomRule;
-        const expected6 = {
-            ...expected2,
-            ...{
-                exclude: [...expected2.exclude, tags[3]],
-            },
-        } satisfies BaseCustomRule;
-
         expect(extractCustomRule(filter).rules).toEqual([
-            expected,
-            expected2,
-            expected3,
-            expected4,
-            expected5,
-            expected6,
-            baseCustomRule,
+            ...createRules(
+                {
+                    include: [tags[0]],
+                },
+                {
+                    include: [tags[0]],
+                    exclude: [tags[1]],
+                },
+                {
+                    include: [tags[0]],
+                    exclude: [tags[1]],
+                    isStrict: true,
+                },
+                {
+                    include: [tags[0]],
+                    exclude: [tags[1]],
+                    isStrict: true,
+                    isDisable: true,
+                },
+                {
+                    include: [tags[0], tags[2]],
+                    exclude: [tags[1]],
+                },
+                {
+                    include: [tags[0]],
+                    exclude: [tags[1], tags[3]],
+                },
+            ),
+            base,
         ]);
-    });
-
-    it("不要な@endがあるケース", () => {
-        const filter = `
-@end
-@end
-
-rule
-`;
-
-        expect(extractCustomRule(filter).rules).toEqual([
-            { ...baseCustomRule },
-        ]);
-    });
-
-    it("@endがないケース", () => {
-        const filter = `
-@strict
-rule
-`;
-
-        expect(extractCustomRule(filter).rules).toEqual([strict]);
     });
 
     it("無効な正規表現", () => {
@@ -321,58 +318,24 @@ rule
 @include tag1 (tag2
 rule
 `;
-
         const ruleData = extractCustomRule(filter);
 
-        expect(ruleData.rules).toEqual([
-            {
-                ...baseCustomRule,
-                ...{
-                    include: [tags[1]],
-                },
-            },
-        ]);
+        expect(ruleData.rules).toEqual(createRules({ include: [tags[1]] }));
         expect(ruleData.invalidCount).toBe(2);
     });
 
-    it("エスケープ", () => {
-        const filter = `
-\\@end
-\\\\@end
-\\!rule
-\\\\!rule
-\\rule
-\\\\rule
-`;
-
-        expect(extractCustomRule(filter).rules).toEqual([
-            {
-                ...baseCustomRule,
-                ...{ rule: "@end" },
-            },
-            {
-                ...baseCustomRule,
-                ...{ rule: "\\@end" },
-            },
-            {
-                ...baseCustomRule,
-                ...{ rule: "!rule" },
-            },
-            {
-                ...baseCustomRule,
-                ...{ rule: "\\!rule" },
-            },
-            {
-                ...baseCustomRule,
-                ...{ rule: "rule" },
-            },
-            {
-                ...baseCustomRule,
-                ...{ rule: "\\rule" },
-            },
-        ]);
+    it.each([
+        { filter: "\\@end", expected: "@end", name: "@から始まる構文指令" },
+        { filter: "\\!rule", expected: "!rule", name: "!から始まる構文指令" },
+        { filter: "\\rule", expected: "rule", name: "通常のルール" },
+    ])("エスケープ($name)", ({ filter, expected }) => {
+        expect(extractCustomRule(filter).rules).toEqual(
+            createRules({ rule: expected }),
+        );
     });
 });
+
+// ===========================================================================================
 
 describe(`${sortCommentId.name}()`, () => {
     const ids = ["1000", "1001", "1002", "1003", "1004", "1005", "1006"];

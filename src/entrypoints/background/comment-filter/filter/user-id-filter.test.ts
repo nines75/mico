@@ -36,7 +36,7 @@ describe(UserIdFilter.name, () => {
         return userIdFilter;
     };
 
-    it("一般的なフィルター", () => {
+    it("一般", () => {
         const filter = `
 nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
@@ -54,14 +54,12 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
     });
 
     it("部分一致", () => {
-        const filter = `
-nvc:RpBQf40dpW85ue3CiT8UZ6AUer
-`;
+        const filter = "nvc:RpBQf40dpW85ue3CiT8UZ6AUer";
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
     });
 
-    it("後からフィルターを更新するケース", async () => {
+    it("後からフィルターを更新", async () => {
         const userIds = new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]);
 
         const userIdFilter = filtering({ filter: "" });
@@ -92,13 +90,13 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
     });
 
-    it("通常ルールと動画限定ルールが競合するケース", () => {
+    it("通常ルールと動画限定ルールが競合", () => {
         const filter = `
-nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 sm1@nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
+nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 
-nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
+nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
@@ -133,7 +131,6 @@ nvc:llNBacJJPE6wbyKKEioq3lO6515
 nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 `;
-
         const userIdFilter = filtering({
             filter,
         });
@@ -180,7 +177,7 @@ describe(`${removeNgUserId.name}()`, () => {
     it.each([
         { name: "通常", ids: userIds },
         { name: "動画限定ルール", ids: videoUserIds },
-        { name: "コメント", ids: userIds.map((id) => `${id} # comment`) },
+        { name: "コメントあり", ids: userIds.map((id) => `${id} # comment`) },
     ])("$name", async ({ ids }) => {
         await setSettings({
             ...defaultSettings,
@@ -188,7 +185,6 @@ describe(`${removeNgUserId.name}()`, () => {
                 ngUserId: ids.join("\n"),
             },
         });
-
         await removeNgUserId(new Set(userIds));
 
         const settings = await loadSettings();
@@ -197,14 +193,13 @@ describe(`${removeNgUserId.name}()`, () => {
         expect(userIds.some((id) => ngUserIds.has(id))).toBe(false);
     });
 
-    it("動画限定ルールを削除しないケース", async () => {
+    it("動画限定ルールを削除対象から除外", async () => {
         await setSettings({
             ...defaultSettings,
             ...{
                 ngUserId: [...userIds, ...videoUserIds].join("\n"),
             },
         });
-
         await removeNgUserId(new Set(userIds), false);
 
         const settings = await loadSettings();
