@@ -5,6 +5,7 @@ import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
 import { mainRequest } from "./request/request-main.js";
 import { isWatchPage } from "@/utils/util.js";
+import { rankingRequest } from "./request/request-ranking.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -35,6 +36,16 @@ export default defineBackground(() => {
                 "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
             ],
             types: ["xmlhttprequest"],
+        },
+        ["blocking"],
+    );
+
+    // ランキングAPIのリクエストを監視
+    browser.webRequest.onBeforeRequest.addListener(
+        rankingRequest,
+        {
+            urls: ["https://www.nicovideo.jp/ranking/genre*"],
+            types: ["main_frame", "xmlhttprequest"],
         },
         ["blocking"],
     );
