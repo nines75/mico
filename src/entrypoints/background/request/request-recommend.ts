@@ -54,14 +54,8 @@ export function recommendRequest(
 
             // 実際にフィルタリング
             if (filteredData !== undefined) {
-                const filteredIds = new Set(
-                    Object.values(filteredData.filters).flatMap((filter) => [
-                        ...filter.getVideos().keys(),
-                    ]),
-                );
-
                 recommendData.data.items = recommendData.data.items.filter(
-                    (item) => !filteredIds.has(item.id),
+                    (item) => !filteredData.filteredIds.has(item.id),
                 );
             }
 

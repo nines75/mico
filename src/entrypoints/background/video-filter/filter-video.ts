@@ -14,6 +14,7 @@ export interface FilteredData {
     loadedVideoCount: number;
     filteringTime: number;
     videoIdToUserId: VideoIdToUserId;
+    filteredIds: Set<string>;
 }
 
 export function filterVideo(
@@ -41,6 +42,11 @@ export function filterVideo(
     const videoIdToUserId = new Map(
         data.videos.map((video) => [video.id, video.owner.id]),
     );
+    const filteredIds = new Set(
+        Object.values(filters).flatMap((filter) => [
+            ...filter.getVideos().keys(),
+        ]),
+    );
 
     const end = performance.now();
 
@@ -49,6 +55,7 @@ export function filterVideo(
         loadedVideoCount: videos.length,
         filteringTime: end - start,
         videoIdToUserId,
+        filteredIds,
     };
 }
 

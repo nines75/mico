@@ -1,12 +1,16 @@
-import { loadSettings } from "@/utils/storage.js";
+import { loadSettings, setLog } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { NiconicoVideo } from "@/types/api/recommend.types.js";
+import { filterVideo } from "../video-filter/filter-video.js";
+import { saveLog } from "../video-filter/save-log.js";
 
 interface RankingData {
     data: {
         response: {
             $getTeibanRanking: {
-                data: NiconicoVideo[];
+                data: {
+                    items: NiconicoVideo[];
+                };
             };
         };
     };
@@ -78,5 +82,35 @@ async function rankingDataFilter(
     settings: Settings,
     meta?: Element | null,
 ) {
-    console.log(rankingData.data.response.$getTeibanRanking.data);
+    const videos = rankingData.data.response.$getTeibanRanking.data.items;
+    const filteredData = filterVideo(videos, settings);
+    if (filteredData === undefined) return;
+
+    const spoofedVideos = videos.map(
+        (video): NiconicoVideo => ({
+            ...video,
+            ...(filteredData.filteredIds.has(video.id) ? { id: "sm0" } : {}),
+        }),
+    );
+
+    rankingData.data.response.$getTeibanRanking.data.items = spoofedVideos;
+    meta?.setAttribute("content", JSON.stringify(rankingData));
+
+    const tasks: Promise<void>[] = [];
+
+    tasks.push(saveLog(filteredData, details.tabId));
+    tasks.push(
+        setLog(
+            {
+                videoFilterLog: {
+                    processingTime: {
+                        filtering: filteredData.filteringTime,
+                    },
+                },
+            },
+            details.tabId,
+        ),
+    );
+
+    await Promise.all(tasks);
 }
