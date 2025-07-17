@@ -34,74 +34,113 @@ async function observerCallback(
     observer: customObserver,
 ) {
     const settings = observer.settings;
-    if (!isWatchPage(location.href) || settings === undefined) return;
+    if (settings === undefined) return;
 
-    // 探している要素であると確定するまではcontinueしない
+    // 探している要素であると確定するまで各関数内でreturnしない
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof HTMLElement)) continue;
 
-            // コメント(最上位要素)
-            {
-                if (node.hasAttribute("data-index")) {
-                    if (!settings.isExpandNicoruEnabled) continue;
-
-                    renderComment(node, settings);
-                    continue;
-                }
+            if (isWatchPage(location.href)) {
+                await watchPageObserver(node, settings);
             }
 
-            // コメント(最上位要素の一つ下)
-            {
-                if (node.hasAttribute("tabindex")) {
-                    const parent = node.parentElement;
-
-                    // tabindex属性を持つ要素は他にも存在するため、親で検証する
-                    if (parent !== null && parent.hasAttribute("data-index")) {
-                        if (!settings.isExpandNicoruEnabled) continue;
-
-                        renderComment(parent, settings);
-                        continue;
-                    }
-                }
+            if (location.href.startsWith(pattern.rankingPageUrl)) {
+                rankingPageObserver(node);
             }
+        }
+    }
+}
 
-            // ドロップダウン
-            {
-                if (node.className === "z_dropdown") {
-                    await mountToDropdown(node, settings);
+async function watchPageObserver(node: HTMLElement, settings: Settings) {
+    // コメント(最上位要素)
+    {
+        if (node.hasAttribute("data-index")) {
+            if (!settings.isExpandNicoruEnabled) return;
 
-                    continue;
-                }
+            renderComment(node, settings);
+            return;
+        }
+    }
+
+    // コメント(最上位要素の一つ下)
+    {
+        if (node.hasAttribute("tabindex")) {
+            const parent = node.parentElement;
+
+            // tabindex属性を持つ要素は他にも存在するため、親で検証する
+            if (parent !== null && parent.hasAttribute("data-index")) {
+                if (!settings.isExpandNicoruEnabled) return;
+
+                renderComment(parent, settings);
+                return;
             }
+        }
+    }
 
-            // 関連動画(初回ロード時)
-            {
-                const attr = node
-                    .querySelector(":scope > a")
-                    ?.getAttribute("data-anchor-area");
-                if (attr === "related_content,recommendation") {
-                    mountToRecommendHandler(node);
+    // ドロップダウン
+    {
+        if (node.className === "z_dropdown") {
+            await mountToDropdown(node, settings);
 
-                    continue;
-                }
-            }
+            return;
+        }
+    }
 
-            // 関連動画(遷移時)
-            {
-                const dataAnchorArea = node.getAttribute("data-anchor-area");
-                const href = node.getAttribute("href");
+    // 関連動画(初回ロード時)
+    {
+        const attr = node
+            .querySelector(":scope > a")
+            ?.getAttribute("data-anchor-area");
+        if (attr === "related_content,recommendation") {
+            mountToRecommendHandler(node);
 
-                if (
-                    dataAnchorArea === "related_content,recommendation" &&
-                    href !== null &&
-                    href.startsWith("/watch/")
-                ) {
-                    mountToRecommend(node);
+            return;
+        }
+    }
 
-                    continue;
-                }
-            }
+    // 関連動画(遷移時)
+    {
+        const dataAnchorArea = node.getAttribute("data-anchor-area");
+        const href = node.getAttribute("href");
+
+        if (
+            dataAnchorArea === "related_content,recommendation" &&
+            href !== null &&
+            href.startsWith("/watch/")
+        ) {
+            mountToRecommend(node);
+
+            return;
+        }
+    }
+}
+
+function rankingPageObserver(node: HTMLElement) {
+    // 初回ロード時
+    {
+        const parentId = node.parentElement?.id;
+        if (parentId !== undefined && parentId === "root") {
+            const videos = document.querySelectorAll(
+                "div:has(> div > a[data-anchor-page='ranking_genre'][href='/watch/sm0'])",
+            );
+            videos.forEach((video) => {
+                if (video instanceof HTMLElement) video.style.display = "none";
+            });
+
+            return;
+        }
+    }
+
+    // 遷移時
+    {
+        const target = node.querySelector(
+            ":scope > div > a[data-anchor-page='ranking_genre'][href='/watch/sm0']",
+        );
+        if (target !== null) {
+            node.style.display = "none";
+
+            return;
         }
     }
 }
