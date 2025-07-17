@@ -8,16 +8,18 @@ export function recommendRequest(
 ) {
     if (details.method !== "GET") return;
 
-    const filter = browser.webRequest.filterResponseData(details.requestId);
+    const streamFilter = browser.webRequest.filterResponseData(
+        details.requestId,
+    );
     const decoder = new TextDecoder("utf-8");
     const encoder = new TextEncoder();
 
     let buf = "";
-    filter.ondata = (event) => {
+    streamFilter.ondata = (event) => {
         buf += decoder.decode(event.data, { stream: true });
     };
 
-    filter.onstop = async () => {
+    streamFilter.onstop = async () => {
         try {
             const [settings, log] = await Promise.all([
                 loadSettings(),
@@ -26,10 +28,45 @@ export function recommendRequest(
             const recommendData = JSON.parse(buf) as RecommendDataContainer;
             const tabId = details.tabId;
 
-            const filteredData = filterVideo(recommendData.data, settings, log);
+            // シリーズの次の動画を追加
+            const series = log?.series;
+            if (series?.data !== undefined && series.hasNext) {
+                const videoId = series.data.id;
 
-            filter.write(encoder.encode(JSON.stringify(recommendData)));
-            filter.disconnect();
+                if (
+                    recommendData.data.items.every(
+                        (item) => item.id !== videoId,
+                    )
+                ) {
+                    recommendData.data.items.push({
+                        id: videoId,
+                        content: series.data,
+                        contentType: "video",
+                    });
+                }
+            }
+
+            // フィルタリング対象の動画IDを調べる
+            const videos = recommendData.data.items
+                .filter((item) => item.contentType === "video")
+                .map((item) => item.content);
+            const filteredData = filterVideo(videos, settings);
+
+            // 実際にフィルタリング
+            if (filteredData !== undefined) {
+                const filteredIds = new Set(
+                    Object.values(filteredData.filters).flatMap((filter) => [
+                        ...filter.getVideos().keys(),
+                    ]),
+                );
+
+                recommendData.data.items = recommendData.data.items.filter(
+                    (item) => !filteredIds.has(item.id),
+                );
+            }
+
+            streamFilter.write(encoder.encode(JSON.stringify(recommendData)));
+            streamFilter.disconnect();
 
             if (filteredData === undefined) return;
 

@@ -1,4 +1,4 @@
-import { NiconicoVideo, RecommendData } from "@/types/api/recommend.types.js";
+import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { extractRule } from "../comment-filter/filter.js";
@@ -15,7 +15,7 @@ export abstract class Filter<T> {
         this.settings = settings;
     }
 
-    abstract filtering(recommendData: RecommendData): void;
+    abstract filtering(data: { videos: NiconicoVideo[] }): void;
     abstract isNgVideo(video: NiconicoVideo): boolean;
     abstract getCount(): number;
     abstract sortLog(): void;
@@ -40,12 +40,10 @@ export abstract class CommonFilter extends Filter<CommonLog> {
 
     protected abstract getTargetValue(video: NiconicoVideo): string | null;
 
-    override filtering(recommendData: RecommendData): void {
-        recommendData.items = recommendData.items.filter((item) => {
-            if (item.contentType !== "video") return true;
-
-            const videoId = item.id;
-            const target = this.getTargetValue(item.content);
+    override filtering(data: { videos: NiconicoVideo[] }): void {
+        data.videos = data.videos.filter((video) => {
+            const videoId = video.id;
+            const target = this.getTargetValue(video);
             if (target === null) return true;
 
             for (const regex of this.filter) {
@@ -58,7 +56,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
                         this.log.set(regexStr, [videoId]);
                     }
 
-                    this.filteredVideos.set(item.id, item.content);
+                    this.filteredVideos.set(video.id, video);
 
                     return false;
                 }
