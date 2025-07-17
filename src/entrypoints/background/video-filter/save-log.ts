@@ -21,7 +21,14 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
 
     const end = performance.now();
     await setLog(
-        { videoFilterLog: { processingTime: { saveLog: end - start } } },
+        {
+            videoFilterLog: {
+                processingTime: {
+                    filtering: filteredData.filteringTime,
+                    saveLog: end - start,
+                },
+            },
+        },
         tabId,
     );
 }

@@ -35,7 +35,14 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
 
     const end = performance.now();
     await setLog(
-        { commentFilterLog: { processingTime: { saveLog: end - start } } },
+        {
+            commentFilterLog: {
+                processingTime: {
+                    filtering: filteredData.filteringTime,
+                    saveLog: end - start,
+                },
+            },
+        },
         tabId,
     );
 }

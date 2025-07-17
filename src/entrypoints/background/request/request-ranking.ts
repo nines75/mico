@@ -1,4 +1,4 @@
-import { loadSettings, setLog } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
@@ -96,21 +96,5 @@ async function rankingDataFilter(
     rankingData.data.response.$getTeibanRanking.data.items = spoofedVideos;
     meta?.setAttribute("content", JSON.stringify(rankingData));
 
-    const tasks: Promise<void>[] = [];
-
-    tasks.push(saveLog(filteredData, details.tabId));
-    tasks.push(
-        setLog(
-            {
-                videoFilterLog: {
-                    processingTime: {
-                        filtering: filteredData.filteringTime,
-                    },
-                },
-            },
-            details.tabId,
-        ),
-    );
-
-    await Promise.all(tasks);
+    await saveLog(filteredData, details.tabId);
 }

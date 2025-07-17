@@ -1,5 +1,5 @@
 import { RecommendDataContainer } from "@/types/api/recommend.types.js";
-import { getLogData, loadSettings, setLog } from "@/utils/storage.js";
+import { getLogData, loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 
@@ -64,23 +64,7 @@ export function recommendRequest(
 
             if (filteredData === undefined) return;
 
-            const tasks: Promise<void>[] = [];
-
-            tasks.push(saveLog(filteredData, tabId));
-            tasks.push(
-                setLog(
-                    {
-                        videoFilterLog: {
-                            processingTime: {
-                                filtering: filteredData.filteringTime,
-                            },
-                        },
-                    },
-                    tabId,
-                ),
-            );
-
-            await Promise.all(tasks);
+            await saveLog(filteredData, tabId);
         } catch (e) {
             console.error(e);
         }
