@@ -102,6 +102,7 @@ async function saveNgId(
             id: string;
             userName: string | undefined;
             allId: string[];
+            type: "recommend" | "ranking";
         };
         video?: {
             id: string;
@@ -148,7 +149,7 @@ async function saveNgId(
         (id) => videoIdToUserId.get(id) === userId,
     );
     await browser.tabs.sendMessage(tabId, {
-        type: "remove-recommend",
+        type: `remove-${data.userId.type}`,
         data: toRemoveVideoIds satisfies string[],
     });
 }

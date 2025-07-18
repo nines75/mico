@@ -7,6 +7,7 @@ import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 import { isWatchPage } from "@/utils/util.js";
+import { getAllVideos, isRankingVideo, renderRanking } from "./ranking.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -119,14 +120,10 @@ async function watchPageObserver(node: HTMLElement, settings: Settings) {
 function rankingPageObserver(node: HTMLElement) {
     // 初回ロード時
     {
-        const parentId = node.parentElement?.id;
-        if (parentId !== undefined && parentId === "root") {
-            const videos = document.querySelectorAll(
-                "div:has(> div > a[data-anchor-page='ranking_genre'][href='/watch/dummy-id'])",
+        if (node.querySelector(":scope > main") !== null) {
+            getAllVideos().forEach(({ video, anchor }) =>
+                renderRanking(video, anchor),
             );
-            videos.forEach((video) => {
-                if (video instanceof HTMLElement) video.style.display = "none";
-            });
 
             return;
         }
@@ -134,11 +131,15 @@ function rankingPageObserver(node: HTMLElement) {
 
     // 遷移時
     {
-        const target = node.querySelector(
-            ":scope > div > a[data-anchor-page='ranking_genre'][href='/watch/dummy-id']",
+        const anchor = node.querySelector(
+            ":scope > div > a[data-anchor-page='ranking_genre'][data-decoration-video-id]",
         );
-        if (target !== null) {
-            node.style.display = "none";
+        if (
+            node instanceof HTMLDivElement &&
+            isRankingVideo(node) &&
+            anchor instanceof HTMLAnchorElement
+        ) {
+            renderRanking(node, anchor);
 
             return;
         }

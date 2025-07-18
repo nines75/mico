@@ -1,30 +1,32 @@
 import { attributes, messages, titles } from "@/utils/config.js";
 import { createElement, ScreenShareOff, UserX } from "lucide";
+import { getRecommendContent } from "./recommend.js";
 
-interface recommendContent {
-    title: string;
-    userName: string | undefined;
-}
-
-export function mountToRecommendHandler(parent: HTMLElement) {
-    for (const element of getAnchors(parent)) {
-        mountToRecommend(element);
+export function renderRanking(
+    video: HTMLDivElement,
+    anchor: HTMLAnchorElement,
+) {
+    if (anchor.getAttribute("href") === "/watch/dummy-id") {
+        video.style.display = "none";
+    } else {
+        mountToRanking(video, anchor);
     }
 }
 
-export function mountToRecommend(element: Element) {
-    if (!(element instanceof HTMLAnchorElement)) return;
-
-    const videoId = element.getAttribute(attributes.recommendVideoId);
-    const recommendContent = getRecommendContent(element);
-    if (videoId === null || recommendContent === undefined) return;
+export function mountToRanking(
+    video: HTMLDivElement,
+    anchor: HTMLAnchorElement,
+) {
+    const videoId = anchor.getAttribute("data-decoration-video-id");
+    const rankingContent = getRecommendContent(anchor);
+    if (videoId === null || rankingContent === undefined) return;
 
     // ボタンの配置にabsoluteを使うために必要
-    element.style.position = "relative";
+    video.style.position = "relative";
 
     appendButton(
-        element,
-        10,
+        video,
+        30,
         createElement(UserX),
         titles.addNgUserIdByVideo,
         async (event) => {
@@ -33,17 +35,14 @@ export function mountToRecommend(element: Element) {
 
                 if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
 
-                const parent = element.parentElement;
-                if (parent === null) return;
-
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
                         userId: {
                             id: videoId,
-                            userName: recommendContent.userName,
-                            allId: getVideoIds(parent), // レンダリング時には他の関連動画がレンダリングされていない可能性があるためクリック時に取得する
-                            type: "recommend",
+                            userName: rankingContent.userName,
+                            allId: getVideoIds(),
+                            type: "ranking",
                         },
                     } satisfies {
                         userId: {
@@ -61,8 +60,8 @@ export function mountToRecommend(element: Element) {
     );
 
     appendButton(
-        element,
-        40,
+        video,
+        0,
         createElement(ScreenShareOff),
         titles.addNgVideo,
         async (event) => {
@@ -70,14 +69,14 @@ export function mountToRecommend(element: Element) {
                 event.preventDefault();
                 if (!confirm(messages.ngVideoId.confirmAddition)) return;
 
-                element.style.display = "none";
+                video.style.display = "none";
 
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
                         video: {
                             id: videoId,
-                            title: recommendContent.title,
+                            title: rankingContent.title,
                         },
                     } satisfies {
                         video: {
@@ -95,15 +94,15 @@ export function mountToRecommend(element: Element) {
 
 function appendButton(
     element: HTMLElement,
-    right: number,
+    bottom: number,
     svg: SVGElement,
     title: string,
     callback: (event: MouseEvent) => Promise<void>,
 ) {
     const button = document.createElement("button");
     button.style.position = "absolute";
-    button.style.bottom = "2px";
-    button.style.right = `${right}px`;
+    button.style.bottom = `${bottom}px`;
+    button.style.left = `10px`;
     button.style.cursor = "pointer";
     button.title = `${title}(${browser.runtime.getManifest().name})`;
 
@@ -117,32 +116,42 @@ function appendButton(
     element.appendChild(button);
 }
 
-function getVideoIds(parent: HTMLElement) {
-    return [...getAnchors(parent)]
-        .map((element) => element.getAttribute(attributes.recommendVideoId))
+function getVideoIds() {
+    return getAllVideos()
+        .map(({ anchor }) => anchor.getAttribute(attributes.recommendVideoId))
         .filter((id) => id !== null);
 }
 
-function getAnchors(parent: HTMLElement) {
-    return parent.querySelectorAll(":scope > a[href^='/watch/']");
+export function getAllVideos() {
+    const res: {
+        video: HTMLDivElement;
+        anchor: HTMLAnchorElement;
+    }[] = [];
+
+    // 広告動画を除外するためにdata-decoration-video-idを指定
+    const anchors = document.querySelectorAll(
+        "a[data-anchor-page='ranking_genre'][data-decoration-video-id]",
+    );
+    anchors.forEach((anchor) => {
+        const video = anchor.parentElement?.parentElement;
+        if (
+            !(anchor instanceof HTMLAnchorElement) ||
+            !(video instanceof HTMLDivElement)
+        )
+            return;
+
+        if (!isRankingVideo(video)) return;
+
+        res.push({
+            video,
+            anchor,
+        });
+    });
+
+    return res;
 }
 
-export function getRecommendContent(
-    parent: HTMLElement,
-): recommendContent | undefined {
-    const titleElement = parent.querySelector(":scope > div:nth-child(2) > p");
-    const iconElement = parent.querySelector(
-        "img[src^='https://secure-dcdn.cdn.nimg.jp/nicoaccount/usericon']",
-    );
-
-    // タイトル要素は必ず存在するが、アイコン要素はユーザーが削除済みであれば存在しない
-    if (!(titleElement instanceof HTMLParagraphElement)) return;
-
-    const title = titleElement.textContent;
-    if (title === null) return;
-
-    return {
-        title,
-        userName: iconElement?.getAttribute("alt") ?? undefined,
-    };
+// サイドバーのタグランキングを除外するための関数
+export function isRankingVideo(video: HTMLDivElement) {
+    return video.parentElement?.childElementCount !== 3;
 }

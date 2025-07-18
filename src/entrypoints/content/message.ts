@@ -1,5 +1,6 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
 import { attributes } from "@/utils/config.js";
+import { getAllVideos } from "./ranking.js";
 
 export interface Message {
     type: string;
@@ -18,6 +19,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
             mountUserId(message.data as string);
         if (message.type === "remove-recommend")
             removeRecommend(message.data as string[]);
+        if (message.type === "remove-ranking")
+            removeRanking(message.data as string[]);
     };
 }
 
@@ -146,4 +149,17 @@ function removeRecommend(ids: string[]) {
             element.style.display = "none";
         }
     }
+}
+
+export function removeRanking(ids: string[]) {
+    const idsSet = new Set(ids);
+
+    getAllVideos().forEach(({ video, anchor }) => {
+        const videoId = anchor.getAttribute(attributes.recommendVideoId);
+        if (videoId === null) return;
+
+        if (idsSet.has(videoId)) {
+            video.style.display = "none";
+        }
+    });
 }
