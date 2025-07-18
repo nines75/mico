@@ -93,22 +93,24 @@ async function saveNgUserId(
     await Promise.all(tasks);
 }
 
+export interface NgIdMessage {
+    video?: {
+        id: string;
+        title: string;
+    };
+    userId?: {
+        id: string;
+        allId: string[];
+        userName: string | undefined;
+        type: "recommend" | "ranking";
+    };
+}
+
 async function saveNgId(
     message: Message,
     sender: browser.runtime.MessageSender,
 ) {
-    const data = message.data as {
-        userId?: {
-            id: string;
-            userName: string | undefined;
-            allId: string[];
-            type: "recommend" | "ranking";
-        };
-        video?: {
-            id: string;
-            title: string;
-        };
-    };
+    const data = message.data as NgIdMessage;
     const settings = await loadSettings();
 
     // 動画IDをNG追加

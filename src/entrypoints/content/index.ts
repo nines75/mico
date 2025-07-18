@@ -136,8 +136,8 @@ function rankingPageObserver(node: HTMLElement) {
         );
         if (
             node instanceof HTMLDivElement &&
-            isRankingVideo(node) &&
-            anchor instanceof HTMLAnchorElement
+            anchor instanceof HTMLAnchorElement &&
+            isRankingVideo(node)
         ) {
             renderRanking(node, anchor);
 

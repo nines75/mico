@@ -1,6 +1,5 @@
-import { attributes, messages, titles } from "@/utils/config.js";
-import { createElement, ScreenShareOff, UserX } from "lucide";
-import { getRecommendContent } from "./recommend.js";
+import { attributes } from "@/utils/config.js";
+import { getVideoContent, mountButton } from "./button.js";
 
 export function renderRanking(
     video: HTMLDivElement,
@@ -13,112 +12,24 @@ export function renderRanking(
     }
 }
 
-export function mountToRanking(
-    video: HTMLDivElement,
-    anchor: HTMLAnchorElement,
-) {
-    const videoId = anchor.getAttribute("data-decoration-video-id");
-    const rankingContent = getRecommendContent(anchor);
-    if (videoId === null || rankingContent === undefined) return;
+function mountToRanking(video: HTMLDivElement, anchor: HTMLAnchorElement) {
+    const videoId = anchor.getAttribute(attributes.decorateVideoId);
+    const videoContent = getVideoContent(anchor);
 
-    // ボタンの配置にabsoluteを使うために必要
-    video.style.position = "relative";
-
-    appendButton(
+    mountButton(
+        "ranking",
         video,
-        30,
-        createElement(UserX),
-        titles.addNgUserIdByVideo,
-        async (event) => {
-            try {
-                event.preventDefault();
-
-                if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
-
-                await browser.runtime.sendMessage({
-                    type: "save-ng-id",
-                    data: {
-                        userId: {
-                            id: videoId,
-                            userName: rankingContent.userName,
-                            allId: getVideoIds(),
-                            type: "ranking",
-                        },
-                    } satisfies {
-                        userId: {
-                            id: string;
-                            userName: string | undefined;
-                            allId: string[];
-                            type: "recommend" | "ranking";
-                        };
-                    },
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        },
+        videoId,
+        getVideoIds(),
+        videoContent,
+        { left: 10, bottom: 30 },
+        { left: 10, bottom: 0 },
     );
-
-    appendButton(
-        video,
-        0,
-        createElement(ScreenShareOff),
-        titles.addNgVideo,
-        async (event) => {
-            try {
-                event.preventDefault();
-                if (!confirm(messages.ngVideoId.confirmAddition)) return;
-
-                video.style.display = "none";
-
-                await browser.runtime.sendMessage({
-                    type: "save-ng-id",
-                    data: {
-                        video: {
-                            id: videoId,
-                            title: rankingContent.title,
-                        },
-                    } satisfies {
-                        video: {
-                            id: string;
-                            title: string;
-                        };
-                    },
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        },
-    );
-}
-
-function appendButton(
-    element: HTMLElement,
-    bottom: number,
-    svg: SVGElement,
-    title: string,
-    callback: (event: MouseEvent) => Promise<void>,
-) {
-    const button = document.createElement("button");
-    button.style.position = "absolute";
-    button.style.bottom = `${bottom}px`;
-    button.style.left = `10px`;
-    button.style.cursor = "pointer";
-    button.title = `${title}(${browser.runtime.getManifest().name})`;
-
-    const size = "22";
-    svg.setAttribute("width", size);
-    svg.setAttribute("height", size);
-    button.appendChild(svg);
-
-    button.addEventListener("click", callback);
-
-    element.appendChild(button);
 }
 
 function getVideoIds() {
     return getAllVideos()
-        .map(({ anchor }) => anchor.getAttribute(attributes.recommendVideoId))
+        .map(({ anchor }) => anchor.getAttribute(attributes.decorateVideoId))
         .filter((id) => id !== null);
 }
 
