@@ -89,7 +89,9 @@ async function rankingDataFilter(
     const spoofedVideos = videos.map(
         (video): NiconicoVideo => ({
             ...video,
-            ...(filteredData.filteredIds.has(video.id) ? { id: "sm0" } : {}),
+            ...(filteredData.filteredIds.has(video.id)
+                ? { id: "dummy-id" }
+                : {}),
         }),
     );
 

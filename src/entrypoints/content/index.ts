@@ -122,7 +122,7 @@ function rankingPageObserver(node: HTMLElement) {
         const parentId = node.parentElement?.id;
         if (parentId !== undefined && parentId === "root") {
             const videos = document.querySelectorAll(
-                "div:has(> div > a[data-anchor-page='ranking_genre'][href='/watch/sm0'])",
+                "div:has(> div > a[data-anchor-page='ranking_genre'][href='/watch/dummy-id'])",
             );
             videos.forEach((video) => {
                 if (video instanceof HTMLElement) video.style.display = "none";
@@ -135,7 +135,7 @@ function rankingPageObserver(node: HTMLElement) {
     // 遷移時
     {
         const target = node.querySelector(
-            ":scope > div > a[data-anchor-page='ranking_genre'][href='/watch/sm0']",
+            ":scope > div > a[data-anchor-page='ranking_genre'][href='/watch/dummy-id']",
         );
         if (target !== null) {
             node.style.display = "none";
