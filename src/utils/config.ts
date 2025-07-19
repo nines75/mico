@@ -170,10 +170,6 @@ export const titles = {
     undoStrict: "strictルールによって自動追加されたNGユーザーIDを削除します",
 } as const;
 
-export const colors = {
-    badge: "#b22222",
-} as const;
-
 export const urls = {
     repository: "https://github.com/nines75/mico",
 } as const;

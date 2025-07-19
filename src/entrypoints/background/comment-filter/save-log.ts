@@ -27,8 +27,9 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
         setLog({ commentFilterLog }, tabId),
         changeBadgeState(
             settings.isPartialBadgeCount
-                ? (count.totalBlocked - count.blocked.easyComment).toString()
-                : count.totalBlocked.toString(),
+                ? count.totalBlocked - count.blocked.easyComment
+                : count.totalBlocked,
+            "#b22222",
             tabId,
         ),
     ]);

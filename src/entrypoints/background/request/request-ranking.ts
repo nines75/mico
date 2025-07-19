@@ -98,5 +98,5 @@ async function rankingDataFilter(
     rankingData.data.response.$getTeibanRanking.data.items = spoofedVideos;
     meta?.setAttribute("content", JSON.stringify(rankingData));
 
-    await saveLog(filteredData, details.tabId);
+    await saveLog(filteredData, details.tabId, true);
 }

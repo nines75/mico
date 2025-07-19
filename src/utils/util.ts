@@ -1,5 +1,5 @@
 import { CommonLog } from "../types/storage/log.types.js";
-import { pattern, colors } from "./config.js";
+import { pattern } from "./config.js";
 import { setLog } from "./storage.js";
 
 export function isWatchPage(url: string | undefined) {
@@ -14,15 +14,16 @@ export function isRankingPage(url: string | undefined) {
     return url.startsWith(pattern.rankingPageUrl);
 }
 
-export async function changeBadgeState(text: string, tabId: number) {
-    if (text === "0") text = "";
+export async function changeBadgeState(
+    value: number,
+    color: string,
+    tabId: number,
+) {
+    const text = value === 0 ? "" : value.toString();
 
     await Promise.all([
         browser.browserAction.setBadgeText({ text, tabId }),
-        browser.browserAction.setBadgeBackgroundColor({
-            color: colors.badge,
-            tabId,
-        }),
+        browser.browserAction.setBadgeBackgroundColor({ color, tabId }),
     ]);
 }
 
