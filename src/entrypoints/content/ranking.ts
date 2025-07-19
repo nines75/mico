@@ -68,5 +68,5 @@ export function getAllVideos() {
 
 // サイドバーのタグランキングを除外するための関数
 export function isRankingVideo(video: HTMLDivElement) {
-    return video.parentElement?.childElementCount !== 3;
+    return video.parentElement?.childElementCount !== 3; // 動画数が3つの場合はサイドバーのランキング
 }
