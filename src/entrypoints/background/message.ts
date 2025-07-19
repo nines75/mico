@@ -136,13 +136,11 @@ async function saveNgId(
 
     const log = await getLogData(tabId);
     const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
-    if (videoIdToUserId === undefined) {
+    const userId = videoIdToUserId?.get(data.userId.id);
+    if (videoIdToUserId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
-
-    const userId = videoIdToUserId.get(data.userId.id);
-    if (userId === undefined) return;
 
     // ユーザーIDをNG追加
     await addNgId(

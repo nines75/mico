@@ -124,7 +124,7 @@ function appendButton(
 export function getVideoContent(parent: Element): VideoContent | undefined {
     const titleElement = parent.querySelector(":scope > div:nth-child(2) > p");
     const iconElement = parent.querySelector(
-        "img[src^='https://secure-dcdn.cdn.nimg.jp/nicoaccount/usericon']",
+        "img[src^='https://secure-dcdn.cdn.nimg.jp/']",
     );
 
     // タイトル要素は必ず存在するが、アイコン要素はユーザーが削除済みであれば存在しない

@@ -103,11 +103,22 @@ async function watchPageObserver(node: HTMLElement, settings: Settings) {
 
     // 関連動画(初回ロード時)
     {
+        // パターン1: 関連動画の直接の親要素の追加時にレンダリング
         const attr = node
             .querySelector(":scope > a")
             ?.getAttribute("data-anchor-area");
         if (attr === "related_content,recommendation") {
             mountToRecommendHandler(node);
+
+            return;
+        }
+
+        // パターン2: サイドバーの追加時にレンダリング(チャンネル動画の視聴ページで多い？)
+        const parent = node.querySelector(
+            ":scope > div > div > div:has(> a[data-anchor-area='related_content,recommendation'])",
+        );
+        if (parent !== null && parent instanceof HTMLElement) {
+            mountToRecommendHandler(parent);
 
             return;
         }
