@@ -6,7 +6,7 @@ import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
-import { isWatchPage } from "@/utils/util.js";
+import { isRankingPage, isWatchPage } from "@/utils/util.js";
 import { getAllVideos, isRankingVideo, renderRanking } from "./ranking.js";
 
 export interface customObserver extends MutationObserver {
@@ -46,7 +46,7 @@ async function observerCallback(
                 await watchPageObserver(node, settings);
             }
 
-            if (location.href.startsWith(pattern.rankingPageUrl)) {
+            if (isRankingPage(location.href)) {
                 rankingPageObserver(node);
             }
         }

@@ -10,6 +10,7 @@ import { SettingsIcon } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
+import { PopupTab } from "@/types/storage/settings.types.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -67,7 +68,7 @@ function Page() {
 
 function Main() {
     const settings = useStorageStore.getState().settings;
-    const [videoId, selectedTab, save] = useStorageStore(
+    const [videoId, rawSelectedTab, save] = useStorageStore(
         useShallow((state) => [
             state.log?.videoId,
             state.settings.popupSelectedTab,
@@ -86,29 +87,40 @@ function Main() {
     );
 
     const isWatchPage = useStorageStore.getState().isWatchPage;
-    const isDeleted =
-        isWatchPage && (videoId === undefined || videoId === null);
+    const isDeleted = videoId === undefined || videoId === null;
+    const hasVideo = isWatchPage && !isDeleted;
 
-    if (!isWatchPage || isDeleted) {
+    const isRankingPage = useStorageStore.getState().isRankingPage;
+
+    if (!hasVideo && !isRankingPage) {
         return <div id="message">{messages.popup.notWorking}</div>;
     }
 
+    // 視聴ページ以外は動画フィルターのみ表示
+    const selectedTab: PopupTab = isWatchPage ? rawSelectedTab : "videoFilter";
+
     return (
         <main>
-            <section>
-                <span id="video-id">{videoId ?? ""}</span>
-            </section>
-            <div>
-                {popupConfig.tab.map((filter) => (
-                    <button
-                        key={filter.id}
-                        className={`${selectedTab === filter.id ? "selected-button" : ""}`}
-                        onClick={() => save({ popupSelectedTab: filter.id })}
-                    >
-                        <span>{filter.name}</span>
-                    </button>
-                ))}
-            </div>
+            {videoId !== undefined && videoId !== null && (
+                <section>
+                    <span id="video-id">{videoId}</span>
+                </section>
+            )}
+            {hasVideo && (
+                <div>
+                    {popupConfig.tab.map((filter) => (
+                        <button
+                            key={filter.id}
+                            className={`${selectedTab === filter.id ? "selected-button" : ""}`}
+                            onClick={() =>
+                                save({ popupSelectedTab: filter.id })
+                            }
+                        >
+                            <span>{filter.name}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
             {(() => {
                 switch (selectedTab) {
                     case "commentFilter":
@@ -126,10 +138,10 @@ function Main() {
                 }
             })()}
             <Details id={"isOpenProcessingTime"} summary="処理時間">
-                <ProcessingTime />
+                <ProcessingTime {...{ selectedTab }} />
             </Details>
             <Details id={"isOpenCount"} summary="カウント情報">
-                <Count />
+                <Count {...{ selectedTab }} />
             </Details>
             <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
                 {(() => {

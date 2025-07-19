@@ -8,6 +8,12 @@ export function isWatchPage(url: string | undefined) {
     return url.startsWith(pattern.watchPageUrl);
 }
 
+export function isRankingPage(url: string | undefined) {
+    if (url === undefined) return false;
+
+    return url.startsWith(pattern.rankingPageUrl);
+}
+
 export async function changeBadgeState(text: string, tabId: number) {
     if (text === "0") text = "";
 

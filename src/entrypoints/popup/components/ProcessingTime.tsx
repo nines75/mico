@@ -1,10 +1,13 @@
 import { useStorageStore } from "@/utils/store.js";
 import { Info } from "./Info.js";
+import { PopupTab } from "@/types/storage/settings.types.js";
 
-export default function ProcessingTime() {
+interface ProcessingTimeProps {
+    selectedTab: PopupTab;
+}
+
+export default function ProcessingTime({ selectedTab }: ProcessingTimeProps) {
     const processingTime = useStorageStore((state) => {
-        const selectedTab = state.settings.popupSelectedTab;
-
         switch (selectedTab) {
             case "commentFilter":
                 return state.log?.commentFilterLog?.processingTime;
