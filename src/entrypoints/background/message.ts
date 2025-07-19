@@ -1,4 +1,4 @@
-import { messages } from "@/utils/config.js";
+import { colors, messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import {
     changeBadgeState,
@@ -169,5 +169,5 @@ async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
     const count = log?.videoFilterLog?.count.totalBlocked;
     if (count === undefined) return;
 
-    await changeBadgeState(count, "#9400d3 ", tabId);
+    await changeBadgeState(count, colors.videoBadge, tabId);
 }

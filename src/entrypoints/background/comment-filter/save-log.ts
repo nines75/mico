@@ -8,6 +8,7 @@ import {
     CommentFiltering,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
+import { colors } from "@/utils/config.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
@@ -29,7 +30,7 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
             settings.isPartialBadgeCount
                 ? count.totalBlocked - count.blocked.easyComment
                 : count.totalBlocked,
-            "#b22222",
+            colors.commentBadge,
             tabId,
         ),
     ]);
