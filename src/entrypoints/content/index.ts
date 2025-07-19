@@ -7,7 +7,7 @@ import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 import { isRankingPage, isWatchPage } from "@/utils/util.js";
-import { getAllVideos, isRankingVideo, renderRanking } from "./ranking.js";
+import { isRankingVideo, renderAllRanking, renderRanking } from "./ranking.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -121,15 +121,23 @@ function rankingPageObserver(node: HTMLElement) {
     // 初回ロード時
     {
         if (node.querySelector(":scope > main") !== null) {
-            getAllVideos().forEach(({ video, anchor }) =>
-                renderRanking(video, anchor),
-            );
+            renderAllRanking();
 
             return;
         }
     }
 
-    // 遷移時
+    // 遷移時(視聴ページから戻った場合)
+    {
+        const parent = node.parentElement;
+        if (parent?.ariaLabel === "nicovideo-content") {
+            renderAllRanking();
+
+            return;
+        }
+    }
+
+    // 遷移時(ページめくり)
     {
         const anchor = node.querySelector(
             ":scope > div > a[data-anchor-page='ranking_genre'][data-decoration-video-id]",

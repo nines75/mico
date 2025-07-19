@@ -1,6 +1,10 @@
 import { attributes } from "@/utils/config.js";
 import { getVideoContent, mountButton } from "./button.js";
 
+export function renderAllRanking() {
+    getAllVideos().forEach(({ video, anchor }) => renderRanking(video, anchor));
+}
+
 export function renderRanking(
     video: HTMLDivElement,
     anchor: HTMLAnchorElement,
