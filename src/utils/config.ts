@@ -108,7 +108,7 @@ export const defaultSettings: Settings = {
 } as const;
 
 export const attributes = {
-    recommendVideoId: "data-decoration-video-id",
+    decorationVideoId: "data-decoration-video-id",
 } as const;
 
 export const buttons = {
@@ -171,7 +171,8 @@ export const titles = {
 } as const;
 
 export const colors = {
-    badge: "#b22222",
+    commentBadge: "#b22222",
+    videoBadge: "#00ffff",
 } as const;
 
 export const urls = {
@@ -182,6 +183,7 @@ export const pattern = {
     topPageUrlGlob: "https://www.nicovideo.jp/*",
     watchPageUrl: "https://www.nicovideo.jp/watch/",
     watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",
+    rankingPageUrl: "https://www.nicovideo.jp/ranking/genre",
     regex: {
         checkRawUserId: /^\d+$/,
         checkVideoId: /^(sm|so|nl|nm)\d+$/,

@@ -1,4 +1,4 @@
-import { NiconicoVideo, RecommendData } from "@/types/api/recommend.types.js";
+import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { Filter, sortVideoId } from "../filter.js";
 import { extractRule } from "../../comment-filter/filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -25,12 +25,10 @@ export class IdFilter extends Filter<IdLog> {
         this.filter = this.createFilter();
     }
 
-    override filtering(recommendData: RecommendData): void {
-        recommendData.items = recommendData.items.filter((item) => {
-            if (item.contentType !== "video") return true;
-
-            const userId = item.content.owner.id;
-            const videoId = item.id;
+    override filtering(data: { videos: NiconicoVideo[] }): void {
+        data.videos = data.videos.filter((video) => {
+            const userId = video.owner.id;
+            const videoId = video.id;
 
             // ユーザーIDによるフィルタリング
             if (this.filter.userIds.has(userId)) {
@@ -42,7 +40,7 @@ export class IdFilter extends Filter<IdLog> {
                     ids.set(userId, [videoId]);
                 }
 
-                this.filteredVideos.set(videoId, item.content);
+                this.filteredVideos.set(videoId, video);
 
                 return false;
             }
@@ -50,7 +48,7 @@ export class IdFilter extends Filter<IdLog> {
             // 動画IDによるフィルタリング
             if (this.filter.videoIds.has(videoId)) {
                 this.log.videoId.push(videoId);
-                this.filteredVideos.set(videoId, item.content);
+                this.filteredVideos.set(videoId, video);
 
                 return false;
             }

@@ -8,7 +8,6 @@ import {
     getAllData,
     removeData,
     LogType,
-    setLog,
 } from "@/utils/storage.js";
 import { sendNotification, savePlaybackTime } from "@/utils/util.js";
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
@@ -62,18 +61,6 @@ export default function commentRequest(
 
             // ログを保存
             tasks.push(saveLog(filteredData, tabId));
-            tasks.push(
-                setLog(
-                    {
-                        commentFilterLog: {
-                            processingTime: {
-                                filtering: filteredData.filteringTime,
-                            },
-                        },
-                    },
-                    tabId,
-                ),
-            );
 
             // 通知を送信
             if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {

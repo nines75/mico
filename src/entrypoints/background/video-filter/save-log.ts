@@ -6,8 +6,14 @@ import {
 import { FilteredData } from "./filter-video.js";
 import {} from "@/types/storage/log.types.js";
 import { setLog } from "@/utils/storage.js";
+import { changeBadgeState } from "@/utils/util.js";
+import { colors } from "@/utils/config.js";
 
-export async function saveLog(filteredData: FilteredData, tabId: number) {
+export async function saveLog(
+    filteredData: FilteredData,
+    tabId: number,
+    isChangeBadge = false,
+) {
     const start = performance.now();
 
     const count = getCount(filteredData);
@@ -17,11 +23,25 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
         count,
         filtering,
     };
-    await setLog({ videoFilterLog }, tabId);
+    await Promise.all([
+        setLog({ videoFilterLog }, tabId),
+        ...[
+            isChangeBadge
+                ? changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)
+                : [],
+        ],
+    ]);
 
     const end = performance.now();
     await setLog(
-        { videoFilterLog: { processingTime: { saveLog: end - start } } },
+        {
+            videoFilterLog: {
+                processingTime: {
+                    filtering: filteredData.filteringTime,
+                    saveLog: end - start,
+                },
+            },
+        },
         tabId,
     );
 }

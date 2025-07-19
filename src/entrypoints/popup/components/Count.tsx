@@ -1,10 +1,13 @@
 import { useStorageStore } from "@/utils/store.js";
 import { Info } from "./Info.js";
+import { PopupTab } from "@/types/storage/settings.types.js";
 
-export default function Count() {
+interface CountProps {
+    selectedTab: PopupTab;
+}
+
+export default function Count({ selectedTab }: CountProps) {
     const count = useStorageStore((state) => {
-        const selectedTab = state.settings.popupSelectedTab;
-
         switch (selectedTab) {
             case "commentFilter":
                 return state.log?.commentFilterLog?.count;

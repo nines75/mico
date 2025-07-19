@@ -8,6 +8,7 @@ import {
     CommentFiltering,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
+import { colors } from "@/utils/config.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
@@ -27,15 +28,23 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
         setLog({ commentFilterLog }, tabId),
         changeBadgeState(
             settings.isPartialBadgeCount
-                ? (count.totalBlocked - count.blocked.easyComment).toString()
-                : count.totalBlocked.toString(),
+                ? count.totalBlocked - count.blocked.easyComment
+                : count.totalBlocked,
+            colors.commentBadge,
             tabId,
         ),
     ]);
 
     const end = performance.now();
     await setLog(
-        { commentFilterLog: { processingTime: { saveLog: end - start } } },
+        {
+            commentFilterLog: {
+                processingTime: {
+                    filtering: filteredData.filteringTime,
+                    saveLog: end - start,
+                },
+            },
+        },
         tabId,
     );
 }

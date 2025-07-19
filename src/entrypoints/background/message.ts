@@ -1,6 +1,10 @@
-import { messages } from "@/utils/config.js";
+import { colors, messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
-import { savePlaybackTime, sendNotification } from "@/utils/util.js";
+import {
+    changeBadgeState,
+    savePlaybackTime,
+    sendNotification,
+} from "@/utils/util.js";
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
 import { addNgId } from "./video-filter/filter/id-filter.js";
@@ -24,6 +28,8 @@ export async function backgroundMessageHandler(
             await saveNgUserId(message, sender);
         if (message.type === "get-user-id") await getUserId(message, sender);
         if (message.type === "save-ng-id") await saveNgId(message, sender);
+        if (message.type === "restore-video-badge")
+            await restoreVideoBadge(sender);
     } catch (e) {
         console.error(e);
     }
@@ -93,21 +99,24 @@ async function saveNgUserId(
     await Promise.all(tasks);
 }
 
+export interface NgIdMessage {
+    video?: {
+        id: string;
+        title: string;
+    };
+    userId?: {
+        id: string;
+        allId: string[];
+        userName: string | undefined;
+        type: "recommend" | "ranking";
+    };
+}
+
 async function saveNgId(
     message: Message,
     sender: browser.runtime.MessageSender,
 ) {
-    const data = message.data as {
-        userId?: {
-            id: string;
-            userName: string | undefined;
-            allId: string[];
-        };
-        video?: {
-            id: string;
-            title: string;
-        };
-    };
+    const data = message.data as NgIdMessage;
     const settings = await loadSettings();
 
     // 動画IDをNG追加
@@ -148,7 +157,17 @@ async function saveNgId(
         (id) => videoIdToUserId.get(id) === userId,
     );
     await browser.tabs.sendMessage(tabId, {
-        type: "remove-recommend",
+        type: `remove-${data.userId.type}`,
         data: toRemoveVideoIds satisfies string[],
     });
+}
+async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
+    const tabId = sender.tab?.id;
+    if (tabId === undefined) return;
+
+    const log = await getLogData(tabId);
+    const count = log?.videoFilterLog?.count.totalBlocked;
+    if (count === undefined) return;
+
+    await changeBadgeState(count, colors.videoBadge, tabId);
 }
