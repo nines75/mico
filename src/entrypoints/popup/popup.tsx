@@ -36,29 +36,8 @@ function Init() {
 }
 
 function Page() {
-    const settings = useStorageStore.getState().settings;
-    const isWatchPage = useStorageStore.getState().isWatchPage;
-    const [videoId, selectedTab, save] = useStorageStore(
-        useShallow((state) => [
-            state.log?.videoId,
-            state.settings.popupSelectedTab,
-            state.saveSettings,
-        ]),
-    );
-
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
-    const message = getMessage(isWatchPage, videoId);
-
-    const getDisabledMessage = (text: string) => (
-        <section>
-            <span id="disabled-message">
-                {text}
-                <br />
-                {messages.popup.outdatedLog}
-            </span>
-        </section>
-    );
 
     useEffect(() => {
         browser.storage.onChanged.addListener(storageChangeHandler);
@@ -81,86 +60,91 @@ function Page() {
                     </a>
                 </div>
             </header>
-            {message !== undefined ? (
-                <div id="message">{message}</div>
-            ) : (
-                <main>
-                    <section>
-                        <span id="video-id">{videoId ?? ""}</span>
-                    </section>
-                    <div>
-                        {popupConfig.tab.map((filter) => (
-                            <button
-                                key={filter.id}
-                                className={`${selectedTab === filter.id ? "selected-button" : ""}`}
-                                onClick={() =>
-                                    save({ popupSelectedTab: filter.id })
-                                }
-                            >
-                                <span>{filter.name}</span>
-                            </button>
-                        ))}
-                    </div>
-                    {(() => {
-                        switch (selectedTab) {
-                            case "commentFilter":
-                                if (settings.isCommentFilterEnabled)
-                                    return null;
-
-                                return getDisabledMessage(
-                                    messages.popup.commentFilterDisabled,
-                                );
-                            case "videoFilter":
-                                if (settings.isVideoFilterEnabled) return null;
-
-                                return getDisabledMessage(
-                                    messages.popup.videoFilterDisabled,
-                                );
-                        }
-                    })()}
-                    <Details id={"isOpenProcessingTime"} summary="処理時間">
-                        <ProcessingTime />
-                    </Details>
-                    <Details id={"isOpenCount"} summary="カウント情報">
-                        <Count />
-                    </Details>
-                    <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
-                        {(() => {
-                            switch (selectedTab) {
-                                case "commentFilter":
-                                    return popupConfig.commentFilter.log.map(
-                                        (log) => (
-                                            <CommentLogViewer
-                                                key={log.id}
-                                                {...log}
-                                            />
-                                        ),
-                                    );
-                                case "videoFilter":
-                                    return popupConfig.videoFilter.log.map(
-                                        (log) => (
-                                            <VideoLogViewer
-                                                key={log.id}
-                                                {...log}
-                                            />
-                                        ),
-                                    );
-                            }
-                        })()}
-                    </Details>
-                </main>
-            )}
+            <Main />
         </div>
     );
 }
 
-function getMessage(
-    isWatchPage: boolean,
-    videoId: string | undefined | null,
-): string | undefined {
-    // 視聴ページ判定だけだと削除動画などに対応できないため動画IDでも判定を行う
-    if (!isWatchPage || videoId === undefined || videoId === null)
-        return messages.popup.notWorking;
+function Main() {
+    const settings = useStorageStore.getState().settings;
+    const [videoId, selectedTab, save] = useStorageStore(
+        useShallow((state) => [
+            state.log?.videoId,
+            state.settings.popupSelectedTab,
+            state.saveSettings,
+        ]),
+    );
 
-    return undefined;
+    const getDisabledMessage = (text: string) => (
+        <section>
+            <span id="disabled-message">
+                {text}
+                <br />
+                {messages.popup.outdatedLog}
+            </span>
+        </section>
+    );
+
+    const isWatchPage = useStorageStore.getState().isWatchPage;
+    const isDeleted =
+        isWatchPage && (videoId === undefined || videoId === null);
+
+    if (!isWatchPage || isDeleted) {
+        return <div id="message">{messages.popup.notWorking}</div>;
+    }
+
+    return (
+        <main>
+            <section>
+                <span id="video-id">{videoId ?? ""}</span>
+            </section>
+            <div>
+                {popupConfig.tab.map((filter) => (
+                    <button
+                        key={filter.id}
+                        className={`${selectedTab === filter.id ? "selected-button" : ""}`}
+                        onClick={() => save({ popupSelectedTab: filter.id })}
+                    >
+                        <span>{filter.name}</span>
+                    </button>
+                ))}
+            </div>
+            {(() => {
+                switch (selectedTab) {
+                    case "commentFilter":
+                        if (settings.isCommentFilterEnabled) return null;
+
+                        return getDisabledMessage(
+                            messages.popup.commentFilterDisabled,
+                        );
+                    case "videoFilter":
+                        if (settings.isVideoFilterEnabled) return null;
+
+                        return getDisabledMessage(
+                            messages.popup.videoFilterDisabled,
+                        );
+                }
+            })()}
+            <Details id={"isOpenProcessingTime"} summary="処理時間">
+                <ProcessingTime />
+            </Details>
+            <Details id={"isOpenCount"} summary="カウント情報">
+                <Count />
+            </Details>
+            <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
+                {(() => {
+                    switch (selectedTab) {
+                        case "commentFilter":
+                            return popupConfig.commentFilter.log.map((log) => (
+                                <CommentLogViewer key={log.id} {...log} />
+                            ));
+                        case "videoFilter":
+                            return popupConfig.videoFilter.log.map((log) => (
+                                <VideoLogViewer key={log.id} {...log} />
+                            ));
+                    }
+                })()}
+            </Details>
+        </main>
+    );
 }
