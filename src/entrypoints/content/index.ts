@@ -27,6 +27,19 @@ export default defineContentScript({
         });
 
         browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
+
+        // ブラウザの進む/戻るで消えたバッジを復元
+        if (isRankingPage(location.href)) {
+            window.addEventListener("pageshow", async () => {
+                try {
+                    await browser.runtime.sendMessage({
+                        type: "restore-video-badge",
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+        }
     },
 });
 
