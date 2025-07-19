@@ -11,7 +11,7 @@ export function mountToRecommend(element: Element) {
     const parent = element.parentElement;
     if (parent === null) return;
 
-    const videoId = element.getAttribute(attributes.decorateVideoId);
+    const videoId = element.getAttribute(attributes.decorationVideoId);
     const videoContent = getVideoContent(element);
 
     mountButton(
@@ -27,7 +27,7 @@ export function mountToRecommend(element: Element) {
 
 function getVideoIds(parent: HTMLElement) {
     return [...getAnchors(parent)]
-        .map((element) => element.getAttribute(attributes.decorateVideoId))
+        .map((element) => element.getAttribute(attributes.decorationVideoId))
         .filter((id) => id !== null);
 }
 

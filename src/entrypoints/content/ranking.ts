@@ -17,7 +17,7 @@ export function renderRanking(
 }
 
 function mountToRanking(video: HTMLDivElement, anchor: HTMLAnchorElement) {
-    const videoId = anchor.getAttribute(attributes.decorateVideoId);
+    const videoId = anchor.getAttribute(attributes.decorationVideoId);
     const videoContent = getVideoContent(anchor);
 
     mountButton(
@@ -33,7 +33,7 @@ function mountToRanking(video: HTMLDivElement, anchor: HTMLAnchorElement) {
 
 function getVideoIds() {
     return getAllVideos()
-        .map(({ anchor }) => anchor.getAttribute(attributes.decorateVideoId))
+        .map(({ anchor }) => anchor.getAttribute(attributes.decorationVideoId))
         .filter((id) => id !== null);
 }
 

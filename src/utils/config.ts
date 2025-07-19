@@ -108,7 +108,7 @@ export const defaultSettings: Settings = {
 } as const;
 
 export const attributes = {
-    decorateVideoId: "data-decoration-video-id",
+    decorationVideoId: "data-decoration-video-id",
 } as const;
 
 export const buttons = {

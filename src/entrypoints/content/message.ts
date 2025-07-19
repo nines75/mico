@@ -141,7 +141,7 @@ function removeRecommend(ids: string[]) {
     const idsSet = new Set(ids);
 
     for (const element of elements) {
-        const videoId = element.getAttribute(attributes.decorateVideoId);
+        const videoId = element.getAttribute(attributes.decorationVideoId);
         if (videoId === null || !(element instanceof HTMLAnchorElement))
             continue;
 
@@ -155,7 +155,7 @@ export function removeRanking(ids: string[]) {
     const idsSet = new Set(ids);
 
     getAllVideos().forEach(({ video, anchor }) => {
-        const videoId = anchor.getAttribute(attributes.decorateVideoId);
+        const videoId = anchor.getAttribute(attributes.decorationVideoId);
         if (videoId === null) return;
 
         if (idsSet.has(videoId)) {
