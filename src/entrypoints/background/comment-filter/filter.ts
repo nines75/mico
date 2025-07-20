@@ -118,12 +118,12 @@ export interface CustomRule {
     exclude: RegExp[];
 }
 
-interface BaseCustomRuleData {
-    rules: BaseCustomRule[];
+interface RawCustomRuleData {
+    rules: RawCustomRule[];
     invalidCount: number;
 }
 
-export interface BaseCustomRule {
+export interface RawCustomRule {
     rule: string;
     isStrict: boolean;
     isDisable: boolean;
@@ -150,7 +150,7 @@ export function extractRule(filter: string) {
         });
 }
 
-export function extractCustomRule(filter: string): BaseCustomRuleData {
+export function extractCustomRule(filter: string): RawCustomRuleData {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
         value: RegExp[];
@@ -158,7 +158,7 @@ export function extractCustomRule(filter: string): BaseCustomRuleData {
 
     let invalidCount = 0;
     const section: Section[] = [];
-    const rules: BaseCustomRule[] = [];
+    const rules: RawCustomRule[] = [];
 
     const extractTagRules = (str: string) => {
         return str

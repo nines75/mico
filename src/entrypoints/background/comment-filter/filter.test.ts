@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import {
     extractCustomRule,
-    BaseCustomRule,
+    RawCustomRule,
     extractRule,
     sortCommentId,
 } from "./filter.js";
@@ -91,7 +91,7 @@ const tags = [
 ] as const;
 
 describe(`${extractCustomRule.name}()`, () => {
-    const createRule = (rule: Partial<BaseCustomRule>): BaseCustomRule => {
+    const createRule = (rule: Partial<RawCustomRule>): RawCustomRule => {
         return {
             ...{
                 rule: "rule",
@@ -103,7 +103,7 @@ describe(`${extractCustomRule.name}()`, () => {
             ...rule,
         };
     };
-    const createRules = (...rules: Partial<BaseCustomRule>[]) => {
+    const createRules = (...rules: Partial<RawCustomRule>[]) => {
         return rules.map((rule) => createRule(rule));
     };
     const base = createRule({});
