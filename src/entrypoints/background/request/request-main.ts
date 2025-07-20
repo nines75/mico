@@ -3,6 +3,7 @@ import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { SeriesData } from "@/types/storage/log.types.js";
+import { filterResponse } from "./request.js";
 
 interface MainData {
     data: {
@@ -27,33 +28,18 @@ interface MainData {
 export function mainRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-    if (details.method !== "GET") return;
+    filterResponse(details, "GET", async (filter, encoder, buf) => {
+        const settings = await loadSettings();
 
-    const filter = browser.webRequest.filterResponseData(details.requestId);
-    const decoder = new TextDecoder("utf-8");
-    const encoder = new TextEncoder();
-
-    let buf = "";
-    filter.ondata = (event) => {
-        buf += decoder.decode(event.data, { stream: true });
-    };
-
-    filter.onstop = async () => {
-        try {
-            const settings = await loadSettings();
-
-            filter.write(
-                encoder.encode(
-                    details.type === "main_frame"
-                        ? await mainFrameFilter(details, buf, settings)
-                        : await xhrFilter(details, buf, settings),
-                ),
-            );
-            filter.disconnect();
-        } catch (e) {
-            console.error(e);
-        }
-    };
+        filter.write(
+            encoder.encode(
+                details.type === "main_frame"
+                    ? await mainFrameFilter(details, buf, settings)
+                    : await xhrFilter(details, buf, settings),
+            ),
+        );
+        filter.disconnect();
+    });
 }
 
 async function mainFrameFilter(
