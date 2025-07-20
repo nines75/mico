@@ -1,4 +1,4 @@
-import { RecommendDataContainer } from "@/types/api/recommend.types.js";
+import { RecommendData } from "@/types/api/recommend.types.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
@@ -12,7 +12,7 @@ export function recommendRequest(
             loadSettings(),
             getLogData(details.tabId),
         ]);
-        const recommendData = JSON.parse(buf) as RecommendDataContainer;
+        const recommendData = JSON.parse(buf) as RecommendData;
         const tabId = details.tabId;
 
         // シリーズの次の動画を追加

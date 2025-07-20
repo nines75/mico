@@ -1,6 +1,6 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { CommonFilter } from "../filter.js";
-import { NiconicoVideo } from "@/types/api/recommend.types.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export class UserNameFilter extends CommonFilter {
     protected override filter: RegExp[];

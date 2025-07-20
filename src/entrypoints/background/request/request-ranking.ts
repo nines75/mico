@@ -1,21 +1,10 @@
 import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
-
-interface RankingData {
-    data: {
-        response: {
-            $getTeibanRanking: {
-                data: {
-                    items: NiconicoVideo[];
-                };
-            };
-        };
-    };
-}
+import { RankingData } from "@/types/api/ranking.types.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

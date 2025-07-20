@@ -1,4 +1,4 @@
-import { NiconicoVideo } from "../api/recommend.types.js";
+import { NiconicoVideo } from "../api/niconico-video.types.js";
 import { CommentFilterLog } from "./log-comment.types.js";
 import { VideoFilterLog } from "./log-video.types.js";
 

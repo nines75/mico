@@ -6,7 +6,6 @@ import { JSX } from "react";
 import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
-import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import {
     addNgId,
     removeNgId,
@@ -17,6 +16,7 @@ import {
     IdLog,
     VideoData,
 } from "@/types/storage/log-video.types.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 

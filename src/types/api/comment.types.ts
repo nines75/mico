@@ -1,6 +1,6 @@
-/*
-    https://public.nvcomment.nicovideo.jp/v1/threads
-*/
+/**
+ * https://public.nvcomment.nicovideo.jp/v1/threads
+ */
 
 export interface CommentDataContainer {
     data?: CommentData;

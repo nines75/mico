@@ -1,29 +1,9 @@
-import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse } from "./request.js";
-
-interface MainData {
-    data: {
-        response: {
-            series: {
-                video: {
-                    next: NiconicoVideo | null;
-                };
-            } | null;
-            tag: {
-                items: {
-                    name: string;
-                }[];
-            } | null;
-            video: {
-                id: string;
-            } | null;
-        };
-    };
-}
+import { MainData } from "@/types/api/main.types.js";
 
 export function mainRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

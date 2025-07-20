@@ -1,4 +1,4 @@
-import { NiconicoVideo } from "../api/recommend.types.js";
+import { NiconicoVideo } from "../api/niconico-video.types.js";
 import { ProcessingTimeData, CommonLog } from "./log.types.js";
 
 export interface IdLog {

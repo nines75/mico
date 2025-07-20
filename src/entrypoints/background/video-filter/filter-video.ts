@@ -1,9 +1,9 @@
-import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
 import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { VideoIdToUserId } from "@/types/storage/log-video.types.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export interface FilteredData {
     filters: {
