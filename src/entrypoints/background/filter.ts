@@ -33,7 +33,7 @@ export function extractRule(filter: string) {
         .map((str, index): Rule => {
             return {
                 // どんな文字列に対しても必ずマッチする
-                rule: str.match(/^(.*?)(\s*(?<!\\)#.*)?$/)?.[1] as string,
+                rule: str.match(/^(.*?)(?:\s*(?<!\\)#.*)?$/)?.[1] as string,
                 index,
             };
         })
