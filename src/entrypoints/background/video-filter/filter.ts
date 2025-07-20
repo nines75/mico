@@ -1,9 +1,9 @@
 import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { extractRule } from "../comment-filter/filter.js";
 import { countCommonLog } from "@/utils/util.js";
 import { VideoData } from "@/types/storage/log-video.types.js";
+import { extractRule } from "../filter.js";
 
 export abstract class Filter<T> {
     protected invalidCount = 0;

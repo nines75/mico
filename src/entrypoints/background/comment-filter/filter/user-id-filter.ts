@@ -1,9 +1,10 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { extractRule, Filter, Rule, sortCommentId } from "../filter.js";
+import { Filter, sortCommentId } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
+import { Rule, extractRule } from "../../filter.js";
 
 export class UserIdFilter extends Filter<CommonLog> {
     private filter = new Set<string>();

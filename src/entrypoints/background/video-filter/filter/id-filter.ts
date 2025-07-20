@@ -1,11 +1,11 @@
 import { NiconicoVideo } from "@/types/api/recommend.types.js";
 import { Filter, sortVideoId } from "../filter.js";
-import { extractRule } from "../../comment-filter/filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
+import { extractRule } from "../../filter.js";
 
 interface NgIds {
     userIds: Set<string>;

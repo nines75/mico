@@ -1,14 +1,9 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import {
-    extractCustomRule,
-    CustomFilter,
-    CustomRule,
-    CustomRuleData,
-    sortCommentId,
-} from "../filter.js";
+import { CustomFilter, sortCommentId } from "../filter.js";
 import { countCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
+import { CustomRuleData, CustomRule, extractCustomRule } from "../../filter.js";
 
 interface NgCommandData extends CustomRuleData<NgCommand> {
     hasAll: boolean;

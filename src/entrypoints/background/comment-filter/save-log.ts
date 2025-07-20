@@ -1,7 +1,7 @@
 import { FilteredData } from "./filter-comment.js";
 import { loadSettings, setLog } from "@/utils/storage.js";
 import { changeBadgeState } from "@/utils/util.js";
-import { extractRule, getCustomFilters } from "./filter.js";
+import { getCustomFilters } from "./filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
     CommentCount,
@@ -9,6 +9,7 @@ import {
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
+import { extractRule } from "../filter.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
