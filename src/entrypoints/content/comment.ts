@@ -1,6 +1,6 @@
 import { Settings } from "@/types/storage/settings.types.js";
 
-export function renderComment(element: HTMLElement, settings: Settings) {
+export function renderComment(element: Element, settings: Settings) {
     const commentContent = getCommentContent(element);
     if (commentContent === undefined) return;
 
@@ -51,7 +51,7 @@ export interface CommentContent {
 }
 
 export function getCommentContent(
-    element: HTMLElement,
+    element: Element,
 ): CommentContent | undefined {
     // コメント本文
     const textElement = element.querySelector(":scope > div > div > p");

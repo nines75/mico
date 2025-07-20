@@ -5,10 +5,9 @@ export function renderAllRanking() {
     getAllVideos().forEach(({ video, anchor }) => renderRanking(video, anchor));
 }
 
-export function renderRanking(
-    video: HTMLDivElement,
-    anchor: HTMLAnchorElement,
-) {
+export function renderRanking(video: Element, anchor: Element) {
+    if (!(video instanceof HTMLElement)) return;
+
     if (anchor.getAttribute("href") === "/watch/dummy-id") {
         video.style.display = "none";
     } else {
@@ -16,7 +15,7 @@ export function renderRanking(
     }
 }
 
-function mountToRanking(video: HTMLDivElement, anchor: HTMLAnchorElement) {
+function mountToRanking(video: Element, anchor: Element) {
     const videoId = anchor.getAttribute(attributes.decorationVideoId);
     const videoContent = getVideoContent(anchor);
 
@@ -67,6 +66,6 @@ export function getAllVideos() {
 }
 
 // サイドバーのタグランキングを除外するための関数
-export function isRankingVideo(video: HTMLDivElement) {
+export function isRankingVideo(video: Element) {
     return video.parentElement?.childElementCount !== 3; // 動画数が3つの場合はサイドバーのランキング
 }

@@ -1,7 +1,7 @@
 import { attributes } from "@/utils/config.js";
 import { getVideoContent, mountButton } from "./button.js";
 
-export function mountToRecommendHandler(parent: HTMLElement) {
+export function mountToRecommendHandler(parent: Element) {
     for (const element of getAnchors(parent)) {
         mountToRecommend(element);
     }
@@ -25,12 +25,12 @@ export function mountToRecommend(element: Element) {
     );
 }
 
-function getVideoIds(parent: HTMLElement) {
+function getVideoIds(parent: Element) {
     return [...getAnchors(parent)]
         .map((element) => element.getAttribute(attributes.decorationVideoId))
         .filter((id) => id !== null);
 }
 
-function getAnchors(parent: HTMLElement) {
+function getAnchors(parent: Element) {
     return parent.querySelectorAll(":scope > a[href^='/watch/']");
 }

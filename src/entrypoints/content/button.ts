@@ -91,7 +91,7 @@ export function mountButton(
 }
 
 function appendButton(
-    element: HTMLElement,
+    element: Element,
     svg: SVGElement,
     title: string,
     position: Position,

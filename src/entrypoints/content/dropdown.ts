@@ -7,10 +7,7 @@ interface DropdownContent {
     commentNoText: string;
 }
 
-export async function mountToDropdown(
-    element: HTMLElement,
-    settings: Settings,
-) {
+export async function mountToDropdown(element: Element, settings: Settings) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
@@ -70,7 +67,7 @@ function getButtonCallback(commentNo: string, specific: boolean) {
     };
 }
 
-function getDropdownContent(element: HTMLElement): DropdownContent | undefined {
+function getDropdownContent(element: Element): DropdownContent | undefined {
     const buttonsParentElement = element.querySelector(
         ":scope > div > div:last-of-type",
     );

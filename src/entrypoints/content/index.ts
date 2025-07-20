@@ -53,7 +53,7 @@ async function observerCallback(
     // 探している要素であると確定するまで各関数内でreturnしない
     for (const record of records) {
         for (const node of record.addedNodes) {
-            if (!(node instanceof HTMLElement)) continue;
+            if (!(node instanceof Element)) continue;
 
             if (isWatchPage(location.href)) {
                 await watchPageObserver(node, settings);
@@ -66,21 +66,21 @@ async function observerCallback(
     }
 }
 
-async function watchPageObserver(node: HTMLElement, settings: Settings) {
+async function watchPageObserver(element: Element, settings: Settings) {
     // コメント(最上位要素)
     {
-        if (node.hasAttribute("data-index")) {
+        if (element.hasAttribute("data-index")) {
             if (!settings.isExpandNicoruEnabled) return;
 
-            renderComment(node, settings);
+            renderComment(element, settings);
             return;
         }
     }
 
     // コメント(最上位要素の一つ下)
     {
-        if (node.hasAttribute("tabindex")) {
-            const parent = node.parentElement;
+        if (element.hasAttribute("tabindex")) {
+            const parent = element.parentElement;
 
             // tabindex属性を持つ要素は他にも存在するため、親で検証する
             if (parent !== null && parent.hasAttribute("data-index")) {
@@ -94,8 +94,8 @@ async function watchPageObserver(node: HTMLElement, settings: Settings) {
 
     // ドロップダウン
     {
-        if (node.className === "z_dropdown") {
-            await mountToDropdown(node, settings);
+        if (element.className === "z_dropdown") {
+            await mountToDropdown(element, settings);
 
             return;
         }
@@ -104,20 +104,20 @@ async function watchPageObserver(node: HTMLElement, settings: Settings) {
     // 関連動画(初回ロード時)
     {
         // パターン1: 関連動画の直接の親要素の追加時にレンダリング
-        const attr = node
+        const attr = element
             .querySelector(":scope > a")
             ?.getAttribute("data-anchor-area");
         if (attr === "related_content,recommendation") {
-            mountToRecommendHandler(node);
+            mountToRecommendHandler(element);
 
             return;
         }
 
         // パターン2: サイドバーの追加時にレンダリング(チャンネル動画の視聴ページで多い？)
-        const parent = node.querySelector(
+        const parent = element.querySelector(
             ":scope > div > div > div:has(> a[data-anchor-area='related_content,recommendation'])",
         );
-        if (parent !== null && parent instanceof HTMLElement) {
+        if (parent !== null) {
             mountToRecommendHandler(parent);
 
             return;
@@ -126,25 +126,25 @@ async function watchPageObserver(node: HTMLElement, settings: Settings) {
 
     // 関連動画(遷移時)
     {
-        const dataAnchorArea = node.getAttribute("data-anchor-area");
-        const href = node.getAttribute("href");
+        const dataAnchorArea = element.getAttribute("data-anchor-area");
+        const href = element.getAttribute("href");
 
         if (
             dataAnchorArea === "related_content,recommendation" &&
             href !== null &&
             href.startsWith("/watch/")
         ) {
-            mountToRecommend(node);
+            mountToRecommend(element);
 
             return;
         }
     }
 }
 
-function rankingPageObserver(node: HTMLElement) {
+function rankingPageObserver(element: Element) {
     // 初回ロード時
     {
-        if (node.querySelector(":scope > main") !== null) {
+        if (element.querySelector(":scope > main") !== null) {
             renderAllRanking();
 
             return;
@@ -153,7 +153,7 @@ function rankingPageObserver(node: HTMLElement) {
 
     // 遷移時(視聴ページから戻った場合)
     {
-        const parent = node.parentElement;
+        const parent = element.parentElement;
         if (parent?.ariaLabel === "nicovideo-content") {
             renderAllRanking();
 
@@ -163,15 +163,11 @@ function rankingPageObserver(node: HTMLElement) {
 
     // 遷移時(ページめくり)
     {
-        const anchor = node.querySelector(
+        const anchor = element.querySelector(
             ":scope > div > a[data-anchor-page='ranking_genre'][data-decoration-video-id]",
         );
-        if (
-            node instanceof HTMLDivElement &&
-            anchor instanceof HTMLAnchorElement &&
-            isRankingVideo(node)
-        ) {
-            renderRanking(node, anchor);
+        if (anchor !== null && isRankingVideo(element)) {
+            renderRanking(element, anchor);
 
             return;
         }
