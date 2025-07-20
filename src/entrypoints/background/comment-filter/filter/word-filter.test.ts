@@ -121,18 +121,18 @@ test
 
     it.each([
         {
+            name: "@strict",
             filter: `
 @strict
 テスト
 @end
 `,
             expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-            name: "@strict",
         },
         {
+            name: "!",
             filter: "!コメント",
             expected: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
-            name: "!",
         },
     ])("$name", ({ filter, expected }) => {
         const wordFilter = filtering({

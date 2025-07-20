@@ -93,18 +93,18 @@ device:
 
     it.each([
         {
+            name: "@strict",
             filter: `
 @strict
 big
 @end
 `,
             expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-            name: "@strict",
         },
         {
+            name: "!",
             filter: "!device:switch",
             expected: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
-            name: "!",
         },
     ])("$name", ({ filter, expected }) => {
         const commandFilter = filtering({

@@ -5,37 +5,37 @@ import { extractRule, extractCustomRule, RawCustomRule } from "./filter.js";
 describe(`${extractRule.name}()`, () => {
     it.each([
         {
+            name: "コメントなし",
             filter: "rule",
             expected: "rule",
-            name: "コメントなし",
         },
         {
+            name: "コメント(1つの半角スペース)",
             filter: "rule # comment",
             expected: "rule",
-            name: "コメント(1つの半角スペース)",
         },
         {
+            name: "コメント(複数の半角スペース)",
             filter: "rule    # comment",
             expected: "rule",
-            name: "コメント(複数の半角スペース)",
         },
         {
-            filter: "# comment",
             name: "コメントのみ",
+            filter: "# comment",
         },
         {
-            filter: "",
             name: "空行",
+            filter: "",
         },
         {
+            name: "構文指令",
             filter: "@strict # comment",
             expected: "@strict",
-            name: "構文指令",
         },
         {
+            name: "構文指令(パラメータあり)",
             filter: "@include tag0 tag1 # comment",
             expected: "@include tag0 tag1",
-            name: "構文指令(パラメータあり)",
         },
     ])("一般($name)", ({ filter, expected }) => {
         expect(extractRule(filter)).toEqual(
@@ -44,16 +44,16 @@ describe(`${extractRule.name}()`, () => {
     });
 
     it.each([
-        { filter: "rule　# comment", name: "一つの全角スペース" },
-        { filter: "rule　　　　# comment", name: "複数の全角スペース" },
-        { filter: "rule 　 　# comment", name: "半角全角スペース交互" },
+        { name: "一つの全角スペース", filter: "rule　# comment" },
+        { name: "複数の全角スペース", filter: "rule　　　　# comment" },
+        { name: "半角全角スペース交互", filter: "rule 　 　# comment" },
     ])("コメントの前に全角を含む($name)", ({ filter }) => {
         expect(extractRule(filter)).toEqual([{ rule: "rule", index: 0 }]);
     });
 
     it.each([
-        { filter: "\\#rule\\#rule2\\#", name: "コメントなし" },
-        { filter: "\\#rule\\#rule2\\# # comment", name: "コメントあり" },
+        { name: "コメントなし", filter: "\\#rule\\#rule2\\#" },
+        { name: "コメントあり", filter: "\\#rule\\#rule2\\# # comment" },
     ])("エスケープした#を含む($name)", ({ filter }) => {
         expect(extractRule(filter)).toEqual(
             [["#rule#rule2#", 0]].map(([rule, index]) => ({ rule, index })),
@@ -109,6 +109,7 @@ describe(`${extractCustomRule.name}()`, () => {
 
     it.each([
         {
+            name: "@end",
             filter: `
 @strict
 rule
@@ -116,9 +117,9 @@ rule
 rule
 `,
             expected: [strict, base],
-            name: "@end",
         },
         {
+            name: "不要な@end",
             filter: `
 @end
 @end
@@ -126,15 +127,14 @@ rule
 rule
 `,
             expected: [base],
-            name: "不要な@end",
         },
         {
+            name: "@endなし",
             filter: `
 @strict
 rule
 `,
             expected: [strict],
-            name: "@endなし",
         },
     ])("$name", ({ filter, expected }) => {
         expect(extractCustomRule(filter).rules).toEqual(expected);
@@ -146,24 +146,24 @@ rule
 
     it.each([
         {
+            name: "@strict",
             filter: `
 @strict
 rule
 @end
 `,
-            name: "@strict",
         },
         {
-            filter: "!rule",
             name: "!",
+            filter: "!rule",
         },
         {
+            name: "@strictと!が重複",
             filter: `
 @strict
 !rule
 @end
 `,
-            name: "@strictと!が重複",
         },
     ])("$name", ({ filter }) => {
         expect(extractCustomRule(filter).rules).toEqual([strict]);
@@ -175,49 +175,49 @@ rule
 
     it.each([
         {
+            name: "通常",
             filter: `
 @include tag0 tag1
 rule
 @end
 `,
             expected: createRules({ include: tags.slice(0, 2) }),
-            name: "通常",
         },
         {
+            name: "タグ間に複数の半角スペースを含む",
             filter: `
 @include    tag0    tag1    
 rule
 @end
 `,
             expected: createRules({ include: tags.slice(0, 2) }),
-            name: "タグ間に複数の半角スペースを含む",
         },
         {
+            name: "誤り:タグ間に全角スペースを含む",
             filter: `
 @include tag0　tag1
 rule
 @end
 `,
             expected: createRules({ include: [RegExp("tag0　tag1", "i")] }),
-            name: "誤り:タグ間に全角スペースを含む",
         },
         {
+            name: "誤り:@includeの後が全角スペースになっている",
             filter: `
 @include　tag0 tag1
 rule
 @end
 `,
             expected: createRules({ rule: "@include　tag0 tag1" }, {}),
-            name: "誤り:@includeの後が全角スペースになっている",
         },
         {
+            name: "誤り:@includeではなく@includesになっている",
             filter: `
 @includes tag0 tag1
 rule
 @end
 `,
             expected: createRules({ rule: "@includes tag0 tag1" }, {}),
-            name: "誤り:@includeではなく@includesになっている",
         },
     ])("@include($name)", ({ filter, expected }) => {
         expect(extractCustomRule(filter).rules).toEqual(expected);
@@ -319,9 +319,9 @@ rule
     });
 
     it.each([
-        { filter: "\\@end", expected: "@end", name: "@から始まる構文指令" },
-        { filter: "\\!rule", expected: "!rule", name: "!から始まる構文指令" },
-        { filter: "\\rule", expected: "rule", name: "通常のルール" },
+        { name: "@から始まる構文指令", filter: "\\@end", expected: "@end" },
+        { name: "!から始まる構文指令", filter: "\\!rule", expected: "!rule" },
+        { name: "通常のルール", filter: "\\rule", expected: "rule" },
     ])("エスケープ($name)", ({ filter, expected }) => {
         expect(extractCustomRule(filter).rules).toEqual(
             createRules({ rule: expected }),
