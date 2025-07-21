@@ -144,8 +144,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
     createFilter(settings: Settings): NgCommandData {
         let hasAll = false;
-        const ruleData = extractCustomRule(settings.ngCommand);
-        const ngCommands = ruleData.rules
+        const ngCommands = extractCustomRule(settings.ngCommand)
             .map((data): NgCommand => {
                 return {
                     rule: data.rule.toLowerCase(),
@@ -164,8 +163,6 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
                 return true;
             });
-
-        this.invalidCount += ruleData.invalidCount;
 
         return {
             rules: ngCommands,

@@ -97,25 +97,15 @@ test
 
     it("無効な正規表現", () => {
         const filter = `
-@include (tag0
 (テスト
-@end
-
-(テスト
-
-@include tag0
 ^コメント$
-@end
 `;
-        const wordFilter = filtering({
-            filter,
-            tags: ["tag0"],
-        });
+        const wordFilter = filtering({ filter });
 
         expect(wordFilter.getLog()).toEqual(
             new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
-        expect(wordFilter.getInvalidCount()).toBe(3);
+        expect(wordFilter.getInvalidCount()).toBe(1);
         expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
     });
 
@@ -161,17 +151,17 @@ test
     ])("$name", ({ name, expected, ids }) => {
         const isExclude = name === "@exclude";
         const filter = `
-@include tag0
+@include example-tag
 ^テスト$
 @end
 
-@include tag1
+@include tag
 ^コメント$
 @end
 `;
         const wordFilter = filtering({
             filter: isExclude ? replaceInclude(filter) : filter,
-            tags: ["tag0"],
+            tags: ["example-TAG"],
         });
 
         expect(wordFilter.getLog()).toEqual(expected);

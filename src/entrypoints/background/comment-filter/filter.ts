@@ -61,20 +61,18 @@ export abstract class CustomFilter<T> extends Filter<T> {
     }
 
     filterRuleByTag(tags: string[]) {
-        const testTags = (target: string[], regex: RegExp) => {
-            return target.some((tag) => regex.test(tag));
-        };
+        const tagSet = new Set(tags.map((tag) => tag.toLowerCase()));
 
         this.filter.rules = this.filter.rules.filter(({ include, exclude }) => {
             if (
                 include.length > 0 &&
-                include.every((regex) => !testTags(tags, regex))
+                include.every((rule) => !tagSet.has(rule))
             ) {
                 return false;
             }
             if (
                 exclude.length > 0 &&
-                exclude.some((regex) => testTags(tags, regex))
+                exclude.some((rule) => tagSet.has(rule))
             ) {
                 // 除外されたかどうか(exclude)はこの時点で確定するので、ここでカウントする
                 this.excludeCount++;

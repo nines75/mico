@@ -10,21 +10,16 @@ export interface CustomRuleData<T extends CustomRule> {
 
 export interface CustomRule {
     isStrict: boolean;
-    include: RegExp[];
-    exclude: RegExp[];
-}
-
-interface RawCustomRuleData {
-    rules: RawCustomRule[];
-    invalidCount: number;
+    include: string[];
+    exclude: string[];
 }
 
 export interface RawCustomRule {
     rule: string;
     isStrict: boolean;
     isDisable: boolean;
-    include: RegExp[];
-    exclude: RegExp[];
+    include: string[];
+    exclude: string[];
 }
 
 export function extractRule(filter: string) {
@@ -46,13 +41,12 @@ export function extractRule(filter: string) {
         });
 }
 
-export function extractCustomRule(filter: string): RawCustomRuleData {
+export function extractCustomRule(filter: string): RawCustomRule[] {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
-        value: RegExp[];
+        value: string[];
     }
 
-    let invalidCount = 0;
     const section: Section[] = [];
     const rules: RawCustomRule[] = [];
 
@@ -61,16 +55,7 @@ export function extractCustomRule(filter: string): RawCustomRuleData {
             .split(" ")
             .filter((rule) => rule !== "")
             .slice(1)
-            .reduce<RegExp[]>((res, rule) => {
-                try {
-                    const regex = RegExp(rule, "i");
-                    res.push(regex);
-                } catch {
-                    invalidCount++;
-                }
-
-                return res;
-            }, []);
+            .map((rule) => rule.toLowerCase());
     };
 
     extractRule(filter).forEach((data) => {
@@ -100,8 +85,8 @@ export function extractCustomRule(filter: string): RawCustomRuleData {
         }
 
         // 現在のセクションをもとに適用させるルールを取り出す
-        const include: RegExp[] = [];
-        const exclude: RegExp[] = [];
+        const include: string[] = [];
+        const exclude: string[] = [];
         let isStrict = false as boolean; // ESLintの誤検知を抑制
         let isDisable = false as boolean;
         section.forEach(({ type, value }) => {
@@ -133,5 +118,5 @@ export function extractCustomRule(filter: string): RawCustomRuleData {
         });
     });
 
-    return { rules, invalidCount };
+    return rules;
 }

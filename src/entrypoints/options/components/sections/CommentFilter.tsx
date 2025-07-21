@@ -6,6 +6,16 @@ import H2 from "../ui/H2.js";
 export default function CommentFilter() {
     return (
         <div className="settings-container">
+            <span className="notification">
+                v4.0.0からtagルールでのタグの指定方法が
+                <a
+                    href={"https://github.com/nines75/mico/issues/24"}
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    変わりました
+                </a>
+            </span>
             {commentFilterSettings.checkbox.top.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}

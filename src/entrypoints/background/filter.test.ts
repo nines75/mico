@@ -77,12 +77,7 @@ rule
 
 // ===========================================================================================
 
-const tags = [
-    RegExp("tag0", "i"),
-    RegExp("tag1", "i"),
-    RegExp("tag2", "i"),
-    RegExp("tag3", "i"),
-] as const;
+const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
 describe(`${extractCustomRule.name}()`, () => {
     const createRule = (rule: Partial<RawCustomRule>): RawCustomRule => {
@@ -137,7 +132,7 @@ rule
             expected: [strict],
         },
     ])("$name", ({ filter, expected }) => {
-        expect(extractCustomRule(filter).rules).toEqual(expected);
+        expect(extractCustomRule(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -166,7 +161,7 @@ rule
 `,
         },
     ])("$name", ({ filter }) => {
-        expect(extractCustomRule(filter).rules).toEqual([strict]);
+        expect(extractCustomRule(filter)).toEqual([strict]);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -177,7 +172,7 @@ rule
         {
             name: "通常",
             filter: `
-@include tag0 tag1
+@include tag0 TAG1
 rule
 @end
 `,
@@ -199,7 +194,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ include: [RegExp("tag0　tag1", "i")] }),
+            expected: createRules({ include: ["tag0　tag1"] }),
         },
         {
             name: "誤り:@includeの後が全角スペースになっている",
@@ -220,7 +215,7 @@ rule
             expected: createRules({ rule: "@includes tag0 tag1" }, {}),
         },
     ])("@include($name)", ({ filter, expected }) => {
-        expect(extractCustomRule(filter).rules).toEqual(expected);
+        expect(extractCustomRule(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -234,7 +229,7 @@ rule
 @end
 `;
 
-        expect(extractCustomRule(filter).rules).toEqual(
+        expect(extractCustomRule(filter)).toEqual(
             createRules({ isDisable: true }),
         );
     });
@@ -273,7 +268,7 @@ rule
 rule
 `;
 
-        expect(extractCustomRule(filter).rules).toEqual([
+        expect(extractCustomRule(filter)).toEqual([
             ...createRules(
                 {
                     include: [tags[0]],
@@ -306,24 +301,12 @@ rule
         ]);
     });
 
-    it("無効な正規表現", () => {
-        const filter = `
-@include (tag0
-@include tag1 (tag2
-rule
-`;
-        const ruleData = extractCustomRule(filter);
-
-        expect(ruleData.rules).toEqual(createRules({ include: [tags[1]] }));
-        expect(ruleData.invalidCount).toBe(2);
-    });
-
     it.each([
         { name: "@から始まる構文指令", filter: "\\@end", expected: "@end" },
         { name: "!から始まる構文指令", filter: "\\!rule", expected: "!rule" },
         { name: "通常のルール", filter: "\\rule", expected: "rule" },
     ])("エスケープ($name)", ({ filter, expected }) => {
-        expect(extractCustomRule(filter).rules).toEqual(
+        expect(extractCustomRule(filter)).toEqual(
             createRules({ rule: expected }),
         );
     });

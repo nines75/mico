@@ -117,27 +117,27 @@ export class WordFilter extends CustomFilter<WordLog> {
     }
 
     createFilter(settings: Settings): NgWordData {
-        const ruleData = extractCustomRule(settings.ngWord);
-        const ngWords = ruleData.rules.reduce<NgWord[]>((res, data) => {
-            try {
-                const regex = settings.isCaseInsensitive
-                    ? RegExp(data.rule, "i")
-                    : RegExp(data.rule);
+        const ngWords = extractCustomRule(settings.ngWord).reduce<NgWord[]>(
+            (res, data) => {
+                try {
+                    const regex = settings.isCaseInsensitive
+                        ? RegExp(data.rule, "i")
+                        : RegExp(data.rule);
 
-                res.push({
-                    regex,
-                    isStrict: data.isStrict,
-                    include: data.include,
-                    exclude: data.exclude,
-                });
-            } catch {
-                this.invalidCount++;
-            }
+                    res.push({
+                        regex,
+                        isStrict: data.isStrict,
+                        include: data.include,
+                        exclude: data.exclude,
+                    });
+                } catch {
+                    this.invalidCount++;
+                }
 
-            return res;
-        }, []);
-
-        this.invalidCount += ruleData.invalidCount;
+                return res;
+            },
+            [],
+        );
 
         return {
             rules: ngWords,

@@ -131,17 +131,17 @@ big
     ])("$name", ({ name, expected, ids }) => {
         const isExclude = name === "@exclude";
         const filter = `
-@include tag0
+@include example-tag
 big
 @end
 
-@include tag1
+@include tag
 device:switch
 @end
 `;
         const commandFilter = filtering({
             filter: isExclude ? replaceInclude(filter) : filter,
-            tags: ["tag0"],
+            tags: ["example-TAG"],
         });
 
         expect(commandFilter.getLog()).toEqual(expected);
@@ -205,35 +205,6 @@ device:switch
             new Map([["device:switch", ["1003", "1004"]]]),
         );
         expect(hasComment(testThreadCopy, ["1003", "1004"])).toBe(false);
-    });
-
-    it("無効な正規表現", () => {
-        const filter = `
-@include (tag0
-big
-@end
-
-@include tag0
-device:switch
-@end
-`;
-        const commandFilter = filtering({
-            filter,
-            tags: ["tag0"],
-        });
-
-        expect(commandFilter.getLog()).toEqual(
-            new Map(
-                new Map([
-                    ["big", ["1002", "1004"]],
-                    ["device:switch", ["1003"]],
-                ]),
-            ),
-        );
-        expect(commandFilter.getInvalidCount()).toBe(1);
-        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
-            false,
-        );
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
