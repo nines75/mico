@@ -1,7 +1,7 @@
 {
     "name": "mico",
     "description": "ニコニコ動画に便利な機能を追加します。",
-    "version": "3.2.0",
+    "version": "4.0.0",
     "type": "module",
     "scripts": {
         "dev": "wxt -b firefox --mv2",
