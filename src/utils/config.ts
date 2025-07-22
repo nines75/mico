@@ -184,6 +184,8 @@ export const pattern = {
     watchPageUrl: "https://www.nicovideo.jp/watch/",
     watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",
     rankingPageUrl: "https://www.nicovideo.jp/ranking/genre",
+    searchPageUrl: "https://www.nicovideo.jp/search/",
+    tagSearchPageUrl: "https://www.nicovideo.jp/tag/",
     regex: {
         checkRawUserId: /^(?:ch)?\d+$/,
         checkVideoId: /^(?:sm|so|nl|nm)\d+$/,

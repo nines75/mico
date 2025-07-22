@@ -14,6 +14,13 @@ export function isRankingPage(url: string | undefined) {
     return url.startsWith(pattern.rankingPageUrl);
 }
 
+export function isSearchPage(url: string) {
+    return (
+        url.startsWith(pattern.searchPageUrl) ||
+        url.startsWith(pattern.tagSearchPageUrl)
+    );
+}
+
 export async function changeBadgeState(
     value: number,
     color: string,

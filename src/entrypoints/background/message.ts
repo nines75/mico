@@ -8,6 +8,9 @@ import {
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
 import { addNgId } from "./video-filter/filter/id-filter.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { filterVideo } from "./video-filter/filter-video.js";
+import { saveLog } from "./video-filter/save-log.js";
 
 export async function backgroundMessageHandler(
     message: Message,
@@ -30,6 +33,8 @@ export async function backgroundMessageHandler(
         if (message.type === "save-ng-id") await saveNgId(message, sender);
         if (message.type === "restore-video-badge")
             await restoreVideoBadge(sender);
+        if (message.type === "filter-search-results")
+            await filterSearchResults(message, sender);
     } catch (e) {
         console.error(e);
     }
@@ -168,4 +173,26 @@ async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
     if (count === undefined) return;
 
     await changeBadgeState(count, colors.videoBadge, tabId);
+}
+
+async function filterSearchResults(
+    message: Message,
+    sender: browser.runtime.MessageSender,
+) {
+    const data = message.data as NiconicoVideo[];
+    const settings = await loadSettings();
+
+    const tabId = sender.tab?.id;
+    if (tabId === undefined) return;
+
+    const filteredData = filterVideo(data, settings);
+    if (filteredData === undefined) return;
+
+    await Promise.all([
+        saveLog(filteredData, tabId, true),
+        browser.tabs.sendMessage(tabId, {
+            type: "remove-search",
+            data: filteredData.filteredIds satisfies Set<string>,
+        }),
+    ]);
 }
