@@ -8,11 +8,11 @@ interface SearchContent {
     videos: NiconicoVideo[];
 }
 
-export async function renderSearchResults() {
+export async function renderSearch() {
     const searchContent = getSearchContent();
 
     await browser.runtime.sendMessage({
-        type: "filter-search-results",
+        type: "filter-search",
         data: searchContent.videos satisfies NiconicoVideo[],
     });
 }

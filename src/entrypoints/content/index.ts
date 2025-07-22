@@ -8,7 +8,7 @@ import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
 import { isRankingVideo, renderAllRanking, renderRanking } from "./ranking.js";
-import { renderSearchResults } from "./search.js";
+import { renderSearch } from "./search.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -43,7 +43,7 @@ export default defineContentScript({
         }
 
         if (isSearchPage(location.href)) {
-            await renderSearchResults();
+            await renderSearch();
         }
     },
 });
