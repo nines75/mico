@@ -14,20 +14,18 @@ interface Position {
 }
 
 export function mountButton(
-    type: Required<NgIdMessage>["userId"]["type"],
     element: Element,
     videoId: string | null,
-    videoIds: string[],
-    videoContent: VideoContent | undefined,
-    videoPosition: Position,
-    userPosition: Position,
+    video: {
+        title: string;
+        position: Position;
+    },
+    user?: {
+        message: Required<NgIdMessage>["user"];
+        position: Position;
+    },
 ) {
-    if (
-        !(element instanceof HTMLElement) ||
-        videoId === null ||
-        videoContent === undefined
-    )
-        return;
+    if (!(element instanceof HTMLElement) || videoId === null) return;
 
     // ボタンの配置にabsoluteを使うために必要
     element.style.position = "relative";
@@ -37,7 +35,7 @@ export function mountButton(
         element,
         createElement(ScreenShareOff),
         titles.addNgVideo,
-        videoPosition,
+        video.position,
         async (event) => {
             try {
                 event.preventDefault();
@@ -48,10 +46,8 @@ export function mountButton(
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
-                        video: {
-                            id: videoId,
-                            title: videoContent.title,
-                        },
+                        videoId,
+                        title: video.title,
                     } satisfies NgIdMessage,
                 });
             } catch (e) {
@@ -60,12 +56,14 @@ export function mountButton(
         },
     );
 
+    if (user === undefined) return;
+
     // ユーザーNGボタン
     appendButton(
         element,
         createElement(UserX),
         titles.addNgUserIdByVideo,
-        userPosition,
+        user.position,
         async (event) => {
             try {
                 event.preventDefault();
@@ -75,12 +73,8 @@ export function mountButton(
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
-                        userId: {
-                            id: videoId,
-                            allId: videoIds,
-                            userName: videoContent.userName,
-                            type,
-                        },
+                        videoId,
+                        user: user.message,
                     } satisfies NgIdMessage,
                 });
             } catch (e) {

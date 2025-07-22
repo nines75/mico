@@ -18,15 +18,23 @@ export function renderRanking(video: Element, anchor: Element) {
 function mountToRanking(video: Element, anchor: Element) {
     const videoId = anchor.getAttribute(attributes.decorationVideoId);
     const videoContent = getVideoContent(anchor);
+    if (videoContent === undefined) return;
 
     mountButton(
-        "ranking",
         video,
         videoId,
-        getVideoIds(),
-        videoContent,
-        { left: 10, bottom: 30 },
-        { left: 10, bottom: 0 },
+        {
+            title: videoContent.title,
+            position: { left: 10, bottom: 30 },
+        },
+        {
+            message: {
+                allId: getVideoIds(),
+                userName: videoContent.userName,
+                type: "ranking",
+            },
+            position: { left: 10, bottom: 0 },
+        },
     );
 }
 

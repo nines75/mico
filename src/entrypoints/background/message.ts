@@ -105,12 +105,9 @@ async function saveNgUserId(
 }
 
 export interface NgIdMessage {
-    video?: {
-        id: string;
-        title: string;
-    };
-    userId?: {
-        id: string;
+    videoId: string;
+    title?: string;
+    user?: {
         allId: string[];
         userName: string | undefined;
         type: "recommend" | "ranking";
@@ -125,23 +122,23 @@ async function saveNgId(
     const settings = await loadSettings();
 
     // 動画IDをNG追加
-    if (data.video !== undefined) {
+    if (data.title !== undefined) {
         await addNgId(
             new Set([
                 settings.isAddNgContext
-                    ? `${data.video.id} # ${data.video.title}`
-                    : data.video.id,
+                    ? `${data.videoId} # ${data.title}`
+                    : data.videoId,
             ]),
         );
         return;
     }
 
     const tabId = sender.tab?.id;
-    if (tabId === undefined || data.userId === undefined) return;
+    if (tabId === undefined || data.user === undefined) return;
 
     const log = await getLogData(tabId);
     const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
-    const userId = videoIdToUserId?.get(data.userId.id);
+    const userId = videoIdToUserId?.get(data.videoId);
     if (videoIdToUserId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
@@ -150,17 +147,17 @@ async function saveNgId(
     // ユーザーIDをNG追加
     await addNgId(
         new Set([
-            settings.isAddNgContext && data.userId.userName !== undefined
-                ? `${userId} # ${data.userId.userName}`
+            settings.isAddNgContext && data.user.userName !== undefined
+                ? `${userId} # ${data.user.userName}`
                 : userId,
         ]),
     );
 
-    const toRemoveVideoIds = data.userId.allId.filter(
+    const toRemoveVideoIds = data.user.allId.filter(
         (id) => videoIdToUserId.get(id) === userId,
     );
     await browser.tabs.sendMessage(tabId, {
-        type: `remove-${data.userId.type}`,
+        type: `remove-${data.user.type}`,
         data: toRemoveVideoIds satisfies string[],
     });
 }
