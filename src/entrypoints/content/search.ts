@@ -2,11 +2,8 @@ import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { mountButton } from "./button.js";
 
 interface SearchContent {
-    elements: {
-        element: Element;
-        video: NiconicoVideo;
-    }[];
-    videos: NiconicoVideo[];
+    element: Element;
+    video: NiconicoVideo;
 }
 
 export async function renderSearch() {
@@ -14,10 +11,10 @@ export async function renderSearch() {
 
     await browser.runtime.sendMessage({
         type: "filter-search",
-        data: searchContent.videos satisfies NiconicoVideo[],
+        data: searchContent.map(({ video }) => video) satisfies NiconicoVideo[],
     });
 
-    searchContent.elements.forEach(({ element, video }) => {
+    searchContent.forEach(({ element, video }) => {
         mountButton(element, video.id, {
             title: video.title,
             position: { right: 0, bottom: 0 },
@@ -25,11 +22,8 @@ export async function renderSearch() {
     });
 }
 
-function getSearchContent(): SearchContent {
-    const res: SearchContent = {
-        elements: [],
-        videos: [],
-    };
+function getSearchContent(): SearchContent[] {
+    const res: SearchContent[] = [];
 
     const elements = document.querySelectorAll("li[data-video-id]");
     elements.forEach((element) => {
@@ -45,11 +39,10 @@ function getSearchContent(): SearchContent {
             title,
         };
 
-        res.elements.push({
+        res.push({
             element,
             video,
         });
-        res.videos.push(video);
     });
 
     return res;
