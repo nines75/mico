@@ -39,10 +39,7 @@ function getSearchContent(): SearchContent[] {
             title,
         };
 
-        res.push({
-            element,
-            video,
-        });
+        res.push({ element, video });
     });
 
     return res;
