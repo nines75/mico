@@ -57,33 +57,34 @@ export function mountButton(
         },
     );
 
-    if (user === undefined) return;
-
     // ユーザーNGボタン
-    appendButton(
-        "user-ng-button",
-        element,
-        createElement(UserX),
-        titles.addNgUserIdByVideo,
-        user.position,
-        async (event) => {
-            try {
-                event.preventDefault();
+    if (user !== undefined) {
+        appendButton(
+            "user-ng-button",
+            element,
+            createElement(UserX),
+            titles.addNgUserIdByVideo,
+            user.position,
+            async (event) => {
+                try {
+                    event.preventDefault();
 
-                if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
+                    if (!confirm(messages.ngUserId.confirmAdditionByVideo))
+                        return;
 
-                await browser.runtime.sendMessage({
-                    type: "save-ng-id",
-                    data: {
-                        videoId,
-                        user: user.message,
-                    } satisfies NgIdMessage,
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        },
-    );
+                    await browser.runtime.sendMessage({
+                        type: "save-ng-id",
+                        data: {
+                            videoId,
+                            user: user.message,
+                        } satisfies NgIdMessage,
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+        );
+    }
 }
 
 function appendButton(
