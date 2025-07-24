@@ -13,15 +13,23 @@ export function mountToRecommend(element: Element) {
 
     const videoId = element.getAttribute(attributes.decorationVideoId);
     const videoContent = getVideoContent(element);
+    if (videoContent === undefined) return;
 
     mountButton(
-        "recommend",
         element,
         videoId,
-        getVideoIds(parent), // レンダリング時には他の関連動画がレンダリングされていない可能性があるためクリック時に取得する
-        videoContent,
-        { right: 40, bottom: 2 },
-        { right: 10, bottom: 2 },
+        {
+            title: videoContent.title,
+            position: { right: 40, bottom: 2 },
+        },
+        {
+            message: {
+                allId: getVideoIds(parent), // レンダリング時には他の関連動画がレンダリングされていない可能性があるためクリック時に取得する
+                userName: videoContent.userName,
+                type: "recommend",
+            },
+            position: { right: 10, bottom: 2 },
+        },
     );
 }
 

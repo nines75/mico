@@ -91,8 +91,9 @@ function Main() {
     const hasVideo = isWatchPage && !isDeleted;
 
     const isRankingPage = useStorageStore.getState().isRankingPage;
+    const isSearchPage = useStorageStore.getState().isSearchPage;
 
-    if (!hasVideo && !isRankingPage) {
+    if (!hasVideo && !isRankingPage && !isSearchPage) {
         return <div id="message">{messages.popup.notWorking}</div>;
     }
 

@@ -161,7 +161,7 @@ export const titles = {
     // 追加
     addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
     addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
-    addNgVideo: "クリックしてこの動画ををNG登録",
+    addNgVideo: "クリックしてこの動画をNG登録",
 
     // 削除
     removeNgUserId: "クリックしてNGユーザーIDを削除",
@@ -184,6 +184,8 @@ export const pattern = {
     watchPageUrl: "https://www.nicovideo.jp/watch/",
     watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",
     rankingPageUrl: "https://www.nicovideo.jp/ranking/genre",
+    searchPageUrl: "https://www.nicovideo.jp/search/",
+    tagSearchPageUrl: "https://www.nicovideo.jp/tag/",
     regex: {
         checkRawUserId: /^(?:ch)?\d+$/,
         checkVideoId: /^(?:sm|so|nl|nm)\d+$/,

@@ -40,7 +40,14 @@ export function filterVideo(
     Object.values(filters).forEach((filter) => filter.filtering(data));
 
     const videoIdToUserId = new Map(
-        data.videos.map((video) => [video.id, video.owner.id]),
+        data.videos.reduce<[string, string][]>((res, video) => {
+            const userId = video.owner?.id;
+            if (userId !== undefined) {
+                res.push([video.id, userId]);
+            }
+
+            return res;
+        }, []),
     );
     const filteredIds = new Set(
         Object.values(filters).flatMap((filter) => [

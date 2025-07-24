@@ -14,30 +14,29 @@ interface Position {
 }
 
 export function mountButton(
-    type: Required<NgIdMessage>["userId"]["type"],
     element: Element,
     videoId: string | null,
-    videoIds: string[],
-    videoContent: VideoContent | undefined,
-    videoPosition: Position,
-    userPosition: Position,
+    video: {
+        title: string;
+        position: Position;
+    },
+    user?: {
+        message: Required<NgIdMessage>["user"];
+        position: Position;
+    },
 ) {
-    if (
-        !(element instanceof HTMLElement) ||
-        videoId === null ||
-        videoContent === undefined
-    )
-        return;
+    if (!(element instanceof HTMLElement) || videoId === null) return;
 
     // ボタンの配置にabsoluteを使うために必要
     element.style.position = "relative";
 
     // 動画NGボタン
     appendButton(
+        "video-ng-button",
         element,
         createElement(ScreenShareOff),
         titles.addNgVideo,
-        videoPosition,
+        video.position,
         async (event) => {
             try {
                 event.preventDefault();
@@ -48,10 +47,8 @@ export function mountButton(
                 await browser.runtime.sendMessage({
                     type: "save-ng-id",
                     data: {
-                        video: {
-                            id: videoId,
-                            title: videoContent.title,
-                        },
+                        videoId,
+                        title: video.title,
                     } satisfies NgIdMessage,
                 });
             } catch (e) {
@@ -61,46 +58,49 @@ export function mountButton(
     );
 
     // ユーザーNGボタン
-    appendButton(
-        element,
-        createElement(UserX),
-        titles.addNgUserIdByVideo,
-        userPosition,
-        async (event) => {
-            try {
-                event.preventDefault();
+    if (user !== undefined) {
+        appendButton(
+            "user-ng-button",
+            element,
+            createElement(UserX),
+            titles.addNgUserIdByVideo,
+            user.position,
+            async (event) => {
+                try {
+                    event.preventDefault();
 
-                if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
+                    if (!confirm(messages.ngUserId.confirmAdditionByVideo))
+                        return;
 
-                await browser.runtime.sendMessage({
-                    type: "save-ng-id",
-                    data: {
-                        userId: {
-                            id: videoId,
-                            allId: videoIds,
-                            userName: videoContent.userName,
-                            type,
-                        },
-                    } satisfies NgIdMessage,
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        },
-    );
+                    await browser.runtime.sendMessage({
+                        type: "save-ng-id",
+                        data: {
+                            videoId,
+                            user: user.message,
+                        } satisfies NgIdMessage,
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+        );
+    }
 }
 
 function appendButton(
+    id: string,
     element: Element,
     svg: SVGElement,
     title: string,
     position: Position,
     callback: (event: MouseEvent) => Promise<void>,
 ) {
+    const name = browser.runtime.getManifest().name;
     const button = document.createElement("button");
     button.style.position = "absolute";
     button.style.cursor = "pointer";
-    button.title = `${title}(${browser.runtime.getManifest().name})`;
+    button.title = `${title}(${name})`;
+    button.id = `${name}-${id}`;
 
     // 位置を設定
     if (position.left !== undefined) {

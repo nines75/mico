@@ -9,7 +9,7 @@ import {
     getLogData,
 } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
-import { isRankingPage, isWatchPage } from "./util.js";
+import { isRankingPage, isSearchPage, isWatchPage } from "./util.js";
 
 interface StorageState {
     settings: Settings;
@@ -18,6 +18,7 @@ interface StorageState {
     isLoading: boolean;
     isWatchPage: boolean;
     isRankingPage: boolean;
+    isSearchPage: boolean;
     loadSettingsPageData: () => Promise<void>;
     loadPopupPageData: () => Promise<void>;
     saveSettings: (settings: Partial<Settings>) => void;
@@ -31,6 +32,7 @@ export const useStorageStore = create<StorageState>()(
         isLoading: true,
         isWatchPage: false,
         isRankingPage: false,
+        isSearchPage: false,
         loadSettingsPageData: async () => {
             const settings = await loadSettings();
 
@@ -54,6 +56,7 @@ export const useStorageStore = create<StorageState>()(
                 log,
                 isWatchPage: isWatchPage(tab?.url),
                 isRankingPage: isRankingPage(tab?.url),
+                isSearchPage: isSearchPage(tab?.url),
                 tabId,
                 isLoading: false,
             });

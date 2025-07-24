@@ -27,11 +27,11 @@ export class IdFilter extends Filter<IdLog> {
 
     override filtering(data: { videos: NiconicoVideo[] }): void {
         data.videos = data.videos.filter((video) => {
-            const userId = video.owner.id;
+            const userId = video.owner?.id;
             const videoId = video.id;
 
             // ユーザーIDによるフィルタリング
-            if (this.filter.userIds.has(userId)) {
+            if (userId !== undefined && this.filter.userIds.has(userId)) {
                 const ids = this.log.userId;
 
                 if (ids.has(userId)) {
@@ -58,11 +58,11 @@ export class IdFilter extends Filter<IdLog> {
     }
 
     override isNgVideo(video: NiconicoVideo): boolean {
-        const userId = video.owner.id;
+        const userId = video.owner?.id;
         const videoId = video.id;
 
         if (
-            this.filter.userIds.has(userId) ||
+            (userId !== undefined && this.filter.userIds.has(userId)) ||
             this.filter.videoIds.has(videoId)
         ) {
             return true;

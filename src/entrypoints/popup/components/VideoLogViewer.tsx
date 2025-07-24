@@ -70,7 +70,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
         const sampleVideo = videos.get(
             idLog.userId.get(userId)?.[0] as string,
         ) as NiconicoVideo;
-        const userName = sampleVideo.owner.name;
+        const userName = sampleVideo.owner?.name;
 
         elements.push(
             <div key={userId} className="log-line comment">
@@ -80,7 +80,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
                     title={titles.removeNgUserId}
                     onClick={() => onClickId(userId, "user")}
                 >
-                    {`${userId}${userName === null ? "" : `(${userName})`}`}
+                    {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
                 </span>
             </div>,
         );
@@ -143,16 +143,22 @@ function renderCommonLog(commonLog: CommonLog, videos: VideoData) {
         const ids = commonLog.get(rule) ?? [];
         ids.forEach((videoId) => {
             const video = videos.get(videoId) as NiconicoVideo;
+            const escapedTitle = escapeNewline(video.title);
+            const userId = video.owner?.id;
 
             elements.push(
                 <div key={videoId} className="log-line">
-                    <span
-                        title={titles.addNgUserIdByVideo}
-                        className="clickable"
-                        onClick={() => onClickVideoTitle(video.owner.id)}
-                    >
-                        {escapeNewline(video.title)}
-                    </span>
+                    {userId === undefined ? (
+                        escapedTitle
+                    ) : (
+                        <span
+                            title={titles.addNgUserIdByVideo}
+                            className="clickable"
+                            onClick={() => onClickVideoTitle(userId)}
+                        >
+                            {escapedTitle}
+                        </span>
+                    )}
                 </div>,
             );
         });

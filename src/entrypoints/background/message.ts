@@ -8,6 +8,9 @@ import {
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
 import { addNgId } from "./video-filter/filter/id-filter.js";
+import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { filterVideo } from "./video-filter/filter-video.js";
+import { saveLog } from "./video-filter/save-log.js";
 
 export async function backgroundMessageHandler(
     message: Message,
@@ -30,6 +33,8 @@ export async function backgroundMessageHandler(
         if (message.type === "save-ng-id") await saveNgId(message, sender);
         if (message.type === "restore-video-badge")
             await restoreVideoBadge(sender);
+        if (message.type === "filter-search")
+            await filterSearch(message, sender);
     } catch (e) {
         console.error(e);
     }
@@ -100,12 +105,9 @@ async function saveNgUserId(
 }
 
 export interface NgIdMessage {
-    video?: {
-        id: string;
-        title: string;
-    };
-    userId?: {
-        id: string;
+    videoId: string;
+    title?: string;
+    user?: {
         allId: string[];
         userName: string | undefined;
         type: "recommend" | "ranking";
@@ -120,23 +122,23 @@ async function saveNgId(
     const settings = await loadSettings();
 
     // 動画IDをNG追加
-    if (data.video !== undefined) {
+    if (data.title !== undefined) {
         await addNgId(
             new Set([
                 settings.isAddNgContext
-                    ? `${data.video.id} # ${data.video.title}`
-                    : data.video.id,
+                    ? `${data.videoId} # ${data.title}`
+                    : data.videoId,
             ]),
         );
         return;
     }
 
     const tabId = sender.tab?.id;
-    if (tabId === undefined || data.userId === undefined) return;
+    if (tabId === undefined || data.user === undefined) return;
 
     const log = await getLogData(tabId);
     const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
-    const userId = videoIdToUserId?.get(data.userId.id);
+    const userId = videoIdToUserId?.get(data.videoId);
     if (videoIdToUserId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
@@ -145,17 +147,17 @@ async function saveNgId(
     // ユーザーIDをNG追加
     await addNgId(
         new Set([
-            settings.isAddNgContext && data.userId.userName !== undefined
-                ? `${userId} # ${data.userId.userName}`
+            settings.isAddNgContext && data.user.userName !== undefined
+                ? `${userId} # ${data.user.userName}`
                 : userId,
         ]),
     );
 
-    const toRemoveVideoIds = data.userId.allId.filter(
+    const toRemoveVideoIds = data.user.allId.filter(
         (id) => videoIdToUserId.get(id) === userId,
     );
     await browser.tabs.sendMessage(tabId, {
-        type: `remove-${data.userId.type}`,
+        type: `remove-${data.user.type}`,
         data: toRemoveVideoIds satisfies string[],
     });
 }
@@ -168,4 +170,26 @@ async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
     if (count === undefined) return;
 
     await changeBadgeState(count, colors.videoBadge, tabId);
+}
+
+async function filterSearch(
+    message: Message,
+    sender: browser.runtime.MessageSender,
+) {
+    const data = message.data as NiconicoVideo[];
+    const settings = await loadSettings();
+
+    const tabId = sender.tab?.id;
+    if (tabId === undefined) return;
+
+    const filteredData = filterVideo(data, settings);
+    if (filteredData === undefined) return;
+
+    await Promise.all([
+        saveLog(filteredData, tabId, true),
+        browser.tabs.sendMessage(tabId, {
+            type: "remove-search",
+            data: filteredData.filteredIds satisfies Set<string>,
+        }),
+    ]);
 }

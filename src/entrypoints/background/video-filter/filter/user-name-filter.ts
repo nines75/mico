@@ -13,6 +13,6 @@ export class UserNameFilter extends CommonFilter {
     }
 
     protected override getTargetValue(video: NiconicoVideo): string | null {
-        return video.owner.name;
+        return video.owner?.name ?? null;
     }
 }

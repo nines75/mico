@@ -21,6 +21,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
             removeRecommend(message.data as string[]);
         if (message.type === "remove-ranking")
             removeRanking(message.data as string[]);
+        if (message.type === "remove-search")
+            removeSearch(message.data as Set<string>);
     };
 }
 
@@ -160,6 +162,18 @@ export function removeRanking(ids: string[]) {
 
         if (idsSet.has(videoId)) {
             video.style.display = "none";
+        }
+    });
+}
+
+export function removeSearch(ids: Set<string>) {
+    const elements = document.querySelectorAll("li[data-video-id]");
+    elements.forEach((element) => {
+        const videoId = element.getAttribute("data-video-id");
+        if (videoId === null) return;
+
+        if (ids.has(videoId) && element instanceof HTMLElement) {
+            element.style.display = "none";
         }
     });
 }
