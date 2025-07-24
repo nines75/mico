@@ -14,7 +14,9 @@ export function isRankingPage(url: string | undefined) {
     return url.startsWith(pattern.rankingPageUrl);
 }
 
-export function isSearchPage(url: string) {
+export function isSearchPage(url: string | undefined) {
+    if (url === undefined) return false;
+
     return (
         url.startsWith(pattern.searchPageUrl) ||
         url.startsWith(pattern.tagSearchPageUrl)
