@@ -32,6 +32,7 @@ export function mountButton(
 
     // 動画NGボタン
     appendButton(
+        "video-ng-button",
         element,
         createElement(ScreenShareOff),
         titles.addNgVideo,
@@ -60,6 +61,7 @@ export function mountButton(
 
     // ユーザーNGボタン
     appendButton(
+        "user-ng-button",
         element,
         createElement(UserX),
         titles.addNgUserIdByVideo,
@@ -85,16 +87,19 @@ export function mountButton(
 }
 
 function appendButton(
+    id: string,
     element: Element,
     svg: SVGElement,
     title: string,
     position: Position,
     callback: (event: MouseEvent) => Promise<void>,
 ) {
+    const name = browser.runtime.getManifest().name;
     const button = document.createElement("button");
     button.style.position = "absolute";
     button.style.cursor = "pointer";
-    button.title = `${title}(${browser.runtime.getManifest().name})`;
+    button.title = `${title}(${name})`;
+    button.id = `${name}-${id}`;
 
     // 位置を設定
     if (position.left !== undefined) {
