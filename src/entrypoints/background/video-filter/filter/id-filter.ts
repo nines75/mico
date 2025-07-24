@@ -61,10 +61,8 @@ export class IdFilter extends Filter<IdLog> {
         const userId = video.owner?.id;
         const videoId = video.id;
 
-        if (userId === undefined) return false;
-
         if (
-            this.filter.userIds.has(userId) ||
+            (userId !== undefined && this.filter.userIds.has(userId)) ||
             this.filter.videoIds.has(videoId)
         ) {
             return true;
