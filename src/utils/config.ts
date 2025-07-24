@@ -161,7 +161,7 @@ export const titles = {
     // 追加
     addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
     addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
-    addNgVideo: "クリックしてこの動画ををNG登録",
+    addNgVideo: "クリックしてこの動画をNG登録",
 
     // 削除
     removeNgUserId: "クリックしてNGユーザーIDを削除",
