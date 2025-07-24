@@ -18,32 +18,40 @@ export default defineContentScript({
     matches: [pattern.topPageUrlGlob],
 
     async main(ctx) {
-        const observer: customObserver = new MutationObserver(observerCallback);
-        const settings = await loadSettings();
-        observer.settings = settings;
+        try {
+            const observer: customObserver = new MutationObserver(
+                observerCallback,
+            );
+            const settings = await loadSettings();
+            observer.settings = settings;
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
-
-        browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
-
-        // ブラウザの進む/戻るで消えたバッジを復元
-        if (isRankingPage(location.href)) {
-            window.addEventListener("pageshow", async () => {
-                try {
-                    await browser.runtime.sendMessage({
-                        type: "restore-video-badge",
-                    });
-                } catch (e) {
-                    console.error(e);
-                }
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
             });
-        }
 
-        if (isSearchPage(location.href)) {
-            await renderSearch();
+            browser.runtime.onMessage.addListener(
+                createContentMessageHandler(ctx),
+            );
+
+            // ブラウザの進む/戻るで消えたバッジを復元
+            if (isRankingPage(location.href)) {
+                window.addEventListener("pageshow", async () => {
+                    try {
+                        await browser.runtime.sendMessage({
+                            type: "restore-video-badge",
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
+                });
+            }
+
+            if (isSearchPage(location.href)) {
+                await renderSearch();
+            }
+        } catch (e) {
+            console.error(e);
         }
     },
 });
