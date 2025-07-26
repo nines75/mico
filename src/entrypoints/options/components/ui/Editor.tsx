@@ -45,6 +45,7 @@ const ngWordHighlights = createHighlights([
     { regex: /^!/g, style: "color: coral; font-weight: bold" },
     { regex: /^(@include|@exclude)/g, style: "color: lime" },
     { regex: /^@end/g, style: "color: cyan" },
+    { regex: /^\\/g, style: "color: red; font-weight: bold" },
 ]);
 const ngCommandHighlights = [
     ...createHighlights([{ regex: /^@disable/g, style: "color: yellow" }]),
