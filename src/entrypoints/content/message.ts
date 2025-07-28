@@ -9,45 +9,46 @@ export interface Message {
 
 export function createContentMessageHandler(ctx: ContentScriptContext) {
     return (message: Message, sender: browser.runtime.MessageSender) => {
-        if (sender.id !== browser.runtime.id) return;
+        // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
+        try {
+            if (sender.id !== browser.runtime.id) return;
 
-        if (message.type === "reload") reload(message.data as number);
-        if (message.type === "set-playback-time")
-            setPlaybackTime(message.data as number);
-        if (message.type === "quick-edit") openQuickEdit(ctx);
-        if (message.type === "mount-user-id")
-            mountUserId(message.data as string);
-        if (message.type === "remove-recommend")
-            removeRecommend(message.data as string[]);
-        if (message.type === "remove-ranking")
-            removeRanking(message.data as string[]);
-        if (message.type === "remove-search")
-            removeSearch(message.data as Set<string>);
+            if (message.type === "reload") reload(message.data as number);
+            if (message.type === "set-playback-time")
+                setPlaybackTime(message.data as number);
+            if (message.type === "quick-edit") openQuickEdit(ctx);
+            if (message.type === "mount-user-id")
+                mountUserId(message.data as string);
+            if (message.type === "remove-recommend")
+                removeRecommend(message.data as string[]);
+            if (message.type === "remove-ranking")
+                removeRanking(message.data as string[]);
+            if (message.type === "remove-search")
+                removeSearch(message.data as Set<string>);
+        } catch (e) {
+            console.error(e);
+        }
     };
 }
 
 function reload(tabId: number) {
     const id = setInterval(async () => {
-        try {
-            const video = document.querySelector("video");
-            if (video !== null) {
-                clearInterval(id);
+        const video = document.querySelector("video");
+        if (video !== null) {
+            clearInterval(id);
 
-                await browser.runtime.sendMessage({
-                    type: "save-playback-time",
-                    data: {
-                        tabId,
-                        time: Math.floor(video.currentTime),
-                    } satisfies {
-                        tabId: number;
-                        time: number;
-                    },
-                });
+            await browser.runtime.sendMessage({
+                type: "save-playback-time",
+                data: {
+                    tabId,
+                    time: Math.floor(video.currentTime),
+                } satisfies {
+                    tabId: number;
+                    time: number;
+                },
+            });
 
-                location.reload();
-            }
-        } catch (e) {
-            console.error(e);
+            location.reload();
         }
     }, 10);
 }

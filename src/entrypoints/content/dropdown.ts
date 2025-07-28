@@ -50,20 +50,16 @@ function appendButton(
 
 function getButtonCallback(commentNo: string, specific: boolean) {
     return async () => {
-        try {
-            await browser.runtime.sendMessage({
-                type: "save-ng-user-id",
-                data: {
-                    commentNo: Number(commentNo),
-                    specific,
-                } satisfies {
-                    commentNo: number;
-                    specific: boolean;
-                },
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        await browser.runtime.sendMessage({
+            type: "save-ng-user-id",
+            data: {
+                commentNo: Number(commentNo),
+                specific,
+            } satisfies {
+                commentNo: number;
+                specific: boolean;
+            },
+        });
     };
 }
 

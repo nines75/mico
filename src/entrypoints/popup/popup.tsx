@@ -23,11 +23,7 @@ function Init() {
 
     useEffect(() => {
         (async () => {
-            try {
-                await useStorageStore.getState().loadPopupPageData();
-            } catch (e) {
-                console.error(e);
-            }
+            await useStorageStore.getState().loadPopupPageData();
         })();
     }, []);
 

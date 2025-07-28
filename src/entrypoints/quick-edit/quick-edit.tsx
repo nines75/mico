@@ -14,11 +14,7 @@ function Init() {
 
     useEffect(() => {
         (async () => {
-            try {
-                await useStorageStore.getState().loadSettingsPageData();
-            } catch (e) {
-                console.error(e);
-            }
+            await useStorageStore.getState().loadSettingsPageData();
         })();
     }, []);
 

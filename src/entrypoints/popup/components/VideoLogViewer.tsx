@@ -175,35 +175,22 @@ function renderCommonLog(commonLog: CommonLog, videos: VideoData) {
 }
 
 async function onClickId(id: string, type: "user" | "video") {
-    try {
-        const text = (() => {
-            switch (type) {
-                case "user":
-                    return messages.ngUserId.confirmRemoval;
-                case "video":
-                    return messages.ngVideoId.confirmRemoval;
-            }
-        })();
+    const text = (() => {
+        switch (type) {
+            case "user":
+                return messages.ngUserId.confirmRemoval;
+            case "video":
+                return messages.ngVideoId.confirmRemoval;
+        }
+    })();
+    if (!confirm(text.replace("{target}", id))) return;
 
-        if (!confirm(text.replace("{target}", id))) return;
-
-        await removeNgId(new Set([id]));
-    } catch (e) {
-        console.error(e);
-    }
+    await removeNgId(new Set([id]));
 }
 
 async function onClickVideoTitle(userId: string) {
-    try {
-        if (
-            !confirm(
-                messages.ngUserId.confirmAddition.replace("{target}", userId),
-            )
-        )
-            return;
+    if (!confirm(messages.ngUserId.confirmAddition.replace("{target}", userId)))
+        return;
 
-        await addNgId(new Set([userId]));
-    } catch (e) {
-        console.error(e);
-    }
+    await addNgId(new Set([userId]));
 }

@@ -76,23 +76,18 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
 }
 
 async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
-    try {
-        const userIds = filtering?.strictNgUserIds ?? new Set();
-
-        if (
-            !confirm(
-                messages.ngUserId.undoStrict.replace(
-                    "{target}",
-                    [...userIds].join("\n"),
-                ),
-            )
+    const userIds = filtering?.strictNgUserIds ?? new Set();
+    if (
+        !confirm(
+            messages.ngUserId.undoStrict.replace(
+                "{target}",
+                [...userIds].join("\n"),
+            ),
         )
-            return;
+    )
+        return;
 
-        await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
-    } catch (error) {
-        console.error(error);
-    }
+    await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
 }
 
 interface LogProps {
@@ -355,49 +350,37 @@ function formatCommentWithDuplicate(
 }
 
 async function onClickUserId(userId: string) {
-    try {
-        if (
-            !confirm(
-                messages.ngUserId.confirmRemoval.replace("{target}", userId),
-            )
-        )
-            return;
+    if (!confirm(messages.ngUserId.confirmRemoval.replace("{target}", userId)))
+        return;
 
-        await removeNgUserId(new Set([userId]));
-    } catch (e) {
-        console.error(e);
-    }
+    await removeNgUserId(new Set([userId]));
 }
 
 async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
-    try {
-        // 最新の設定を取得
-        const settings = useStorageStore.getState().settings;
+    // 最新の設定を取得
+    const settings = useStorageStore.getState().settings;
 
-        const ngUserIds = getNgUserIdSet(settings, ""); // 動画限定ルールではないNGユーザーIDを取得
-        const targetUserIds = new Set(
-            (Array.isArray(comments) ? comments : [comments])
-                .filter((comment) => !ngUserIds.has(comment.userId))
-                .map((comment) => comment.userId),
-        );
+    const ngUserIds = getNgUserIdSet(settings, ""); // 動画限定ルールではないNGユーザーIDを取得
+    const targetUserIds = new Set(
+        (Array.isArray(comments) ? comments : [comments])
+            .filter((comment) => !ngUserIds.has(comment.userId))
+            .map((comment) => comment.userId),
+    );
 
-        if (targetUserIds.size === 0) {
-            alert(messages.ngUserId.alreadyAdded);
-            return;
-        }
-
-        if (
-            !confirm(
-                messages.ngUserId.confirmAddition.replace(
-                    "{target}",
-                    [...targetUserIds].join("\n"),
-                ),
-            )
-        )
-            return;
-
-        await addNgUserId(new Set(targetUserIds));
-    } catch (e) {
-        console.error(e);
+    if (targetUserIds.size === 0) {
+        alert(messages.ngUserId.alreadyAdded);
+        return;
     }
+
+    if (
+        !confirm(
+            messages.ngUserId.confirmAddition.replace(
+                "{target}",
+                [...targetUserIds].join("\n"),
+            ),
+        )
+    )
+        return;
+
+    await addNgUserId(new Set(targetUserIds));
 }

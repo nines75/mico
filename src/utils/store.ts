@@ -62,11 +62,7 @@ export const useStorageStore = create<StorageState>()(
             });
         },
         saveSettings: async (settings) => {
-            try {
-                await setSettings(settings);
-            } catch (e) {
-                console.error(e);
-            }
+            await setSettings(settings);
         },
     })),
 );
@@ -80,21 +76,17 @@ export function storageChangeHandler(
     const tabId = useStorageStore.getState().tabId;
 
     Object.entries(changes).forEach(async ([key, value]) => {
-        try {
-            const type = key as StorageType;
+        const type = key as StorageType;
 
-            if (tabId !== undefined && type === `log-${tabId}`) {
-                useStorageStore.setState({
-                    log: await getLogData(tabId, value.newValue),
-                });
-            }
-            if (type === "settings") {
-                useStorageStore.setState({
-                    settings: await loadSettings(value.newValue),
-                });
-            }
-        } catch (e) {
-            console.error(e);
+        if (tabId !== undefined && type === `log-${tabId}`) {
+            useStorageStore.setState({
+                log: await getLogData(tabId, value.newValue),
+            });
+        }
+        if (type === "settings") {
+            useStorageStore.setState({
+                settings: await loadSettings(value.newValue),
+            });
         }
     });
 }

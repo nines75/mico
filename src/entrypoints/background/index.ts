@@ -53,34 +53,30 @@ export default defineBackground(() => {
 
     // ショートカットキーが押された際の処理
     browser.commands.onCommand.addListener(async (command) => {
-        try {
-            if (command === "quick-edit" || command === "reload") {
-                const tabs = await browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
-                const tab = tabs[0];
+        if (command === "quick-edit" || command === "reload") {
+            const tabs = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            const tab = tabs[0];
 
-                if (tab?.id !== undefined) {
-                    // 視聴ページでのみ実行
-                    if (!isWatchPage(tab.url)) return;
+            if (tab?.id !== undefined) {
+                // 視聴ページでのみ実行
+                if (!isWatchPage(tab.url)) return;
 
-                    await browser.tabs.sendMessage(tab.id, {
-                        type: command,
-                        ...(command === "reload"
-                            ? { data: tab.id satisfies number }
-                            : {}),
-                    });
-                }
-            }
-
-            if (command === "open-settings") {
-                await browser.tabs.create({
-                    url: browser.runtime.getURL("/options.html"),
+                await browser.tabs.sendMessage(tab.id, {
+                    type: command,
+                    ...(command === "reload"
+                        ? { data: tab.id satisfies number }
+                        : {}),
                 });
             }
-        } catch (e) {
-            console.error(e);
+        }
+
+        if (command === "open-settings") {
+            await browser.tabs.create({
+                url: browser.runtime.getURL("/options.html"),
+            });
         }
     });
 
@@ -89,19 +85,15 @@ export default defineBackground(() => {
 
     // ブラウザの起動時に実行する処理
     browser.runtime.onStartup.addListener(async () => {
-        try {
-            const data = await getAllData();
+        const data = await getAllData();
 
-            const keys: LogType[] = [];
-            for (const key of Object.keys(data)) {
-                if (key.startsWith("log-")) {
-                    keys.push(key as LogType);
-                }
+        const keys: LogType[] = [];
+        for (const key of Object.keys(data)) {
+            if (key.startsWith("log-")) {
+                keys.push(key as LogType);
             }
-
-            await removeData(keys);
-        } catch (e) {
-            console.error(e);
         }
+
+        await removeData(keys);
     });
 });

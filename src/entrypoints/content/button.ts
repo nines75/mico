@@ -38,22 +38,18 @@ export function mountButton(
         titles.addNgVideo,
         video.position,
         async (event) => {
-            try {
-                event.preventDefault();
-                if (!confirm(messages.ngVideoId.confirmAddition)) return;
+            event.preventDefault();
+            if (!confirm(messages.ngVideoId.confirmAddition)) return;
 
-                element.style.display = "none";
+            element.style.display = "none";
 
-                await browser.runtime.sendMessage({
-                    type: "save-ng-id",
-                    data: {
-                        videoId,
-                        title: video.title,
-                    } satisfies NgIdMessage,
-                });
-            } catch (e) {
-                console.error(e);
-            }
+            await browser.runtime.sendMessage({
+                type: "save-ng-id",
+                data: {
+                    videoId,
+                    title: video.title,
+                } satisfies NgIdMessage,
+            });
         },
     );
 
@@ -66,22 +62,17 @@ export function mountButton(
             titles.addNgUserIdByVideo,
             user.position,
             async (event) => {
-                try {
-                    event.preventDefault();
+                event.preventDefault();
 
-                    if (!confirm(messages.ngUserId.confirmAdditionByVideo))
-                        return;
+                if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
 
-                    await browser.runtime.sendMessage({
-                        type: "save-ng-id",
-                        data: {
-                            videoId,
-                            user: user.message,
-                        } satisfies NgIdMessage,
-                    });
-                } catch (e) {
-                    console.error(e);
-                }
+                await browser.runtime.sendMessage({
+                    type: "save-ng-id",
+                    data: {
+                        videoId,
+                        user: user.message,
+                    } satisfies NgIdMessage,
+                });
             },
         );
     }

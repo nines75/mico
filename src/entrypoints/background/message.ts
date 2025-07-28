@@ -16,6 +16,7 @@ export async function backgroundMessageHandler(
     message: Message,
     sender: browser.runtime.MessageSender,
 ) {
+    // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
     try {
         if (sender.id !== browser.runtime.id) return;
 

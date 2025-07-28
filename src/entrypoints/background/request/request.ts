@@ -19,10 +19,6 @@ export function filterResponse(
     };
 
     filter.onstop = async () => {
-        try {
-            await callback(filter, encoder, buf);
-        } catch (e) {
-            console.error(e);
-        }
+        await callback(filter, encoder, buf);
     };
 }

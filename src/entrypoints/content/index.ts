@@ -18,40 +18,28 @@ export default defineContentScript({
     matches: [pattern.topPageUrlGlob],
 
     async main(ctx) {
-        try {
-            const observer: customObserver = new MutationObserver(
-                observerCallback,
-            );
-            const settings = await loadSettings();
-            observer.settings = settings;
+        const observer: customObserver = new MutationObserver(observerCallback);
+        const settings = await loadSettings();
+        observer.settings = settings;
 
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-            });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
 
-            browser.runtime.onMessage.addListener(
-                createContentMessageHandler(ctx),
-            );
+        browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
 
-            // ブラウザの進む/戻るで消えたバッジを復元
-            if (isRankingPage(location.href)) {
-                window.addEventListener("pageshow", async () => {
-                    try {
-                        await browser.runtime.sendMessage({
-                            type: "restore-video-badge",
-                        });
-                    } catch (e) {
-                        console.error(e);
-                    }
+        // ブラウザの進む/戻るで消えたバッジを復元
+        if (isRankingPage(location.href)) {
+            window.addEventListener("pageshow", async () => {
+                await browser.runtime.sendMessage({
+                    type: "restore-video-badge",
                 });
-            }
+            });
+        }
 
-            if (isSearchPage(location.href)) {
-                await renderSearch();
-            }
-        } catch (e) {
-            console.error(e);
+        if (isSearchPage(location.href)) {
+            await renderSearch();
         }
     },
 });
