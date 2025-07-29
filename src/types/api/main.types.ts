@@ -15,20 +15,20 @@ export interface MainData {
             }[];
         };
         response: {
-            series: {
+            series?: {
                 video: {
                     next: NiconicoVideo | null;
                 };
-            } | null;
-            tag: {
+            } | null; // シリーズに登録されていなければnull
+            tag?: {
                 items: {
                     name: string;
                 }[];
-            } | null;
-            video: {
+            };
+            video?: {
                 id: string;
                 title: string;
-            } | null;
+            };
         };
     };
 }
