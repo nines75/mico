@@ -6,6 +6,14 @@ import { NiconicoVideo } from "./niconico-video.types.js";
 
 export interface MainData {
     data: {
+        metadata: {
+            jsonLds: {
+                author?: {
+                    name: string;
+                    url: string;
+                };
+            }[];
+        };
         response: {
             series: {
                 video: {
@@ -19,6 +27,7 @@ export interface MainData {
             } | null;
             video: {
                 id: string;
+                title: string;
             } | null;
         };
     };

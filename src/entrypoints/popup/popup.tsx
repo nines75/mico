@@ -3,14 +3,18 @@ import { createRoot } from "react-dom/client";
 import Count from "./components/Count.js";
 import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
-import { popupConfig, messages, urls } from "@/utils/config.js";
+import { popupConfig, messages, urls, titles } from "@/utils/config.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { SettingsIcon } from "lucide-react";
+import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
 import { PopupTab } from "@/types/storage/settings.types.js";
+import {
+    addNgId,
+    formatNgId,
+} from "../background/video-filter/filter/id-filter.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -101,6 +105,22 @@ function Main() {
             {videoId !== undefined && videoId !== null && (
                 <section>
                     <span id="video-id">{videoId}</span>
+                    <div className="ng-button-container">
+                        <button
+                            className="ng-button"
+                            title={titles.addNgVideo}
+                            onClick={() => onClickNgVideoButton()}
+                        >
+                            <ScreenShareOff size={28} />
+                        </button>
+                        <button
+                            className="ng-button"
+                            title={titles.addNgUserIdByVideo}
+                            onClick={() => onClickNgUserButton()}
+                        >
+                            <UserX size={28} />
+                        </button>
+                    </div>
                 </section>
             )}
             {hasVideo && (
@@ -108,7 +128,7 @@ function Main() {
                     {popupConfig.tab.map((filter) => (
                         <button
                             key={filter.id}
-                            className={`${selectedTab === filter.id ? "selected-button" : ""}`}
+                            className={`general-button${selectedTab === filter.id ? " selected-button" : ""}`}
                             onClick={() =>
                                 save({ popupSelectedTab: filter.id })
                             }
@@ -156,4 +176,35 @@ function Main() {
             </Details>
         </main>
     );
+}
+
+async function onClickNgVideoButton() {
+    if (!confirm(messages.ngVideoId.confirmAddition)) return;
+
+    const settings = useStorageStore.getState().settings;
+    const videoId = useStorageStore.getState().log?.videoId ?? undefined;
+    const title = useStorageStore.getState().log?.title ?? undefined;
+
+    if (videoId === undefined || title === undefined) {
+        alert(messages.ngVideoId.additionFailed);
+        return;
+    }
+
+    await addNgId(new Set([formatNgId(videoId, title, settings)]));
+}
+
+async function onClickNgUserButton() {
+    if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
+
+    const settings = useStorageStore.getState().settings;
+    const userId = useStorageStore.getState().log?.userId ?? undefined;
+    const userName = useStorageStore.getState().log?.userName ?? undefined;
+
+    // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
+    if (userId === undefined || userName === undefined) {
+        alert(messages.ngUserId.additionFailed);
+        return;
+    }
+
+    await addNgId(new Set([formatNgId(userId, userName, settings)]));
 }

@@ -60,6 +60,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                     <div>
                         <button
                             title={titles.undoStrict}
+                            className="general-button"
                             onClick={() => undoStrictNgUserIds(filtering)}
                         >
                             undo

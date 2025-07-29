@@ -56,8 +56,11 @@ async function mainDataFilter(
     settings: Settings,
     meta?: Element | null,
 ) {
+    const response = mainData.data.response;
+    const metadata = mainData.data.metadata;
+
     const seriesData: SeriesData = (() => {
-        const series = mainData.data.response.series?.video;
+        const series = response.series?.video;
         const video = series?.next;
 
         if (series !== undefined && video !== null && video !== undefined) {
@@ -71,9 +74,23 @@ async function mainDataFilter(
             return { hasNext: false };
         }
     })();
-    const tags =
-        mainData.data.response.tag?.items.map((data) => data.name) ?? [];
-    const videoId = mainData.data.response.video?.id ?? null;
 
-    await setLog({ series: seriesData, tags, videoId }, details.tabId);
+    const videoId = response.video?.id ?? null;
+    const title = response.video?.title ?? null;
+    const userId =
+        metadata.jsonLds[0]?.author?.url.match(/(\d+)$/)?.[1] ?? null;
+    const userName = metadata.jsonLds[0]?.author?.name ?? null;
+    const tags = response.tag?.items.map((data) => data.name) ?? [];
+
+    await setLog(
+        {
+            series: seriesData,
+            videoId,
+            title,
+            userId,
+            userName,
+            tags,
+        },
+        details.tabId,
+    );
 }

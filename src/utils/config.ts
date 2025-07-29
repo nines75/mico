@@ -133,6 +133,7 @@ export const messages = {
         alreadyAdded: "このユーザーIDは既にNG登録されています",
     },
     ngVideoId: {
+        additionFailed: "動画のNG登録に失敗しました",
         confirmAddition: "この動画をNG登録しますか？",
         confirmRemoval: "以下のNG動画IDを削除しますか？\n\n{target}",
     },

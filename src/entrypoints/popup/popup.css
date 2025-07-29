@@ -12,14 +12,6 @@ header {
     justify-content: space-between;
     align-items: center;
 }
-button {
-    padding: 3px 10px;
-    margin: 5px;
-    border: gray 2px solid;
-    border-radius: 8px;
-    color: var(--lighter-gray);
-    font-size: 15px;
-}
 section {
     margin: 10px 30px;
 }
@@ -91,8 +83,28 @@ summary {
         color: gray;
     }
 }
+.general-button {
+    padding: 3px 10px;
+    margin: 5px;
+    border: gray 2px solid;
+    border-radius: 8px;
+    color: var(--lighter-gray);
+    font-size: 15px;
+}
 .selected-button {
     border-color: lightskyblue;
+}
+.ng-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    .ng-button {
+        padding: 0;
+        margin: 0;
+        border: none;
+        color: var(--dim-white);
+    }
 }
 #video-id {
     font-size: 20px;

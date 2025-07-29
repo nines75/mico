@@ -169,3 +169,13 @@ export async function removeNgId(ids: Set<string>) {
 
     await setSettings(func);
 }
+
+export function formatNgId(
+    id: string,
+    context: string | undefined,
+    settings: Settings,
+) {
+    return settings.isAddNgContext && context !== undefined
+        ? `${id} # ${context}`
+        : id;
+}

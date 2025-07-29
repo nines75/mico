@@ -7,7 +7,7 @@ import {
 } from "@/utils/util.js";
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
-import { addNgId } from "./video-filter/filter/id-filter.js";
+import { addNgId, formatNgId } from "./video-filter/filter/id-filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -74,16 +74,17 @@ async function saveNgUserId(
     if (tabId === undefined) return;
 
     const log = await getLogData(tabId);
+    const videoId = log?.videoId ?? undefined;
     const userId = log?.commentFilterLog?.filtering.noToUserId.get(
         data.commentNo,
     );
-    if (log === undefined || log.videoId === null || userId === undefined) {
+    if (log === undefined || videoId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
 
     await addNgUserId(
-        new Set([data.specific ? `${log.videoId}@${userId}` : userId]),
+        new Set([data.specific ? `${videoId}@${userId}` : userId]),
     );
 
     const settings = await loadSettings();
@@ -125,11 +126,7 @@ async function saveNgId(
     // 動画IDをNG追加
     if (data.title !== undefined) {
         await addNgId(
-            new Set([
-                settings.isAddNgContext
-                    ? `${data.videoId} # ${data.title}`
-                    : data.videoId,
-            ]),
+            new Set([formatNgId(data.videoId, data.title, settings)]),
         );
         return;
     }
@@ -146,13 +143,7 @@ async function saveNgId(
     }
 
     // ユーザーIDをNG追加
-    await addNgId(
-        new Set([
-            settings.isAddNgContext && data.user.userName !== undefined
-                ? `${userId} # ${data.user.userName}`
-                : userId,
-        ]),
-    );
+    await addNgId(new Set([formatNgId(userId, data.user.userName, settings)]));
 
     const toRemoveVideoIds = data.user.allId.filter(
         (id) => videoIdToUserId.get(id) === userId,
