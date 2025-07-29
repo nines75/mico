@@ -128,7 +128,7 @@ function Main() {
                     {popupConfig.tab.map((filter) => (
                         <button
                             key={filter.id}
-                            className={`general-button${selectedTab === filter.id ? " selected-button" : ""}`}
+                            className={`common-button${selectedTab === filter.id ? " selected-button" : ""}`}
                             onClick={() =>
                                 save({ popupSelectedTab: filter.id })
                             }
