@@ -1,5 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern, buttons } from "@/utils/config.js";
+import { buttons } from "@/utils/config.js";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
@@ -11,9 +11,7 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
-    const commentNo = dropdownContent.commentNoText.match(
-        pattern.regex.extractCommentNo,
-    )?.[1];
+    const commentNo = dropdownContent.commentNoText.match(/(\d+)$/)?.[1];
     if (commentNo === undefined) return;
 
     appendButton(dropdownContent, commentNo, buttons.AddNgUserId, false);

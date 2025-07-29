@@ -190,7 +190,6 @@ export const pattern = {
     regex: {
         checkRawUserId: /^(?:ch)?\d+$/,
         checkVideoId: /^(?:sm|so|nl|nm)\d+$/,
-        extractCommentNo: /(\d+)$/,
     },
 } as const;
 
