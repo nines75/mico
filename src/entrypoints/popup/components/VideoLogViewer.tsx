@@ -8,6 +8,7 @@ import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import {
     addNgId,
+    formatNgId,
     removeNgId,
 } from "@/entrypoints/background/video-filter/filter/id-filter.js";
 import {
@@ -185,7 +186,7 @@ function renderCommonVideos(
                     <span
                         title={titles.addNgUserIdByVideo}
                         className="clickable"
-                        onClick={() => onClickVideoTitle(userId)}
+                        onClick={() => onClickVideoTitle(userId, video)}
                     >
                         {escapedTitle}
                     </span>
@@ -211,9 +212,12 @@ async function onClickId(id: string, type: "user" | "video") {
     await removeNgId(new Set([id]));
 }
 
-async function onClickVideoTitle(userId: string) {
+async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     if (!confirm(messages.ngUserId.confirmAddition.replace("{target}", userId)))
         return;
 
-    await addNgId(new Set([userId]));
+    const settings = useStorageStore.getState().settings;
+    const userName = video.owner?.name ?? undefined;
+
+    await addNgId(new Set([formatNgId(userId, userName, settings)]));
 }
