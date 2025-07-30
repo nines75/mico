@@ -4,6 +4,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse } from "./request.js";
 import { MainData } from "@/types/api/main.types.js";
+import { pattern } from "@/utils/config.js";
 
 export function mainRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -78,8 +79,17 @@ async function mainDataFilter(
     const videoId = response.video?.id ?? null;
     const title = response.video?.title ?? null;
     const userId =
-        metadata.jsonLds[0]?.author?.url.match(/(\d+)$/)?.[1] ?? null;
-    const userName = metadata.jsonLds[0]?.author?.name ?? null;
+        response.owner?.id ?? // 通常のユーザー
+        response.channel?.id ?? // チャンネル
+        metadata.jsonLds[0]?.author?.url.match(
+            pattern.regex.extractUserId, // 誤った値が抽出されないように完全なURLでチェックする
+        )?.[1] ?? // ユーザーが退会済み
+        null;
+    const userName =
+        response.owner?.nickname ??
+        response.channel?.name ??
+        metadata.jsonLds[0]?.author?.name ??
+        null;
     const tags = response.tag?.items.map((data) => data.name) ?? [];
 
     await setLog(

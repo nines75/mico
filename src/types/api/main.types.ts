@@ -14,6 +14,7 @@ export interface MainData {
                 };
             }[];
         };
+        // 削除済みの動画のレスポンスで存在しないプロパティはオプショナルにする
         response: {
             series?: {
                 video: {
@@ -29,6 +30,14 @@ export interface MainData {
                 id: string;
                 title: string;
             };
+            channel?: {
+                id: string;
+                name: string;
+            } | null; // チャンネル動画でなければnull
+            owner?: {
+                id: string;
+                nickname: string;
+            } | null; // チャンネル動画ならnull
         };
     };
 }

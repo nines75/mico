@@ -191,6 +191,7 @@ export const pattern = {
     regex: {
         checkRawUserId: /^(?:ch)?\d+$/,
         checkVideoId: /^(?:sm|so|nl|nm)\d+$/,
+        extractUserId: /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/,
     },
 } as const;
 
