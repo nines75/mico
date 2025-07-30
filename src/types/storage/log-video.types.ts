@@ -1,6 +1,8 @@
 import { NiconicoVideo } from "../api/niconico-video.types.js";
 import { ProcessingTimeData, CommonLog } from "./log.types.js";
 
+/** videoId[] */
+export type PaidLog = string[];
 export interface IdLog {
     /** Map<userId, videoId[]> */
     userId: CommonLog;
@@ -24,6 +26,7 @@ export interface VideoCount {
         ngTitle: number;
     };
     blocked: {
+        paid: number;
         ngId: number;
         ngUserName: number;
         ngTitle: number;
@@ -34,6 +37,7 @@ export interface VideoCount {
 }
 
 export interface VideoFiltering {
+    paid: PaidLog;
     ngId: IdLog;
     /** Map<rule, videoId[]> */
     ngUserName: CommonLog;

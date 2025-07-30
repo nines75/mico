@@ -34,9 +34,12 @@ function getSearchContent(): SearchContent[] {
 
         if (videoId === null || title === null || title === undefined) return;
 
+        const paymentElement = element.querySelector(".iconPayment");
+
         const video: NiconicoVideo = {
             id: videoId,
             title,
+            isPaymentRequired: paymentElement !== null,
         };
 
         res.push({ element, video });

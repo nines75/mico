@@ -46,6 +46,7 @@ export interface Settings {
     // 動画フィルター
 
     isVideoFilterEnabled: boolean;
+    isHidePaidVideo: boolean;
     isAddNgContext: boolean;
 
     /// フィルタリング

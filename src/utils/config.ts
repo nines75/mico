@@ -46,6 +46,7 @@ export const defaultSettings: Settings = {
     // 動画フィルター
 
     isVideoFilterEnabled: true,
+    isHidePaidVideo: false,
     isAddNgContext: false,
 
     /// フィルタリング
@@ -366,6 +367,10 @@ export const videoFilterSettings = {
                 label: "動画フィルターを有効にする",
             },
             {
+                id: "isHidePaidVideo",
+                label: "有料動画を非表示にする",
+            },
+            {
                 id: "isAddNgContext",
                 label: "NG追加時にコンテキスト情報を付与する",
                 details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
@@ -445,6 +450,10 @@ export const popupConfig = {
             {
                 id: "ngId",
                 name: "NGユーザーID/動画ID",
+            },
+            {
+                id: "paid",
+                name: "有料動画",
             },
             {
                 id: "ngUserName",

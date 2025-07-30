@@ -4,10 +4,12 @@ import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { VideoIdToUserId } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { PaidFilter } from "./filter/paid-filter.js";
 
 export interface FilteredData {
     filters: {
         idFilter: IdFilter;
+        paidFilter: PaidFilter;
         userNameFilter: UserNameFilter;
         titleFilter: TitleFilter;
     };
@@ -26,11 +28,13 @@ export function filterVideo(
     const start = performance.now();
 
     const idFilter = new IdFilter(settings);
+    const paidFilter = new PaidFilter(settings);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: FilteredData["filters"] = {
         idFilter,
+        paidFilter,
         userNameFilter,
         titleFilter,
     };
@@ -68,11 +72,13 @@ export function filterVideo(
 
 export function isNgVideo(video: NiconicoVideo, settings: Settings): boolean {
     const idFilter = new IdFilter(settings);
+    const paidFilter = new PaidFilter(settings);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: FilteredData["filters"] = {
         idFilter,
+        paidFilter,
         userNameFilter,
         titleFilter,
     };

@@ -47,7 +47,8 @@ export async function saveLog(
 }
 
 function getLog(filteredData: FilteredData): VideoFiltering {
-    const { idFilter, userNameFilter, titleFilter } = filteredData.filters;
+    const { paidFilter, idFilter, userNameFilter, titleFilter } =
+        filteredData.filters;
     const videos = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getVideos(),
@@ -57,6 +58,7 @@ function getLog(filteredData: FilteredData): VideoFiltering {
     Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
     return {
+        paid: paidFilter.getLog(),
         ngId: idFilter.getLog(),
         ngUserName: userNameFilter.getLog(),
         ngTitle: titleFilter.getLog(),
@@ -72,6 +74,7 @@ function getCount(filteredData: FilteredData): VideoCount {
         ngTitle: filteredData.filters.titleFilter.getRuleCount(),
     };
     const blocked: VideoCount["blocked"] = {
+        paid: filteredData.filters.paidFilter.getCount(),
         ngId: filteredData.filters.idFilter.getCount(),
         ngUserName: filteredData.filters.userNameFilter.getCount(),
         ngTitle: filteredData.filters.titleFilter.getCount(),

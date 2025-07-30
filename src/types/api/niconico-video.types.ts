@@ -3,6 +3,7 @@ export interface NiconicoVideo {
     title: string;
     registeredAt?: string;
     latestCommentSummary?: string;
+    isPaymentRequired: boolean;
     count?: {
         view: number;
         comment: number;
