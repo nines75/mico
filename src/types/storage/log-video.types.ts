@@ -3,6 +3,8 @@ import { ProcessingTimeData, CommonLog } from "./log.types.js";
 
 /** videoId[] */
 export type PaidLog = string[];
+/** videoId[] */
+export type ViewsLog = string[];
 export interface IdLog {
     /** Map<userId, videoId[]> */
     userId: CommonLog;
@@ -27,6 +29,7 @@ export interface VideoCount {
     };
     blocked: {
         paid: number;
+        views: number;
         ngId: number;
         ngUserName: number;
         ngTitle: number;
@@ -38,6 +41,7 @@ export interface VideoCount {
 
 export interface VideoFiltering {
     paid: PaidLog;
+    views: ViewsLog;
     ngId: IdLog;
     /** Map<rule, videoId[]> */
     ngUserName: CommonLog;

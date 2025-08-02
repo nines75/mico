@@ -33,7 +33,7 @@ export function recommendRequest(
         const videos = recommendData.data.items
             .filter((item) => item.contentType === "video")
             .map((item) => item.content);
-        const filteredData = filterVideo(videos, settings);
+        const filteredData = filterVideo(videos, settings, true);
 
         // 実際にフィルタリング
         if (filteredData !== undefined) {

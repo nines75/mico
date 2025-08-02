@@ -16,7 +16,6 @@ import {
     VideoFiltering,
     IdLog,
     VideoData,
-    PaidLog,
 } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
@@ -40,7 +39,7 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
 
     return (
         <LogFrame
-            rule={id !== "paid" ? count?.rule[id] : undefined}
+            rule={id !== "paid" && id !== "views" ? count?.rule[id] : undefined}
             {...{ name, blocked }}
         >
             <div className="log">
@@ -64,7 +63,8 @@ function Log({ id, filtering }: LogProps) {
         case "ngId":
             return renderIdLog(filtering.ngId, videos);
         case "paid":
-            return renderPaidLog(filtering.paid, videos);
+        case "views":
+            return renderVideoLog(filtering[id], videos);
         case "ngUserName":
             return renderCommonLog(filtering.ngUserName, videos);
         case "ngTitle":
@@ -141,9 +141,9 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
     return elements;
 }
 
-function renderPaidLog(paidLog: PaidLog, videos: VideoData) {
+function renderVideoLog(log: string[], videos: VideoData) {
     const elements: JSX.Element[] = [];
-    renderCommonVideos(elements, paidLog, videos);
+    renderCommonVideos(elements, log, videos);
 
     return elements;
 }

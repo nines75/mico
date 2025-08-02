@@ -47,6 +47,8 @@ export const defaultSettings: Settings = {
 
     isVideoFilterEnabled: true,
     isHidePaidVideo: false,
+    isViewsFilterEnabled: false,
+    viewsFilterCount: 1000,
     isAddNgContext: false,
 
     /// フィルタリング
@@ -372,6 +374,16 @@ export const videoFilterSettings = {
                 label: "有料動画を非表示にする",
             },
             {
+                id: "isViewsFilterEnabled",
+                label: "再生回数によるフィルタリングを有効にする",
+                details: "対象となるのは視聴ページの関連動画のみです。",
+                input: {
+                    id: "viewsFilterCount",
+                    label: "再生以下だった場合にフィルタリング",
+                    min: 0,
+                },
+            },
+            {
                 id: "isAddNgContext",
                 label: "NG追加時にコンテキスト情報を付与する",
                 details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
@@ -455,6 +467,10 @@ export const popupConfig = {
             {
                 id: "paid",
                 name: "有料動画",
+            },
+            {
+                id: "views",
+                name: "再生回数",
             },
             {
                 id: "ngUserName",

@@ -5,11 +5,13 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { VideoIdToUserId } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { PaidFilter } from "./filter/paid-filter.js";
+import { ViewsFilter } from "./filter/views-filter.js";
 
 export interface FilteredData {
     filters: {
         idFilter: IdFilter;
         paidFilter: PaidFilter;
+        viewsFilter: ViewsFilter;
         userNameFilter: UserNameFilter;
         titleFilter: TitleFilter;
     };
@@ -22,6 +24,7 @@ export interface FilteredData {
 export function filterVideo(
     videos: NiconicoVideo[],
     settings: Settings,
+    isRecommend = false,
 ): FilteredData | undefined {
     if (!settings.isVideoFilterEnabled) return;
 
@@ -29,12 +32,14 @@ export function filterVideo(
 
     const idFilter = new IdFilter(settings);
     const paidFilter = new PaidFilter(settings);
+    const viewsFilter = new ViewsFilter(settings, isRecommend);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: FilteredData["filters"] = {
         idFilter,
         paidFilter,
+        viewsFilter,
         userNameFilter,
         titleFilter,
     };
@@ -73,12 +78,14 @@ export function filterVideo(
 export function isNgVideo(video: NiconicoVideo, settings: Settings): boolean {
     const idFilter = new IdFilter(settings);
     const paidFilter = new PaidFilter(settings);
+    const viewsFilter = new ViewsFilter(settings, true);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: FilteredData["filters"] = {
         idFilter,
         paidFilter,
+        viewsFilter,
         userNameFilter,
         titleFilter,
     };
