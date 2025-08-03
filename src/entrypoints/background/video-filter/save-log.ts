@@ -69,17 +69,20 @@ function getLog(filteredData: FilteredData): VideoFiltering {
 }
 
 function getCount(filteredData: FilteredData): VideoCount {
+    const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
+        filteredData.filters;
+
     const rule: VideoCount["rule"] = {
-        ngId: filteredData.filters.idFilter.getRuleCount(),
-        ngUserName: filteredData.filters.userNameFilter.getRuleCount(),
-        ngTitle: filteredData.filters.titleFilter.getRuleCount(),
+        ngId: idFilter.getRuleCount(),
+        ngUserName: userNameFilter.getRuleCount(),
+        ngTitle: titleFilter.getRuleCount(),
     };
     const blocked: VideoCount["blocked"] = {
-        paid: filteredData.filters.paidFilter.getCount(),
-        views: filteredData.filters.viewsFilter.getCount(),
-        ngId: filteredData.filters.idFilter.getCount(),
-        ngUserName: filteredData.filters.userNameFilter.getCount(),
-        ngTitle: filteredData.filters.titleFilter.getCount(),
+        paid: paidFilter.getCount(),
+        views: viewsFilter.getCount(),
+        ngId: idFilter.getCount(),
+        ngUserName: userNameFilter.getCount(),
+        ngTitle: titleFilter.getCount(),
     };
 
     return {

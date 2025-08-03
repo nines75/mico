@@ -66,9 +66,8 @@ function Log({ id, filtering }: LogProps) {
         case "views":
             return renderVideoLog(filtering[id], videos);
         case "ngUserName":
-            return renderCommonLog(filtering.ngUserName, videos);
         case "ngTitle":
-            return renderCommonLog(filtering.ngTitle, videos);
+            return renderCommonLog(filtering[id], videos);
     }
 }
 
