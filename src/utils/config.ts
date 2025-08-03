@@ -369,6 +369,8 @@ export const videoFilterSettings = {
                 id: "isVideoFilterEnabled",
                 label: "動画フィルターを有効にする",
             },
+        ],
+        filtering: [
             {
                 id: "isHidePaidVideo",
                 label: "有料動画を非表示にする",
@@ -383,6 +385,8 @@ export const videoFilterSettings = {
                     min: 0,
                 },
             },
+        ],
+        other: [
             {
                 id: "isAddNgContext",
                 label: "NG追加時にコンテキスト情報を付与する",
@@ -408,6 +412,8 @@ export const videoFilterSettings = {
 } as const satisfies {
     checkbox: {
         top: CheckboxProps[];
+        filtering: CheckboxProps[];
+        other: CheckboxProps[];
     };
     filter: VideoFilterAreaProps[];
 };
