@@ -116,10 +116,6 @@ h2 {
     border-bottom: 2px solid lightskyblue;
     margin-bottom: -2px; /* 親のボーダーに重ねる */
 }
-.notification {
-    color: red;
-    font-size: 13px;
-}
 
 /* -------------------------------------------------------------------------------------------
 CodeMirror用
