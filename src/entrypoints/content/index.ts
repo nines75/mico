@@ -80,16 +80,12 @@ async function watchPageObserver(element: Element, settings: Settings) {
 
     // コメント(最上位要素の一つ下)
     {
-        if (element.hasAttribute("tabindex")) {
-            const parent = element.parentElement;
+        const parent = element.parentElement;
+        if (parent !== null && parent.hasAttribute("data-index")) {
+            if (!settings.isExpandNicoruEnabled) return;
 
-            // tabindex属性を持つ要素は他にも存在するため、親で検証する
-            if (parent !== null && parent.hasAttribute("data-index")) {
-                if (!settings.isExpandNicoruEnabled) return;
-
-                renderComment(parent, settings);
-                return;
-            }
+            renderComment(parent, settings);
+            return;
         }
     }
 
@@ -105,23 +101,27 @@ async function watchPageObserver(element: Element, settings: Settings) {
     // 関連動画(初回ロード時)
     {
         // パターン1: 関連動画の直接の親要素の追加時にレンダリング
-        const attr = element.querySelector(
-            ":scope > div[data-anchor-area='related_content,recommendation']",
-        );
-        if (attr !== null) {
-            mountToRecommendHandler(element);
+        {
+            const sample = element.querySelector(
+                ":scope > div[data-anchor-area='related_content,recommendation']",
+            );
+            if (sample !== null) {
+                mountToRecommendHandler(element);
 
-            return;
+                return;
+            }
         }
 
         // パターン2: サイドバーの追加時にレンダリング(チャンネル動画の視聴ページで多い？)
-        const parent = element.querySelector(
-            ":scope > div > div > div:has(> div[data-anchor-area='related_content,recommendation'])",
-        );
-        if (parent !== null) {
-            mountToRecommendHandler(parent);
+        {
+            const parent = element.querySelector(
+                ":scope > div > div > div:has(> div[data-anchor-area='related_content,recommendation'])",
+            );
+            if (parent !== null) {
+                mountToRecommendHandler(parent);
 
-            return;
+                return;
+            }
         }
     }
 
@@ -129,7 +129,6 @@ async function watchPageObserver(element: Element, settings: Settings) {
     {
         const dataAnchorArea = element.getAttribute("data-anchor-area");
         const href = element.getAttribute("data-anchor-href");
-
         if (
             dataAnchorArea === "related_content,recommendation" &&
             href !== null &&

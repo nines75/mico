@@ -153,6 +153,7 @@ async function saveNgId(
         data: toRemoveVideoIds satisfies string[],
     });
 }
+
 async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
