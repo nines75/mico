@@ -40,5 +40,5 @@ function getVideoIds(parent: Element) {
 }
 
 function getAnchors(parent: Element) {
-    return parent.querySelectorAll(":scope > a[href^='/watch/']");
+    return parent.querySelectorAll(":scope > div[data-anchor-href^='/watch/']");
 }

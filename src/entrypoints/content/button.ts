@@ -113,13 +113,13 @@ function appendButton(
 }
 
 export function getVideoContent(parent: Element): VideoContent | undefined {
-    const titleElement = parent.querySelector(":scope > div:nth-child(2) > p");
+    const titleElement = parent.querySelector(":scope > div:nth-child(2) > a");
     const iconElement = parent.querySelector(
         "img[src^='https://secure-dcdn.cdn.nimg.jp/']",
     );
 
     // タイトル要素は必ず存在するが、アイコン要素はユーザーが削除済みであれば存在しない
-    if (!(titleElement instanceof HTMLParagraphElement)) return;
+    if (!(titleElement instanceof HTMLAnchorElement)) return;
 
     const title = titleElement.textContent;
     if (title === null) return;

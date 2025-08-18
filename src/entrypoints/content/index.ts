@@ -105,10 +105,10 @@ async function watchPageObserver(element: Element, settings: Settings) {
     // 関連動画(初回ロード時)
     {
         // パターン1: 関連動画の直接の親要素の追加時にレンダリング
-        const attr = element
-            .querySelector(":scope > a")
-            ?.getAttribute("data-anchor-area");
-        if (attr === "related_content,recommendation") {
+        const attr = element.querySelector(
+            ":scope > div[data-anchor-area='related_content,recommendation']",
+        );
+        if (attr !== null) {
             mountToRecommendHandler(element);
 
             return;
@@ -116,7 +116,7 @@ async function watchPageObserver(element: Element, settings: Settings) {
 
         // パターン2: サイドバーの追加時にレンダリング(チャンネル動画の視聴ページで多い？)
         const parent = element.querySelector(
-            ":scope > div > div > div:has(> a[data-anchor-area='related_content,recommendation'])",
+            ":scope > div > div > div:has(> div[data-anchor-area='related_content,recommendation'])",
         );
         if (parent !== null) {
             mountToRecommendHandler(parent);
@@ -128,7 +128,7 @@ async function watchPageObserver(element: Element, settings: Settings) {
     // 関連動画(遷移時)
     {
         const dataAnchorArea = element.getAttribute("data-anchor-area");
-        const href = element.getAttribute("href");
+        const href = element.getAttribute("data-anchor-href");
 
         if (
             dataAnchorArea === "related_content,recommendation" &&

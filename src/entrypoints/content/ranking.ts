@@ -8,7 +8,7 @@ export function renderAllRanking() {
 export function renderRanking(video: Element, anchor: Element) {
     if (!(video instanceof HTMLElement)) return;
 
-    if (anchor.getAttribute("href") === "/watch/dummy-id") {
+    if (anchor.getAttribute("data-decoration-video-id") === "dummy-id") {
         video.style.display = "none";
     } else {
         mountToRanking(video, anchor);
@@ -47,17 +47,16 @@ function getVideoIds() {
 export function getAllVideos() {
     const res: {
         video: HTMLDivElement;
-        anchor: HTMLAnchorElement;
+        anchor: HTMLDivElement;
     }[] = [];
 
-    // 広告動画を除外するためにdata-decoration-video-idを指定
     const anchors = document.querySelectorAll(
-        "a[data-anchor-page='ranking_genre'][data-decoration-video-id]",
+        "div[data-anchor-page='ranking_genre']",
     );
     anchors.forEach((anchor) => {
         const video = anchor.parentElement?.parentElement;
         if (
-            !(anchor instanceof HTMLAnchorElement) ||
+            !(anchor instanceof HTMLDivElement) ||
             !(video instanceof HTMLDivElement)
         )
             return;

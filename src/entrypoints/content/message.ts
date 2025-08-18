@@ -139,14 +139,13 @@ function mountUserId(userId: string) {
 
 function removeRecommend(ids: string[]) {
     const elements = document.querySelectorAll(
-        "a[data-anchor-area='related_content,recommendation'][href^='/watch/']",
+        "div[data-anchor-area='related_content,recommendation'][data-anchor-href^='/watch/']",
     );
     const idsSet = new Set(ids);
 
     for (const element of elements) {
         const videoId = element.getAttribute(attributes.decorationVideoId);
-        if (videoId === null || !(element instanceof HTMLAnchorElement))
-            continue;
+        if (videoId === null || !(element instanceof HTMLDivElement)) continue;
 
         if (idsSet.has(videoId)) {
             element.style.display = "none";
