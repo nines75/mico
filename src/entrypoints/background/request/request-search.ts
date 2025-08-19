@@ -11,15 +11,17 @@ export function searchRequest(
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const [settings] = await Promise.all([
             loadSettings(),
-            setLog({ videoId: null }, details.tabId), // 検索のプレビューのコメントがフィルタリングされないように動画IDをリセットする
+            setLog({ videoId: null }, details.tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
-        const res =
+        const filteredBuf =
             details.type === "main_frame"
                 ? await mainFrameFilter(details, buf, settings)
                 : await xhrFilter(details, buf, settings);
 
-        filter.write(encoder.encode(res === undefined ? buf : res));
+        filter.write(
+            encoder.encode(filteredBuf === undefined ? buf : filteredBuf),
+        );
         filter.disconnect();
     });
 }
