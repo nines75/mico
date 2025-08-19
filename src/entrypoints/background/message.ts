@@ -34,8 +34,8 @@ export async function backgroundMessageHandler(
         if (message.type === "save-ng-id") await saveNgId(message, sender);
         if (message.type === "restore-video-badge")
             await restoreVideoBadge(sender);
-        if (message.type === "filter-search")
-            await filterSearch(message, sender);
+        if (message.type === "filter-old-search")
+            await filterOldSearch(message, sender);
     } catch (e) {
         console.error(e);
     }
@@ -165,7 +165,7 @@ async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
     await changeBadgeState(count, colors.videoBadge, tabId);
 }
 
-async function filterSearch(
+async function filterOldSearch(
     message: Message,
     sender: browser.runtime.MessageSender,
 ) {
@@ -181,7 +181,7 @@ async function filterSearch(
     await Promise.all([
         saveLog(filteredData, tabId, true),
         browser.tabs.sendMessage(tabId, {
-            type: "remove-search",
+            type: "remove-old-search",
             data: filteredData.filteredIds satisfies Set<string>,
         }),
     ]);
