@@ -6,6 +6,7 @@ import { recommendRequest } from "./request/request-recommend.js";
 import { mainRequest } from "./request/request-main.js";
 import { isWatchPage } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
+import { searchRequest } from "./request/request-search.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -28,7 +29,7 @@ export default defineBackground(() => {
         ["blocking"],
     );
 
-    // おすすめ動画APIのリクエストを監視
+    // 関連動画のリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
         recommendRequest,
         {
@@ -41,11 +42,24 @@ export default defineBackground(() => {
         ["blocking"],
     );
 
-    // ランキングAPIのリクエストを監視
+    // ランキングのリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
         rankingRequest,
         {
             urls: ["https://www.nicovideo.jp/ranking/genre*"],
+            types: ["main_frame", "xmlhttprequest"],
+        },
+        ["blocking"],
+    );
+
+    // 検索のリクエストを監視
+    browser.webRequest.onBeforeRequest.addListener(
+        searchRequest,
+        {
+            urls: [
+                "https://www.nicovideo.jp/search/*",
+                "https://www.nicovideo.jp/tag/*",
+            ],
             types: ["main_frame", "xmlhttprequest"],
         },
         ["blocking"],

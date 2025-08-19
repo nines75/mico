@@ -39,7 +39,12 @@ export default defineContentScript({
         }
 
         if (isSearchPage(location.href)) {
-            await renderSearch();
+            const id = document.body.querySelector(":scope > div")?.id;
+
+            // 新検索ページでは実行しない
+            if (id !== "root") {
+                await renderSearch();
+            }
         }
     },
 });
