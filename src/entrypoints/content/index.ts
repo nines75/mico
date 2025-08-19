@@ -8,7 +8,7 @@ import { defineContentScript } from "#imports";
 import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
 import { isRankingVideo, renderAllRanking, renderRanking } from "./ranking.js";
-import { mountToAllSearch, mountToSearch, renderSearch } from "./search.js";
+import { renderSearch } from "./search.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -67,10 +67,6 @@ async function observerCallback(
 
             if (isRankingPage(location.href)) {
                 rankingPageObserver(node);
-            }
-
-            if (isSearchPage(location.href)) {
-                searchPageObserver(node);
             }
         }
     }
@@ -179,76 +175,6 @@ function rankingPageObserver(element: Element) {
             renderRanking(element, anchor);
 
             return;
-        }
-    }
-}
-
-function searchPageObserver(element: Element) {
-    // 旧検索ページでは実行しない
-    const id = document.body.querySelector(":scope > div")?.id;
-    if (id !== "root") return;
-
-    // 初回ロード/検索とタグ検索の切り替え
-    {
-        // ケース1: 2つ上
-        {
-            const sample = element.querySelector(
-                ":scope > div > [data-decoration-video-id][data-anchor-area='main']",
-            );
-            if (sample !== null) {
-                mountToAllSearch(element);
-                return;
-            }
-        }
-
-        // ケース2: 3つ上
-        {
-            const sample = element.querySelector(
-                ":scope > div > div > [data-decoration-video-id][data-anchor-area='main']",
-            );
-            const parent = element.querySelector(":scope > div:nth-child(2)");
-            if (sample !== null && parent !== null) {
-                mountToAllSearch(parent);
-                return;
-            }
-        }
-
-        // ケース3: rootの直下
-        {
-            const targetId = element.parentElement?.id;
-            if (element.id === "" && targetId === "root") {
-                const parent = document.querySelector(
-                    "div:has(> div > [data-decoration-video-id][data-anchor-area='main'])",
-                );
-                if (parent !== null) {
-                    mountToAllSearch(parent);
-                    return;
-                }
-            }
-        }
-    }
-
-    // 遷移時
-    {
-        // ケース1: data-decoration-video-idがレンダリング時にある場合(タグ検索)
-        {
-            const hasAttribute = element.hasAttribute(
-                "data-decoration-video-id",
-            );
-            if (hasAttribute) {
-                mountToSearch(element);
-                return;
-            }
-        }
-
-        // ケース2: data-decoration-video-idがレンダリング時にない場合(検索,動画IDの抽出が必要)
-        {
-            const hasTabindex = element.hasAttribute("tabindex");
-            const area = element.getAttribute("data-anchor-area");
-            if (hasTabindex && area === "main") {
-                mountToSearch(element);
-                return;
-            }
         }
     }
 }

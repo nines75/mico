@@ -1,6 +1,5 @@
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import { getVideoContent, mountButton } from "./button.js";
-import { attributes } from "@/utils/config.js";
+import { mountButton } from "./button.js";
 
 interface SearchContent {
     element: Element;
@@ -47,43 +46,4 @@ function getSearchContent(): SearchContent[] {
     });
 
     return res;
-}
-
-export function mountToAllSearch(parent: Element) {
-    parent
-        .querySelectorAll(":scope > div > div")
-        .forEach((element) => mountToSearch(element));
-}
-
-export function mountToSearch(video: Element) {
-    const videoId = video.getAttribute(attributes.decorationVideoId);
-    const videoContent = getVideoContent(video);
-    if (videoContent === undefined) return;
-
-    mountButton(
-        video,
-        videoId,
-        {
-            title: videoContent.title,
-            position: { right: 10, bottom: 30 },
-        },
-        {
-            message: {
-                allId: getVideoIds(),
-                userName: videoContent.userName,
-                type: "ranking",
-            },
-            position: { right: 0, bottom: 30 },
-        },
-    );
-}
-
-function getVideoIds() {
-    return [
-        ...document.querySelectorAll(
-            "[data-decoration-video-id][data-anchor-area='main']",
-        ),
-    ]
-        .map((video) => video.getAttribute(attributes.decorationVideoId))
-        .filter((id) => id !== null);
 }
