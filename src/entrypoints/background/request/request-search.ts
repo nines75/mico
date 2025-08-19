@@ -1,4 +1,4 @@
-import { loadSettings } from "@/utils/storage.js";
+import { loadSettings, setLog } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
@@ -9,7 +9,10 @@ export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const settings = await loadSettings();
+        const [settings] = await Promise.all([
+            loadSettings(),
+            setLog({ videoId: null }, details.tabId), // 検索のプレビューのコメントがフィルタリングされないように動画IDをリセットする
+        ]);
 
         const res =
             details.type === "main_frame"
