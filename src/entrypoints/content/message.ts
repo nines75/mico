@@ -23,8 +23,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                 removeRecommend(message.data as string[]);
             if (message.type === "remove-ranking")
                 removeRanking(message.data as string[]);
-            if (message.type === "remove-search")
-                removeSearch(message.data as Set<string>);
+            if (message.type === "remove-old-search")
+                removeOldSearch(message.data as Set<string>);
         } catch (e) {
             console.error(e);
         }
@@ -166,7 +166,7 @@ export function removeRanking(ids: string[]) {
     });
 }
 
-export function removeSearch(ids: Set<string>) {
+export function removeOldSearch(ids: Set<string>) {
     const elements = document.querySelectorAll("li[data-video-id]");
     elements.forEach((element) => {
         const videoId = element.getAttribute("data-video-id");
