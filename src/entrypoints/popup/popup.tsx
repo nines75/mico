@@ -190,7 +190,7 @@ async function onClickNgVideoButton() {
         return;
     }
 
-    await addNgId(new Set([formatNgId(videoId, title, settings)]));
+    await addNgId(formatNgId(videoId, title, settings));
 }
 
 async function onClickNgUserButton() {
@@ -206,5 +206,5 @@ async function onClickNgUserButton() {
         return;
     }
 
-    await addNgId(new Set([formatNgId(userId, userName, settings)]));
+    await addNgId(formatNgId(userId, userName, settings));
 }

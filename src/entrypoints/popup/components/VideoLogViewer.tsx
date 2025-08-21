@@ -208,7 +208,7 @@ async function onClickId(id: string, type: "user" | "video") {
     })();
     if (!confirm(text.replace("{target}", id))) return;
 
-    await removeNgId(new Set([id]));
+    await removeNgId(id);
 }
 
 async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
@@ -218,5 +218,5 @@ async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     const settings = useStorageStore.getState().settings;
     const userName = video.owner?.name ?? undefined;
 
-    await addNgId(new Set([formatNgId(userId, userName, settings)]));
+    await addNgId(formatNgId(userId, userName, settings));
 }

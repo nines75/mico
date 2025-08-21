@@ -130,31 +130,25 @@ export class IdFilter extends Filter<IdLog> {
     }
 }
 
-export async function addNgId(ids: Set<string>) {
-    if (ids.size === 0) return;
-
-    const str = [...ids].join("\n");
+export async function addNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
-        const value = settings.ngId === "" ? str : `${str}\n${settings.ngId}`;
 
         return {
-            ngId: value,
+            ngId: `${id}\n${settings.ngId}`,
         };
     };
 
     await setSettings(func);
 }
 
-export async function removeNgId(ids: Set<string>) {
-    if (ids.size === 0) return;
-
+export async function removeNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
             extractRule(settings.ngId)
-                .filter((data) => ids.has(data.rule))
+                .filter((data) => id === data.rule)
                 .map((data) => data.index),
         );
         const value = settings.ngId
@@ -188,7 +182,7 @@ export async function addNgIdFromUrl(url: string | undefined) {
         return;
     }
 
-    await addNgId(new Set([id]));
+    await addNgId(id);
     await sendNotification(
         messages.ngId.additionSuccess.replace("{target}", id),
     );

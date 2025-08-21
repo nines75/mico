@@ -112,11 +112,9 @@ export async function addNgUserId(userIds: Set<string>) {
     const str = [...userIds].join("\n");
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
-        const value =
-            settings.ngUserId === "" ? str : `${str}\n${settings.ngUserId}`;
 
         return {
-            ngUserId: value,
+            ngUserId: `${str}\n${settings.ngUserId}`,
         };
     };
 
