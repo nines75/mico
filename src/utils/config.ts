@@ -128,7 +128,7 @@ export const messages = {
         // 追加
         additionSuccess: "ユーザーのNG登録に成功しました",
         additionFailed: "ユーザーのNG登録に失敗しました",
-        notifyAddition: "{target}件のユーザーIDがNGリストに追加されました",
+        notifyAddition: "{target}件のユーザーIDをNG登録しました",
         confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n{target}",
         confirmAdditionByVideo: "この動画を投稿したユーザーをNG登録しますか？",
 
