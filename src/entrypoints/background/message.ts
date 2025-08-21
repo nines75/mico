@@ -1,10 +1,6 @@
-import { colors, messages } from "@/utils/config.js";
+import { messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
-import {
-    changeBadgeState,
-    savePlaybackTime,
-    sendNotification,
-} from "@/utils/util.js";
+import { savePlaybackTime, sendNotification } from "@/utils/util.js";
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -30,8 +26,6 @@ export async function backgroundMessageHandler(
         if (message.type === "save-ng-user-id")
             await saveNgUserId(message, sender);
         if (message.type === "get-user-id") await getUserId(message, sender);
-        if (message.type === "restore-video-badge")
-            await restoreVideoBadge(sender);
         if (message.type === "filter-old-search")
             await filterOldSearch(message, sender);
     } catch (e) {
@@ -102,17 +96,6 @@ async function saveNgUserId(
     }
 
     await Promise.all(tasks);
-}
-
-async function restoreVideoBadge(sender: browser.runtime.MessageSender) {
-    const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
-
-    const log = await getLogData(tabId);
-    const count = log?.videoFilterLog?.count.totalBlocked;
-    if (count === undefined) return;
-
-    await changeBadgeState(count, colors.videoBadge, tabId);
 }
 
 async function filterOldSearch(
