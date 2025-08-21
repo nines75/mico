@@ -15,6 +15,11 @@ export default function VideoFilter() {
                 ))}
                 <VideoFilterArea />
             </H2>
+            <H2 name="通知">
+                {videoFilterSettings.checkbox.notification.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
+            </H2>
             <H2 name="その他">
                 {videoFilterSettings.checkbox.other.map((props) => (
                     <Checkbox key={props.id} {...props} />

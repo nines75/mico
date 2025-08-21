@@ -46,16 +46,21 @@ export const defaultSettings: Settings = {
     // 動画フィルター
 
     isVideoFilterEnabled: true,
+
+    /// フィルタリング
     isHidePaidVideo: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
-    isAddNgContext: false,
-
-    /// フィルタリング
     selectedVideoFilter: "ngId",
     ngId: "",
     ngTitle: "",
     ngUserName: "",
+
+    /// 通知
+    isNotifyAddNgId: true,
+
+    /// その他
+    isAddNgContext: false,
 
     // 拡張ニコる
     isExpandNicoruEnabled: false,
@@ -394,6 +399,14 @@ export const videoFilterSettings = {
                 },
             },
         ],
+        notification: [
+            {
+                id: "isNotifyAddNgId",
+                label: "NG登録時に通知する",
+                details:
+                    "コンテキストメニューやクリップボードからNG登録した際に通知されます。",
+            },
+        ],
         other: [
             {
                 id: "isAddNgContext",
@@ -421,6 +434,7 @@ export const videoFilterSettings = {
     checkbox: {
         top: CheckboxProps[];
         filtering: CheckboxProps[];
+        notification: CheckboxProps[];
         other: CheckboxProps[];
     };
     filter: VideoFilterAreaProps[];

@@ -46,16 +46,21 @@ export interface Settings {
     // 動画フィルター
 
     isVideoFilterEnabled: boolean;
+
+    /// フィルタリング
     isHidePaidVideo: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
-    isAddNgContext: boolean;
-
-    /// フィルタリング
     selectedVideoFilter: VideoFilterId;
     ngId: string;
     ngUserName: string;
     ngTitle: string;
+
+    /// 通知
+    isNotifyAddNgId: boolean;
+
+    /// その他
+    isAddNgContext: boolean;
 
     // 拡張ニコる
     isExpandNicoruEnabled: boolean;

@@ -175,6 +175,7 @@ export function formatNgId(
 }
 
 export async function addNgIdFromUrl(url: string | undefined) {
+    const settings = await loadSettings();
     const id = url?.match(pattern.regex.extractId)?.[1];
 
     if (id === undefined) {
@@ -183,7 +184,10 @@ export async function addNgIdFromUrl(url: string | undefined) {
     }
 
     await addNgId(id);
-    await sendNotification(
-        messages.ngId.additionSuccess.replace("{target}", id),
-    );
+
+    if (settings.isNotifyAddNgId) {
+        await sendNotification(
+            messages.ngId.additionSuccess.replace("{target}", id),
+        );
+    }
 }
