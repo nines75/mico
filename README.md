@@ -2,7 +2,7 @@
 
 ニコニコ動画にいくつかの便利な機能を追加するFirefox用の拡張機能
 
-[![インストールページへのリンク](src/assets/firefox-button.png)](https://addons.mozilla.org/addon/mico)
+[![インストールページへのリンク](src/assets/amo-button.png)](https://addons.mozilla.org/addon/mico)
 
 ## 機能
 
