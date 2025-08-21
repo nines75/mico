@@ -13,23 +13,27 @@ export default defineConfig({
         const isProd = mode === "production";
 
         return {
-            plugins: isProd
-                ? [
-                      license({
-                          thirdParty: {
-                              multipleVersions: true,
-                              output: {
-                                  file: path.resolve(
-                                      __dirname,
-                                      ".output",
-                                      "firefox-mv2",
-                                      "third-party-notices.txt",
-                                  ),
-                              },
-                          },
-                      }),
-                  ]
-                : [],
+            build: {
+                rollupOptions: {
+                    plugins: isProd
+                        ? [
+                              license({
+                                  thirdParty: {
+                                      multipleVersions: true,
+                                      output: {
+                                          file: path.resolve(
+                                              __dirname,
+                                              ".output",
+                                              "firefox-mv2",
+                                              "third-party-notices.txt",
+                                          ),
+                                      },
+                                  },
+                              }),
+                          ]
+                        : [],
+                },
+            },
         };
     },
     manifest: ({ mode }) => {
