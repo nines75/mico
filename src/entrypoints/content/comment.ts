@@ -71,8 +71,6 @@ export function getCommentContent(
     const nicoru = nicoruElement.textContent;
     const time = timeElement.textContent;
 
-    if (text === null || nicoru === null || time === null) return;
-
     return {
         textElement,
         text,

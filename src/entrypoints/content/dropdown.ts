@@ -79,7 +79,6 @@ function getDropdownContent(element: Element): DropdownContent | undefined {
     if (!(sampleButtonElement instanceof HTMLButtonElement)) return;
 
     const commentNoText = commentNoElement.textContent;
-    if (commentNoText === null) return;
 
     return {
         buttonsParentElement,
