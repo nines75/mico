@@ -5,9 +5,9 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
-import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
-import { isRankingVideo, renderAllRanking, renderRanking } from "./ranking.js";
+import { isSearchPage, isWatchPage } from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
+import "@/assets/ranking.css";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -54,10 +54,6 @@ async function observerCallback(
             if (isWatchPage(location.href)) {
                 await watchPageObserver(node, settings);
             }
-
-            if (isRankingPage(location.href)) {
-                rankingPageObserver(node);
-            }
         }
     }
 }
@@ -88,39 +84,6 @@ async function watchPageObserver(element: Element, settings: Settings) {
     {
         if (element.className === "z_dropdown") {
             await mountToDropdown(element, settings);
-
-            return;
-        }
-    }
-}
-
-function rankingPageObserver(element: Element) {
-    // 初回ロード時
-    {
-        if (element.querySelector(":scope > main") !== null) {
-            renderAllRanking();
-
-            return;
-        }
-    }
-
-    // 遷移時(視聴ページから戻った場合)
-    {
-        const parent = element.parentElement;
-        if (parent?.ariaLabel === "nicovideo-content") {
-            renderAllRanking();
-
-            return;
-        }
-    }
-
-    // 遷移時(ページめくり)
-    {
-        const anchor = element.querySelector(
-            ":scope > div > a[data-anchor-page='ranking_genre'][data-decoration-video-id]",
-        );
-        if (anchor !== null && isRankingVideo(element)) {
-            renderRanking(element, anchor);
 
             return;
         }
