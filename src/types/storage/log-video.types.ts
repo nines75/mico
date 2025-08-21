@@ -13,7 +13,6 @@ export interface IdLog {
 }
 
 export type VideoData = Map<string, NiconicoVideo>;
-export type VideoIdToUserId = Map<string, string>;
 
 export interface VideoFilterLog {
     count: VideoCount;
@@ -49,5 +48,4 @@ export interface VideoFiltering {
     ngTitle: CommonLog;
 
     videos: VideoData;
-    videoIdToUserId: VideoIdToUserId;
 }

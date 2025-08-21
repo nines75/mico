@@ -42,6 +42,8 @@ export default defineConfig({
                 },
             ],
             permissions: [
+                "clipboardRead",
+                "contextMenus",
                 "notifications",
                 "storage",
                 "webRequest",
@@ -64,6 +66,14 @@ export default defineConfig({
                     suggested_key: isDev
                         ? {
                               default: "Alt+I",
+                          }
+                        : {},
+                },
+                "add-ng-from-clipboard": {
+                    description: "クリップボードからNG登録",
+                    suggested_key: isDev
+                        ? {
+                              default: "Alt+N",
                           }
                         : {},
                 },

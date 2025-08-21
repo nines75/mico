@@ -1,5 +1,4 @@
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import { mountButton } from "./button.js";
 
 interface OldSearchContent {
     element: Element;
@@ -12,13 +11,6 @@ export async function renderOldSearch() {
     await browser.runtime.sendMessage({
         type: "filter-old-search",
         data: searchContent.map(({ video }) => video) satisfies NiconicoVideo[],
-    });
-
-    searchContent.forEach(({ element, video }) => {
-        mountButton(element, video.id, {
-            title: video.title,
-            position: { right: 0, bottom: 0 },
-        });
     });
 }
 

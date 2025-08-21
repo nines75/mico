@@ -120,6 +120,10 @@ export const buttons = {
 } as const;
 
 export const messages = {
+    ngId: {
+        additionSuccess: `以下のIDをNG登録しました\n\n{target}`,
+        extractionFailed: "IDの抽出に失敗しました",
+    },
     ngUserId: {
         // 追加
         additionSuccess: "ユーザーのNG登録に成功しました",
@@ -190,10 +194,14 @@ export const pattern = {
     rankingPageUrl: "https://www.nicovideo.jp/ranking/genre",
     searchPageUrl: "https://www.nicovideo.jp/search/",
     tagSearchPageUrl: "https://www.nicovideo.jp/tag/",
+    userPageUrlGlob: "https://www.nicovideo.jp/user/*",
+    channelPageUrlGlob: "https://ch.nicovideo.jp/channel/*",
     regex: {
         checkRawUserId: /^(?:ch)?\d+$/,
         checkVideoId: /^(?:sm|so|nl|nm)\d+$/,
         extractUserId: /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/,
+        extractId:
+            /^https:\/\/(?:www\.nicovideo\.jp\/user|www\.nicovideo\.jp\/watch|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
     },
 } as const;
 

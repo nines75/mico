@@ -5,7 +5,6 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
-import { mountToRecommend, mountToRecommendHandler } from "./recommend.js";
 import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
 import { isRankingVideo, renderAllRanking, renderRanking } from "./ranking.js";
 import { renderOldSearch } from "./search.js";
@@ -89,48 +88,6 @@ async function watchPageObserver(element: Element, settings: Settings) {
     {
         if (element.className === "z_dropdown") {
             await mountToDropdown(element, settings);
-
-            return;
-        }
-    }
-
-    // 関連動画(初回ロード時)
-    {
-        // パターン1: 関連動画の直接の親要素の追加時にレンダリング
-        {
-            const sample = element.querySelector(
-                ":scope > div[data-anchor-area='related_content,recommendation']",
-            );
-            if (sample !== null) {
-                mountToRecommendHandler(element);
-
-                return;
-            }
-        }
-
-        // パターン2: サイドバーの追加時にレンダリング(チャンネル動画の視聴ページで多い？)
-        {
-            const parent = element.querySelector(
-                ":scope > div > div > div:has(> div[data-anchor-area='related_content,recommendation'])",
-            );
-            if (parent !== null) {
-                mountToRecommendHandler(parent);
-
-                return;
-            }
-        }
-    }
-
-    // 関連動画(遷移時)
-    {
-        const dataAnchorArea = element.getAttribute("data-anchor-area");
-        const href = element.getAttribute("data-anchor-href");
-        if (
-            dataAnchorArea === "related_content,recommendation" &&
-            href !== null &&
-            href.startsWith("/watch/")
-        ) {
-            mountToRecommend(element);
 
             return;
         }

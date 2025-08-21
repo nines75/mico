@@ -32,9 +32,6 @@ importers:
       deepmerge-ts:
         specifier: ^7.1.5
         version: 7.1.5
-      lucide:
-        specifier: ^0.534.0
-        version: 0.534.0
       lucide-react:
         specifier: ^0.534.0
         version: 0.534.0(react@19.1.1)
@@ -2190,9 +2187,6 @@ packages:
     resolution: {integrity: sha512-4Bz7rujQ/mXHqCwjx09ih/Q9SCizz9CjBV5repw9YSHZZZaop9/Oj0RgCDt6WdEaeAPfbcZ8l2b4jzApStqgNw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  lucide@0.534.0:
-    resolution: {integrity: sha512-NZrg/+MFmUt6kaFxYrxFJH0TlwWXObRqClCKwbCdaABcNuAbGg95X7QcwP8WzgvPeMgYgDdVwBc/fVJx2Icsmw==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -5519,8 +5513,6 @@ snapshots:
   lucide-react@0.534.0(react@19.1.1):
     dependencies:
       react: 19.1.1
-
-  lucide@0.534.0: {}
 
   magic-string@0.30.17:
     dependencies:

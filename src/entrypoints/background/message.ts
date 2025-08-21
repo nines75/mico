@@ -7,7 +7,6 @@ import {
 } from "@/utils/util.js";
 import { Message } from "../content/message.js";
 import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
-import { addNgId, formatNgId } from "./video-filter/filter/id-filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -31,7 +30,6 @@ export async function backgroundMessageHandler(
         if (message.type === "save-ng-user-id")
             await saveNgUserId(message, sender);
         if (message.type === "get-user-id") await getUserId(message, sender);
-        if (message.type === "save-ng-id") await saveNgId(message, sender);
         if (message.type === "restore-video-badge")
             await restoreVideoBadge(sender);
         if (message.type === "filter-old-search")
@@ -104,54 +102,6 @@ async function saveNgUserId(
     }
 
     await Promise.all(tasks);
-}
-
-export interface NgIdMessage {
-    videoId: string;
-    title?: string;
-    user?: {
-        allId: string[];
-        userName: string | undefined;
-        type: "recommend" | "ranking";
-    };
-}
-
-async function saveNgId(
-    message: Message,
-    sender: browser.runtime.MessageSender,
-) {
-    const data = message.data as NgIdMessage;
-    const settings = await loadSettings();
-
-    // 動画IDをNG追加
-    if (data.title !== undefined) {
-        await addNgId(
-            new Set([formatNgId(data.videoId, data.title, settings)]),
-        );
-        return;
-    }
-
-    const tabId = sender.tab?.id;
-    if (tabId === undefined || data.user === undefined) return;
-
-    const log = await getLogData(tabId);
-    const videoIdToUserId = log?.videoFilterLog?.filtering.videoIdToUserId;
-    const userId = videoIdToUserId?.get(data.videoId);
-    if (videoIdToUserId === undefined || userId === undefined) {
-        await sendNotification(messages.ngUserId.additionFailed);
-        return;
-    }
-
-    // ユーザーIDをNG追加
-    await addNgId(new Set([formatNgId(userId, data.user.userName, settings)]));
-
-    const toRemoveVideoIds = data.user.allId.filter(
-        (id) => videoIdToUserId.get(id) === userId,
-    );
-    await browser.tabs.sendMessage(tabId, {
-        type: `remove-${data.user.type}`,
-        data: toRemoveVideoIds satisfies string[],
-    });
 }
 
 async function restoreVideoBadge(sender: browser.runtime.MessageSender) {

@@ -7,6 +7,8 @@ import { mainRequest } from "./request/request-main.js";
 import { isWatchPage } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
+import { addNgIdFromUrl } from "./video-filter/filter/id-filter.js";
+import { pattern } from "@/utils/config.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -92,6 +94,11 @@ export default defineBackground(() => {
                 url: browser.runtime.getURL("/options.html"),
             });
         }
+
+        if (command === "add-ng-from-clipboard") {
+            const text = await navigator.clipboard.readText();
+            await addNgIdFromUrl(text);
+        }
     });
 
     // コンテンツスクリプトからメッセージを受け取った際のコールバック関数を設定
@@ -109,5 +116,23 @@ export default defineBackground(() => {
         }
 
         await removeData(keys);
+    });
+
+    browser.contextMenus.create({
+        id: "add-ng",
+        title: "NG登録",
+        contexts: ["link"],
+        documentUrlPatterns: [pattern.topPageUrlGlob],
+        targetUrlPatterns: [
+            pattern.watchPageUrlGlob,
+            pattern.userPageUrlGlob,
+            pattern.channelPageUrlGlob,
+        ],
+    });
+
+    browser.contextMenus.onClicked.addListener(async (data) => {
+        if (data.menuItemId === "add-ng") {
+            await addNgIdFromUrl(data.linkUrl);
+        }
     });
 });

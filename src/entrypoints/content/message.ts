@@ -1,6 +1,4 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
-import { attributes } from "@/utils/config.js";
-import { getAllVideos } from "./ranking.js";
 
 export interface Message {
     type: string;
@@ -19,10 +17,6 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
             if (message.type === "quick-edit") openQuickEdit(ctx);
             if (message.type === "mount-user-id")
                 mountUserId(message.data as string);
-            if (message.type === "remove-recommend")
-                removeRecommend(message.data as string[]);
-            if (message.type === "remove-ranking")
-                removeRanking(message.data as string[]);
             if (message.type === "remove-old-search")
                 removeOldSearch(message.data as Set<string>);
         } catch (e) {
@@ -135,35 +129,6 @@ function mountUserId(userId: string) {
     });
 
     dropdown.appendChild(p);
-}
-
-function removeRecommend(ids: string[]) {
-    const elements = document.querySelectorAll(
-        "div[data-anchor-area='related_content,recommendation'][data-anchor-href^='/watch/']",
-    );
-    const idsSet = new Set(ids);
-
-    for (const element of elements) {
-        const videoId = element.getAttribute(attributes.decorationVideoId);
-        if (videoId === null || !(element instanceof HTMLDivElement)) continue;
-
-        if (idsSet.has(videoId)) {
-            element.style.display = "none";
-        }
-    }
-}
-
-export function removeRanking(ids: string[]) {
-    const idsSet = new Set(ids);
-
-    getAllVideos().forEach(({ video, anchor }) => {
-        const videoId = anchor.getAttribute(attributes.decorationVideoId);
-        if (videoId === null) return;
-
-        if (idsSet.has(videoId)) {
-            video.style.display = "none";
-        }
-    });
 }
 
 export function removeOldSearch(ids: Set<string>) {

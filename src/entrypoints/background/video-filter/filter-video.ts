@@ -2,7 +2,6 @@ import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
 import { TitleFilter } from "./filter/title-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { VideoIdToUserId } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { PaidFilter } from "./filter/paid-filter.js";
 import { ViewsFilter } from "./filter/views-filter.js";
@@ -17,7 +16,6 @@ export interface FilteredData {
     };
     loadedVideoCount: number;
     filteringTime: number;
-    videoIdToUserId: VideoIdToUserId;
     filteredIds: Set<string>;
 }
 
@@ -48,16 +46,6 @@ export function filterVideo(
     const data = { videos };
     Object.values(filters).forEach((filter) => filter.filtering(data));
 
-    const videoIdToUserId = new Map(
-        data.videos.reduce<[string, string][]>((res, video) => {
-            const userId = video.owner?.id;
-            if (userId !== undefined) {
-                res.push([video.id, userId]);
-            }
-
-            return res;
-        }, []),
-    );
     const filteredIds = new Set(
         Object.values(filters).flatMap((filter) => [
             ...filter.getVideos().keys(),
@@ -70,7 +58,6 @@ export function filterVideo(
         filters,
         loadedVideoCount: videos.length,
         filteringTime: end - start,
-        videoIdToUserId,
         filteredIds,
     };
 }

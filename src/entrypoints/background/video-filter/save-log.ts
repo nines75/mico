@@ -64,7 +64,6 @@ function getLog(filteredData: FilteredData): VideoFiltering {
         ngUserName: userNameFilter.getLog(),
         ngTitle: titleFilter.getLog(),
         videos: videos,
-        videoIdToUserId: filteredData.videoIdToUserId,
     };
 }
 

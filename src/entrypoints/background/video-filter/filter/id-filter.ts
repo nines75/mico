@@ -1,8 +1,8 @@
 import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern } from "@/utils/config.js";
+import { messages, pattern } from "@/utils/config.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
-import { countCommonLog } from "@/utils/util.js";
+import { countCommonLog, sendNotification } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
 import { extractRule } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -178,4 +178,18 @@ export function formatNgId(
     return settings.isAddNgContext && context !== undefined
         ? `${id} # ${context}`
         : id;
+}
+
+export async function addNgIdFromUrl(url: string | undefined) {
+    const id = url?.match(pattern.regex.extractId)?.[1];
+
+    if (id === undefined) {
+        await sendNotification(messages.ngId.extractionFailed);
+        return;
+    }
+
+    await addNgId(new Set([id]));
+    await sendNotification(
+        messages.ngId.additionSuccess.replace("{target}", id),
+    );
 }
