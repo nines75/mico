@@ -1,21 +1,14 @@
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
-interface OldSearchContent {
-    element: Element;
-    video: NiconicoVideo;
-}
-
 export async function renderOldSearch() {
-    const searchContent = getOldSearchContent();
-
     await browser.runtime.sendMessage({
         type: "filter-old-search",
-        data: searchContent.map(({ video }) => video) satisfies NiconicoVideo[],
+        data: getVideos() satisfies NiconicoVideo[],
     });
 }
 
-function getOldSearchContent(): OldSearchContent[] {
-    const res: OldSearchContent[] = [];
+function getVideos(): NiconicoVideo[] {
+    const res: NiconicoVideo[] = [];
 
     const elements = document.querySelectorAll("li[data-video-id]");
     elements.forEach((element) => {
@@ -28,13 +21,11 @@ function getOldSearchContent(): OldSearchContent[] {
 
         const paymentElement = element.querySelector(".iconPayment");
 
-        const video: NiconicoVideo = {
+        res.push({
             id: videoId,
             title,
             isPaymentRequired: paymentElement !== null,
-        };
-
-        res.push({ element, video });
+        });
     });
 
     return res;
