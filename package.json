@@ -1,6 +1,6 @@
 {
     "name": "mico",
-    "description": "ニコニコ動画に便利な機能を追加します。",
+    "description": "ニコニコ動画用のブラウザ拡張機能",
     "version": "4.5.0",
     "type": "module",
     "scripts": {

@@ -1,6 +1,6 @@
 # mico
 
-ニコニコ動画にいくつかの便利な機能を追加するFirefox用の拡張機能
+ニコニコ動画用のブラウザ拡張機能
 
 [![インストールページへのリンク](src/assets/amo-button.png)](https://addons.mozilla.org/addon/mico)
 
