@@ -72,6 +72,10 @@ async function searchDataFilter(
         (video) => !filteredData.filteredIds.has(video.id),
     );
 
+    if (settings.isHideCommentPreview) {
+        filteredVideos.forEach((video) => (video.latestCommentSummary = ""));
+    }
+
     searchData.data.response.$getSearchVideoV2.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(searchData));
 

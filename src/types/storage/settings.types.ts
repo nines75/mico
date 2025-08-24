@@ -49,6 +49,7 @@ export interface Settings {
 
     /// フィルタリング
     isHidePaidVideo: boolean;
+    isHideCommentPreview: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
     selectedVideoFilter: VideoFilterId;

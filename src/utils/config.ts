@@ -49,6 +49,7 @@ export const defaultSettings: Settings = {
 
     /// フィルタリング
     isHidePaidVideo: false,
+    isHideCommentPreview: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
     selectedVideoFilter: "ngId",
@@ -387,6 +388,10 @@ export const videoFilterSettings = {
             {
                 id: "isHidePaidVideo",
                 label: "有料動画を非表示にする",
+            },
+            {
+                id: "isHideCommentPreview",
+                label: "コメントプレビューを非表示にする",
             },
             {
                 id: "isViewsFilterEnabled",

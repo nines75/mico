@@ -42,6 +42,10 @@ export function recommendRequest(
             );
         }
 
+        if (settings.isHideCommentPreview) {
+            videos.forEach((video) => (video.latestCommentSummary = ""));
+        }
+
         filter.write(encoder.encode(JSON.stringify(recommendData)));
         filter.disconnect();
 
