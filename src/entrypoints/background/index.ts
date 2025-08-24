@@ -9,6 +9,7 @@ import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { addNgIdFromUrl } from "./video-filter/filter/id-filter.js";
 import { pattern } from "@/utils/config.js";
+import { playlistSearchRequest } from "./request/request-playlist-search.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -63,6 +64,16 @@ export default defineBackground(() => {
                 "https://www.nicovideo.jp/tag/*",
             ],
             types: ["main_frame", "xmlhttprequest"],
+        },
+        ["blocking"],
+    );
+
+    // プレイリスト(検索)のリクエストを監視
+    browser.webRequest.onBeforeRequest.addListener(
+        playlistSearchRequest,
+        {
+            urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
+            types: ["xmlhttprequest"],
         },
         ["blocking"],
     );
