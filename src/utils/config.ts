@@ -116,10 +116,6 @@ export const defaultSettings: Settings = {
     popupSelectedTab: "commentFilter",
 } as const;
 
-export const attributes = {
-    decorationVideoId: "data-decoration-video-id",
-} as const;
-
 export const buttons = {
     AddNgUserId: "ユーザーをNG登録({target})",
     AddSpecificNgUserId: "この動画だけユーザーをNG登録({target})",
@@ -168,6 +164,9 @@ export const messages = {
         // toggle
         commentFilterDisabled: "コメントフィルターが無効になっています",
         videoFilterDisabled: "動画フィルターが無効になっています",
+    },
+    other: {
+        permissionRequired: "以下の権限が必要です\n\n{target}",
     },
 } as const;
 

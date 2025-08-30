@@ -46,7 +46,6 @@ export default defineConfig({
                 },
             ],
             permissions: [
-                "clipboardRead",
                 "contextMenus",
                 "notifications",
                 "storage",
@@ -56,6 +55,7 @@ export default defineConfig({
                 "https://nvapi.nicovideo.jp/",
                 "https://public.nvcomment.nicovideo.jp/",
             ],
+            optional_permissions: ["clipboardRead"],
             commands: {
                 "open-settings": {
                     description: "設定ページを開く",

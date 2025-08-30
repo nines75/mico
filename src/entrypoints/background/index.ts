@@ -4,11 +4,11 @@ import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
 import { mainRequest } from "./request/request-main.js";
-import { isWatchPage } from "@/utils/util.js";
+import { isWatchPage, sendNotification } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { addNgIdFromUrl } from "./video-filter/filter/id-filter.js";
-import { pattern } from "@/utils/config.js";
+import { messages, pattern } from "@/utils/config.js";
 import { playlistSearchRequest } from "./request/request-playlist-search.js";
 
 export default defineBackground(() => {
@@ -107,8 +107,21 @@ export default defineBackground(() => {
         }
 
         if (command === "add-ng-from-clipboard") {
-            const text = await navigator.clipboard.readText();
-            await addNgIdFromUrl(text);
+            const hasPermission = await browser.permissions.contains({
+                permissions: ["clipboardRead"],
+            });
+
+            if (hasPermission) {
+                const text = await navigator.clipboard.readText();
+                await addNgIdFromUrl(text);
+            } else {
+                await sendNotification(
+                    messages.other.permissionRequired.replace(
+                        "{target}",
+                        "クリップボードからのデータ取得",
+                    ),
+                );
+            }
         }
     });
 
