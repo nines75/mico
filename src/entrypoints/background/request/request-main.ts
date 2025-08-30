@@ -65,8 +65,15 @@ async function mainDataFilter(
         const video = series?.next;
 
         if (series !== undefined && video !== null && video !== undefined) {
-            if (isNgVideo(video, settings)) {
-                series.next = null;
+            if (settings.isVideoFilterEnabled) {
+                if (isNgVideo(video, settings)) {
+                    series.next = null;
+                }
+
+                if (settings.isHideCommentPreview && series.next !== null) {
+                    series.next.latestCommentSummary = "";
+                }
+
                 meta?.setAttribute("content", JSON.stringify(mainData));
             }
 

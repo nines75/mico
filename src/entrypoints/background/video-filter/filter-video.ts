@@ -52,6 +52,10 @@ export function filterVideo(
         ]),
     );
 
+    if (settings.isHideCommentPreview) {
+        data.videos.forEach((video) => (video.latestCommentSummary = ""));
+    }
+
     const end = performance.now();
 
     return {

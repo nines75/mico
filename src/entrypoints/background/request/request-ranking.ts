@@ -61,10 +61,6 @@ async function rankingDataFilter(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
-    if (settings.isHideCommentPreview) {
-        videos.forEach((video) => (video.latestCommentSummary = ""));
-    }
-
     const spoofedVideos = videos.map(
         (video): NiconicoVideo => ({
             ...video,
