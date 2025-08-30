@@ -15,6 +15,9 @@ jobs:
         steps:
             - uses: nines75/composite-action/setup-pnpm@main
 
+            - name: チェック
+              run: pnpm check
+
             - name: URL生成
               run: |
                   git fetch --tags -f
