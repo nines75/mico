@@ -13,10 +13,10 @@ import { fakeBrowser } from "#imports";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(UserIdFilter.name, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
     });
 
     const filtering = (options: {
@@ -31,7 +31,7 @@ describe(UserIdFilter.name, () => {
             },
             "sm1",
         );
-        userIdFilter.filtering(testThreadCopy);
+        userIdFilter.filtering(threads);
 
         return userIdFilter;
     };
@@ -48,9 +48,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
             ]),
         );
-        expect(hasComment(testThreadCopy, ["1000", "1001", "1002"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1000", "1001", "1002"])).toBe(false);
     });
 
     it("部分一致", () => {
@@ -64,7 +62,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 
         const userIdFilter = filtering({ filter: "" });
         userIdFilter.updateFilter(userIds);
-        userIdFilter.filtering(testThreadCopy);
+        userIdFilter.filtering(threads);
 
         await addNgUserId(userIds);
         const settings = await loadSettings();
@@ -75,7 +73,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(userIdFilter.getLog()).toEqual(
             new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]),
         );
-        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
+        expect(hasComment(threads, ["1002"])).toBe(false);
     });
 
     it("動画限定ルール", () => {
@@ -87,7 +85,7 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
         );
-        expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
+        expect(hasComment(threads, ["1000", "1001"])).toBe(false);
     });
 
     it("通常ルールと動画限定ルールが競合", () => {
@@ -105,9 +103,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
             ]),
         );
-        expect(hasComment(testThreadCopy, ["1000", "1001", "1002"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1000", "1001", "1002"])).toBe(false);
     });
 
     it(`Settings.${"IgnoreByNicoruCount" satisfies keyof Settings}`, () => {
@@ -123,7 +119,7 @@ nvc:llNBacJJPE6wbyKKEioq3lO6515
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]));
-        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
+        expect(hasComment(threads, ["1002"])).toBe(false);
     });
 
     it(`${UserIdFilter.prototype.sortLog.name}()`, () => {

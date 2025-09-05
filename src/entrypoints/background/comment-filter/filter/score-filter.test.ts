@@ -6,10 +6,10 @@ import { defaultSettings } from "@/utils/config.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(ScoreFilter.name, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
     });
 
     const filtering = (options: {
@@ -22,7 +22,7 @@ describe(ScoreFilter.name, () => {
             ...options.settings,
         });
 
-        scoreFilter.filtering(testThreadCopy);
+        scoreFilter.filtering(threads);
 
         return scoreFilter;
     };
@@ -38,7 +38,7 @@ describe(ScoreFilter.name, () => {
         { score: -10000, ids: [] },
     ])("score: $score", ({ score, ids }) => {
         expect(filtering({ score }).getLog()).toEqual(ids);
-        expect(hasComment(testThreadCopy, ids)).toBe(false);
+        expect(hasComment(threads, ids)).toBe(false);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
@@ -48,7 +48,7 @@ describe(ScoreFilter.name, () => {
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(["1002"]);
-        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
+        expect(hasComment(threads, ["1002"])).toBe(false);
     });
 
     it(`${ScoreFilter.prototype.sortLog.name}()`, () => {

@@ -6,10 +6,10 @@ import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(CommandFilter.name, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
     });
 
     const filtering = (options: {
@@ -30,17 +30,17 @@ describe(CommandFilter.name, () => {
             options.ngUserIds ?? new Set(),
         );
         commandFilter.filterRuleByTag(options.tags ?? []);
-        commandFilter.filtering(testThreadCopy, options.isStrictOnly ?? false);
+        commandFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return commandFilter;
     };
 
     const hasAnyCommand = () =>
-        testThreadCopy.some((thread) =>
+        threads.some((thread) =>
             thread.comments.some((comment) => comment.commands.length > 0),
         );
     const hasCommand = (targets: string[]) =>
-        testThreadCopy.some((thread) =>
+        threads.some((thread) =>
             thread.comments.some((comment) =>
                 comment.commands.some((command) =>
                     targets.includes(command.toLowerCase()),
@@ -60,9 +60,7 @@ device:Switch
                 ["device:switch", ["1003"]],
             ]),
         );
-        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
     });
 
     it("大小文字が異なる", () => {
@@ -77,9 +75,7 @@ Device:switch
                 ["device:switch", ["1003"]],
             ]),
         );
-        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
     });
 
     it("部分一致", () => {
@@ -145,7 +141,7 @@ device:switch
         });
 
         expect(commandFilter.getLog()).toEqual(expected);
-        expect(hasComment(testThreadCopy, ids)).toBe(false);
+        expect(hasComment(threads, ids)).toBe(false);
     });
 
     it("@disable", () => {
@@ -204,7 +200,7 @@ device:switch
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["device:switch", ["1003", "1004"]]]),
         );
-        expect(hasComment(testThreadCopy, ["1003", "1004"])).toBe(false);
+        expect(hasComment(threads, ["1003", "1004"])).toBe(false);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
@@ -219,7 +215,7 @@ device:switch
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(new Map([["big", ["1002"]]]));
-        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
+        expect(hasComment(threads, ["1002"])).toBe(false);
     });
 
     it(`${CommandFilter.prototype.sortLog.name}()`, () => {

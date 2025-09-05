@@ -9,10 +9,10 @@ import { addNgUserId } from "./filter/user-id-filter.js";
 import { fakeBrowser } from "#imports";
 
 describe(`${filterComment.name}()`, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
         fakeBrowser.reset();
     });
 
@@ -30,21 +30,10 @@ describe(`${filterComment.name}()`, () => {
     };
 
     it("default", () => {
-        const res = filterComment(
-            testThreadCopy,
-            createSettings({}),
-            [],
-            "sm1",
-        );
+        const res = filterComment(threads, createSettings({}), [], "sm1");
 
         expect(
-            hasComment(testThreadCopy, [
-                "1000",
-                "1001",
-                "1002",
-                "1003",
-                "1004",
-            ]),
+            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
         ).toBe(false);
         expect(res?.filters.scoreFilter.getCount()).toBe(0);
     });
@@ -61,11 +50,9 @@ device:Switch`,
 !コメント
 `,
         } satisfies Partial<Settings>;
-        const res = filterComment(testThreadCopy, settings, [], "sm1");
+        const res = filterComment(threads, settings, [], "sm1");
 
-        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
         expect(res?.strictNgUserIds).toEqual(
             new Set([
                 "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
@@ -91,14 +78,14 @@ device:Switch`,
 
     it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
         filterComment(
-            testThreadCopy,
+            threads,
             createSettings({ isCommentFilterEnabled: false }),
             [],
             "sm1",
         );
 
         expect(
-            Object.values(testThreadCopy)
+            Object.values(threads)
                 .map((thread) => thread.commentCount)
                 .reduce((sum, cnt) => sum + cnt, 0),
         ).toBe(7);
@@ -106,14 +93,14 @@ device:Switch`,
 
     it(`Settings.${"isHideEasyComment" satisfies keyof Settings}`, () => {
         filterComment(
-            testThreadCopy,
+            threads,
             createSettings({ isHideEasyComment: true }),
             [],
             "sm1",
         );
 
         expect(
-            hasComment(testThreadCopy, [
+            hasComment(threads, [
                 "1000",
                 "1001",
                 "1002",
@@ -127,20 +114,14 @@ device:Switch`,
 
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
         const res = filterComment(
-            testThreadCopy,
+            threads,
             createSettings({ isScoreFilterEnabled: true }),
             [],
             "sm1",
         );
 
         expect(
-            hasComment(testThreadCopy, [
-                "1000",
-                "1001",
-                "1002",
-                "1003",
-                "1004",
-            ]),
+            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
         ).toBe(false);
         expect(res?.filters.scoreFilter.getLog()).toEqual(["1002"]);
     });

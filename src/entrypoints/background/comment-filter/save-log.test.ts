@@ -14,10 +14,10 @@ beforeAll(() => {
 });
 
 describe(`${saveLog.name}()`, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
         fakeBrowser.reset();
     });
 
@@ -32,7 +32,7 @@ describe(`${saveLog.name}()`, () => {
             ngWord: "コメント",
         } satisfies Partial<Settings>;
 
-        const filteredData = filterComment(testThreadCopy, settings, [], "sm1");
+        const filteredData = filterComment(threads, settings, [], "sm1");
 
         await setSettings(settings); // ログをソートする際に必要
         await saveLog(filteredData as FilteredData, 1);

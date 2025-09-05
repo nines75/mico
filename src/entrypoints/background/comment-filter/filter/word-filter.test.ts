@@ -6,10 +6,10 @@ import { WordFilter } from "./word-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(WordFilter.name, () => {
-    let testThreadCopy: Thread[];
+    let threads: Thread[];
 
     beforeEach(() => {
-        testThreadCopy = structuredClone(testThreads);
+        threads = structuredClone(testThreads);
     });
 
     const filtering = (options: {
@@ -30,7 +30,7 @@ describe(WordFilter.name, () => {
             options.ngUserIds ?? new Set(),
         );
         wordFilter.filterRuleByTag(options.tags ?? []);
-        wordFilter.filtering(testThreadCopy, options.isStrictOnly ?? false);
+        wordFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return wordFilter;
     };
@@ -56,13 +56,7 @@ test
             ]),
         );
         expect(
-            hasComment(testThreadCopy, [
-                "1000",
-                "1001",
-                "1002",
-                "1003",
-                "1004",
-            ]),
+            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
         ).toBe(false);
     });
 
@@ -72,7 +66,7 @@ test
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["TesT", new Map([["test", ["1000", "1001"]]])]]),
         );
-        expect(hasComment(testThreadCopy, ["1000", "1001"])).toBe(false);
+        expect(hasComment(threads, ["1000", "1001"])).toBe(false);
     });
 
     it("正規表現", () => {
@@ -90,9 +84,7 @@ test
                 ],
             ]),
         );
-        expect(hasComment(testThreadCopy, ["1002", "1003", "1004"])).toBe(
-            false,
-        );
+        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
     });
 
     it("無効な正規表現", () => {
@@ -106,7 +98,7 @@ test
             new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
         expect(wordFilter.getInvalidCount()).toBe(1);
-        expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
+        expect(hasComment(threads, ["1004"])).toBe(false);
     });
 
     it.each([
@@ -165,7 +157,7 @@ test
         });
 
         expect(wordFilter.getLog()).toEqual(expected);
-        expect(hasComment(testThreadCopy, ids)).toBe(false);
+        expect(hasComment(threads, ids)).toBe(false);
     });
 
     it("動画タグが存在しないときのtagルール判定", () => {
@@ -182,7 +174,7 @@ test
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
-        expect(hasComment(testThreadCopy, ["1004"])).toBe(false);
+        expect(hasComment(threads, ["1004"])).toBe(false);
     });
 
     it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
@@ -208,7 +200,7 @@ test
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(new Map([["テスト", new Map([["テスト", ["1002"]]])]]));
-        expect(hasComment(testThreadCopy, ["1002"])).toBe(false);
+        expect(hasComment(threads, ["1002"])).toBe(false);
     });
 
     it(`${WordFilter.prototype.sortLog.name}()`, () => {
