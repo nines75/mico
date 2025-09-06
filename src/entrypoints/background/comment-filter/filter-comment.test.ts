@@ -1,6 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { hasComment, testThreads } from "@/utils/test.js";
+import { checkComment, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
@@ -32,9 +32,7 @@ describe(`${filterComment.name}()`, () => {
     it("default", () => {
         const res = filterComment(threads, createSettings({}), [], "sm1");
 
-        expect(
-            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
-        ).toBe(false);
+        checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
         expect(res?.filters.scoreFilter.getCount()).toBe(0);
     });
 
@@ -52,7 +50,7 @@ device:Switch`,
         } satisfies Partial<Settings>;
         const res = filterComment(threads, settings, [], "sm1");
 
-        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
+        checkComment(threads, ["1002", "1003", "1004"]);
         expect(res?.strictNgUserIds).toEqual(
             new Set([
                 "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
@@ -84,11 +82,7 @@ device:Switch`,
             "sm1",
         );
 
-        expect(
-            Object.values(threads)
-                .map((thread) => thread.commentCount)
-                .reduce((sum, cnt) => sum + cnt, 0),
-        ).toBe(7);
+        checkComment(threads, []);
     });
 
     it(`Settings.${"isHideEasyComment" satisfies keyof Settings}`, () => {
@@ -99,17 +93,15 @@ device:Switch`,
             "sm1",
         );
 
-        expect(
-            hasComment(threads, [
-                "1000",
-                "1001",
-                "1002",
-                "1003",
-                "1004",
-                "1005",
-                "1006",
-            ]),
-        ).toBe(false);
+        checkComment(threads, [
+            "1000",
+            "1001",
+            "1002",
+            "1003",
+            "1004",
+            "1005",
+            "1006",
+        ]);
     });
 
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
@@ -120,9 +112,7 @@ device:Switch`,
             "sm1",
         );
 
-        expect(
-            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
-        ).toBe(false);
+        checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
         expect(res?.filters.scoreFilter.getLog()).toEqual(["1002"]);
     });
 });

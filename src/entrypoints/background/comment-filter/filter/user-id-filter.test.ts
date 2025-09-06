@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { hasComment, testThreads } from "@/utils/test.js";
+import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import {
     addNgUserId,
@@ -48,13 +48,14 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
             ]),
         );
-        expect(hasComment(threads, ["1000", "1001", "1002"])).toBe(false);
+        checkComment(threads, ["1000", "1001", "1002"]);
     });
 
     it("部分一致", () => {
         const filter = "nvc:RpBQf40dpW85ue3CiT8UZ6AUer";
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
+        checkComment(threads, []);
     });
 
     it("後からフィルターを更新", async () => {
@@ -73,7 +74,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(userIdFilter.getLog()).toEqual(
             new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]),
         );
-        expect(hasComment(threads, ["1002"])).toBe(false);
+        checkComment(threads, ["1002"]);
     });
 
     it("動画限定ルール", () => {
@@ -85,7 +86,7 @@ sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
         );
-        expect(hasComment(threads, ["1000", "1001"])).toBe(false);
+        checkComment(threads, ["1000", "1001"]);
     });
 
     it("通常ルールと動画限定ルールが競合", () => {
@@ -103,7 +104,7 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
             ]),
         );
-        expect(hasComment(threads, ["1000", "1001", "1002"])).toBe(false);
+        checkComment(threads, ["1000", "1001", "1002"]);
     });
 
     it(`Settings.${"IgnoreByNicoruCount" satisfies keyof Settings}`, () => {
@@ -119,7 +120,7 @@ nvc:llNBacJJPE6wbyKKEioq3lO6515
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]));
-        expect(hasComment(threads, ["1002"])).toBe(false);
+        checkComment(threads, ["1002"]);
     });
 
     it(`${UserIdFilter.prototype.sortLog.name}()`, () => {

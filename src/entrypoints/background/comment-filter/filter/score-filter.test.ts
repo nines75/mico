@@ -1,5 +1,5 @@
 import { Thread } from "@/types/api/comment.types.js";
-import { hasComment, testThreads } from "@/utils/test.js";
+import { checkComment, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter.js";
 import { defaultSettings } from "@/utils/config.js";
@@ -38,7 +38,7 @@ describe(ScoreFilter.name, () => {
         { score: -10000, ids: [] },
     ])("score: $score", ({ score, ids }) => {
         expect(filtering({ score }).getLog()).toEqual(ids);
-        expect(hasComment(threads, ids)).toBe(false);
+        checkComment(threads, ids);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
@@ -48,7 +48,7 @@ describe(ScoreFilter.name, () => {
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(["1002"]);
-        expect(hasComment(threads, ["1002"])).toBe(false);
+        checkComment(threads, ["1002"]);
     });
 
     it(`${ScoreFilter.prototype.sortLog.name}()`, () => {

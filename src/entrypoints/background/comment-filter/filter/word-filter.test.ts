@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { hasComment, replaceInclude, testThreads } from "@/utils/test.js";
+import { checkComment, replaceInclude, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -55,9 +55,7 @@ test
                 ["コメント", new Map([["コメント", ["1004"]]])],
             ]),
         );
-        expect(
-            hasComment(threads, ["1000", "1001", "1002", "1003", "1004"]),
-        ).toBe(false);
+        checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
     });
 
     it("大小文字が異なる", () => {
@@ -66,7 +64,7 @@ test
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["TesT", new Map([["test", ["1000", "1001"]]])]]),
         );
-        expect(hasComment(threads, ["1000", "1001"])).toBe(false);
+        checkComment(threads, ["1000", "1001"]);
     });
 
     it("正規表現", () => {
@@ -84,7 +82,7 @@ test
                 ],
             ]),
         );
-        expect(hasComment(threads, ["1002", "1003", "1004"])).toBe(false);
+        checkComment(threads, ["1002", "1003", "1004"]);
     });
 
     it("無効な正規表現", () => {
@@ -98,7 +96,7 @@ test
             new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
         expect(wordFilter.getInvalidCount()).toBe(1);
-        expect(hasComment(threads, ["1004"])).toBe(false);
+        checkComment(threads, ["1004"]);
     });
 
     it.each([
@@ -157,7 +155,7 @@ test
         });
 
         expect(wordFilter.getLog()).toEqual(expected);
-        expect(hasComment(threads, ids)).toBe(false);
+        checkComment(threads, ids);
     });
 
     it("動画タグが存在しないときのtagルール判定", () => {
@@ -174,7 +172,7 @@ test
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
         );
-        expect(hasComment(threads, ["1004"])).toBe(false);
+        checkComment(threads, ["1004"]);
     });
 
     it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
@@ -186,6 +184,7 @@ test
                 settings: { isCaseInsensitive: false },
             }).getLog(),
         ).toEqual(new Map());
+        checkComment(threads, []);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
@@ -200,7 +199,7 @@ test
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
         ).toEqual(new Map([["テスト", new Map([["テスト", ["1002"]]])]]));
-        expect(hasComment(threads, ["1002"])).toBe(false);
+        checkComment(threads, ["1002"]);
     });
 
     it(`${WordFilter.prototype.sortLog.name}()`, () => {

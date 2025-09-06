@@ -3,6 +3,7 @@ import {
     CommentData,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
+import { expect } from "vitest";
 
 function createComments(
     ...comments: Partial<NiconicoComment>[]
@@ -94,6 +95,22 @@ export const testCommentData: CommentData = new Map(
     ),
 );
 
+function getComments(ids: string[]) {
+    const comments: [string, NiconicoComment | undefined][] = ids.map((id) => [
+        id,
+        testThreads
+            .flatMap((thread) => thread.comments)
+            .find((comment) => comment.id === id),
+    ]);
+    comments.forEach(([_, comment]) => {
+        comment?.commands.forEach(
+            (command, i, commands) => (commands[i] = command.toLowerCase()),
+        );
+    });
+
+    return comments;
+}
+
 export const testLog = {
     count: {
         rule: {
@@ -136,28 +153,26 @@ export const testLog = {
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;
 
-export function hasComment(threads: Thread[], ids: string[]) {
-    return threads.some((thread) =>
-        thread.comments.some((comment) => ids.includes(comment.id)),
+export function checkComment(threads: Thread[], ids: string[]) {
+    // 実際のコメントIDを抽出
+    const actualIds = threads.flatMap((thread) =>
+        thread.comments.map((comment) => comment.id),
     );
+
+    // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
+    const expectedIds: string[] = [];
+    testThreads.forEach((thread) =>
+        thread.comments.forEach((comment) => {
+            const targetId = comment.id;
+            if (!ids.includes(targetId)) {
+                expectedIds.push(targetId);
+            }
+        }),
+    );
+
+    expect(actualIds.sort()).toEqual(expectedIds.sort());
 }
 
 export function replaceInclude(filter: string) {
     return filter.replace(/include/g, "exclude");
-}
-
-function getComments(ids: string[]) {
-    const comments: [string, NiconicoComment | undefined][] = ids.map((id) => [
-        id,
-        testThreads
-            .flatMap((thread) => thread.comments)
-            .find((comment) => comment.id === id),
-    ]);
-    comments.forEach(([_, comment]) => {
-        comment?.commands.forEach(
-            (command, i, commands) => (commands[i] = command.toLowerCase()),
-        );
-    });
-
-    return comments;
 }
