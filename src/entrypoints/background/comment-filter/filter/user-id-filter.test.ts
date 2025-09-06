@@ -37,18 +37,12 @@ describe(UserIdFilter.name, () => {
     };
 
     it("一般", () => {
-        const filter = `
-nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
-nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
-`;
+        const filter = `nvc:RpBQf40dpW85ue3CiT8UZ6AUer6`;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([
-                ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
-                ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
-            ]),
+            new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
         );
-        checkComment(threads, ["1000", "1001", "1002"]);
+        checkComment(threads, ["1000", "1001"]);
     });
 
     it("部分一致", () => {

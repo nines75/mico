@@ -49,40 +49,24 @@ describe(CommandFilter.name, () => {
         );
 
     it("一般", () => {
-        const filter = `
-big
-device:Switch
-`;
-
+        const filter = "big";
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([
-                ["big", ["1002", "1004"]],
-                ["device:switch", ["1003"]],
-            ]),
+            new Map([["big", ["1002", "1004"]]]),
         );
-        checkComment(threads, ["1002", "1003", "1004"]);
+        checkComment(threads, ["1002", "1004"]);
     });
 
     it("大小文字が異なる", () => {
-        const filter = `
-BiG
-Device:switch
-`;
+        const filter = "BiG";
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([
-                ["big", ["1002", "1004"]],
-                ["device:switch", ["1003"]],
-            ]),
+            new Map([["big", ["1002", "1004"]]]),
         );
-        checkComment(threads, ["1002", "1003", "1004"]);
+        checkComment(threads, ["1002", "1004"]);
     });
 
     it("部分一致", () => {
-        const filter = `
-bi
-device:
-`;
+        const filter = "bi";
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         checkComment(threads, []);

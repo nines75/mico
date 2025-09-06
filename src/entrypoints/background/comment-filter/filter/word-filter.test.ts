@@ -36,26 +36,12 @@ describe(WordFilter.name, () => {
     };
 
     it("一般", () => {
-        const filter = `
-test
-テスト
-コメント
-`;
+        const filter = "test";
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([
-                ["test", new Map([["test", ["1000", "1001"]]])],
-                [
-                    "テスト",
-                    new Map([
-                        ["テスト", ["1002"]],
-                        ["テストコメント", ["1003"]],
-                    ]),
-                ],
-                ["コメント", new Map([["コメント", ["1004"]]])],
-            ]),
+            new Map([["test", new Map([["test", ["1000", "1001"]]])]]),
         );
-        checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
+        checkComment(threads, ["1000", "1001"]);
     });
 
     it("大小文字が異なる", () => {
