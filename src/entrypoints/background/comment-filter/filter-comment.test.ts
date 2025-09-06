@@ -31,7 +31,16 @@ describe(`${filterComment.name}()`, () => {
         const res = filterComment(threads, createSettings({}), [], "sm1");
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
-        expect(res?.filters.scoreFilter.getCount()).toBe(0);
+        expect(res?.filters.scoreFilter.getLog()).toEqual([]);
+        expect(res?.filters.userIdFilter.getLog()).toEqual(
+            new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
+        );
+        expect(res?.filters.commandFilter.getLog()).toEqual(
+            new Map([["big", ["1002", "1004"]]]),
+        );
+        expect(res?.filters.wordFilter.getLog()).toEqual(
+            new Map([["コメント", new Map([["テストコメント", ["1003"]]])]]),
+        );
     });
 
     it("strictルールの先行適用", () => {

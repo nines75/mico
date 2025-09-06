@@ -50,6 +50,7 @@ describe(CommandFilter.name, () => {
 
     it("一般", () => {
         const filter = "big";
+
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["big", ["1002", "1004"]]]),
         );
