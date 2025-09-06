@@ -58,18 +58,10 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
         checkComment(threads, []);
     });
 
-    it("後からフィルターを更新", async () => {
-        const userIds = new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]);
-
+    it("後からフィルターを更新", () => {
         const userIdFilter = filtering({ filter: "" });
-        userIdFilter.updateFilter(userIds);
+        userIdFilter.updateFilter(new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]));
         userIdFilter.filtering(threads);
-
-        await addNgUserId(userIds);
-        const settings = await loadSettings();
-
-        // 追加分のユーザーIDを反映してからログを取得しないとソート時に弾かれる
-        userIdFilter.setSettings(settings);
 
         expect(userIdFilter.getLog()).toEqual(
             new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]),

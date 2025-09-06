@@ -4,8 +4,6 @@ import { checkComment, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
-import { loadSettings, setSettings } from "@/utils/storage.js";
-import { addNgUserId } from "./filter/user-id-filter.js";
 import { fakeBrowser } from "#imports";
 
 describe(`${filterComment.name}()`, () => {
@@ -36,7 +34,7 @@ describe(`${filterComment.name}()`, () => {
         expect(res?.filters.scoreFilter.getCount()).toBe(0);
     });
 
-    it("strictルールが先に適用されているか", async () => {
+    it("strictルールの先行適用", () => {
         const settings = {
             ...defaultSettings,
             ngCommand: `
@@ -58,11 +56,6 @@ device:Switch`,
                 "nvc:llNBacJJPE6wbyKKEioq3lO6515",
             ]),
         );
-
-        await setSettings(settings);
-        await addNgUserId(res?.strictNgUserIds ?? new Set());
-        res?.filters.userIdFilter.setSettings(await loadSettings());
-
         expect(res?.filters.userIdFilter.getLog()).toEqual(
             new Map([
                 ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
