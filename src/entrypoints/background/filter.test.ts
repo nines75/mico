@@ -28,12 +28,12 @@ describe(`${extractRule.name}()`, () => {
             filter: "",
         },
         {
-            name: "構文指令",
+            name: "ディレクティブ",
             filter: "@strict # comment",
             expected: "@strict",
         },
         {
-            name: "構文指令(パラメータあり)",
+            name: "ディレクティブ(パラメータあり)",
             filter: "@include tag0 tag1 # comment",
             expected: "@include tag0 tag1",
         },
@@ -238,7 +238,7 @@ rule
     // その他
     // -------------------------------------------------------------------------------------------
 
-    it("構文指令のネスト", () => {
+    it("ディレクティブのネスト", () => {
         const filter = `
 @include tag0
 rule
@@ -302,8 +302,16 @@ rule
     });
 
     it.each([
-        { name: "@から始まる構文指令", filter: "\\@end", expected: "@end" },
-        { name: "!から始まる構文指令", filter: "\\!rule", expected: "!rule" },
+        {
+            name: "@から始まるディレクティブ",
+            filter: "\\@end",
+            expected: "@end",
+        },
+        {
+            name: "!から始まるディレクティブ",
+            filter: "\\!rule",
+            expected: "!rule",
+        },
         { name: "通常のルール", filter: "\\rule", expected: "rule" },
     ])("エスケープ($name)", ({ filter, expected }) => {
         expect(extractCustomRule(filter)).toEqual(
