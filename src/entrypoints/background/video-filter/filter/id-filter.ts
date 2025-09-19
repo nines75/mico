@@ -4,7 +4,7 @@ import { messages, pattern } from "@/utils/config.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog, sendNotification } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
-import { extractRule } from "../../filter.js";
+import { parseRule } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 interface NgIds {
@@ -103,7 +103,7 @@ export class IdFilter extends Filter<IdLog> {
     }
 
     createFilter(): NgIds {
-        const rules = extractRule(this.settings.ngId);
+        const rules = parseRule(this.settings.ngId);
         const userIds = new Set<string>();
         const videoIds = new Set<string>();
 
@@ -147,7 +147,7 @@ export async function removeNgId(id: string) {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            extractRule(settings.ngId)
+            parseRule(settings.ngId)
                 .filter((data) => id === data.rule)
                 .map((data) => data.index),
         );

@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter, sortCommentId } from "../filter.js";
 import { countCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule, extractCustomRule } from "../../filter.js";
+import { CustomRuleData, CustomRule, parseCustomRule } from "../../filter.js";
 
 type NgWordData = CustomRuleData<NgWord>;
 
@@ -117,7 +117,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     }
 
     createFilter(settings: Settings): NgWordData {
-        const ngWords = extractCustomRule(settings.ngWord).reduce<NgWord[]>(
+        const ngWords = parseCustomRule(settings.ngWord).reduce<NgWord[]>(
             (res, data) => {
                 try {
                     const regex = settings.isCaseInsensitive

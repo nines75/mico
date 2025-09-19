@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter, sortCommentId } from "../filter.js";
 import { countCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { CustomRuleData, CustomRule, extractCustomRule } from "../../filter.js";
+import { CustomRuleData, CustomRule, parseCustomRule } from "../../filter.js";
 
 interface NgCommandData extends CustomRuleData<NgCommand> {
     hasAll: boolean;
@@ -144,7 +144,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
     createFilter(settings: Settings): NgCommandData {
         let hasAll = false;
-        const ngCommands = extractCustomRule(settings.ngCommand)
+        const ngCommands = parseCustomRule(settings.ngCommand)
             .map((data): NgCommand => {
                 return {
                     rule: data.rule.toLowerCase(),

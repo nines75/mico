@@ -9,7 +9,7 @@ import {
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
-import { extractRule } from "../filter.js";
+import { parseRule } from "../filter.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();
@@ -80,7 +80,7 @@ function getCount(
         filteredData.filters;
 
     const rule: CommentCount["rule"] = {
-        ngUserId: extractRule(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
+        ngUserId: parseRule(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
         ngCommand: commandFilter.getRuleCount(),
         ngWord: wordFilter.getRuleCount(),
     };
