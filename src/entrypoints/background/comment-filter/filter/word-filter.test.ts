@@ -93,18 +93,18 @@ describe(WordFilter.name, () => {
 テスト
 @end
 `,
-            expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+            expected: "user-id-main-1",
         },
         {
             name: "!",
             filter: "!コメント",
-            expected: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
+            expected: "user-id-main-3",
         },
     ])("$name", ({ filter, expected }) => {
         const wordFilter = filtering({
             filter,
             isStrictOnly: true,
-            ngUserIds: new Set(["nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj"]),
+            ngUserIds: new Set(["user-id-main-2"]),
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());

@@ -19,7 +19,7 @@ describe(`${filterComment.name}()`, () => {
             ...{
                 ...defaultSettings,
                 scoreFilterCount: -1001,
-                ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
+                ngUserId: "user-id-owner",
                 ngCommand: "big",
                 ngWord: "コメント",
             },
@@ -33,7 +33,7 @@ describe(`${filterComment.name}()`, () => {
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
         expect(res?.filters.scoreFilter.getLog()).toEqual([]);
         expect(res?.filters.userIdFilter.getLog()).toEqual(
-            new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
+            new Map([["user-id-owner", ["1000", "1001"]]]),
         );
         expect(res?.filters.commandFilter.getLog()).toEqual(
             new Map([["big", ["1002", "1004"]]]),
@@ -59,17 +59,13 @@ device:Switch`,
 
         checkComment(threads, ["1002", "1003", "1004"]);
         expect(res?.strictNgUserIds).toEqual(
-            new Set([
-                "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-                "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
-                "nvc:llNBacJJPE6wbyKKEioq3lO6515",
-            ]),
+            new Set(["user-id-main-1", "user-id-main-2", "user-id-main-3"]),
         );
         expect(res?.filters.userIdFilter.getLog()).toEqual(
             new Map([
-                ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
-                ["nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj", ["1003"]],
-                ["nvc:llNBacJJPE6wbyKKEioq3lO6515", ["1004"]],
+                ["user-id-main-1", ["1002"]],
+                ["user-id-main-2", ["1003"]],
+                ["user-id-main-3", ["1004"]],
             ]),
         );
         expect(res?.filters.commandFilter.getLog()).toEqual(new Map());

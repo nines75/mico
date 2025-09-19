@@ -81,18 +81,18 @@ describe(CommandFilter.name, () => {
 big
 @end
 `,
-            expected: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+            expected: "user-id-main-1",
         },
         {
             name: "!",
             filter: "!device:switch",
-            expected: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
+            expected: "user-id-main-2",
         },
     ])("$name", ({ filter, expected }) => {
         const commandFilter = filtering({
             filter,
             isStrictOnly: true,
-            ngUserIds: new Set(["nvc:llNBacJJPE6wbyKKEioq3lO6515"]),
+            ngUserIds: new Set(["user-id-main-3"]),
         });
 
         expect(commandFilter.getLog()).toEqual(new Map());

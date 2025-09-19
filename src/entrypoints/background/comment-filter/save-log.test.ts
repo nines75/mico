@@ -27,7 +27,7 @@ describe(`${saveLog.name}()`, () => {
             isHideEasyComment: true,
             isScoreFilterEnabled: true,
             scoreFilterCount: -1001,
-            ngUserId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
+            ngUserId: "user-id-owner",
             ngCommand: "big",
             ngWord: "コメント",
         } satisfies Partial<Settings>;

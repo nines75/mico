@@ -37,10 +37,10 @@ describe(UserIdFilter.name, () => {
     };
 
     it("一般", () => {
-        const filter = `nvc:RpBQf40dpW85ue3CiT8UZ6AUer6`;
+        const filter = `user-id-owner`;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
+            new Map([["user-id-owner", ["1000", "1001"]]]),
         );
         checkComment(threads, ["1000", "1001"]);
     });
@@ -54,40 +54,40 @@ describe(UserIdFilter.name, () => {
 
     it("後からフィルターを更新", () => {
         const userIdFilter = filtering({ filter: "" });
-        userIdFilter.updateFilter(new Set(["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk"]));
+        userIdFilter.updateFilter(new Set(["user-id-main-1"]));
         userIdFilter.filtering(threads);
 
         expect(userIdFilter.getLog()).toEqual(
-            new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]),
+            new Map([["user-id-main-1", ["1002"]]]),
         );
         checkComment(threads, ["1002"]);
     });
 
     it("動画限定ルール", () => {
         const filter = `
-sm1@nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
-sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
+sm1@user-id-owner
+sm2@user-id-main-1
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]]]),
+            new Map([["user-id-owner", ["1000", "1001"]]]),
         );
         checkComment(threads, ["1000", "1001"]);
     });
 
     it("通常ルールと動画限定ルールが競合", () => {
         const filter = `
-sm1@nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
-nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
+sm1@user-id-owner
+user-id-owner
 
-sm2@nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
-nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
+sm2@user-id-main-1
+user-id-main-1
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([
-                ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
-                ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
+                ["user-id-owner", ["1000", "1001"]],
+                ["user-id-main-1", ["1002"]],
             ]),
         );
         checkComment(threads, ["1000", "1001", "1002"]);
@@ -95,9 +95,9 @@ nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
 
     it(`Settings.${"IgnoreByNicoruCount" satisfies keyof Settings}`, () => {
         const filter = `
-nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
-nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj
-nvc:llNBacJJPE6wbyKKEioq3lO6515
+user-id-main-1
+user-id-main-2
+user-id-main-3
 `;
 
         expect(
@@ -105,14 +105,14 @@ nvc:llNBacJJPE6wbyKKEioq3lO6515
                 filter,
                 settings: { isIgnoreByNicoru: true },
             }).getLog(),
-        ).toEqual(new Map([["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]]]));
+        ).toEqual(new Map([["user-id-main-1", ["1002"]]]));
         checkComment(threads, ["1002"]);
     });
 
     it(`${UserIdFilter.prototype.sortLog.name}()`, () => {
         const filter = `
-nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk
-nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
+user-id-main-1
+user-id-owner
 `;
         const userIdFilter = filtering({
             filter,
@@ -121,17 +121,14 @@ nvc:RpBQf40dpW85ue3CiT8UZ6AUer6
 
         expect(userIdFilter.getLog()).toEqual(
             new Map([
-                ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
-                ["nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk", ["1002"]],
+                ["user-id-owner", ["1000", "1001"]],
+                ["user-id-main-1", ["1002"]],
             ]),
         );
     });
 });
 
-const userIds = [
-    "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
-    "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
-];
+const userIds = ["user-id-owner", "user-id-main-1"];
 const videoUserIds = userIds.map((id) => `sm1@${id}`);
 
 describe(`${addNgUserId.name}()`, () => {

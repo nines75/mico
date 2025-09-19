@@ -23,7 +23,7 @@ function createComments(
                 postedAt: "2025-05-07T15:00:00+09:00",
                 score: 0,
                 source: "trunk",
-                userId: "nvc:RpBQf40dpW85ue3CiT8UZ6AUer6",
+                userId: "user-id-owner",
             },
             ...comment,
         };
@@ -44,7 +44,7 @@ export const testThreads = [
                 id: "1002",
                 no: 3,
                 commands: ["big", "184"],
-                userId: "nvc:mkJLLB69n1Kx9ERDlwY23nS6xyk",
+                userId: "user-id-main-1",
                 score: -1001,
                 body: "テスト",
                 nicoruCount: 29,
@@ -53,7 +53,7 @@ export const testThreads = [
                 id: "1003",
                 no: 4,
                 commands: ["184", "device:Switch"],
-                userId: "nvc:vcG0xFnXKcGl81lWoedT3VOI3Qj",
+                userId: "user-id-main-2",
                 score: -1000,
                 body: "テストコメント",
                 nicoruCount: 30,
@@ -62,7 +62,7 @@ export const testThreads = [
                 id: "1004",
                 no: 5,
                 commands: ["big", "184", "device:Switch"],
-                userId: "nvc:llNBacJJPE6wbyKKEioq3lO6515",
+                userId: "user-id-main-3",
                 score: -999,
                 body: "コメント",
                 nicoruCount: 31,
@@ -76,13 +76,13 @@ export const testThreads = [
             {
                 id: "1005",
                 no: 6,
-                userId: "nvc:4QhgYaZbMAYEUOdwDQ7a8KeX96p",
+                userId: "user-id-easy",
                 body: "！？",
             },
             {
                 id: "1006",
                 no: 7,
-                userId: "nvc:4QhgYaZbMAYEUOdwDQ7a8KeX96p",
+                userId: "user-id-easy",
                 body: "うぽつ",
             },
         ),
@@ -133,9 +133,7 @@ export const testLog = {
         invalid: 0,
     },
     filtering: {
-        ngUserId: new Map([
-            ["nvc:RpBQf40dpW85ue3CiT8UZ6AUer6", ["1000", "1001"]],
-        ]),
+        ngUserId: new Map([["user-id-owner", ["1000", "1001"]]]),
         ngScore: ["1002"],
         ngCommand: new Map([["big", ["1004"]]]),
         ngWord: new Map([
