@@ -18,8 +18,8 @@ export function renderComment(element: Element, settings: Settings) {
     })();
     if (id === undefined) return; // ここで装飾対象外のコメントを弾く
 
-    const subElement = element.querySelector("div");
-    if (subElement === null) return;
+    const subElement = element.querySelector(":scope > div");
+    if (!(subElement instanceof HTMLElement)) return;
 
     const nicoruColor = settings.nicoruColors[id];
 
