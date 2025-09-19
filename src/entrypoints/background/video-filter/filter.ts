@@ -2,7 +2,7 @@ import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { countCommonLog } from "@/utils/util.js";
 import { VideoData } from "@/types/storage/log-video.types.js";
-import { parseRule } from "../filter.js";
+import { parseFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export abstract class Filter<T> {
@@ -104,7 +104,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
 
     createFilter(): RegExp[] {
         const res: RegExp[] = [];
-        parseRule(this.rawFilter).forEach((rule) => {
+        parseFilter(this.rawFilter).forEach((rule) => {
             try {
                 res.push(
                     this.settings.isCaseInsensitive

@@ -22,7 +22,7 @@ export interface RawCustomRule {
     exclude: string[];
 }
 
-export function parseRule(filter: string) {
+export function parseFilter(filter: string) {
     return filter
         .split("\n")
         .map((str, index): Rule => {
@@ -41,7 +41,7 @@ export function parseRule(filter: string) {
         });
 }
 
-export function parseCustomRule(filter: string): RawCustomRule[] {
+export function parseCustomFilter(filter: string): RawCustomRule[] {
     interface Section {
         type: "include" | "exclude" | "strict" | "disable";
         value: string[];
@@ -50,7 +50,7 @@ export function parseCustomRule(filter: string): RawCustomRule[] {
     const section: Section[] = [];
     const rules: RawCustomRule[] = [];
 
-    const parseTagRule = (str: string) => {
+    const parseDirective = (str: string) => {
         return str
             .split(" ")
             .filter((rule) => rule !== "")
@@ -58,17 +58,17 @@ export function parseCustomRule(filter: string): RawCustomRule[] {
             .map((rule) => rule.toLowerCase());
     };
 
-    parseRule(filter).forEach((data) => {
+    parseFilter(filter).forEach((data) => {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 
         // セクション解析
         if (rule.startsWith("@include ")) {
-            section.push({ type: "include", value: parseTagRule(rule) });
+            section.push({ type: "include", value: parseDirective(rule) });
             return;
         }
         if (rule.startsWith("@exclude ")) {
-            section.push({ type: "exclude", value: parseTagRule(rule) });
+            section.push({ type: "exclude", value: parseDirective(rule) });
             return;
         }
         if (trimmedRule === "@strict") {

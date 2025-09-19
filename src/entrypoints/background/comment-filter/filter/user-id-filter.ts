@@ -4,7 +4,7 @@ import { Filter, sortCommentId } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { Rule, parseRule } from "../../filter.js";
+import { Rule, parseFilter } from "../../filter.js";
 
 export class UserIdFilter extends Filter<CommonLog> {
     private filter = new Set<string>();
@@ -86,7 +86,7 @@ export class UserIdFilter extends Filter<CommonLog> {
 function getNgUserId(settings: Settings, videoId?: string) {
     const res: Rule[] = [];
 
-    parseRule(settings.ngUserId).forEach((data) => {
+    parseFilter(settings.ngUserId).forEach((data) => {
         const rule = data.rule;
         const index = rule.indexOf("@");
 
