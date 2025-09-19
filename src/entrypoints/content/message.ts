@@ -123,7 +123,7 @@ function mountUserId(userId: string) {
     if (sampleElement === null) return;
 
     const p = document.createElement("p");
-    p.textContent = userId;
+    p.textContent = `${userId} (${browser.runtime.getManifest().name})`;
     [...sampleElement.attributes].forEach((attribute) => {
         p.setAttribute(attribute.name, attribute.value);
     });
