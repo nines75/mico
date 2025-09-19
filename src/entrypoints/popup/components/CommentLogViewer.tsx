@@ -288,12 +288,17 @@ function formatComment(
             <span
                 key={`ng-score`}
                 className="ng-score"
+                title={titles.ngScore}
             >{`[🚫:${score}]`}</span>,
         );
     }
     if (isNicoru) {
         elements.push(
-            <span key={`nicoru`} className="nicoru">{`[👍:${nicoru}]`}</span>,
+            <span
+                key={`nicoru`}
+                className="nicoru"
+                title={titles.nicoruCount}
+            >{`[👍:${nicoru}]`}</span>,
         );
     }
 
@@ -330,7 +335,11 @@ function formatCommentWithDuplicate(
         cnt >= settings.showDuplicateInLogCount
     ) {
         elements.push(
-            <span key={`cnt`} className="duplicate">{`[${cnt}回]`}</span>,
+            <span
+                key={`cnt`}
+                className="duplicate"
+                title={titles.duplicateComments}
+            >{`[${cnt}回]`}</span>,
         );
     }
 

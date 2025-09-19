@@ -180,6 +180,11 @@ export const titles = {
     removeNgUserId: "クリックしてNGユーザーIDを削除",
     removeNgVideoId: "クリックしてNG動画IDを削除",
 
+    // ログ
+    ngScore: "NGスコア",
+    nicoruCount: "ニコるの数",
+    duplicateComments: "本文が重複したコメントの数",
+
     undoStrict: "strictルールによって自動追加されたNGユーザーIDを削除します",
 } as const;
 
@@ -307,12 +312,10 @@ export const commentFilterSettings = {
             {
                 id: "isShowNgScoreInLog",
                 label: "NGスコアを表示する",
-                details: "🚫マークの横に表示されているのがNGスコアです。",
             },
             {
                 id: "isShowNicoruInLog",
                 label: "ニコるの数を表示する",
-                details: "👍マークの横に表示されているのがニコるの数です。",
                 input: {
                     id: "showNicoruInLogCount",
                     label: "回以上ニコられていた場合に表示",
