@@ -15,7 +15,7 @@ export interface CheckboxProps {
         min?: number;
         max?: number;
     };
-    children?: CheckboxProps[];
+    childrenProps?: CheckboxProps[];
 }
 
 export default function Checkbox({
@@ -23,7 +23,7 @@ export default function Checkbox({
     label,
     details,
     input,
-    children,
+    childrenProps,
 }: CheckboxProps) {
     const [isChecked, save] = useStorageStore(
         useShallow((state) => [state.settings[id], state.saveSettings]),
@@ -54,9 +54,9 @@ export default function Checkbox({
                     ))}
                 </div>
             )}
-            {children !== undefined && (
+            {childrenProps !== undefined && (
                 <div className="settings-container">
-                    {children.map((props) => (
+                    {childrenProps.map((props) => (
                         <Checkbox key={props.id} {...props} />
                     ))}
                 </div>

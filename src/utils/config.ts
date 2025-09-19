@@ -17,6 +17,7 @@ export const defaultSettings: Settings = {
     /// フィルタリング
     isCaseInsensitive: true,
     isHideEasyComment: false,
+    isAddEasyCommentCount: true,
     isIgnoreByNicoru: false,
     IgnoreByNicoruCount: 30,
     isScoreFilterEnabled: false,
@@ -40,7 +41,6 @@ export const defaultSettings: Settings = {
 
     /// その他
     isAutoReload: false,
-    isPartialBadgeCount: false,
     isShowUserIdInDropdown: true,
 
     // 動画フィルター
@@ -242,22 +242,25 @@ export const settingsConfig = {
 
 export const generalSettings = {
     checkbox: {
-        filter: [
+        filtering: [
             {
                 id: "isCaseInsensitive",
                 label: "大小文字を区別しない",
                 details:
                     "正規表現が使用可能なフィルターに対してのみ有効になります。",
             },
+        ],
+        editor: [
             {
                 id: "isVimKeybindingsEnabled",
-                label: "Vimのキーバインドを有効にする",
+                label: "Vimモードを有効にする",
             },
         ],
     },
 } as const satisfies {
     checkbox: {
-        filter: CheckboxProps[];
+        filtering: CheckboxProps[];
+        editor: CheckboxProps[];
     };
 };
 
@@ -273,21 +276,25 @@ export const commentFilterSettings = {
             {
                 id: "isHideEasyComment",
                 label: "かんたんコメントを非表示にする",
+                childrenProps: [
+                    {
+                        id: "isAddEasyCommentCount",
+                        label: "非表示にした数をバッジに加算する",
+                    },
+                ],
             },
             {
                 id: "isScoreFilterEnabled",
                 label: "NGスコアによるフィルタリングを有効にする",
-                details: `NGスコアの最大値は0で、低いほど悪くなります。
-                公式の共有NG機能でのNGスコアの基準値は弱で-10000以下、中で-4800以下、強で-1000以下です。`,
                 input: {
                     id: "scoreFilterCount",
-                    label: "以下のNGスコアだった場合にフィルタリング",
+                    label: "以下の場合にフィルタリング",
                     max: 0,
                 },
             },
             {
                 id: "isIgnoreByNicoru",
-                label: "ニコるの数に応じてフィルタ適用の対象外にする",
+                label: "ニコるの数に応じてフィルタリングの対象外にする",
                 details: "かんたんコメントの非表示には影響しません。",
                 input: {
                     id: "IgnoreByNicoruCount",
@@ -314,7 +321,7 @@ export const commentFilterSettings = {
             },
             {
                 id: "isShowDuplicateInLog",
-                label: "重複したコメントの数を表示する",
+                label: "本文が重複したコメントの数を表示する",
                 input: {
                     id: "showDuplicateInLogCount",
                     label: "回以上重複していた場合に表示",
@@ -338,11 +345,6 @@ export const commentFilterSettings = {
                 label: "自動リロードを有効にする",
                 details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
                 読み込み後、リロードする前の再生時間が自動で再設定されます。`,
-            },
-            {
-                id: "isPartialBadgeCount",
-                label: "バッジに表示する値をログの数に変更する",
-                details: `デフォルトでは総ブロック数が表示されますが、その値からログを保存しないコメントの数を引いた値が表示されます。`,
             },
             {
                 id: "isShowUserIdInDropdown",
@@ -416,7 +418,7 @@ export const videoFilterSettings = {
                 id: "isAddNgContext",
                 label: "NG追加時にコンテキスト情報を付与する",
                 details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
-                フィルターのサイズが大きくなる可能性があります。`,
+                コンテキストメニューからNG登録した場合は付与されません。`,
             },
         ],
     },

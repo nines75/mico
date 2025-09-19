@@ -28,9 +28,9 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
     await Promise.all([
         setLog({ commentFilterLog }, tabId),
         changeBadgeState(
-            settings.isPartialBadgeCount
-                ? count.totalBlocked - count.blocked.easyComment
-                : count.totalBlocked,
+            settings.isAddEasyCommentCount
+                ? count.totalBlocked
+                : count.totalBlocked - count.blocked.easyComment,
             colors.commentBadge,
             tabId,
         ),

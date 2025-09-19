@@ -17,6 +17,7 @@ export interface Settings {
     /// フィルタリング
     isCaseInsensitive: boolean;
     isHideEasyComment: boolean;
+    isAddEasyCommentCount: boolean;
     isIgnoreByNicoru: boolean;
     IgnoreByNicoruCount: number;
     isScoreFilterEnabled: boolean;
@@ -40,7 +41,6 @@ export interface Settings {
 
     /// その他
     isAutoReload: boolean;
-    isPartialBadgeCount: boolean;
     isShowUserIdInDropdown: boolean;
 
     // 動画フィルター
