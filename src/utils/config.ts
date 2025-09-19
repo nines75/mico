@@ -41,7 +41,7 @@ export const defaultSettings: Settings = {
 
     /// その他
     isAutoReload: false,
-    isShowUserIdInDropdown: true,
+    isShowUserIdInDropdown: false,
 
     // 動画フィルター
 
