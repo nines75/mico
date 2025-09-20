@@ -27,6 +27,15 @@ export abstract class Filter<T> {
         return this.filteredComments;
     }
 
+    traverseThreads(
+        threads: Thread[],
+        callback: (comment: NiconicoComment) => boolean,
+    ) {
+        threads.forEach((thread) => {
+            thread.comments = thread.comments.filter(callback);
+        });
+    }
+
     isIgnoreByNicoru(comment: NiconicoComment): boolean {
         return (
             this.settings.isIgnoreByNicoru &&

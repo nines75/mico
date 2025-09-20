@@ -8,21 +8,19 @@ export class ScoreFilter extends Filter<ScoreLog> {
     override filtering(threads: Thread[]): void {
         if (!this.settings.isScoreFilterEnabled) return;
 
-        threads.forEach((thread) => {
-            thread.comments = thread.comments.filter((comment) => {
-                if (this.isIgnoreByNicoru(comment)) return true;
+        this.traverseThreads(threads, (comment) => {
+            if (this.isIgnoreByNicoru(comment)) return true;
 
-                const { id, score } = comment;
+            const { id, score } = comment;
 
-                if (score <= this.settings.scoreFilterCount) {
-                    this.log.push(id);
-                    this.filteredComments.set(id, comment);
+            if (score <= this.settings.scoreFilterCount) {
+                this.log.push(id);
+                this.filteredComments.set(id, comment);
 
-                    return false;
-                }
+                return false;
+            }
 
-                return true;
-            });
+            return true;
         });
     }
 

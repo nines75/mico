@@ -33,63 +33,59 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
         if (rules.length === 0 && !hasAll) return;
 
-        threads.forEach((thread) => {
-            thread.comments = thread.comments.filter((comment) => {
-                if (this.isIgnoreByNicoru(comment)) return true;
+        this.traverseThreads(threads, (comment) => {
+            if (this.isIgnoreByNicoru(comment)) return true;
 
-                // コマンドを小文字に変換し重複を排除
-                comment.commands = [
-                    ...new Set(
-                        comment.commands.map((command) =>
-                            command.toLowerCase(),
-                        ),
-                    ),
-                ];
+            // コマンドを小文字に変換し重複を排除
+            comment.commands = [
+                ...new Set(
+                    comment.commands.map((command) => command.toLowerCase()),
+                ),
+            ];
 
-                // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
-                const { id, commands, userId } = comment;
+            // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
+            const { id, commands, userId } = comment;
 
-                for (const { rule, isDisable } of rules) {
-                    // commandsを内部で変更するのでコピーを作る
-                    for (const command of [...commands]) {
-                        if (rule !== command) continue;
+            for (const { rule, isDisable } of rules) {
+                // commandsを内部で変更するのでコピーを作る
+                for (const command of [...commands]) {
+                    if (rule !== command) continue;
 
-                        if (isDisable) {
-                            // allルールがある場合は後からまとめて無効化する
-                            if (hasAll) break;
+                    if (isDisable) {
+                        // allルールがある場合は後からまとめて無効化する
+                        if (hasAll) break;
 
-                            const index = commands.indexOf(command);
-                            if (index !== -1) {
-                                commands.splice(index, 1);
-                                this.disableCount++;
-                            }
-
-                            break; // commandsに重複はないため、一致した時点でループを抜ける
-                        } else {
-                            if (isStrictOnly) {
-                                if (!this.ngUserIds.has(userId)) {
-                                    this.strictNgUserIds.push(userId);
-                                }
-
-                                return true;
-                            }
-
-                            pushCommonLog(this.log, rule, id);
-                            this.filteredComments.set(id, comment);
-
-                            return false;
+                        const index = commands.indexOf(command);
+                        if (index !== -1) {
+                            commands.splice(index, 1);
+                            this.disableCount++;
                         }
+
+                        break; // commandsに重複はないため、一致した時点でループを抜ける
+                    } else {
+                        if (isStrictOnly) {
+                            if (!this.ngUserIds.has(userId)) {
+                                this.strictNgUserIds.push(userId);
+                            }
+
+                            return true;
+                        }
+
+                        pushCommonLog(this.log, rule, id);
+                        this.filteredComments.set(id, comment);
+
+                        return false;
                     }
                 }
+            }
 
-                // 無効化ルールより非表示ルールを優先するので後から無効化する
-                if (hasAll) {
-                    this.disableCount += commands.length;
-                    commands.length = 0; // コマンド配列を空にする
-                }
+            // 無効化ルールより非表示ルールを優先するので後から無効化する
+            if (hasAll) {
+                this.disableCount += commands.length;
+                commands.length = 0; // コマンド配列を空にする
+            }
 
-                return true;
-            });
+            return true;
         });
     }
 

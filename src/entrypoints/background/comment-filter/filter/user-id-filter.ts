@@ -19,21 +19,19 @@ export class UserIdFilter extends Filter<CommonLog> {
     override filtering(threads: Thread[]): void {
         if (this.filter.size === 0) return;
 
-        threads.forEach((thread) => {
-            thread.comments = thread.comments.filter((comment) => {
-                if (this.isIgnoreByNicoru(comment)) return true;
+        this.traverseThreads(threads, (comment) => {
+            if (this.isIgnoreByNicoru(comment)) return true;
 
-                const { id, userId } = comment;
+            const { id, userId } = comment;
 
-                if (this.filter.has(userId)) {
-                    pushCommonLog(this.log, userId, id);
-                    this.filteredComments.set(id, comment);
+            if (this.filter.has(userId)) {
+                pushCommonLog(this.log, userId, id);
+                this.filteredComments.set(id, comment);
 
-                    return false;
-                }
+                return false;
+            }
 
-                return true;
-            });
+            return true;
         });
     }
 

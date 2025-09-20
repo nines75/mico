@@ -29,39 +29,37 @@ export class WordFilter extends CustomFilter<WordLog> {
 
         if (rules.length === 0) return;
 
-        threads.forEach((thread) => {
-            thread.comments = thread.comments.filter((comment) => {
-                if (this.isIgnoreByNicoru(comment)) return true;
+        this.traverseThreads(threads, (comment) => {
+            if (this.isIgnoreByNicoru(comment)) return true;
 
-                const { id, body, userId } = comment;
+            const { id, body, userId } = comment;
 
-                for (const { regex } of rules) {
-                    if (!regex.test(body)) continue;
+            for (const { regex } of rules) {
+                if (!regex.test(body)) continue;
 
-                    if (isStrictOnly) {
-                        if (!this.ngUserIds.has(userId)) {
-                            this.strictNgUserIds.push(userId);
-                        }
-
-                        // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
-                        return true;
+                if (isStrictOnly) {
+                    if (!this.ngUserIds.has(userId)) {
+                        this.strictNgUserIds.push(userId);
                     }
 
-                    const regexStr = regex.source;
-                    if (this.log.has(regexStr)) {
-                        const map = this.log.get(regexStr) as CommonLog;
-                        pushCommonLog(map, body, id);
-                    } else {
-                        this.log.set(regexStr, new Map([[body, [id]]]));
-                    }
-
-                    this.filteredComments.set(id, comment);
-
-                    return false;
+                    // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
+                    return true;
                 }
 
-                return true;
-            });
+                const regexStr = regex.source;
+                if (this.log.has(regexStr)) {
+                    const map = this.log.get(regexStr) as CommonLog;
+                    pushCommonLog(map, body, id);
+                } else {
+                    this.log.set(regexStr, new Map([[body, [id]]]));
+                }
+
+                this.filteredComments.set(id, comment);
+
+                return false;
+            }
+
+            return true;
         });
     }
 
