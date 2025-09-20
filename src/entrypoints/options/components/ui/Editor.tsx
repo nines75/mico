@@ -138,7 +138,7 @@ const baseExtensions = [
     highlightTrailingWhitespace(),
     theme,
 ];
-const vimBaseExtensions = [
+const vimExtensions = [
     vim({ status: true }),
     drawSelection({ cursorBlinkRate: 0 }),
     EditorState.allowMultipleSelections.of(true),
@@ -155,11 +155,9 @@ export default function Editor({ id, value, onChange }: EditorProps) {
     const view = useRef<EditorView | null>(null);
     const parent = useRef<HTMLDivElement | null>(null);
     const initialEditorState = useRef<EditorState | null>(null);
-    const isVimCurrent = useStorageStore(
-        (state) => state.settings.isVimKeybindingsEnabled,
-    );
 
-    const getExtensions = (isVim: boolean) => {
+    const getExtensions = () => {
+        const settings = useStorageStore.getState().settings;
         const updateCallback = EditorView.updateListener.of((update) => {
             if (
                 update.docChanged &&
@@ -172,29 +170,24 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             )
                 onChange(update.state.doc.toString());
         });
-
         const dynamicExtensions = [
             updateCallback,
             getHighlights(id),
             getCompletions(id),
         ];
-        const defaultExtensions = [...baseExtensions, ...dynamicExtensions];
 
-        return [...(isVim ? vimBaseExtensions : []), ...defaultExtensions]; // VimExtensionsを展開するときは他のkeymapに関するExtensionより前に配置する
+        return [
+            ...(settings.isVimKeybindingsEnabled ? vimExtensions : []), // Vim拡張は他のkeymapに関する拡張より前に配置する
+            ...baseExtensions,
+            ...dynamicExtensions,
+        ];
     };
-    const defaultExtensions = useRef<Extension[] | null>(null);
-    const vimExtensions = useRef<Extension[] | null>(null);
 
     // useEffectEventの模倣
     useInsertionEffect(() => {
-        defaultExtensions.current = getExtensions(false);
-        vimExtensions.current = getExtensions(true);
-
         initialEditorState.current = EditorState.create({
             doc: value,
-            extensions: isVimCurrent
-                ? vimExtensions.current
-                : defaultExtensions.current,
+            extensions: getExtensions(),
         });
     }, []);
 
