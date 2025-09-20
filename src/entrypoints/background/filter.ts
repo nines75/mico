@@ -87,8 +87,8 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
         // 現在のセクションをもとに適用させるルールを取り出す
         const include: string[] = [];
         const exclude: string[] = [];
-        let isStrict = false as boolean; // ESLintの誤検知を抑制
-        let isDisable = false as boolean;
+        let isStrict = false as boolean; // no-unnecessary-conditionによる誤検知を抑制
+        let isDisable = false;
         section.forEach(({ type, value }) => {
             switch (type) {
                 case "include":
