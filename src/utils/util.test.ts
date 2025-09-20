@@ -6,6 +6,7 @@ import {
     isRankingPage,
     isSearchPage,
     isWatchPage,
+    pushCommonLog,
     savePlaybackTime,
 } from "./util.js";
 import { getLogData } from "./storage.js";
@@ -69,4 +70,24 @@ describe("util", () => {
 
         expect(countCommonLog(log)).toEqual(3);
     });
+
+    it.each([
+        {
+            name: "存在しないキー",
+            log: new Map(),
+            expected: new Map([["a", ["1"]]]),
+        },
+        {
+            name: "存在するキー",
+            log: new Map([["a", ["0"]]]),
+            expected: new Map([["a", ["0", "1"]]]),
+        },
+    ] satisfies { name: string; log: CommonLog; expected: CommonLog }[])(
+        `${pushCommonLog.name}($name)`,
+        ({ log, expected }) => {
+            pushCommonLog(log, "a", "1");
+
+            expect(log).toEqual(expected);
+        },
+    );
 });

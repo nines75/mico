@@ -1,6 +1,6 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { countCommonLog } from "@/utils/util.js";
+import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { VideoData } from "@/types/storage/log-video.types.js";
 import { parseFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -50,13 +50,8 @@ export abstract class CommonFilter extends Filter<CommonLog> {
                 const regexStr = regex.source;
 
                 if (regex.test(target)) {
-                    if (this.log.has(regexStr)) {
-                        this.log.get(regexStr)?.push(videoId);
-                    } else {
-                        this.log.set(regexStr, [videoId]);
-                    }
-
-                    this.filteredVideos.set(video.id, video);
+                    pushCommonLog(this.log, regexStr, videoId);
+                    this.filteredVideos.set(videoId, video);
 
                     return false;
                 }

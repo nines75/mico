@@ -1,8 +1,8 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { Filter, sortCommentId } from "../filter.js";
+import { Filter } from "../filter.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
-import { countCommonLog } from "@/utils/util.js";
+import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Rule, parseFilter } from "../../filter.js";
 
@@ -21,22 +21,13 @@ export class UserIdFilter extends Filter<CommonLog> {
 
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment) => {
-                const { id, userId, nicoruCount: nicoru } = comment;
+                if (this.isIgnoreByNicoru(comment)) return true;
 
-                if (
-                    this.settings.isIgnoreByNicoru &&
-                    nicoru >= this.settings.IgnoreByNicoruCount
-                )
-                    return true;
+                const { id, userId } = comment;
 
                 if (this.filter.has(userId)) {
-                    if (this.log.has(userId)) {
-                        this.log.get(userId)?.push(id);
-                    } else {
-                        this.log.set(userId, [id]);
-                    }
-
-                    this.filteredComments.set(comment.id, comment);
+                    pushCommonLog(this.log, userId, id);
+                    this.filteredComments.set(id, comment);
 
                     return false;
                 }
@@ -47,27 +38,10 @@ export class UserIdFilter extends Filter<CommonLog> {
     }
 
     override sortLog(): void {
-        const log: CommonLog = new Map();
-        const ngUserIds = getNgUserIdSet(this.settings); // strictルールによってユーザーIDが追加されている場合があるので改めて取得する
+        // strictルールによってユーザーIDが追加されていることがあるので、フィールドの値を使わずに改めて取得する
+        const ngUserIds = getNgUserIdSet(this.settings);
 
-        // フィルター昇順にソート
-        ngUserIds.forEach((userId) => {
-            if (this.log.has(userId)) {
-                log.set(userId, this.log.get(userId) ?? []);
-            }
-        });
-
-        this.log = log;
-
-        // 各ルールのコメントをソート
-        this.log.forEach((ids, userId) => {
-            this.log.set(
-                userId,
-                this.settings.isShowNgScoreInLog
-                    ? sortCommentId([...ids], this.filteredComments, true)
-                    : sortCommentId([...ids], this.filteredComments),
-            );
-        });
+        this.log = this.sortCommonLog(this.log, ngUserIds);
     }
 
     override getCount(): number {

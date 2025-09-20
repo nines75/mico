@@ -1,7 +1,7 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CustomFilter, sortCommentId } from "../filter.js";
-import { countCommonLog } from "@/utils/util.js";
+import { CustomFilter } from "../filter.js";
+import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
 
@@ -27,23 +27,15 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
-            ? this.filter.rules.filter(
-                  (rule) => rule.isStrict && !rule.isDisable, // strictルールと無効化ルールが併用されている場合、strictルールを無視する
-              )
-            : this.filter.rules.filter(
-                  (rule) => !(rule.isStrict && !rule.isDisable),
-              );
+            ? this.filter.rules.filter((rule) => this.isStrict(rule))
+            : this.filter.rules.filter((rule) => !this.isStrict(rule));
         const { hasAll } = this.filter;
 
         if (rules.length === 0 && !hasAll) return;
 
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment) => {
-                if (
-                    this.settings.isIgnoreByNicoru &&
-                    comment.nicoruCount >= this.settings.IgnoreByNicoruCount
-                )
-                    return true;
+                if (this.isIgnoreByNicoru(comment)) return true;
 
                 // コマンドを小文字に変換し重複を排除
                 comment.commands = [
@@ -55,7 +47,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                 ];
 
                 // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
-                const { id, commands } = comment;
+                const { id, commands, userId } = comment;
 
                 for (const { rule, isDisable } of rules) {
                     // commandsを内部で変更するのでコピーを作る
@@ -74,22 +66,15 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                                 break; // commandsに重複はないため、一致した時点でループを抜ける
                             } else {
                                 if (isStrictOnly) {
-                                    if (!this.ngUserIds.has(comment.userId)) {
-                                        this.strictNgUserIds.push(
-                                            comment.userId,
-                                        );
+                                    if (!this.ngUserIds.has(userId)) {
+                                        this.strictNgUserIds.push(userId);
                                     }
 
                                     return true;
                                 }
 
-                                if (this.log.has(rule)) {
-                                    this.log.get(rule)?.push(id);
-                                } else {
-                                    this.log.set(rule, [id]);
-                                }
-
-                                this.filteredComments.set(comment.id, comment);
+                                pushCommonLog(this.log, rule, id);
+                                this.filteredComments.set(id, comment);
 
                                 return false;
                             }
@@ -109,29 +94,11 @@ export class CommandFilter extends CustomFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        const log: CommonLog = new Map();
         const ngCommands = new Set(
             this.filter.rules.map((ngCommand) => ngCommand.rule),
         );
 
-        // フィルター昇順にソート
-        ngCommands.forEach((command) => {
-            if (this.log.has(command)) {
-                log.set(command, this.log.get(command) ?? []);
-            }
-        });
-
-        this.log = log;
-
-        // 各ルールのコメントをソート
-        this.log.forEach((ids, command) => {
-            this.log.set(
-                command,
-                this.settings.isShowNgScoreInLog
-                    ? sortCommentId([...ids], this.filteredComments, true)
-                    : sortCommentId([...ids], this.filteredComments),
-            );
-        });
+        this.log = this.sortCommonLog(this.log, ngCommands);
     }
 
     override getCount(): number {
@@ -168,5 +135,10 @@ export class CommandFilter extends CustomFilter<CommonLog> {
             rules: ngCommands,
             hasAll,
         };
+    }
+
+    isStrict(rule: NgCommand): boolean {
+        // strictルールと無効化ルールが併用されている場合、strictルールを無視する
+        return rule.isStrict && !rule.isDisable;
     }
 }

@@ -63,3 +63,11 @@ export async function savePlaybackTime(tabId: number, time: number) {
 export function countCommonLog(log: CommonLog) {
     return log.values().reduce((sum, array) => sum + array.length, 0);
 }
+
+export function pushCommonLog(log: CommonLog, key: string, value: string) {
+    if (log.has(key)) {
+        log.get(key)?.push(value);
+    } else {
+        log.set(key, [value]);
+    }
+}

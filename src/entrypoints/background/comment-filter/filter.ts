@@ -4,6 +4,7 @@ import { ConditionalPick } from "type-fest";
 import { FilteredData } from "./filter-comment.js";
 import { CommentData } from "@/types/storage/log-comment.types.js";
 import { CustomRuleData, CustomRule } from "../filter.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class Filter<T> {
     protected filteredComments: CommentData = new Map();
@@ -24,6 +25,36 @@ export abstract class Filter<T> {
 
     getComments() {
         return this.filteredComments;
+    }
+
+    isIgnoreByNicoru(comment: NiconicoComment): boolean {
+        return (
+            this.settings.isIgnoreByNicoru &&
+            comment.nicoruCount >= this.settings.IgnoreByNicoruCount
+        );
+    }
+
+    sortCommonLog(currentLog: CommonLog, keys: Set<string>): CommonLog {
+        const log: CommonLog = new Map();
+
+        // フィルター昇順にソート
+        keys.forEach((key) => {
+            if (currentLog.has(key)) {
+                log.set(key, currentLog.get(key) ?? []);
+            }
+        });
+
+        // 各ルールのコメントをソート
+        log.forEach((ids, key) => {
+            log.set(
+                key,
+                this.settings.isShowNgScoreInLog
+                    ? sortCommentId(ids, this.filteredComments, true)
+                    : sortCommentId(ids, this.filteredComments),
+            );
+        });
+
+        return log;
     }
 }
 

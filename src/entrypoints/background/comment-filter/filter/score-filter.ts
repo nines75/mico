@@ -10,15 +10,13 @@ export class ScoreFilter extends Filter<ScoreLog> {
 
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment) => {
-                if (
-                    this.settings.isIgnoreByNicoru &&
-                    comment.nicoruCount >= this.settings.IgnoreByNicoruCount
-                )
-                    return true;
+                if (this.isIgnoreByNicoru(comment)) return true;
 
-                if (comment.score <= this.settings.scoreFilterCount) {
-                    this.log.push(comment.id);
-                    this.filteredComments.set(comment.id, comment);
+                const { id, score } = comment;
+
+                if (score <= this.settings.scoreFilterCount) {
+                    this.log.push(id);
+                    this.filteredComments.set(id, comment);
 
                     return false;
                 }

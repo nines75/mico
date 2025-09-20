@@ -1,9 +1,10 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter, sortCommentId } from "../filter.js";
-import { countCommonLog } from "@/utils/util.js";
+import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
 import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
 type NgWordData = CustomRuleData<NgWord>;
 
@@ -30,21 +31,17 @@ export class WordFilter extends CustomFilter<WordLog> {
 
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment) => {
-                const { id, body, nicoruCount: nicoru } = comment;
+                if (this.isIgnoreByNicoru(comment)) return true;
 
-                if (
-                    this.settings.isIgnoreByNicoru &&
-                    nicoru >= this.settings.IgnoreByNicoruCount
-                )
-                    return true;
+                const { id, body, userId } = comment;
 
                 for (const { regex } of rules) {
                     if (regex.test(body)) {
                         const regexStr = regex.source;
 
                         if (isStrictOnly) {
-                            if (!this.ngUserIds.has(comment.userId)) {
-                                this.strictNgUserIds.push(comment.userId);
+                            if (!this.ngUserIds.has(userId)) {
+                                this.strictNgUserIds.push(userId);
                             }
 
                             // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
@@ -52,21 +49,13 @@ export class WordFilter extends CustomFilter<WordLog> {
                         }
 
                         if (this.log.has(regexStr)) {
-                            const map = this.log.get(regexStr) as Map<
-                                string,
-                                string[]
-                            >;
-
-                            if (map.has(body)) {
-                                map.get(body)?.push(id);
-                            } else {
-                                map.set(body, [id]);
-                            }
+                            const map = this.log.get(regexStr) as CommonLog;
+                            pushCommonLog(map, body, id);
                         } else {
                             this.log.set(regexStr, new Map([[body, [id]]]));
                         }
 
-                        this.filteredComments.set(comment.id, comment);
+                        this.filteredComments.set(id, comment);
 
                         return false;
                     }

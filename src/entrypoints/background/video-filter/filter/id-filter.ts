@@ -2,7 +2,11 @@ import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { messages, pattern } from "@/utils/config.js";
 import { loadSettings, setSettings } from "@/utils/storage.js";
-import { countCommonLog, sendNotification } from "@/utils/util.js";
+import {
+    countCommonLog,
+    pushCommonLog,
+    sendNotification,
+} from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
 import { parseFilter } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -32,14 +36,7 @@ export class IdFilter extends Filter<IdLog> {
 
             // ユーザーIDによるフィルタリング
             if (userId !== undefined && this.filter.userIds.has(userId)) {
-                const ids = this.log.userId;
-
-                if (ids.has(userId)) {
-                    ids.get(userId)?.push(videoId);
-                } else {
-                    ids.set(userId, [videoId]);
-                }
-
+                pushCommonLog(this.log.userId, userId, videoId);
                 this.filteredVideos.set(videoId, video);
 
                 return false;
