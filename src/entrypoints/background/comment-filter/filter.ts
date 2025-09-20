@@ -48,8 +48,9 @@ export abstract class Filter<T> {
 
         // フィルター昇順にソート
         keys.forEach((key) => {
-            if (currentLog.has(key)) {
-                log.set(key, currentLog.get(key) ?? []);
+            const value = currentLog.get(key);
+            if (value !== undefined) {
+                log.set(key, value);
             }
         });
 

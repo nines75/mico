@@ -4,7 +4,6 @@ import { CustomFilter, sortCommentId } from "../filter.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
 import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
-import { CommonLog } from "@/types/storage/log.types.js";
 
 type NgWordData = CustomRuleData<NgWord>;
 
@@ -47,8 +46,8 @@ export class WordFilter extends CustomFilter<WordLog> {
                 }
 
                 const regexStr = regex.source;
-                if (this.log.has(regexStr)) {
-                    const map = this.log.get(regexStr) as CommonLog;
+                const map = this.log.get(regexStr);
+                if (map !== undefined) {
                     pushCommonLog(map, body, id);
                 } else {
                     this.log.set(regexStr, new Map([[body, [id]]]));
@@ -71,8 +70,9 @@ export class WordFilter extends CustomFilter<WordLog> {
 
         // フィルター昇順にソート
         ngWords.forEach((word) => {
-            if (this.log.has(word)) {
-                log.set(word, this.log.get(word) ?? new Map());
+            const map = this.log.get(word);
+            if (map !== undefined) {
+                log.set(word, map);
             }
         });
 

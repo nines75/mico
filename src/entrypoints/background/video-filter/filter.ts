@@ -84,8 +84,9 @@ export abstract class CommonFilter extends Filter<CommonLog> {
         // フィルター昇順にソート
         this.filter.forEach((rule) => {
             const ruleStr = rule.source;
-            if (this.log.has(ruleStr)) {
-                log.set(ruleStr, this.log.get(ruleStr) ?? []);
+            const value = this.log.get(ruleStr);
+            if (value !== undefined) {
+                log.set(ruleStr, value);
             }
         });
 

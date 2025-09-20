@@ -65,8 +65,9 @@ export function countCommonLog(log: CommonLog) {
 }
 
 export function pushCommonLog(log: CommonLog, key: string, value: string) {
-    if (log.has(key)) {
-        log.get(key)?.push(value);
+    const array = log.get(key);
+    if (array !== undefined) {
+        array.push(value);
     } else {
         log.set(key, [value]);
     }
