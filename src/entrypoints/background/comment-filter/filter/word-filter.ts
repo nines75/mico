@@ -62,6 +62,12 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
     }
 
+    override countBlocked(): number {
+        return this.log
+            .values()
+            .reduce((sum, map) => sum + countCommonLog(map), 0);
+    }
+
     override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
@@ -94,12 +100,6 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
 
         this.log = log;
-    }
-
-    override countBlocked(): number {
-        return this.log
-            .values()
-            .reduce((sum, map) => sum + countCommonLog(map), 0);
     }
 
     createFilter(settings: Settings): NgWordData {

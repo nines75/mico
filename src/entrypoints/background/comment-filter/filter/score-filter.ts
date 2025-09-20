@@ -24,11 +24,11 @@ export class ScoreFilter extends Filter<ScoreLog> {
         });
     }
 
-    override sortLog(): void {
-        this.log = sortCommentId(this.log, this.filteredComments, true);
-    }
-
     override countBlocked(): number {
         return this.log.length;
+    }
+
+    override sortLog(): void {
+        this.log = sortCommentId(this.log, this.filteredComments, true);
     }
 }

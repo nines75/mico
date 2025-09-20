@@ -93,16 +93,16 @@ export class CommandFilter extends CustomFilter<CommonLog> {
         });
     }
 
+    override countBlocked(): number {
+        return countCommonLog(this.log);
+    }
+
     override sortLog(): void {
         const ngCommands = new Set(
             this.filter.rules.map((ngCommand) => ngCommand.rule),
         );
 
         this.log = this.sortCommonLog(this.log, ngCommands);
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     createFilter(settings: Settings): NgCommandData {

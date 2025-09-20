@@ -39,15 +39,15 @@ export class UserIdFilter extends Filter<CommonLog> {
         });
     }
 
+    override countBlocked(): number {
+        return countCommonLog(this.log);
+    }
+
     override sortLog(): void {
         // strictルールによってユーザーIDが追加されていることがあるので、フィールドの値を使わずに改めて取得する
         const ngUserIds = getNgUserIdSet(this.settings);
 
         this.log = this.sortCommonLog(this.log, ngUserIds);
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     updateFilter(userIds: Set<string>) {

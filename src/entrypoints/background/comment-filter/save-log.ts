@@ -49,29 +49,6 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
         tabId,
     );
 }
-
-function getLog(filteredData: FilteredData): CommentFiltering {
-    const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
-        filteredData.filters;
-    const comments = new Map(
-        Object.values(filteredData.filters).flatMap((filter) => [
-            ...filter.getFilteredComments(),
-        ]),
-    );
-
-    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
-
-    return {
-        ngUserId: userIdFilter.getLog(),
-        ngScore: scoreFilter.getLog(),
-        ngCommand: commandFilter.getLog(),
-        ngWord: wordFilter.getLog(),
-        strictNgUserIds: filteredData.strictNgUserIds,
-        noToUserId: filteredData.noToUserId,
-        comments,
-    };
-}
-
 function getCount(
     filteredData: FilteredData,
     settings: Settings,
@@ -111,5 +88,27 @@ function getCount(
         invalid: Object.values(customFilters)
             .map((filter) => filter.getInvalidCount())
             .reduce((sum, current) => sum + current, 0),
+    };
+}
+
+function getLog(filteredData: FilteredData): CommentFiltering {
+    const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
+        filteredData.filters;
+    const comments = new Map(
+        Object.values(filteredData.filters).flatMap((filter) => [
+            ...filter.getFilteredComments(),
+        ]),
+    );
+
+    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
+
+    return {
+        ngUserId: userIdFilter.getLog(),
+        ngScore: scoreFilter.getLog(),
+        ngCommand: commandFilter.getLog(),
+        ngWord: wordFilter.getLog(),
+        strictNgUserIds: filteredData.strictNgUserIds,
+        noToUserId: filteredData.noToUserId,
+        comments,
     };
 }

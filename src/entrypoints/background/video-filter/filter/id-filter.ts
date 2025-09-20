@@ -68,6 +68,10 @@ export class IdFilter extends Filter<IdLog> {
         return false;
     }
 
+    override countBlocked(): number {
+        return countCommonLog(this.log.userId) + this.log.videoId.length;
+    }
+
     override sortLog(): void {
         // ユーザーIDによるフィルタリングのログをソート
         {
@@ -91,10 +95,6 @@ export class IdFilter extends Filter<IdLog> {
 
         // 動画IDによるフィルタリングのログをソート
         this.log.videoId = sortVideoId(this.log.videoId, this.filteredVideos);
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log.userId) + this.log.videoId.length;
     }
 
     createFilter(): NgIds {

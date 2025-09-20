@@ -45,28 +45,6 @@ export async function saveLog(
         tabId,
     );
 }
-
-function getLog(filteredData: FilteredData): VideoFiltering {
-    const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
-        filteredData.filters;
-    const videos = new Map(
-        Object.values(filteredData.filters).flatMap((filter) => [
-            ...filter.getFilteredVideos(),
-        ]),
-    );
-
-    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
-
-    return {
-        paid: paidFilter.getLog(),
-        views: viewsFilter.getLog(),
-        ngId: idFilter.getLog(),
-        ngUserName: userNameFilter.getLog(),
-        ngTitle: titleFilter.getLog(),
-        videos: videos,
-    };
-}
-
 function getCount(filteredData: FilteredData): VideoCount {
     const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
         filteredData.filters;
@@ -95,5 +73,26 @@ function getCount(filteredData: FilteredData): VideoCount {
         invalid: Object.values(filteredData.filters)
             .map((filter) => filter.getInvalidCount())
             .reduce((sum, current) => sum + current, 0),
+    };
+}
+
+function getLog(filteredData: FilteredData): VideoFiltering {
+    const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
+        filteredData.filters;
+    const videos = new Map(
+        Object.values(filteredData.filters).flatMap((filter) => [
+            ...filter.getFilteredVideos(),
+        ]),
+    );
+
+    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
+
+    return {
+        paid: paidFilter.getLog(),
+        views: viewsFilter.getLog(),
+        ngId: idFilter.getLog(),
+        ngUserName: userNameFilter.getLog(),
+        ngTitle: titleFilter.getLog(),
+        videos: videos,
     };
 }
