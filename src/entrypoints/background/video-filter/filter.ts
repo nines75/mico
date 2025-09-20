@@ -17,19 +17,17 @@ export abstract class Filter<T> {
 
     abstract filtering(data: { videos: NiconicoVideo[] }): void;
     abstract isNgVideo(video: NiconicoVideo): boolean;
-    abstract getCount(): number;
+    abstract countBlocked(): number;
     abstract sortLog(): void;
 
     getInvalidCount(): number {
         return this.invalidCount;
     }
-
+    getFilteredVideos() {
+        return this.filteredVideos;
+    }
     getLog() {
         return this.log;
-    }
-
-    getVideos() {
-        return this.filteredVideos;
     }
 }
 
@@ -38,12 +36,12 @@ export abstract class CommonFilter extends Filter<CommonLog> {
     protected abstract rawFilter: string;
     protected override log: CommonLog = new Map();
 
-    protected abstract getTargetValue(video: NiconicoVideo): string | null;
+    protected abstract pickTarget(video: NiconicoVideo): string | null;
 
     override filtering(data: { videos: NiconicoVideo[] }): void {
         data.videos = data.videos.filter((video) => {
             const videoId = video.id;
-            const target = this.getTargetValue(video);
+            const target = this.pickTarget(video);
             if (target === null) return true;
 
             for (const regex of this.filter) {
@@ -62,7 +60,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
     }
 
     override isNgVideo(video: NiconicoVideo): boolean {
-        const target = this.getTargetValue(video);
+        const target = this.pickTarget(video);
         if (target === null) return false;
 
         for (const regex of this.filter) {
@@ -74,7 +72,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
         return false;
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return countCommonLog(this.log);
     }
 
@@ -115,7 +113,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
         return res;
     }
 
-    getRuleCount(): number {
+    countRules(): number {
         return this.filter.length;
     }
 }

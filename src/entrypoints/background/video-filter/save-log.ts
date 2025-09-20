@@ -51,7 +51,7 @@ function getLog(filteredData: FilteredData): VideoFiltering {
         filteredData.filters;
     const videos = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
-            ...filter.getVideos(),
+            ...filter.getFilteredVideos(),
         ]),
     );
 
@@ -72,16 +72,16 @@ function getCount(filteredData: FilteredData): VideoCount {
         filteredData.filters;
 
     const rule: VideoCount["rule"] = {
-        ngId: idFilter.getRuleCount(),
-        ngUserName: userNameFilter.getRuleCount(),
-        ngTitle: titleFilter.getRuleCount(),
+        ngId: idFilter.countRules(),
+        ngUserName: userNameFilter.countRules(),
+        ngTitle: titleFilter.countRules(),
     };
     const blocked: VideoCount["blocked"] = {
-        paid: paidFilter.getCount(),
-        views: viewsFilter.getCount(),
-        ngId: idFilter.getCount(),
-        ngUserName: userNameFilter.getCount(),
-        ngTitle: titleFilter.getCount(),
+        paid: paidFilter.countBlocked(),
+        views: viewsFilter.countBlocked(),
+        ngId: idFilter.countBlocked(),
+        ngUserName: userNameFilter.countBlocked(),
+        ngTitle: titleFilter.countBlocked(),
     };
 
     return {

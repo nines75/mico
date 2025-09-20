@@ -55,7 +55,7 @@ function getLog(filteredData: FilteredData): CommentFiltering {
         filteredData.filters;
     const comments = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
-            ...filter.getComments(),
+            ...filter.getFilteredComments(),
         ]),
     );
 
@@ -81,15 +81,15 @@ function getCount(
 
     const rule: CommentCount["rule"] = {
         ngUserId: parseFilter(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
-        ngCommand: commandFilter.getRuleCount(),
-        ngWord: wordFilter.getRuleCount(),
+        ngCommand: commandFilter.countRules(),
+        ngWord: wordFilter.countRules(),
     };
     const blocked: CommentCount["blocked"] = {
         easyComment: filteredData.easyCommentCount,
-        ngUserId: userIdFilter.getCount(),
-        ngScore: scoreFilter.getCount(),
-        ngCommand: commandFilter.getCount(),
-        ngWord: wordFilter.getCount(),
+        ngUserId: userIdFilter.countBlocked(),
+        ngScore: scoreFilter.countBlocked(),
+        ngCommand: commandFilter.countBlocked(),
+        ngWord: wordFilter.countBlocked(),
     };
     const customFilters = getCustomFilters(filteredData.filters);
 

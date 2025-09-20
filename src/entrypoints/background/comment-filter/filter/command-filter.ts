@@ -25,6 +25,10 @@ export class CommandFilter extends CustomFilter<CommonLog> {
         this.filter = this.createFilter(settings);
     }
 
+    getDisableCount(): number {
+        return this.disableCount;
+    }
+
     override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
             ? this.filter.rules.filter((rule) => this.isStrict(rule))
@@ -97,12 +101,8 @@ export class CommandFilter extends CustomFilter<CommonLog> {
         this.log = this.sortCommonLog(this.log, ngCommands);
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return countCommonLog(this.log);
-    }
-
-    getDisableCount(): number {
-        return this.disableCount;
     }
 
     createFilter(settings: Settings): NgCommandData {

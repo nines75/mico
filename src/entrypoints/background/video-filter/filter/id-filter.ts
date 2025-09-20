@@ -93,7 +93,7 @@ export class IdFilter extends Filter<IdLog> {
         this.log.videoId = sortVideoId(this.log.videoId, this.filteredVideos);
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return countCommonLog(this.log.userId) + this.log.videoId.length;
     }
 
@@ -120,7 +120,7 @@ export class IdFilter extends Filter<IdLog> {
         };
     }
 
-    getRuleCount(): number {
+    countRules(): number {
         return this.filter.userIds.size + this.filter.videoIds.size;
     }
 }

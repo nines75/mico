@@ -16,6 +16,10 @@ export class UserIdFilter extends Filter<CommonLog> {
         this.filter = getNgUserIdSet(settings, videoId);
     }
 
+    setSettings(settings: Settings) {
+        this.settings = settings;
+    }
+
     override filtering(threads: Thread[]): void {
         if (this.filter.size === 0) return;
 
@@ -42,16 +46,12 @@ export class UserIdFilter extends Filter<CommonLog> {
         this.log = this.sortCommonLog(this.log, ngUserIds);
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return countCommonLog(this.log);
     }
 
     updateFilter(userIds: Set<string>) {
         userIds.forEach((id) => this.filter.add(id));
-    }
-
-    setSettings(settings: Settings) {
-        this.settings = settings;
     }
 }
 

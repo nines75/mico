@@ -41,7 +41,7 @@ export class ViewsFilter extends Filter<ViewsLog> {
         return views <= this.settings.viewsFilterCount;
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return this.log.length;
     }
 

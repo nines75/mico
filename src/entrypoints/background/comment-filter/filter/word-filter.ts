@@ -96,7 +96,7 @@ export class WordFilter extends CustomFilter<WordLog> {
         this.log = log;
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return this.log
             .values()
             .reduce((sum, map) => sum + countCommonLog(map), 0);

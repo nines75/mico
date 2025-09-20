@@ -48,7 +48,7 @@ export function filterVideo(
 
     const filteredIds = new Set(
         Object.values(filters).flatMap((filter) => [
-            ...filter.getVideos().keys(),
+            ...filter.getFilteredVideos().keys(),
         ]),
     );
 

@@ -12,7 +12,7 @@ export class UserNameFilter extends CommonFilter {
         this.filter = this.createFilter();
     }
 
-    protected override getTargetValue(video: NiconicoVideo): string | null {
+    protected override pickTarget(video: NiconicoVideo): string | null {
         return video.owner?.name ?? null;
     }
 }

@@ -16,15 +16,14 @@ export abstract class Filter<T> {
     }
 
     abstract filtering(threads: Thread[], isStrictOnly: boolean): void;
-    abstract getCount(): number;
+    abstract countBlocked(): number;
     abstract sortLog(): void;
 
+    getFilteredComments() {
+        return this.filteredComments;
+    }
     getLog() {
         return this.log;
-    }
-
-    getComments() {
-        return this.filteredComments;
     }
 
     traverseThreads(
@@ -69,8 +68,8 @@ export abstract class Filter<T> {
 }
 
 export abstract class CustomFilter<T> extends Filter<T> {
-    private excludeCount = 0;
     private includeCount = 0;
+    private excludeCount = 0;
     protected invalidCount = 0;
     protected ngUserIds: Set<string>;
     protected strictNgUserIds: string[] = [];
@@ -84,19 +83,12 @@ export abstract class CustomFilter<T> extends Filter<T> {
     getIncludeCount(): number {
         return this.includeCount;
     }
-
     getExcludeCount(): number {
         return this.excludeCount;
     }
-
     getInvalidCount(): number {
         return this.invalidCount;
     }
-
-    getRuleCount(): number {
-        return this.filter.rules.length;
-    }
-
     getStrictNgUserIds(): string[] {
         return this.strictNgUserIds;
     }
@@ -125,6 +117,10 @@ export abstract class CustomFilter<T> extends Filter<T> {
 
             return true;
         });
+    }
+
+    countRules(): number {
+        return this.filter.rules.length;
     }
 }
 

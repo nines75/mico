@@ -28,7 +28,7 @@ export class ScoreFilter extends Filter<ScoreLog> {
         this.log = sortCommentId(this.log, this.filteredComments, true);
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return this.log.length;
     }
 }

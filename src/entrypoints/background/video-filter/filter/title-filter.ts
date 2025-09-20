@@ -12,7 +12,7 @@ export class TitleFilter extends CommonFilter {
         this.filter = this.createFilter();
     }
 
-    protected override getTargetValue(video: NiconicoVideo): string {
+    protected override pickTarget(video: NiconicoVideo): string {
         return video.title;
     }
 }

@@ -26,7 +26,7 @@ export class PaidFilter extends Filter<PaidLog> {
         return video.isPaymentRequired;
     }
 
-    override getCount(): number {
+    override countBlocked(): number {
         return this.log.length;
     }
 
