@@ -52,32 +52,32 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                 for (const { rule, isDisable } of rules) {
                     // commandsを内部で変更するのでコピーを作る
                     for (const command of [...commands]) {
-                        if (rule === command) {
-                            if (isDisable) {
-                                // allルールがある場合は後からまとめて無効化する
-                                if (hasAll) break;
+                        if (rule !== command) continue;
 
-                                const index = commands.indexOf(command);
-                                if (index !== -1) {
-                                    commands.splice(index, 1);
-                                    this.disableCount++;
-                                }
+                        if (isDisable) {
+                            // allルールがある場合は後からまとめて無効化する
+                            if (hasAll) break;
 
-                                break; // commandsに重複はないため、一致した時点でループを抜ける
-                            } else {
-                                if (isStrictOnly) {
-                                    if (!this.ngUserIds.has(userId)) {
-                                        this.strictNgUserIds.push(userId);
-                                    }
-
-                                    return true;
-                                }
-
-                                pushCommonLog(this.log, rule, id);
-                                this.filteredComments.set(id, comment);
-
-                                return false;
+                            const index = commands.indexOf(command);
+                            if (index !== -1) {
+                                commands.splice(index, 1);
+                                this.disableCount++;
                             }
+
+                            break; // commandsに重複はないため、一致した時点でループを抜ける
+                        } else {
+                            if (isStrictOnly) {
+                                if (!this.ngUserIds.has(userId)) {
+                                    this.strictNgUserIds.push(userId);
+                                }
+
+                                return true;
+                            }
+
+                            pushCommonLog(this.log, rule, id);
+                            this.filteredComments.set(id, comment);
+
+                            return false;
                         }
                     }
                 }

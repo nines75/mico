@@ -36,29 +36,28 @@ export class WordFilter extends CustomFilter<WordLog> {
                 const { id, body, userId } = comment;
 
                 for (const { regex } of rules) {
-                    if (regex.test(body)) {
-                        const regexStr = regex.source;
+                    if (!regex.test(body)) continue;
 
-                        if (isStrictOnly) {
-                            if (!this.ngUserIds.has(userId)) {
-                                this.strictNgUserIds.push(userId);
-                            }
-
-                            // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
-                            return true;
+                    if (isStrictOnly) {
+                        if (!this.ngUserIds.has(userId)) {
+                            this.strictNgUserIds.push(userId);
                         }
 
-                        if (this.log.has(regexStr)) {
-                            const map = this.log.get(regexStr) as CommonLog;
-                            pushCommonLog(map, body, id);
-                        } else {
-                            this.log.set(regexStr, new Map([[body, [id]]]));
-                        }
-
-                        this.filteredComments.set(id, comment);
-
-                        return false;
+                        // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
+                        return true;
                     }
+
+                    const regexStr = regex.source;
+                    if (this.log.has(regexStr)) {
+                        const map = this.log.get(regexStr) as CommonLog;
+                        pushCommonLog(map, body, id);
+                    } else {
+                        this.log.set(regexStr, new Map([[body, [id]]]));
+                    }
+
+                    this.filteredComments.set(id, comment);
+
+                    return false;
                 }
 
                 return true;
