@@ -71,24 +71,21 @@ export class IdFilter extends Filter<IdLog> {
     override sortLog(): void {
         // ユーザーIDによるフィルタリングのログをソート
         {
-            const userIdLog: IdLog["userId"] = new Map();
+            const log: IdLog["userId"] = new Map();
 
             // フィルター昇順にソート
             this.filter.userIds.forEach((userId) => {
                 if (this.log.userId.has(userId)) {
-                    userIdLog.set(userId, this.log.userId.get(userId) ?? []);
+                    log.set(userId, this.log.userId.get(userId) ?? []);
                 }
             });
 
-            this.log.userId = userIdLog;
-
             // 各ルールのコメントをソート
-            this.log.userId.forEach((ids, userId) => {
-                this.log.userId.set(
-                    userId,
-                    sortVideoId(ids, this.filteredVideos),
-                );
+            log.forEach((ids, userId) => {
+                log.set(userId, sortVideoId(ids, this.filteredVideos));
             });
+
+            this.log.userId = log;
         }
 
         // 動画IDによるフィルタリングのログをソート

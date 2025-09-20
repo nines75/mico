@@ -89,12 +89,12 @@ export abstract class CommonFilter extends Filter<CommonLog> {
             }
         });
 
-        this.log = log;
-
         // 各ルールのコメントをソート
-        this.log.forEach((ids, rule) => {
-            this.log.set(rule, sortVideoId(ids, this.filteredVideos));
+        log.forEach((ids, rule) => {
+            log.set(rule, sortVideoId(ids, this.filteredVideos));
         });
+
+        this.log = log;
     }
 
     createFilter(): RegExp[] {

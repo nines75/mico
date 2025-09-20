@@ -76,10 +76,8 @@ export class WordFilter extends CustomFilter<WordLog> {
             }
         });
 
-        this.log = log;
-
         // 各ルールのコメントをソート
-        this.log.forEach((map, word) => {
+        log.forEach((map, word) => {
             const sampleIds = [...map.values()].map((ids) => ids[0] as string); // コメントIDは必ず一つ以上存在する
             const sortedMap = new Map(
                 sortCommentId(sampleIds, this.filteredComments).map((id) => {
@@ -92,8 +90,10 @@ export class WordFilter extends CustomFilter<WordLog> {
                 }),
             );
 
-            this.log.set(word, sortedMap);
+            log.set(word, sortedMap);
         });
+
+        this.log = log;
     }
 
     override getCount(): number {
