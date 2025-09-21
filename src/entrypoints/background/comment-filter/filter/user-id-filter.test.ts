@@ -120,7 +120,10 @@ user-id-owner
         userIdFilter.sortLog();
 
         expect(
-            [...userIdFilter.getLog()].map(([key, value]) => [key, value]),
+            [...userIdFilter.getLog()].map(([key, value]) => [
+                key,
+                value,
+            ]) satisfies [string, string[]][],
         ).toEqual([
             ["user-id-main-1", ["1002"]],
             ["user-id-owner", ["1000", "1001"]],
