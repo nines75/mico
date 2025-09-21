@@ -10,44 +10,56 @@ import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoF
 import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
 
 export const defaultSettings: Settings = {
+    // -------------------------------------------------------------------------------------------
+    // 一般設定
+    // -------------------------------------------------------------------------------------------
+
+    // フィルタリング
+    isCaseInsensitive: true,
+
+    // エディター
+    isVimKeybindingsEnabled: false,
+
+    // -------------------------------------------------------------------------------------------
     // コメントフィルター
+    // -------------------------------------------------------------------------------------------
 
     isCommentFilterEnabled: true,
 
-    /// フィルタリング
-    isCaseInsensitive: true,
+    // フィルタリング
     isHideEasyComment: false,
     isAddEasyCommentCount: true,
-    isIgnoreByNicoru: false,
-    IgnoreByNicoruCount: 30,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
-    isVimKeybindingsEnabled: false,
+    isIgnoreByNicoru: false,
+    IgnoreByNicoruCount: 30,
     selectedCommentFilter: "ngUserId",
     ngUserId: "",
     ngCommand: "",
     ngWord: "",
 
-    /// ログ
+    // ログ
     isShowNgScoreInLog: true,
     isShowNicoruInLog: true,
     showNicoruInLogCount: 30,
     isShowDuplicateInLog: true,
     showDuplicateInLogCount: 2,
 
-    /// 通知
+    // 通知
     isNotifyAddNgUserId: true,
     isNotifyAutoAddNgUserId: true,
 
-    /// その他
+    // その他
     isAutoReload: false,
     isShowUserIdInDropdown: false,
 
+    // -------------------------------------------------------------------------------------------
     // 動画フィルター
+    // -------------------------------------------------------------------------------------------
 
     isVideoFilterEnabled: true,
 
-    /// フィルタリング
+    // フィルタリング
     isHidePaidVideo: false,
     isHideCommentPreview: false,
     isViewsFilterEnabled: false,
@@ -57,17 +69,19 @@ export const defaultSettings: Settings = {
     ngTitle: "",
     ngUserName: "",
 
-    /// 通知
+    // 通知
     isNotifyAddNgId: true,
 
-    /// その他
+    // その他
     isAddNgContext: false,
 
+    // -------------------------------------------------------------------------------------------
     // 拡張ニコる
+    // -------------------------------------------------------------------------------------------
 
     isExpandNicoruEnabled: false,
 
-    /// スタイル
+    // スタイル
     isHighlightCommentBody: true,
     nicoruCounts: [300, 200, 100, 50, 30, 15], // 降順である必要がある
     nicoruColors: {
@@ -104,20 +118,18 @@ export const defaultSettings: Settings = {
         },
     },
 
-    // 設定
+    // -------------------------------------------------------------------------------------------
+    // その他
+    // -------------------------------------------------------------------------------------------
 
-    /// タブ
+    // タブ
     settingsSelectedTab: "general",
+    popupSelectedTab: "commentFilter",
 
-    // ポップアップ
-
-    /// 開閉設定
+    // 開閉
     isOpenProcessingTime: false,
     isOpenCount: true,
     isOpenVideoLog: true,
-
-    /// タブ
-    popupSelectedTab: "commentFilter",
 } as const;
 
 export const buttons = {

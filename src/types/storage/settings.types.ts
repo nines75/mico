@@ -10,44 +10,56 @@ export type SettingsTab =
     | "backup";
 
 export interface Settings {
+    // -------------------------------------------------------------------------------------------
+    // 一般設定
+    // -------------------------------------------------------------------------------------------
+
+    // フィルタリング
+    isCaseInsensitive: boolean;
+
+    // エディター
+    isVimKeybindingsEnabled: boolean;
+
+    // -------------------------------------------------------------------------------------------
     // コメントフィルター
+    // -------------------------------------------------------------------------------------------
 
     isCommentFilterEnabled: boolean;
 
-    /// フィルタリング
-    isCaseInsensitive: boolean;
+    // フィルタリング
     isHideEasyComment: boolean;
     isAddEasyCommentCount: boolean;
-    isIgnoreByNicoru: boolean;
-    IgnoreByNicoruCount: number;
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
-    isVimKeybindingsEnabled: boolean;
+    isIgnoreByNicoru: boolean;
+    IgnoreByNicoruCount: number;
     selectedCommentFilter: CommentFilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;
 
-    /// ログ
+    // ログ
     isShowNgScoreInLog: boolean;
     isShowNicoruInLog: boolean;
     showNicoruInLogCount: number;
     isShowDuplicateInLog: boolean;
     showDuplicateInLogCount: number;
 
-    /// 通知
+    // 通知
     isNotifyAddNgUserId: boolean;
     isNotifyAutoAddNgUserId: boolean;
 
-    /// その他
+    // その他
     isAutoReload: boolean;
     isShowUserIdInDropdown: boolean;
 
+    // -------------------------------------------------------------------------------------------
     // 動画フィルター
+    // -------------------------------------------------------------------------------------------
 
     isVideoFilterEnabled: boolean;
 
-    /// フィルタリング
+    // フィルタリング
     isHidePaidVideo: boolean;
     isHideCommentPreview: boolean;
     isViewsFilterEnabled: boolean;
@@ -57,35 +69,35 @@ export interface Settings {
     ngUserName: string;
     ngTitle: string;
 
-    /// 通知
+    // 通知
     isNotifyAddNgId: boolean;
 
-    /// その他
+    // その他
     isAddNgContext: boolean;
 
+    // -------------------------------------------------------------------------------------------
     // 拡張ニコる
+    // -------------------------------------------------------------------------------------------
 
     isExpandNicoruEnabled: boolean;
 
-    /// スタイル
+    // スタイル
     isHighlightCommentBody: boolean;
     nicoruCounts: number[];
     nicoruColors: Record<string, NicoruColor>;
 
-    // 設定
+    // -------------------------------------------------------------------------------------------
+    // その他
+    // -------------------------------------------------------------------------------------------
 
-    /// タブ
+    // タブ
     settingsSelectedTab: SettingsTab;
+    popupSelectedTab: PopupTab;
 
-    // ポップアップ
-
-    /// 開閉設定
+    // 開閉
     isOpenProcessingTime: boolean;
     isOpenCount: boolean;
     isOpenVideoLog: boolean;
-
-    // タブ
-    popupSelectedTab: PopupTab;
 }
 
 interface NicoruColor {
