@@ -64,7 +64,11 @@ export const defaultSettings: Settings = {
     isAddNgContext: false,
 
     // 拡張ニコる
+
     isExpandNicoruEnabled: false,
+
+    /// スタイル
+    isHighlightCommentBody: true,
     nicoruCounts: [300, 200, 100, 50, 30, 15], // 降順である必要がある
     nicoruColors: {
         // 明示的に設定しないとリセット時に前の値を上書きできない
@@ -450,14 +454,25 @@ export const videoFilterSettings = {
 };
 
 export const expandNicoruSettings = {
-    checkbox: [
-        {
-            id: "isExpandNicoruEnabled",
-            label: "拡張ニコるを有効にする",
-        },
-    ],
+    checkbox: {
+        top: [
+            {
+                id: "isExpandNicoruEnabled",
+                label: "拡張ニコるを有効にする",
+            },
+        ],
+        style: [
+            {
+                id: "isHighlightCommentBody",
+                label: "装飾対象のコメントの本文を強調する",
+            },
+        ],
+    },
 } as const satisfies {
-    checkbox: CheckboxProps[];
+    checkbox: {
+        top: CheckboxProps[];
+        style: CheckboxProps[];
+    };
 };
 
 export const popupConfig = {

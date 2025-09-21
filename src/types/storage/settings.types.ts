@@ -64,7 +64,11 @@ export interface Settings {
     isAddNgContext: boolean;
 
     // 拡張ニコる
+
     isExpandNicoruEnabled: boolean;
+
+    /// スタイル
+    isHighlightCommentBody: boolean;
     nicoruCounts: number[];
     nicoruColors: Record<string, NicoruColor>;
 

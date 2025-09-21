@@ -52,10 +52,13 @@ export default function ExpandNicoru() {
 
     return (
         <div className="settings-container">
-            {expandNicoruSettings.checkbox.map((props) => (
+            {expandNicoruSettings.checkbox.top.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}
-            <H2 name={"カスタムカラー"}>
+            <H2 name={"スタイル"}>
+                {expandNicoruSettings.checkbox.style.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
                 <div className="setting">
                     <button
                         className="small-button"

@@ -27,11 +27,15 @@ export function renderComment(element: Element, settings: Settings) {
     const primary = nicoruColor?.primary ?? "";
     const secondary = nicoruColor?.secondary ?? "";
 
-    // 文字色/文字サイズを変更
+    // 文字色を変更
     nicoruElement.style.color = "black";
     textElement.style.color = "black";
-    textElement.style.fontSize = "16px";
     timeElement.style.color = "dimgray";
+
+    // コメント本文を強調
+    if (settings.isHighlightCommentBody) {
+        textElement.style.fontSize = "16px";
+    }
 
     // 背景色を変更
     if (isGradate) {
