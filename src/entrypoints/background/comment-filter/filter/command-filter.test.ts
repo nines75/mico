@@ -215,11 +215,14 @@ big
         });
         commandFilter.sortLog();
 
-        expect(commandFilter.getLog()).toEqual(
-            new Map([
-                ["device:switch", ["1003", "1004"]],
-                ["big", ["1002"]],
-            ]),
-        );
+        expect(
+            [...commandFilter.getLog().entries()].map(([key, value]) => [
+                key,
+                value,
+            ]) satisfies [string, string[]][],
+        ).toEqual([
+            ["device:switch", ["1003", "1004"]],
+            ["big", ["1002"]],
+        ]);
     });
 });

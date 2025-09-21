@@ -198,17 +198,23 @@ describe(WordFilter.name, () => {
         });
         wordFilter.sortLog();
 
-        expect(wordFilter.getLog()).toEqual(
-            new Map([
+        expect(
+            [...wordFilter.getLog().entries()].map(([key, map]) => [
+                key,
+                [...map.entries()].map(([innerKey, array]) => [
+                    innerKey,
+                    array,
+                ]),
+            ]) satisfies [string, [string, string[]][]][],
+        ).toEqual([
+            [
+                "コメント",
                 [
-                    "コメント",
-                    new Map([
-                        ["コメント", ["1004"]],
-                        ["テストコメント", ["1003"]],
-                    ]),
+                    ["コメント", ["1004"]],
+                    ["テストコメント", ["1003"]],
                 ],
-                ["テスト", new Map([["テスト", ["1002"]]])],
-            ]),
-        );
+            ],
+            ["テスト", [["テスト", ["1002"]]]],
+        ]);
     });
 });

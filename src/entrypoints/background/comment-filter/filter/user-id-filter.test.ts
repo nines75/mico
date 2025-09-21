@@ -119,12 +119,12 @@ user-id-owner
         });
         userIdFilter.sortLog();
 
-        expect(userIdFilter.getLog()).toEqual(
-            new Map([
-                ["user-id-owner", ["1000", "1001"]],
-                ["user-id-main-1", ["1002"]],
-            ]),
-        );
+        expect(
+            [...userIdFilter.getLog()].map(([key, value]) => [key, value]),
+        ).toEqual([
+            ["user-id-main-1", ["1002"]],
+            ["user-id-owner", ["1000", "1001"]],
+        ]);
     });
 });
 
