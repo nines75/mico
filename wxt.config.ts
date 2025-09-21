@@ -83,6 +83,11 @@ export default defineConfig({
                 },
                 reload: {
                     description: "リロードして現在の再生時間を復元",
+                    suggested_key: isDev
+                        ? {
+                              default: "Alt+R",
+                          }
+                        : {},
                 },
                 _execute_browser_action: {
                     description: "ポップアップを開く",
