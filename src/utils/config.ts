@@ -89,13 +89,13 @@ export const defaultSettings: Settings = {
             isGradate: true,
         },
         "200": {
-            primary: "#ff8080",
-            secondary: "#ff0000",
+            primary: "#ffcccc",
+            secondary: "#ff8080",
             isGradate: true,
         },
         "300": {
-            primary: "#ff00ff",
-            secondary: "#ff0080",
+            primary: "#ff8080",
+            secondary: "#ff0000",
             isGradate: true,
         },
     },
