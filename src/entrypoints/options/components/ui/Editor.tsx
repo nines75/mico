@@ -132,10 +132,8 @@ const baseExtensions = [
     lineNumbers(),
     history(),
     dropCursor(),
-    closeBrackets(),
     highlightActiveLine(),
     highlightActiveLineGutter(),
-    highlightTrailingWhitespace(),
     theme,
 ];
 const vimExtensions = [
@@ -178,6 +176,10 @@ export default function Editor({ id, value, onChange }: EditorProps) {
 
         return [
             ...(settings.isVimKeybindingsEnabled ? vimExtensions : []), // Vim拡張は他のkeymapに関する拡張より前に配置する
+            ...(settings.isCloseBrackets ? [closeBrackets()] : []),
+            ...(settings.isHighlightTrailingWhitespace
+                ? [highlightTrailingWhitespace()]
+                : []),
             ...baseExtensions,
             ...dynamicExtensions,
         ];

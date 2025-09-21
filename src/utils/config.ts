@@ -18,6 +18,8 @@ export const defaultSettings: Settings = {
     isCaseInsensitive: true,
 
     // エディター
+    isCloseBrackets: true,
+    isHighlightTrailingWhitespace: true,
     isVimKeybindingsEnabled: false,
 
     // -------------------------------------------------------------------------------------------
@@ -272,6 +274,14 @@ export const generalSettings = {
             },
         ],
         editor: [
+            {
+                id: "isCloseBrackets",
+                label: "括弧を自動で閉じる",
+            },
+            {
+                id: "isHighlightTrailingWhitespace",
+                label: "行末の空白文字をハイライトする",
+            },
             {
                 id: "isVimKeybindingsEnabled",
                 label: "Vimモードを有効にする",

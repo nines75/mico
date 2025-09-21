@@ -18,6 +18,8 @@ export interface Settings {
     isCaseInsensitive: boolean;
 
     // エディター
+    isCloseBrackets: boolean;
+    isHighlightTrailingWhitespace: boolean;
     isVimKeybindingsEnabled: boolean;
 
     // -------------------------------------------------------------------------------------------
