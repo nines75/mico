@@ -72,20 +72,20 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                         }
 
                         break; // commandsに重複はないため、一致した時点でループを抜ける
-                    } else {
-                        if (isStrictOnly) {
-                            if (!this.ngUserIds.has(userId)) {
-                                this.strictNgUserIds.push(userId);
-                            }
+                    }
 
-                            return true;
+                    if (isStrictOnly) {
+                        if (!this.ngUserIds.has(userId)) {
+                            this.strictNgUserIds.push(userId);
                         }
 
-                        pushCommonLog(this.log, rule, id);
-                        this.filteredComments.set(id, comment);
-
-                        return false;
+                        return true;
                     }
+
+                    pushCommonLog(this.log, rule, id);
+                    this.filteredComments.set(id, comment);
+
+                    return false;
                 }
             }
 
