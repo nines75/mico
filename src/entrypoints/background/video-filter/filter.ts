@@ -79,7 +79,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
     override sortLog(): void {
         const log: CommonLog = new Map();
 
-        // フィルター昇順にソート
+        // フィルター順にソート
         this.filter.forEach((rule) => {
             const ruleStr = rule.source;
             const value = this.log.get(ruleStr);

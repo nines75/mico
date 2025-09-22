@@ -190,6 +190,21 @@ device:switch
         checkComment(threads, ["1003", "1004"]);
     });
 
+    // https://github.com/nines75/mico/issues/31
+    it("非表示ルールを無効化ルールより先に適用", () => {
+        const filter = `
+@disable
+big
+@end
+
+big
+`;
+        expect(filtering({ filter }).getLog()).toEqual(
+            new Map([["big", ["1002", "1004"]]]),
+        );
+        checkComment(threads, ["1002", "1004"]);
+    });
+
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         const filter = `
 big

@@ -77,7 +77,7 @@ export class IdFilter extends Filter<IdLog> {
         {
             const log: IdLog["userId"] = new Map();
 
-            // フィルター昇順にソート
+            // フィルター順にソート
             this.filter.userIds.forEach((userId) => {
                 const value = this.log.userId.get(userId);
                 if (value !== undefined) {

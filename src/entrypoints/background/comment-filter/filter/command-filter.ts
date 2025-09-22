@@ -30,10 +30,16 @@ export class CommandFilter extends CustomFilter<CommonLog> {
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
+        const { hasAll } = this.filter;
         const rules = isStrictOnly
             ? this.filter.rules.filter((rule) => this.isStrict(rule))
-            : this.filter.rules.filter((rule) => !this.isStrict(rule));
-        const { hasAll } = this.filter;
+            : this.filter.rules
+                  .filter((rule) => !this.isStrict(rule))
+                  // 非表示ルールを無効化ルールより先に適用するためにソート
+                  .sort((a, b) => {
+                      if (a.isDisable === b.isDisable) return 0;
+                      return a.isDisable ? 1 : -1;
+                  });
 
         if (rules.length === 0 && !hasAll) return;
 

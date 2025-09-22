@@ -74,7 +74,7 @@ export class WordFilter extends CustomFilter<WordLog> {
             this.filter.rules.map((ngWord) => ngWord.regex.source),
         );
 
-        // フィルター昇順にソート
+        // フィルター順にソート
         ngWords.forEach((word) => {
             const map = this.log.get(word);
             if (map !== undefined) {

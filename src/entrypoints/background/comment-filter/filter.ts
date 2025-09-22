@@ -45,7 +45,7 @@ export abstract class Filter<T> {
     sortCommonLog(currentLog: CommonLog, keys: Set<string>): CommonLog {
         const log: CommonLog = new Map();
 
-        // フィルター昇順にソート
+        // フィルター順にソート
         keys.forEach((key) => {
             const value = currentLog.get(key);
             if (value !== undefined) {
