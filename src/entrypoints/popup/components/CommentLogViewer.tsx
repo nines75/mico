@@ -1,8 +1,4 @@
-import {
-    addNgUserId,
-    getNgUserIdSet,
-    removeNgUserId,
-} from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
+import { getNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { NiconicoComment } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
@@ -88,7 +84,13 @@ async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
     )
         return;
 
-    await removeNgUserId(userIds, false); // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+    await browser.runtime.sendMessage({
+        type: "remove-ng-user-id",
+        data: {
+            userIds,
+            isRemoveSpecific: false, // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+        },
+    });
 }
 
 interface LogProps {
@@ -363,7 +365,10 @@ async function onClickUserId(userId: string) {
     if (!confirm(messages.ngUserId.confirmRemoval.replace("{target}", userId)))
         return;
 
-    await removeNgUserId(new Set([userId]));
+    await browser.runtime.sendMessage({
+        type: "remove-ng-user-id",
+        data: { userIds: new Set([userId]) },
+    });
 }
 
 async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
@@ -392,5 +397,8 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     )
         return;
 
-    await addNgUserId(new Set(targetUserIds));
+    await browser.runtime.sendMessage({
+        type: "add-ng-user-id",
+        data: targetUserIds satisfies Set<string>,
+    });
 }

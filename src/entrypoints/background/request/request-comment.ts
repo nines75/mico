@@ -8,8 +8,9 @@ import {
     getAllData,
     removeData,
     LogType,
+    setLog,
 } from "@/utils/storage.js";
-import { sendNotification, savePlaybackTime } from "@/utils/util.js";
+import { sendNotification } from "@/utils/util.js";
 import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
 import { filterResponse } from "./request.js";
 
@@ -74,7 +75,7 @@ async function restorePlaybackTime(tabId: number) {
     const logData = await getLogData(tabId);
     const playbackTime = logData?.playbackTime ?? 0;
     if (playbackTime > 0) {
-        tasks.push(savePlaybackTime(tabId, 0));
+        tasks.push(setLog({ playbackTime: 0 }, tabId));
         tasks.push(
             browser.tabs.sendMessage(tabId, {
                 type: "set-playback-time",

@@ -1,6 +1,5 @@
 import { CommonLog } from "../types/storage/log.types.js";
 import { pattern } from "./config.js";
-import { setLog } from "./storage.js";
 
 export function isWatchPage(url: string | undefined) {
     if (url === undefined) return false;
@@ -54,10 +53,6 @@ export async function sendNotification(message: string) {
         message,
         iconUrl: browser.runtime.getURL("/icons/128.png"),
     });
-}
-
-export async function savePlaybackTime(tabId: number, time: number) {
-    await setLog({ playbackTime: time }, tabId);
 }
 
 export function countCommonLog(log: CommonLog) {

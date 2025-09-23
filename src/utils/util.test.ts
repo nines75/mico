@@ -7,9 +7,7 @@ import {
     isSearchPage,
     isWatchPage,
     pushCommonLog,
-    savePlaybackTime,
 } from "./util.js";
-import { getLogData } from "./storage.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 
 describe("util", () => {
@@ -54,12 +52,6 @@ describe("util", () => {
 
     it(`${escapeNewline.name}()`, () => {
         expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
-    });
-
-    it(`${savePlaybackTime.name}()`, async () => {
-        await savePlaybackTime(1, 100);
-
-        expect(await getLogData(1)).toEqual({ playbackTime: 100 });
     });
 
     it(`${countCommonLog.name}()`, () => {

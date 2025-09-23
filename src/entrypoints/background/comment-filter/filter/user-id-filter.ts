@@ -78,6 +78,7 @@ export function getNgUserIdSet(settings: Settings, videoId?: string) {
     return new Set(getNgUserId(settings, videoId).map((data) => data.rule));
 }
 
+/** background以外からは呼び出さない */
 export async function addNgUserId(userIds: Set<string>) {
     if (userIds.size === 0) return;
 
@@ -93,6 +94,7 @@ export async function addNgUserId(userIds: Set<string>) {
     await setSettings(func);
 }
 
+/** background以外からは呼び出さない */
 export async function removeNgUserId(
     userIds: Set<string>,
     isRemoveSpecific = true,

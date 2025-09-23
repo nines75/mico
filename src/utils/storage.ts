@@ -34,12 +34,14 @@ export async function loadSettings(settings?: Partial<Settings>) {
     return customMerge(defaultSettings, data) as Settings;
 }
 
+/** background以外からは呼び出さない */
 export async function removeAllData() {
     await queue.add(async () => {
         await storage.clear(storageArea);
     });
 }
 
+/** background以外からは呼び出さない */
 export async function removeData(type: StorageType[]) {
     await queue.add(async () => {
         const keys = type.map((key) => `${storageArea}:${key}` as const);
@@ -87,6 +89,7 @@ export async function getLogData(tabId: number, log?: string) {
     return res === null ? undefined : parse<LogData>(res);
 }
 
+/** background以外からは呼び出さない */
 export async function setLog(
     value: PartialDeep<LogData> | (() => Promise<PartialDeep<LogData>>),
     tabId: number,
@@ -104,6 +107,7 @@ export async function getSettingsData() {
     return res ?? undefined;
 }
 
+/** background以外からは呼び出さない */
 export async function setSettings(
     value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {

@@ -125,6 +125,7 @@ export class IdFilter extends Filter<IdLog> {
     }
 }
 
+/** background以外からは呼び出さない */
 export async function addNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
@@ -137,6 +138,7 @@ export async function addNgId(id: string) {
     await setSettings(func);
 }
 
+/** background以外からは呼び出さない */
 export async function removeNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
@@ -169,6 +171,7 @@ export function formatNgId(
         : id;
 }
 
+/** background以外からは呼び出さない */
 export async function addNgIdFromUrl(url: string | undefined) {
     const settings = await loadSettings();
     const id = url?.match(pattern.regex.extractId)?.[1];

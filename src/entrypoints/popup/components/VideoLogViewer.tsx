@@ -6,11 +6,7 @@ import { JSX } from "react";
 import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
-import {
-    addNgId,
-    formatNgId,
-    removeNgId,
-} from "@/entrypoints/background/video-filter/filter/id-filter.js";
+import { formatNgId } from "@/entrypoints/background/video-filter/filter/id-filter.js";
 import {
     VideoCount,
     VideoFiltering,
@@ -208,7 +204,10 @@ async function onClickId(id: string, type: "user" | "video") {
     })();
     if (!confirm(text.replace("{target}", id))) return;
 
-    await removeNgId(id);
+    await browser.runtime.sendMessage({
+        type: "remove-ng-id",
+        data: id,
+    });
 }
 
 async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
@@ -218,5 +217,8 @@ async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     const settings = useStorageStore.getState().settings;
     const userName = video.owner?.name ?? undefined;
 
-    await addNgId(formatNgId(userId, userName, settings));
+    await browser.runtime.sendMessage({
+        type: "add-ng-id",
+        data: formatNgId(userId, userName, settings),
+    });
 }

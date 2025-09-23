@@ -2,12 +2,7 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Settings } from "../types/storage/settings.types.js";
 import { defaultSettings } from "./config.js";
-import {
-    loadSettings,
-    StorageType,
-    setSettings,
-    getLogData,
-} from "./storage.js";
+import { loadSettings, StorageType, getLogData } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
 import { isRankingPage, isSearchPage, isWatchPage } from "./util.js";
 
@@ -62,7 +57,10 @@ export const useStorageStore = create<StorageState>()(
             });
         },
         saveSettings: async (settings) => {
-            await setSettings(settings);
+            await browser.runtime.sendMessage({
+                type: "set-settings",
+                data: settings satisfies Partial<Settings>,
+            });
         },
     })),
 );

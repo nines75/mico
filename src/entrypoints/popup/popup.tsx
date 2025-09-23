@@ -11,10 +11,7 @@ import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
 import { PopupTab } from "@/types/storage/settings.types.js";
-import {
-    addNgId,
-    formatNgId,
-} from "../background/video-filter/filter/id-filter.js";
+import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -190,7 +187,10 @@ async function onClickNgVideoButton() {
         return;
     }
 
-    await addNgId(formatNgId(videoId, title, settings));
+    await browser.runtime.sendMessage({
+        type: "add-ng-id",
+        data: formatNgId(videoId, title, settings),
+    });
 }
 
 async function onClickNgUserButton() {
@@ -206,5 +206,8 @@ async function onClickNgUserButton() {
         return;
     }
 
-    await addNgId(formatNgId(userId, userName, settings));
+    await browser.runtime.sendMessage({
+        type: "add-ng-id",
+        data: formatNgId(userId, userName, settings),
+    });
 }

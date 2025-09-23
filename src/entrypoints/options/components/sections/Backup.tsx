@@ -1,7 +1,7 @@
 import { BackupData } from "@/types/storage/backup.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { defaultSettings, messages } from "@/utils/config.js";
-import { removeAllData, getSettingsData } from "@/utils/storage.js";
+import { getSettingsData } from "@/utils/storage.js";
 import { useStorageStore } from "@/utils/store.js";
 import { useRef } from "react";
 import { ValueOf } from "type-fest";
@@ -104,5 +104,7 @@ async function exportBackup() {
 async function reset() {
     if (!confirm(messages.settings.confirmReset)) return;
 
-    await removeAllData();
+    await browser.runtime.sendMessage({
+        type: "remove-all-data",
+    });
 }

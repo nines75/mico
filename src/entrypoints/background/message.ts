@@ -1,11 +1,22 @@
 import { messages } from "@/utils/config.js";
-import { getLogData, loadSettings } from "@/utils/storage.js";
-import { savePlaybackTime, sendNotification } from "@/utils/util.js";
+import {
+    getLogData,
+    loadSettings,
+    removeAllData,
+    setLog,
+    setSettings,
+} from "@/utils/storage.js";
+import { sendNotification } from "@/utils/util.js";
 import { Message } from "../content/message.js";
-import { addNgUserId } from "./comment-filter/filter/user-id-filter.js";
+import {
+    addNgUserId,
+    removeNgUserId,
+} from "./comment-filter/filter/user-id-filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
+import { Settings } from "@/types/storage/settings.types.js";
+import { addNgId, removeNgId } from "./video-filter/filter/id-filter.js";
 
 export async function backgroundMessageHandler(
     message: Message,
@@ -21,13 +32,31 @@ export async function backgroundMessageHandler(
                 time: number;
             };
 
-            await savePlaybackTime(playbackData.tabId, playbackData.time);
+            await setLog(
+                { playbackTime: playbackData.time },
+                playbackData.tabId,
+            );
         }
         if (message.type === "save-ng-user-id")
             await saveNgUserId(message, sender);
         if (message.type === "get-user-id") await getUserId(message, sender);
         if (message.type === "filter-old-search")
             await filterOldSearch(message, sender);
+        if (message.type === "set-settings")
+            await setSettings(message.data as Partial<Settings>);
+        if (message.type === "remove-all-data") await removeAllData();
+        if (message.type === "add-ng-user-id")
+            await addNgUserId(message.data as Set<string>);
+        if (message.type === "remove-ng-user-id") {
+            const data = message.data as {
+                userIds: Set<string>;
+                isRemoveSpecific?: boolean;
+            };
+            await removeNgUserId(data.userIds, data.isRemoveSpecific);
+        }
+        if (message.type === "add-ng-id") await addNgId(message.data as string);
+        if (message.type === "remove-ng-id")
+            await removeNgId(message.data as string);
     } catch (e) {
         console.error(e);
     }
