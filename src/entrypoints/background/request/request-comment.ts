@@ -6,13 +6,11 @@ import {
     loadSettings,
     getLogData,
     getAllData,
-    removeData,
     LogType,
-    setLog,
 } from "@/utils/storage.js";
 import { sendNotification } from "@/utils/util.js";
-import { addNgUserId } from "../comment-filter/filter/user-id-filter.js";
 import { filterResponse } from "./request.js";
+import { addNgUserId, setLog, removeData } from "@/utils/storage-write.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

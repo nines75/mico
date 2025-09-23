@@ -2,14 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
 import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
-import {
-    addNgUserId,
-    getNgUserIdSet,
-    removeNgUserId,
-    UserIdFilter,
-} from "./user-id-filter.js";
-import { loadSettings, setSettings } from "@/utils/storage.js";
-import { fakeBrowser } from "#imports";
+import { UserIdFilter } from "./user-id-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
 describe(UserIdFilter.name, () => {
@@ -128,68 +121,5 @@ user-id-owner
             ["user-id-main-1", ["1002"]],
             ["user-id-owner", ["1000", "1001"]],
         ]);
-    });
-});
-
-const userIds = ["user-id-owner", "user-id-main-1"];
-const videoUserIds = userIds.map((id) => `sm1@${id}`);
-
-describe(`${addNgUserId.name}()`, () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
-    it.each([
-        { name: "通常", ids: userIds },
-        { name: "動画限定ルール", ids: videoUserIds },
-    ])("$name", async ({ ids }) => {
-        await addNgUserId(new Set(ids));
-
-        const settings = await loadSettings();
-        const ngUserIds = getNgUserIdSet(settings, "sm1");
-
-        expect(userIds.every((id) => ngUserIds.has(id))).toBe(true);
-    });
-});
-
-describe(`${removeNgUserId.name}()`, () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
-    it.each([
-        { name: "通常", ids: userIds },
-        { name: "動画限定ルール", ids: videoUserIds },
-        { name: "コメントあり", ids: userIds.map((id) => `${id} # comment`) },
-    ])("$name", async ({ ids }) => {
-        await setSettings({
-            ...defaultSettings,
-            ...{
-                ngUserId: ids.join("\n"),
-            },
-        });
-        await removeNgUserId(new Set(userIds));
-
-        const settings = await loadSettings();
-        const ngUserIds = getNgUserIdSet(settings, "sm1");
-
-        expect(userIds.some((id) => ngUserIds.has(id))).toBe(false);
-    });
-
-    it("動画限定ルールを削除対象から除外", async () => {
-        await setSettings({
-            ...defaultSettings,
-            ...{
-                ngUserId: [...userIds, ...videoUserIds].join("\n"),
-            },
-        });
-        await removeNgUserId(new Set(userIds), false);
-
-        const settings = await loadSettings();
-        const ngUserIds = getNgUserIdSet(settings, "");
-        const videoNgUserIds = getNgUserIdSet(settings, "sm1");
-
-        expect(userIds.some((id) => ngUserIds.has(id))).toBe(false);
-        expect(userIds.every((id) => videoNgUserIds.has(id))).toBe(true);
     });
 });

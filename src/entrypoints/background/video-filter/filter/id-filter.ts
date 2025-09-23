@@ -1,12 +1,7 @@
 import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { messages, pattern } from "@/utils/config.js";
-import { loadSettings, setSettings } from "@/utils/storage.js";
-import {
-    countCommonLog,
-    pushCommonLog,
-    sendNotification,
-} from "@/utils/util.js";
+import { pattern } from "@/utils/config.js";
+import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
 import { parseFilter } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -125,42 +120,6 @@ export class IdFilter extends Filter<IdLog> {
     }
 }
 
-/** background以外からは呼び出さない */
-export async function addNgId(id: string) {
-    const func = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        return {
-            ngId: `${id}\n${settings.ngId}`,
-        };
-    };
-
-    await setSettings(func);
-}
-
-/** background以外からは呼び出さない */
-export async function removeNgId(id: string) {
-    const func = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        const toRemoveLines = new Set(
-            parseFilter(settings.ngId)
-                .filter((data) => id === data.rule)
-                .map((data) => data.index),
-        );
-        const value = settings.ngId
-            .split("\n")
-            .filter((_, index) => !toRemoveLines.has(index))
-            .join("\n");
-
-        return {
-            ngId: value,
-        };
-    };
-
-    await setSettings(func);
-}
-
 export function formatNgId(
     id: string,
     context: string | undefined,
@@ -169,23 +128,4 @@ export function formatNgId(
     return settings.isAddNgContext && context !== undefined
         ? `${id} # ${context}`
         : id;
-}
-
-/** background以外からは呼び出さない */
-export async function addNgIdFromUrl(url: string | undefined) {
-    const settings = await loadSettings();
-    const id = url?.match(pattern.regex.extractId)?.[1];
-
-    if (id === undefined) {
-        await sendNotification(messages.ngId.extractionFailed);
-        return;
-    }
-
-    await addNgId(id);
-
-    if (settings.isNotifyAddNgId) {
-        await sendNotification(
-            messages.ngId.additionSuccess.replace("{target}", id),
-        );
-    }
 }

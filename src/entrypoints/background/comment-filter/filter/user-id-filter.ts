@@ -1,7 +1,6 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { Filter } from "../filter.js";
-import { loadSettings, setSettings } from "@/utils/storage.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Rule, parseFilter } from "../../filter.js";
@@ -55,7 +54,7 @@ export class UserIdFilter extends Filter<CommonLog> {
     }
 }
 
-function getNgUserId(settings: Settings, videoId?: string) {
+export function getNgUserId(settings: Settings, videoId?: string) {
     const res: Rule[] = [];
 
     parseFilter(settings.ngUserId).forEach((data) => {
@@ -76,48 +75,4 @@ function getNgUserId(settings: Settings, videoId?: string) {
 
 export function getNgUserIdSet(settings: Settings, videoId?: string) {
     return new Set(getNgUserId(settings, videoId).map((data) => data.rule));
-}
-
-/** background以外からは呼び出さない */
-export async function addNgUserId(userIds: Set<string>) {
-    if (userIds.size === 0) return;
-
-    const str = [...userIds].join("\n");
-    const func = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        return {
-            ngUserId: `${str}\n${settings.ngUserId}`,
-        };
-    };
-
-    await setSettings(func);
-}
-
-/** background以外からは呼び出さない */
-export async function removeNgUserId(
-    userIds: Set<string>,
-    isRemoveSpecific = true,
-) {
-    if (userIds.size === 0) return;
-
-    const func = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        const toRemoveLines = new Set(
-            getNgUserId(settings, isRemoveSpecific ? undefined : "")
-                .filter((data) => userIds.has(data.rule))
-                .map((data) => data.index),
-        );
-        const value = settings.ngUserId
-            .split("\n")
-            .filter((_, index) => !toRemoveLines.has(index))
-            .join("\n");
-
-        return {
-            ngUserId: value,
-        };
-    };
-
-    await setSettings(func);
 }

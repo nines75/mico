@@ -1,5 +1,5 @@
 import { FilteredData } from "./filter-comment.js";
-import { loadSettings, setLog } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { changeBadgeState } from "@/utils/util.js";
 import { getCustomFilters } from "./filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -10,6 +10,7 @@ import {
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
 import { parseFilter } from "../filter.js";
+import { setLog } from "@/utils/storage-write.js";
 
 export async function saveLog(filteredData: FilteredData, tabId: number) {
     const start = performance.now();

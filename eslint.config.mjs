@@ -3,6 +3,7 @@ import ts from "typescript-eslint";
 import prettier from "eslint-config-prettier";
 import * as reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
+import importPlugin from "eslint-plugin-import";
 
 export default ts.config(
     // 下に行くほど優先される
@@ -19,6 +20,9 @@ export default ts.config(
     react.configs.flat.recommended,
     react.configs.flat["jsx-runtime"], // React17以降で必要
 
+    // https://github.com/import-js/eslint-plugin-import
+    importPlugin.flatConfigs.typescript,
+
     // TypeScript
     {
         files: ["**/*.{ts,tsx}"],
@@ -28,12 +32,20 @@ export default ts.config(
             },
         },
         settings: {
+            // eslint-config-react
             react: {
-                version: "detect", // eslint-config-reactで必要
+                version: "detect",
+            },
+            // eslint-plugin-import
+            "import/resolver": {
+                typescript: true,
+                node: true,
             },
         },
         rules: {
+            // -------------------------------------------------------------------------------------------
             // 既に有効化されているルール
+            // -------------------------------------------------------------------------------------------
 
             "no-empty": "warn",
             "@typescript-eslint/no-empty-function": "warn",
@@ -44,7 +56,9 @@ export default ts.config(
             ],
             "react/prop-types": "off", // TypeScriptでは不要
 
+            // -------------------------------------------------------------------------------------------
             // 新たに有効化するルール
+            // -------------------------------------------------------------------------------------------
 
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
@@ -94,6 +108,24 @@ export default ts.config(
                 {
                     allowAny: false,
                     allowNullish: false,
+                },
+            ],
+            "import/no-restricted-paths": [
+                "error",
+                {
+                    zones: [
+                        {
+                            target: [
+                                "./src/utils/store.ts",
+                                "./src/utils/util.ts",
+                                "./src/entrypoints/content",
+                                "./src/entrypoints/options",
+                                "./src/entrypoints/popup",
+                                "./src/entrypoints/quick-edit",
+                            ],
+                            from: "./src/utils/storage-write.ts",
+                        },
+                    ],
                 },
             ],
         },

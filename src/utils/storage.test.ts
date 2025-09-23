@@ -6,16 +6,13 @@ import {
     getLogData,
     getSettingsData,
     loadSettings,
-    removeAllData,
-    removeData,
-    setLog,
-    setSettings,
 } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
 import { testLog } from "./test.js";
 import { stringify } from "superjson";
 import { Settings } from "@/types/storage/settings.types.js";
 import { LogData } from "@/types/storage/log.types.js";
+import { setSettings, setLog } from "./storage-write.js";
 
 describe("storage", () => {
     beforeEach(() => {
@@ -62,24 +59,6 @@ describe("storage", () => {
             ...defaultSettings,
             ...newSettings,
         });
-    });
-
-    it(`${removeAllData.name}()`, async () => {
-        await setSettings(defaultSettings);
-        await setLog({ commentFilterLog: testLog }, 1);
-
-        await removeAllData();
-
-        expect(await getAllData()).toEqual({});
-    });
-
-    it(`${removeData.name}()`, async () => {
-        await setSettings(defaultSettings);
-        await setLog({ commentFilterLog: testLog }, 1);
-
-        await removeData(["log-1"]);
-
-        expect(await getAllData()).toEqual({ settings: defaultSettings });
     });
 
     it(`${getAllData.name}()`, async () => {

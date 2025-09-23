@@ -1,9 +1,10 @@
-import { loadSettings, setLog } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
 import { SearchData } from "@/types/api/search.types.js";
+import { setLog } from "@/utils/storage-write.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

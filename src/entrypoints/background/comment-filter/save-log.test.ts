@@ -4,10 +4,11 @@ import { testLog, testThreads } from "@/utils/test.js";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { filterComment, FilteredData } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
-import { getLogData, setSettings } from "@/utils/storage.js";
+import { getLogData } from "@/utils/storage.js";
 import { fakeBrowser } from "#imports";
 import { saveLog } from "./save-log.js";
 import * as util from "@/utils/util.js";
+import { setSettings } from "@/utils/storage-write.js";
 
 beforeAll(() => {
     vi.spyOn(util, "changeBadgeState").mockResolvedValue();

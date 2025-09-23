@@ -1,10 +1,11 @@
 import { isNgVideo } from "../video-filter/filter-video.js";
-import { loadSettings, setLog } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse } from "./request.js";
 import { MainData } from "@/types/api/main.types.js";
 import { pattern } from "@/utils/config.js";
+import { setLog } from "@/utils/storage-write.js";
 
 export function mainRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

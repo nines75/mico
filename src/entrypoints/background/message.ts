@@ -1,22 +1,20 @@
 import { messages } from "@/utils/config.js";
-import {
-    getLogData,
-    loadSettings,
-    removeAllData,
-    setLog,
-    setSettings,
-} from "@/utils/storage.js";
+import { getLogData, loadSettings } from "@/utils/storage.js";
 import { sendNotification } from "@/utils/util.js";
 import { Message } from "../content/message.js";
-import {
-    addNgUserId,
-    removeNgUserId,
-} from "./comment-filter/filter/user-id-filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { addNgId, removeNgId } from "./video-filter/filter/id-filter.js";
+import {
+    setLog,
+    setSettings,
+    removeAllData,
+    addNgUserId,
+    removeNgUserId,
+    addNgId,
+    removeNgId,
+} from "@/utils/storage-write.js";
 
 export async function backgroundMessageHandler(
     message: Message,

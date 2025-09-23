@@ -4,10 +4,9 @@ import {
     VideoCount,
 } from "@/types/storage/log-video.types.js";
 import { FilteredData } from "./filter-video.js";
-import {} from "@/types/storage/log.types.js";
-import { setLog } from "@/utils/storage.js";
 import { changeBadgeState } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
+import { setLog } from "@/utils/storage-write.js";
 
 export async function saveLog(
     filteredData: FilteredData,
