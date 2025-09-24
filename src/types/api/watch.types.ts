@@ -4,7 +4,7 @@
 
 import { NiconicoVideo } from "./niconico-video.types.js";
 
-export interface MainData {
+export interface WatchData {
     data: {
         metadata: {
             jsonLds: {

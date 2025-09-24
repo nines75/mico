@@ -3,7 +3,6 @@ import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
-import { mainRequest } from "./request/request-main.js";
 import { isWatchPage, sendNotification } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
@@ -11,11 +10,12 @@ import { messages, pattern } from "@/utils/config.js";
 import { playlistSearchRequest } from "./request/request-playlist-search.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
+import { watchRequest } from "./request/request-watch.js";
 
 export default defineBackground(() => {
-    // メインリクエストを監視
+    // 視聴ページのメインリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
-        mainRequest,
+        watchRequest,
         {
             urls: ["https://www.nicovideo.jp/watch/*"],
             types: ["main_frame", "xmlhttprequest"],

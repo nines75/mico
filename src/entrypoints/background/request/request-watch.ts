@@ -3,11 +3,11 @@ import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { LogData, SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse } from "./request.js";
-import { MainData } from "@/types/api/main.types.js";
 import { pattern } from "@/utils/config.js";
 import { setLog } from "@/utils/storage-write.js";
+import { WatchData } from "@/types/api/watch.types.js";
 
-export function mainRequest(
+export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
@@ -32,9 +32,9 @@ function mainFrameFilter(buf: string, settings: Settings) {
 
     const meta = html.querySelector("meta[name='server-response']");
     const content = meta?.getAttribute("content") as string;
-    const mainData = JSON.parse(content) as MainData;
+    const watchData = JSON.parse(content) as WatchData;
 
-    const log = mainDataFilter(mainData, settings, meta);
+    const log = watchDataFilter(watchData, settings, meta);
 
     return {
         filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
@@ -43,22 +43,22 @@ function mainFrameFilter(buf: string, settings: Settings) {
 }
 
 function xhrFilter(buf: string, settings: Settings) {
-    const mainData = JSON.parse(buf) as MainData;
-    const log = mainDataFilter(mainData, settings);
+    const watchData = JSON.parse(buf) as WatchData;
+    const log = watchDataFilter(watchData, settings);
 
     return {
-        filteredBuf: JSON.stringify(mainData),
+        filteredBuf: JSON.stringify(watchData),
         log,
     };
 }
 
-function mainDataFilter(
-    mainData: MainData,
+function watchDataFilter(
+    watchData: WatchData,
     settings: Settings,
     meta?: Element | null,
 ): LogData {
-    const response = mainData.data.response;
-    const metadata = mainData.data.metadata;
+    const response = watchData.data.response;
+    const metadata = watchData.data.metadata;
 
     const seriesData: SeriesData = (() => {
         const series = response.series?.video;
@@ -74,7 +74,7 @@ function mainDataFilter(
                     series.next.latestCommentSummary = "";
                 }
 
-                meta?.setAttribute("content", JSON.stringify(mainData));
+                meta?.setAttribute("content", JSON.stringify(watchData));
             }
 
             return { hasNext: true, data: video };
