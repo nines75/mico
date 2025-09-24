@@ -15,6 +15,8 @@ import {
     customMerge,
     storageArea,
     loadSettings,
+    getAllData,
+    LogType,
 } from "./storage.js";
 import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
@@ -171,4 +173,26 @@ export async function addNgIdFromUrl(url: string | undefined) {
             messages.ngId.additionSuccess.replace("{target}", id),
         );
     }
+}
+
+export async function cleanupStorage() {
+    const [tabs, data] = await Promise.all([
+        browser.tabs.query({}),
+        getAllData(),
+    ]);
+    const aliveTabKeys = new Set(
+        tabs
+            .map((tab) => tab.id)
+            .filter((id) => id !== undefined)
+            .map((id) => `log-${id}`),
+    );
+
+    const keys: LogType[] = [];
+    for (const key of Object.keys(data)) {
+        if (key.startsWith("log-") && !aliveTabKeys.has(key)) {
+            keys.push(key as LogType);
+        }
+    }
+
+    await removeData(keys);
 }

@@ -5,6 +5,7 @@ import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
 import { RankingData } from "@/types/api/ranking.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { cleanupStorage } from "@/utils/storage-write.js";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -20,6 +21,8 @@ export function rankingRequest(
             ),
         );
         filter.disconnect();
+
+        await cleanupStorage();
     });
 }
 

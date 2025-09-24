@@ -1,16 +1,11 @@
 import { CommentDataContainer } from "@/types/api/comment.types.js";
 import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
-import { pattern, messages } from "@/utils/config.js";
-import {
-    loadSettings,
-    getLogData,
-    getAllData,
-    LogType,
-} from "@/utils/storage.js";
+import { messages } from "@/utils/config.js";
+import { loadSettings, getLogData } from "@/utils/storage.js";
 import { sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
-import { addNgUserId, setLog, removeData } from "@/utils/storage-write.js";
+import { addNgUserId, setLog, cleanupStorage } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
 
 export default function commentRequest(
@@ -84,26 +79,4 @@ async function restorePlaybackTime(tabId: number) {
     }
 
     await Promise.all(tasks);
-}
-
-async function cleanupStorage() {
-    const [tabs, data] = await Promise.all([
-        browser.tabs.query({ url: pattern.watchPageUrlGlob }), // 残すのは現在視聴ページを開いてるタブのログだけでいい
-        getAllData(),
-    ]);
-    const aliveTabKeys = new Set(
-        tabs
-            .map((tab) => tab.id)
-            .filter((id) => id !== undefined)
-            .map((id) => `log-${id}`),
-    );
-
-    const keys: LogType[] = [];
-    for (const key of Object.keys(data)) {
-        if (key.startsWith("log-") && !aliveTabKeys.has(key)) {
-            keys.push(key as LogType);
-        }
-    }
-
-    await removeData(keys);
 }

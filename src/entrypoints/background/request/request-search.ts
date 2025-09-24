@@ -4,7 +4,7 @@ import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
 import { SearchData } from "@/types/api/search.types.js";
-import { setLog } from "@/utils/storage-write.js";
+import { cleanupStorage, setLog } from "@/utils/storage-write.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -24,6 +24,8 @@ export function searchRequest(
             encoder.encode(filteredBuf === undefined ? buf : filteredBuf),
         );
         filter.disconnect();
+
+        await cleanupStorage();
     });
 }
 
