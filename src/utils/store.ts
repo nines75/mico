@@ -5,6 +5,7 @@ import { defaultSettings } from "./config.js";
 import { loadSettings, StorageType, getLogData } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
 import { isRankingPage, isSearchPage, isWatchPage } from "./util.js";
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 
 interface StorageState {
     settings: Settings;
@@ -57,9 +58,9 @@ export const useStorageStore = create<StorageState>()(
             });
         },
         saveSettings: async (settings) => {
-            await browser.runtime.sendMessage({
+            await sendMessageToBackground({
                 type: "set-settings",
-                data: settings satisfies Partial<Settings>,
+                data: settings,
             });
         },
     })),

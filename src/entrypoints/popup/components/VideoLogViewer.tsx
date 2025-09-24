@@ -14,6 +14,7 @@ import {
     VideoData,
 } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -204,7 +205,7 @@ async function onClickId(id: string, type: "user" | "video") {
     })();
     if (!confirm(text.replace("{target}", id))) return;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "remove-ng-id",
         data: id,
     });
@@ -217,7 +218,7 @@ async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     const settings = useStorageStore.getState().settings;
     const userName = video.owner?.name ?? undefined;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "add-ng-id",
         data: formatNgId(userId, userName, settings),
     });

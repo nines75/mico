@@ -17,6 +17,7 @@ import {
     CommentFiltering,
 } from "@/types/storage/log-comment.types.js";
 import { CommonLog } from "@/types/storage/log.types.js";
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 
 type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
@@ -84,7 +85,7 @@ async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
     )
         return;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "remove-ng-user-id",
         data: {
             userIds,
@@ -365,9 +366,11 @@ async function onClickUserId(userId: string) {
     if (!confirm(messages.ngUserId.confirmRemoval.replace("{target}", userId)))
         return;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "remove-ng-user-id",
-        data: { userIds: new Set([userId]) },
+        data: {
+            userIds: new Set([userId]),
+        },
     });
 }
 
@@ -397,8 +400,8 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     )
         return;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "add-ng-user-id",
-        data: targetUserIds satisfies Set<string>,
+        data: targetUserIds,
     });
 }

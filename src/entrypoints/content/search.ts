@@ -1,9 +1,10 @@
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { sendMessageToBackground } from "../background/message.js";
 
 export async function renderOldSearch() {
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "filter-old-search",
-        data: getVideos() satisfies NiconicoVideo[],
+        data: getVideos(),
     });
 }
 

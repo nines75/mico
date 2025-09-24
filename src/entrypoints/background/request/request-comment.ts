@@ -11,6 +11,7 @@ import {
 import { sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId, setLog, removeData } from "@/utils/storage-write.js";
+import { sendMessageToContent } from "@/entrypoints/content/message.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -75,9 +76,9 @@ async function restorePlaybackTime(tabId: number) {
     if (playbackTime > 0) {
         tasks.push(setLog({ playbackTime: 0 }, tabId));
         tasks.push(
-            browser.tabs.sendMessage(tabId, {
+            sendMessageToContent(tabId, {
                 type: "set-playback-time",
-                data: playbackTime satisfies number,
+                data: playbackTime,
             }),
         );
     }

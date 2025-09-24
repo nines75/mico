@@ -10,6 +10,7 @@ import { searchRequest } from "./request/request-search.js";
 import { messages, pattern } from "@/utils/config.js";
 import { playlistSearchRequest } from "./request/request-playlist-search.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
+import { sendMessageToContent } from "../content/message.js";
 
 export default defineBackground(() => {
     // メインリクエストを監視
@@ -91,12 +92,21 @@ export default defineBackground(() => {
                 // 視聴ページでのみ実行
                 if (!isWatchPage(tab.url)) return;
 
-                await browser.tabs.sendMessage(tab.id, {
-                    type: command,
-                    ...(command === "reload"
-                        ? { data: tab.id satisfies number }
-                        : {}),
-                });
+                switch (command) {
+                    case "quick-edit": {
+                        await sendMessageToContent(tab.id, {
+                            type: command,
+                        });
+                        break;
+                    }
+                    case "reload": {
+                        await sendMessageToContent(tab.id, {
+                            type: command,
+                            data: tab.id,
+                        });
+                        break;
+                    }
+                }
             }
         }
 

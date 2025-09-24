@@ -12,6 +12,7 @@ import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
 import { PopupTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
+import { sendMessageToBackground } from "../background/message.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -187,7 +188,7 @@ async function onClickNgVideoButton() {
         return;
     }
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "add-ng-id",
         data: formatNgId(videoId, title, settings),
     });
@@ -206,7 +207,7 @@ async function onClickNgUserButton() {
         return;
     }
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "add-ng-id",
         data: formatNgId(userId, userName, settings),
     });

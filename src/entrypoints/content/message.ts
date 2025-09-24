@@ -1,24 +1,62 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
+import { sendMessageToBackground } from "../background/message.js";
 
-export interface Message {
-    type: string;
-    data: unknown;
+type ContentMessage =
+    | {
+          type: "reload";
+          data: number;
+      }
+    | {
+          type: "set-playback-time";
+          data: number;
+      }
+    | {
+          type: "quick-edit";
+      }
+    | {
+          type: "mount-user-id";
+          data: string;
+      }
+    | {
+          type: "remove-old-search";
+          data: Set<string>;
+      };
+
+export async function sendMessageToContent(
+    tabId: number,
+    message: ContentMessage,
+) {
+    await browser.tabs.sendMessage(tabId, message);
 }
 
 export function createContentMessageHandler(ctx: ContentScriptContext) {
-    return (message: Message, sender: browser.runtime.MessageSender) => {
+    return (message: ContentMessage, sender: browser.runtime.MessageSender) => {
         // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
         try {
             if (sender.id !== browser.runtime.id) return;
 
-            if (message.type === "reload") reload(message.data as number);
-            if (message.type === "set-playback-time")
-                setPlaybackTime(message.data as number);
-            if (message.type === "quick-edit") openQuickEdit(ctx);
-            if (message.type === "mount-user-id")
-                mountUserId(message.data as string);
-            if (message.type === "remove-old-search")
-                removeOldSearch(message.data as Set<string>);
+            switch (message.type) {
+                case "reload": {
+                    reload(message.data);
+                    break;
+                }
+                case "set-playback-time": {
+                    setPlaybackTime(message.data);
+                    break;
+                }
+                case "quick-edit": {
+                    openQuickEdit(ctx);
+                    break;
+                }
+                case "mount-user-id": {
+                    mountUserId(message.data);
+                    break;
+                }
+                case "remove-old-search": {
+                    removeOldSearch(message.data);
+                    break;
+                }
+            }
         } catch (e) {
             console.error(e);
         }
@@ -31,14 +69,11 @@ function reload(tabId: number) {
         if (video !== null) {
             clearInterval(id);
 
-            await browser.runtime.sendMessage({
+            await sendMessageToBackground({
                 type: "save-playback-time",
                 data: {
                     tabId,
                     time: Math.floor(video.currentTime),
-                } satisfies {
-                    tabId: number;
-                    time: number;
                 },
             });
 

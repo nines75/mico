@@ -1,7 +1,6 @@
 import { messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import { sendNotification } from "@/utils/util.js";
-import { Message } from "../content/message.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -15,53 +14,126 @@ import {
     addNgId,
     removeNgId,
 } from "@/utils/storage-write.js";
+import { sendMessageToContent } from "../content/message.js";
+
+type BackgroundMessage =
+    | {
+          type: "save-playback-time";
+          data: {
+              tabId: number;
+              time: number;
+          };
+      }
+    | {
+          type: "save-ng-user-id";
+          data: {
+              commentNo: number;
+              specific: boolean;
+          };
+      }
+    | {
+          type: "get-user-id";
+          data: number;
+      }
+    | {
+          type: "filter-old-search";
+          data: NiconicoVideo[];
+      }
+    | {
+          type: "set-settings";
+          data: Partial<Settings>;
+      }
+    | {
+          type: "remove-all-data";
+          data?: unknown;
+      }
+    | {
+          type: "add-ng-user-id";
+          data: Set<string>;
+      }
+    | {
+          type: "remove-ng-user-id";
+          data: {
+              userIds: Set<string>;
+              isRemoveSpecific?: boolean;
+          };
+      }
+    | {
+          type: "add-ng-id";
+          data: string;
+      }
+    | {
+          type: "remove-ng-id";
+          data: string;
+      };
+
+export async function sendMessageToBackground(message: BackgroundMessage) {
+    await browser.runtime.sendMessage(message);
+}
 
 export async function backgroundMessageHandler(
-    message: Message,
+    message: BackgroundMessage,
     sender: browser.runtime.MessageSender,
 ) {
     // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
     try {
         if (sender.id !== browser.runtime.id) return;
 
-        if (message.type === "save-playback-time") {
-            const playbackData = message.data as {
-                tabId: number;
-                time: number;
-            };
-
-            await setLog(
-                { playbackTime: playbackData.time },
-                playbackData.tabId,
-            );
+        switch (message.type) {
+            case "save-playback-time": {
+                await setLog(
+                    { playbackTime: message.data.time },
+                    message.data.tabId,
+                );
+                break;
+            }
+            case "save-ng-user-id": {
+                await saveNgUserId(message, sender);
+                break;
+            }
+            case "get-user-id": {
+                await getUserId(message, sender);
+                break;
+            }
+            case "filter-old-search": {
+                await filterOldSearch(message, sender);
+                break;
+            }
+            case "set-settings": {
+                await setSettings(message.data);
+                break;
+            }
+            case "remove-all-data": {
+                await removeAllData();
+                break;
+            }
+            case "add-ng-user-id": {
+                await addNgUserId(message.data);
+                break;
+            }
+            case "remove-ng-user-id": {
+                await removeNgUserId(
+                    message.data.userIds,
+                    message.data.isRemoveSpecific,
+                );
+                break;
+            }
+            case "add-ng-id": {
+                await addNgId(message.data);
+                break;
+            }
+            case "remove-ng-id": {
+                await removeNgId(message.data);
+                break;
+            }
         }
-        if (message.type === "save-ng-user-id")
-            await saveNgUserId(message, sender);
-        if (message.type === "get-user-id") await getUserId(message, sender);
-        if (message.type === "filter-old-search")
-            await filterOldSearch(message, sender);
-        if (message.type === "set-settings")
-            await setSettings(message.data as Partial<Settings>);
-        if (message.type === "remove-all-data") await removeAllData();
-        if (message.type === "add-ng-user-id")
-            await addNgUserId(message.data as Set<string>);
-        if (message.type === "remove-ng-user-id") {
-            const data = message.data as {
-                userIds: Set<string>;
-                isRemoveSpecific?: boolean;
-            };
-            await removeNgUserId(data.userIds, data.isRemoveSpecific);
-        }
-        if (message.type === "add-ng-id") await addNgId(message.data as string);
-        if (message.type === "remove-ng-id")
-            await removeNgId(message.data as string);
     } catch (e) {
         console.error(e);
     }
 }
 
 async function getUserId(
-    message: Message,
+    message: BackgroundMessage,
     sender: browser.runtime.MessageSender,
 ) {
     const commentNo = message.data as number;
@@ -74,14 +146,14 @@ async function getUserId(
         logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
     if (userId === undefined) return;
 
-    await browser.tabs.sendMessage(tabId, {
+    await sendMessageToContent(tabId, {
         type: "mount-user-id",
-        data: userId satisfies string,
+        data: userId,
     });
 }
 
 async function saveNgUserId(
-    message: Message,
+    message: BackgroundMessage,
     sender: browser.runtime.MessageSender,
 ) {
     const data = message.data as {
@@ -111,9 +183,9 @@ async function saveNgUserId(
 
     if (settings.isAutoReload) {
         tasks.push(
-            browser.tabs.sendMessage(tabId, {
+            sendMessageToContent(tabId, {
                 type: "reload",
-                data: tabId satisfies number,
+                data: tabId,
             }),
         );
     }
@@ -126,7 +198,7 @@ async function saveNgUserId(
 }
 
 async function filterOldSearch(
-    message: Message,
+    message: BackgroundMessage,
     sender: browser.runtime.MessageSender,
 ) {
     const data = message.data as NiconicoVideo[];
@@ -140,9 +212,9 @@ async function filterOldSearch(
 
     await Promise.all([
         saveLog(filteredData, tabId, true),
-        browser.tabs.sendMessage(tabId, {
+        sendMessageToContent(tabId, {
             type: "remove-old-search",
-            data: filteredData.filteredIds satisfies Set<string>,
+            data: filteredData.filteredIds,
         }),
     ]);
 }

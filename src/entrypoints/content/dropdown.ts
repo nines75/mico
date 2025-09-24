@@ -1,5 +1,6 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { buttons } from "@/utils/config.js";
+import { sendMessageToBackground } from "../background/message.js";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
@@ -18,9 +19,9 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     appendButton(dropdownContent, commentNo, buttons.AddSpecificNgUserId, true);
 
     if (settings.isShowUserIdInDropdown) {
-        await browser.runtime.sendMessage({
+        await sendMessageToBackground({
             type: "get-user-id",
-            data: Number(commentNo) satisfies number,
+            data: Number(commentNo),
         });
     }
 }
@@ -48,14 +49,11 @@ function appendButton(
 
 function getButtonCallback(commentNo: string, specific: boolean) {
     return async () => {
-        await browser.runtime.sendMessage({
+        await sendMessageToBackground({
             type: "save-ng-user-id",
             data: {
                 commentNo: Number(commentNo),
                 specific,
-            } satisfies {
-                commentNo: number;
-                specific: boolean;
             },
         });
     };

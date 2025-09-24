@@ -1,3 +1,4 @@
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { BackupData } from "@/types/storage/backup.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { defaultSettings, messages } from "@/utils/config.js";
@@ -104,7 +105,7 @@ async function exportBackup() {
 async function reset() {
     if (!confirm(messages.settings.confirmReset)) return;
 
-    await browser.runtime.sendMessage({
+    await sendMessageToBackground({
         type: "remove-all-data",
     });
 }
