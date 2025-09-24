@@ -4,7 +4,6 @@ import { sendMessageToBackground } from "../background/message.js";
 type ContentMessage =
     | {
           type: "reload";
-          data: number;
       }
     | {
           type: "set-playback-time";
@@ -37,7 +36,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
 
             switch (message.type) {
                 case "reload": {
-                    reload(message.data);
+                    reload();
                     break;
                 }
                 case "set-playback-time": {
@@ -63,17 +62,16 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
     };
 }
 
-function reload(tabId: number) {
+function reload() {
     const id = setInterval(async () => {
         const video = document.querySelector("video");
         if (video !== null) {
             clearInterval(id);
 
             await sendMessageToBackground({
-                type: "save-playback-time",
+                type: "set-log",
                 data: {
-                    tabId,
-                    time: Math.floor(video.currentTime),
+                    playbackTime: Math.floor(video.currentTime),
                 },
             });
 

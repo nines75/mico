@@ -15,25 +15,20 @@ import {
     removeNgId,
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
+import { PartialDeep } from "type-fest";
+import { LogData } from "@/types/storage/log.types.js";
 
 type BackgroundMessage =
     | {
-          type: "save-playback-time";
-          data: {
-              tabId: number;
-              time: number;
-          };
+          type: "get-user-id-for-mount";
+          data: number;
       }
     | {
-          type: "save-ng-user-id";
+          type: "add-ng-user-id-from-dropdown";
           data: {
               commentNo: number;
               specific: boolean;
           };
-      }
-    | {
-          type: "get-user-id";
-          data: number;
       }
     | {
           type: "filter-old-search";
@@ -44,8 +39,11 @@ type BackgroundMessage =
           data: Partial<Settings>;
       }
     | {
+          type: "set-log";
+          data: PartialDeep<LogData>;
+      }
+    | {
           type: "remove-all-data";
-          data?: unknown;
       }
     | {
           type: "add-ng-user-id";
@@ -80,27 +78,28 @@ export async function backgroundMessageHandler(
         if (sender.id !== browser.runtime.id) return;
 
         switch (message.type) {
-            case "save-playback-time": {
-                await setLog(
-                    { playbackTime: message.data.time },
-                    message.data.tabId,
-                );
+            case "get-user-id-for-mount": {
+                await getUserIdForMount(message.data, sender);
                 break;
             }
-            case "save-ng-user-id": {
-                await saveNgUserId(message, sender);
-                break;
-            }
-            case "get-user-id": {
-                await getUserId(message, sender);
+            case "add-ng-user-id-from-dropdown": {
+                await addNgUserIdFromDropdown(message.data, sender);
                 break;
             }
             case "filter-old-search": {
-                await filterOldSearch(message, sender);
+                await filterOldSearch(message.data, sender);
                 break;
             }
             case "set-settings": {
                 await setSettings(message.data);
+                break;
+            }
+            case "set-log": {
+                const tabId = sender.tab?.id;
+                if (tabId !== undefined) {
+                    await setLog(message.data, tabId);
+                }
+
                 break;
             }
             case "remove-all-data": {
@@ -132,12 +131,10 @@ export async function backgroundMessageHandler(
     }
 }
 
-async function getUserId(
-    message: BackgroundMessage,
+async function getUserIdForMount(
+    commentNo: number,
     sender: browser.runtime.MessageSender,
 ) {
-    const commentNo = message.data as number;
-
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
 
@@ -152,15 +149,13 @@ async function getUserId(
     });
 }
 
-async function saveNgUserId(
-    message: BackgroundMessage,
+async function addNgUserIdFromDropdown(
+    data: Extract<
+        BackgroundMessage,
+        { type: "add-ng-user-id-from-dropdown" }
+    >["data"],
     sender: browser.runtime.MessageSender,
 ) {
-    const data = message.data as {
-        commentNo: number;
-        specific: boolean;
-    };
-
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
 
@@ -182,12 +177,7 @@ async function saveNgUserId(
     const tasks: Promise<void>[] = [];
 
     if (settings.isAutoReload) {
-        tasks.push(
-            sendMessageToContent(tabId, {
-                type: "reload",
-                data: tabId,
-            }),
-        );
+        tasks.push(sendMessageToContent(tabId, { type: "reload" }));
     }
 
     if (settings.isNotifyAddNgUserId) {
@@ -198,16 +188,15 @@ async function saveNgUserId(
 }
 
 async function filterOldSearch(
-    message: BackgroundMessage,
+    videos: NiconicoVideo[],
     sender: browser.runtime.MessageSender,
 ) {
-    const data = message.data as NiconicoVideo[];
     const settings = await loadSettings();
 
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
 
-    const filteredData = filterVideo(data, settings);
+    const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
     await Promise.all([

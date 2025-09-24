@@ -92,21 +92,7 @@ export default defineBackground(() => {
                 // 視聴ページでのみ実行
                 if (!isWatchPage(tab.url)) return;
 
-                switch (command) {
-                    case "quick-edit": {
-                        await sendMessageToContent(tab.id, {
-                            type: command,
-                        });
-                        break;
-                    }
-                    case "reload": {
-                        await sendMessageToContent(tab.id, {
-                            type: command,
-                            data: tab.id,
-                        });
-                        break;
-                    }
-                }
+                await sendMessageToContent(tab.id, { type: command });
             }
         }
 

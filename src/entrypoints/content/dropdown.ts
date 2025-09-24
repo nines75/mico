@@ -20,7 +20,7 @@ export async function mountToDropdown(element: Element, settings: Settings) {
 
     if (settings.isShowUserIdInDropdown) {
         await sendMessageToBackground({
-            type: "get-user-id",
+            type: "get-user-id-for-mount",
             data: Number(commentNo),
         });
     }
@@ -50,7 +50,7 @@ function appendButton(
 function getButtonCallback(commentNo: string, specific: boolean) {
     return async () => {
         await sendMessageToBackground({
-            type: "save-ng-user-id",
+            type: "add-ng-user-id-from-dropdown",
             data: {
                 commentNo: Number(commentNo),
                 specific,
