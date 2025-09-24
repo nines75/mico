@@ -13,6 +13,7 @@ import {
     removeNgUserId,
     addNgId,
     removeNgId,
+    cleanupStorage,
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { PartialDeep } from "type-fest";
@@ -206,4 +207,5 @@ async function filterOldSearch(
             data: filteredData.filteredIds,
         }),
     ]);
+    await cleanupStorage();
 }

@@ -1,7 +1,7 @@
 import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { SeriesData } from "@/types/storage/log.types.js";
+import { LogData, SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse } from "./request.js";
 import { MainData } from "@/types/api/main.types.js";
 import { pattern } from "@/utils/config.js";
@@ -13,22 +13,20 @@ export function mainRequest(
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
 
-        filter.write(
-            encoder.encode(
-                details.type === "main_frame"
-                    ? await mainFrameFilter(details, buf, settings)
-                    : await xhrFilter(details, buf, settings),
-            ),
-        );
+        const { filteredBuf, log } =
+            details.type === "main_frame"
+                ? mainFrameFilter(buf, settings)
+                : xhrFilter(buf, settings);
+
+        // 以降のリクエストで使用するためフィルタを切断する前に保存する
+        await setLog(log, details.tabId);
+
+        filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
     });
 }
 
-async function mainFrameFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function mainFrameFilter(buf: string, settings: Settings) {
     const parser = new DOMParser();
     const html = parser.parseFromString(buf, "text/html");
 
@@ -36,28 +34,29 @@ async function mainFrameFilter(
     const content = meta?.getAttribute("content") as string;
     const mainData = JSON.parse(content) as MainData;
 
-    await mainDataFilter(mainData, details, settings, meta);
+    const log = mainDataFilter(mainData, settings, meta);
 
-    return `<!DOCTYPE html>${html.documentElement.outerHTML}`;
+    return {
+        filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
+        log,
+    };
 }
 
-async function xhrFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function xhrFilter(buf: string, settings: Settings) {
     const mainData = JSON.parse(buf) as MainData;
-    await mainDataFilter(mainData, details, settings);
+    const log = mainDataFilter(mainData, settings);
 
-    return JSON.stringify(mainData);
+    return {
+        filteredBuf: JSON.stringify(mainData),
+        log,
+    };
 }
 
-async function mainDataFilter(
+function mainDataFilter(
     mainData: MainData,
-    details: browser.webRequest._OnBeforeRequestDetails,
     settings: Settings,
     meta?: Element | null,
-) {
+): LogData {
     const response = mainData.data.response;
     const metadata = mainData.data.metadata;
 
@@ -100,15 +99,12 @@ async function mainDataFilter(
         null;
     const tags = response.tag?.items.map((data) => data.name) ?? [];
 
-    await setLog(
-        {
-            series: seriesData,
-            videoId,
-            title,
-            userId,
-            userName,
-            tags,
-        },
-        details.tabId,
-    );
+    return {
+        series: seriesData,
+        videoId,
+        title,
+        userId,
+        userName,
+        tags,
+    };
 }

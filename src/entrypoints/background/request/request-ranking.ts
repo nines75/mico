@@ -13,24 +13,22 @@ export function rankingRequest(
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
 
-        filter.write(
-            encoder.encode(
-                details.type === "main_frame"
-                    ? await mainFrameFilter(details, buf, settings)
-                    : await xhrFilter(details, buf, settings),
-            ),
-        );
+        const { filteredBuf, filteredData } =
+            details.type === "main_frame"
+                ? mainFrameFilter(buf, settings)
+                : xhrFilter(buf, settings);
+
+        filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
+        if (filteredData === undefined) return;
+
+        await saveLog(filteredData, details.tabId, true);
         await cleanupStorage();
     });
 }
 
-async function mainFrameFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function mainFrameFilter(buf: string, settings: Settings) {
     const parser = new DOMParser();
     const html = parser.parseFromString(buf, "text/html");
 
@@ -38,25 +36,26 @@ async function mainFrameFilter(
     const content = meta?.getAttribute("content") as string;
     const rankingData = JSON.parse(content) as RankingData;
 
-    await rankingDataFilter(rankingData, details, settings, meta);
+    const filteredData = rankingDataFilter(rankingData, settings, meta);
 
-    return `<!DOCTYPE html>${html.documentElement.outerHTML}`;
+    return {
+        filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
+        filteredData,
+    };
 }
 
-async function xhrFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function xhrFilter(buf: string, settings: Settings) {
     const rankingData = JSON.parse(buf) as RankingData;
-    await rankingDataFilter(rankingData, details, settings);
+    const filteredData = rankingDataFilter(rankingData, settings);
 
-    return JSON.stringify(rankingData);
+    return {
+        filteredBuf: JSON.stringify(rankingData),
+        filteredData,
+    };
 }
 
-async function rankingDataFilter(
+function rankingDataFilter(
     rankingData: RankingData,
-    details: browser.webRequest._OnBeforeRequestDetails,
     settings: Settings,
     meta?: Element | null,
 ) {
@@ -76,5 +75,5 @@ async function rankingDataFilter(
     rankingData.data.response.$getTeibanRanking.data.items = spoofedVideos;
     meta?.setAttribute("content", JSON.stringify(rankingData));
 
-    await saveLog(filteredData, details.tabId, true);
+    return filteredData;
 }

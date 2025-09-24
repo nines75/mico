@@ -15,25 +15,26 @@ export function searchRequest(
             setLog({ videoId: null }, details.tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
-        const filteredBuf =
+        const data =
             details.type === "main_frame"
-                ? await mainFrameFilter(details, buf, settings)
-                : await xhrFilter(details, buf, settings);
+                ? mainFrameFilter(buf, settings)
+                : xhrFilter(buf, settings);
+        const filteredBuf = data?.filteredBuf;
+        const filteredData = data?.filteredData;
 
         filter.write(
             encoder.encode(filteredBuf === undefined ? buf : filteredBuf),
         );
         filter.disconnect();
 
+        if (filteredData === undefined) return;
+
+        await saveLog(filteredData, details.tabId, true);
         await cleanupStorage();
     });
 }
 
-async function mainFrameFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function mainFrameFilter(buf: string, settings: Settings) {
     const parser = new DOMParser();
     const html = parser.parseFromString(buf, "text/html");
 
@@ -43,25 +44,26 @@ async function mainFrameFilter(
     const content = meta.getAttribute("content") as string;
     const searchData = JSON.parse(content) as SearchData;
 
-    await searchDataFilter(searchData, details, settings, meta);
+    const filteredData = searchDataFilter(searchData, settings, meta);
 
-    return `<!DOCTYPE html>${html.documentElement.outerHTML}`;
+    return {
+        filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
+        filteredData,
+    };
 }
 
-async function xhrFilter(
-    details: browser.webRequest._OnBeforeRequestDetails,
-    buf: string,
-    settings: Settings,
-) {
+function xhrFilter(buf: string, settings: Settings) {
     const searchData = JSON.parse(buf) as SearchData;
-    await searchDataFilter(searchData, details, settings);
+    const filteredData = searchDataFilter(searchData, settings);
 
-    return JSON.stringify(searchData);
+    return {
+        filteredBuf: JSON.stringify(searchData),
+        filteredData,
+    };
 }
 
-async function searchDataFilter(
+function searchDataFilter(
     searchData: SearchData,
-    details: browser.webRequest._OnBeforeRequestDetails,
     settings: Settings,
     meta?: Element | null,
 ) {
@@ -78,5 +80,5 @@ async function searchDataFilter(
     searchData.data.response.$getSearchVideoV2.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(searchData));
 
-    await saveLog(filteredData, details.tabId, true);
+    return filteredData;
 }
