@@ -1,9 +1,9 @@
 import { useStorageStore } from "@/utils/store.js";
 import { Info } from "./Info.js";
-import { PopupTab } from "@/types/storage/settings.types.js";
+import { FilterTab } from "@/types/storage/settings.types.js";
 
 interface ProcessingTimeProps {
-    selectedTab: PopupTab;
+    selectedTab: FilterTab;
 }
 
 export default function ProcessingTime({ selectedTab }: ProcessingTimeProps) {

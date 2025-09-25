@@ -1,7 +1,7 @@
 import { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
 import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 
-export type PopupTab = "commentFilter" | "videoFilter";
+export type FilterTab = "commentFilter" | "videoFilter";
 export type SettingsTab =
     | "general"
     | "commentFilter"
@@ -97,7 +97,8 @@ export interface Settings {
 
     // タブ
     settingsSelectedTab: SettingsTab;
-    popupSelectedTab: PopupTab;
+    popupSelectedTab: FilterTab;
+    quickEditSelectedTab: FilterTab;
 
     // 開閉
     isOpenProcessingTime: boolean;

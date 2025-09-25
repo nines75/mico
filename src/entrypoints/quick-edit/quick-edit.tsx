@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
+import { quickEditConfig } from "@/utils/config.js";
+import { useShallow } from "zustand/shallow";
+import VideoFilterArea from "../options/components/ui/VideoFilterArea.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -24,6 +27,13 @@ function Init() {
 }
 
 function Page() {
+    const [selectedTab, save] = useStorageStore(
+        useShallow((state) => [
+            state.settings.quickEditSelectedTab,
+            state.saveSettings,
+        ]),
+    );
+
     useEffect(() => {
         browser.storage.onChanged.addListener(storageChangeHandler);
 
@@ -32,5 +42,29 @@ function Page() {
         };
     }, []);
 
-    return <CommentFilterArea />;
+    return (
+        <>
+            <div className="tab-container">
+                {quickEditConfig.tab.map((filter) => (
+                    <button
+                        key={filter.id}
+                        className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
+                        onClick={() =>
+                            save({ quickEditSelectedTab: filter.id })
+                        }
+                    >
+                        <span>{filter.name}</span>
+                    </button>
+                ))}
+            </div>
+            {(() => {
+                switch (selectedTab) {
+                    case "commentFilter":
+                        return <CommentFilterArea />;
+                    case "videoFilter":
+                        return <VideoFilterArea />;
+                }
+            })()}
+        </>
+    );
 }

@@ -10,7 +10,7 @@ import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
-import { PopupTab } from "@/types/storage/settings.types.js";
+import { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 import { sendMessageToBackground } from "../background/message.js";
 
@@ -96,7 +96,7 @@ function Main() {
     }
 
     // 視聴ページ以外は動画フィルターのみ表示
-    const selectedTab: PopupTab = isWatchPage ? rawSelectedTab : "videoFilter";
+    const selectedTab: FilterTab = isWatchPage ? rawSelectedTab : "videoFilter";
 
     return (
         <main>

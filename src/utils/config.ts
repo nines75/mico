@@ -1,6 +1,6 @@
 import { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
 import {
-    PopupTab,
+    FilterTab,
     Settings,
     SettingsTab,
 } from "../types/storage/settings.types.js";
@@ -130,6 +130,7 @@ export const defaultSettings: Settings = {
     // タブ
     settingsSelectedTab: "general",
     popupSelectedTab: "commentFilter",
+    quickEditSelectedTab: "commentFilter",
 
     // 開閉
     isOpenProcessingTime: false,
@@ -570,7 +571,7 @@ export const popupConfig = {
     },
 } as const satisfies {
     tab: {
-        id: PopupTab;
+        id: FilterTab;
         name: string;
     }[];
     commentFilter: {
@@ -579,4 +580,22 @@ export const popupConfig = {
     videoFilter: {
         log: VideoLogViewerProps[];
     };
+};
+
+export const quickEditConfig = {
+    tab: [
+        {
+            id: "commentFilter",
+            name: "コメントフィルター",
+        },
+        {
+            id: "videoFilter",
+            name: "動画フィルター",
+        },
+    ],
+} as const satisfies {
+    tab: {
+        id: FilterTab;
+        name: string;
+    }[];
 };
