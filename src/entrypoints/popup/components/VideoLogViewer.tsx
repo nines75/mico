@@ -1,5 +1,5 @@
 import { CommonLog } from "@/types/storage/log.types.js";
-import { messages, titles } from "@/utils/config.js";
+import { messages, pattern, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
 import { JSX } from "react";
@@ -69,6 +69,7 @@ function Log({ id, filtering }: LogProps) {
 }
 
 function renderIdLog(idLog: IdLog, videos: VideoData) {
+    const settings = useStorageStore.getState().settings;
     const renderUserIdLog = (userId: string, elements: JSX.Element[]) => {
         const sampleVideo = videos.get(
             idLog.userId.get(userId)?.[0] as string,
@@ -94,7 +95,11 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
 
             elements.push(
                 <div key={videoId} className="log-line">
-                    <span>{escapeNewline(video.title)}</span>
+                    {settings.isRenderTitleAsLink ? (
+                        renderVideoLink(video)
+                    ) : (
+                        <span>{escapeNewline(video.title)}</span>
+                    )}
                 </div>,
             );
         });
@@ -122,13 +127,17 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
 
             elements.push(
                 <div key={videoId} className="log-line">
-                    <span
-                        title={titles.removeNgVideoId}
-                        className="clickable"
-                        onClick={() => onClickId(videoId, "video")}
-                    >
-                        {escapeNewline(video.title)}
-                    </span>
+                    {settings.isRenderTitleAsLink ? (
+                        renderVideoLink(video)
+                    ) : (
+                        <span
+                            title={titles.removeNgVideoId}
+                            className="clickable"
+                            onClick={() => onClickId(videoId, "video")}
+                        >
+                            {escapeNewline(video.title)}
+                        </span>
+                    )}
                 </div>,
             );
         });
@@ -169,6 +178,7 @@ function renderCommonVideos(
     ids: string[],
     videos: VideoData,
 ) {
+    const settings = useStorageStore.getState().settings;
     ids.forEach((videoId) => {
         const video = videos.get(videoId) as NiconicoVideo;
         const escapedTitle = escapeNewline(video.title);
@@ -176,7 +186,9 @@ function renderCommonVideos(
 
         elements.push(
             <div key={videoId} className="log-line">
-                {userId === undefined ? (
+                {settings.isRenderTitleAsLink ? (
+                    renderVideoLink(video)
+                ) : userId === undefined ? (
                     escapedTitle
                 ) : (
                     <span
@@ -192,6 +204,14 @@ function renderCommonVideos(
     });
 
     return elements;
+}
+
+function renderVideoLink(video: NiconicoVideo) {
+    return (
+        <a href={`${pattern.watchPageUrl}${video.id}`}>
+            {escapeNewline(video.title)}
+        </a>
+    );
 }
 
 async function onClickId(id: string, type: "user" | "video") {

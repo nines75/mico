@@ -71,6 +71,9 @@ export const defaultSettings: Settings = {
     ngTitle: "",
     ngUserName: "",
 
+    // ログ
+    isRenderTitleAsLink: false,
+
     // 通知
     isNotifyAddNgId: true,
 
@@ -434,6 +437,14 @@ export const videoFilterSettings = {
                 },
             },
         ],
+        log: [
+            {
+                id: "isRenderTitleAsLink",
+                label: "動画タイトルをリンクとして表示する",
+                details:
+                    "動画タイトルをクリックしてNG登録/解除することは出来なくなります。",
+            },
+        ],
         notification: [
             {
                 id: "isNotifyAddNgId",
@@ -469,6 +480,7 @@ export const videoFilterSettings = {
     checkbox: {
         top: CheckboxProps[];
         filtering: CheckboxProps[];
+        log: CheckboxProps[];
         notification: CheckboxProps[];
         other: CheckboxProps[];
     };

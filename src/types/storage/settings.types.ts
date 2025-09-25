@@ -71,6 +71,9 @@ export interface Settings {
     ngUserName: string;
     ngTitle: string;
 
+    // ログ
+    isRenderTitleAsLink: boolean;
+
     // 通知
     isNotifyAddNgId: boolean;
 
