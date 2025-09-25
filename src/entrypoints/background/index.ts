@@ -3,7 +3,7 @@ import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
-import { isWatchPage, sendNotification } from "@/utils/util.js";
+import { isNiconicoPage, isWatchPage, sendNotification } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { messages, pattern } from "@/utils/config.js";
@@ -87,13 +87,24 @@ export default defineBackground(() => {
                 currentWindow: true,
             });
             const tab = tabs[0];
+            const tabId = tab?.id;
+            const url = tab?.url;
+            if (tabId === undefined) return;
 
-            if (tab?.id !== undefined) {
-                // 視聴ページでのみ実行
-                if (!isWatchPage(tab.url)) return;
+            switch (command) {
+                case "quick-edit": {
+                    if (!isNiconicoPage(url)) return;
 
-                await sendMessageToContent(tab.id, { type: command });
+                    break;
+                }
+                case "reload": {
+                    if (!isWatchPage(url)) return;
+
+                    break;
+                }
             }
+
+            await sendMessageToContent(tabId, { type: command });
         }
 
         if (command === "open-settings") {

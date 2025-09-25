@@ -220,6 +220,7 @@ export const urls = {
 } as const;
 
 export const pattern = {
+    topPageUrl: "https://www.nicovideo.jp/",
     topPageUrlGlob: "https://www.nicovideo.jp/*",
     watchPageUrl: "https://www.nicovideo.jp/watch/",
     watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",

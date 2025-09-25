@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
     countCommonLog,
     escapeNewline,
+    isNiconicoPage,
     isRankingPage,
     isSearchPage,
     isWatchPage,
@@ -13,6 +14,15 @@ import { CommonLog } from "@/types/storage/log.types.js";
 describe("util", () => {
     beforeEach(() => {
         fakeBrowser.reset();
+    });
+
+    it.each([
+        { url: "https://www.nicovideo.jp/", expected: true },
+        { url: "https://www.nicovideo.jp/ranking/genre", expected: true },
+        { url: "https://live.nicovideo.jp/", expected: false },
+        { expected: false },
+    ])(`${isNiconicoPage.name}($url)`, ({ url, expected }) => {
+        expect(isNiconicoPage(url)).toBe(expected);
     });
 
     it.each([

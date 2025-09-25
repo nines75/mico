@@ -106,6 +106,7 @@ function openQuickEdit(ctx: ContentScriptContext) {
             iframe.id = id;
             iframe.style.width = "100%";
             iframe.style.height = "100%";
+            iframe.style.color = "rgba(10, 10, 10, 0.6)"; // 指定しないとサイト内のCSSの影響で枠線が表示されることがある
             iframe.addEventListener("load", () => {
                 // iframe内の要素にfocusがある場合に反応するショートカットを設定
                 iframe.contentDocument?.addEventListener("keydown", callback);

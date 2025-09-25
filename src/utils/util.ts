@@ -1,6 +1,12 @@
 import { CommonLog } from "../types/storage/log.types.js";
 import { pattern } from "./config.js";
 
+export function isNiconicoPage(url: string | undefined) {
+    if (url === undefined) return false;
+
+    return url.startsWith(pattern.topPageUrl);
+}
+
 export function isWatchPage(url: string | undefined) {
     if (url === undefined) return false;
 
