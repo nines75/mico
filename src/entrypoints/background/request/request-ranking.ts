@@ -63,16 +63,18 @@ function rankingDataFilter(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
-    const spoofedVideos = videos.map(
-        (video): NiconicoVideo => ({
-            ...video,
-            ...(filteredData.filteredIds.has(video.id)
-                ? { id: "dummy-id" }
-                : {}),
-        }),
-    );
+    const filteredVideos = settings.isSpoofVideoId
+        ? videos.map(
+              (video): NiconicoVideo => ({
+                  ...video,
+                  ...(filteredData.filteredIds.has(video.id)
+                      ? { id: "dummy-id" }
+                      : {}),
+              }),
+          )
+        : videos.filter((video) => !filteredData.filteredIds.has(video.id));
 
-    rankingData.data.response.$getTeibanRanking.data.items = spoofedVideos;
+    rankingData.data.response.$getTeibanRanking.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(rankingData));
 
     return filteredData;

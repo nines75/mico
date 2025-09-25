@@ -79,6 +79,7 @@ export const defaultSettings: Settings = {
 
     // その他
     isAddNgContext: false,
+    isSpoofVideoId: false,
 
     // -------------------------------------------------------------------------------------------
     // 拡張ニコる
@@ -461,6 +462,12 @@ export const videoFilterSettings = {
                 label: "NG追加時にコンテキスト情報を付与する",
                 details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
                 コンテキストメニューからNG登録した場合は付与されません。`,
+            },
+            {
+                id: "isSpoofVideoId",
+                label: "動画IDを偽装する",
+                details:
+                    "ランキング(カテゴリ)の順位が正しく表示されるようになりますが、予期しない不具合が発生する可能性があります。",
             },
         ],
     },

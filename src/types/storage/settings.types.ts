@@ -79,6 +79,7 @@ export interface Settings {
 
     // その他
     isAddNgContext: boolean;
+    isSpoofVideoId: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 拡張ニコる
