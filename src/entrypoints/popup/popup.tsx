@@ -69,7 +69,7 @@ function Main() {
     const [videoId, rawSelectedTab, save] = useStorageStore(
         useShallow((state) => [
             state.log?.videoId,
-            state.settings.popupSelectedTab,
+            state.settings.selectedPopupTab,
             state.saveSettings,
         ]),
     );
@@ -128,7 +128,7 @@ function Main() {
                             key={filter.id}
                             className={`common-button${selectedTab === filter.id ? " selected-button" : ""}`}
                             onClick={() =>
-                                save({ popupSelectedTab: filter.id })
+                                save({ selectedPopupTab: filter.id })
                             }
                         >
                             <span>{filter.name}</span>

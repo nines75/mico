@@ -33,7 +33,7 @@ function Init() {
 function Page() {
     const [selectedTab, save] = useStorageStore(
         useShallow((state) => [
-            state.settings.settingsSelectedTab,
+            state.settings.selectedSettingsTab,
             state.saveSettings,
         ]),
     );
@@ -64,7 +64,7 @@ function Page() {
                     <button
                         key={filter.id}
                         className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
-                        onClick={() => save({ settingsSelectedTab: filter.id })}
+                        onClick={() => save({ selectedSettingsTab: filter.id })}
                     >
                         <span>{filter.name}</span>
                     </button>

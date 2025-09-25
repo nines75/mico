@@ -29,7 +29,7 @@ function Init() {
 function Page() {
     const [selectedTab, save] = useStorageStore(
         useShallow((state) => [
-            state.settings.quickEditSelectedTab,
+            state.settings.selectedQuickEditTab,
             state.saveSettings,
         ]),
     );
@@ -50,7 +50,7 @@ function Page() {
                         key={filter.id}
                         className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
                         onClick={() =>
-                            save({ quickEditSelectedTab: filter.id })
+                            save({ selectedQuickEditTab: filter.id })
                         }
                     >
                         <span>{filter.name}</span>

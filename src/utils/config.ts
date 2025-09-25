@@ -128,9 +128,9 @@ export const defaultSettings: Settings = {
     // -------------------------------------------------------------------------------------------
 
     // タブ
-    settingsSelectedTab: "general",
-    popupSelectedTab: "commentFilter",
-    quickEditSelectedTab: "commentFilter",
+    selectedSettingsTab: "general",
+    selectedPopupTab: "commentFilter",
+    selectedQuickEditTab: "commentFilter",
 
     // 開閉
     isOpenProcessingTime: false,

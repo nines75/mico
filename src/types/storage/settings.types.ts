@@ -96,9 +96,9 @@ export interface Settings {
     // -------------------------------------------------------------------------------------------
 
     // タブ
-    settingsSelectedTab: SettingsTab;
-    popupSelectedTab: FilterTab;
-    quickEditSelectedTab: FilterTab;
+    selectedSettingsTab: SettingsTab;
+    selectedPopupTab: FilterTab;
+    selectedQuickEditTab: FilterTab;
 
     // 開閉
     isOpenProcessingTime: boolean;
