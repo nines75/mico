@@ -9,27 +9,23 @@ export default function CommentFilter() {
             {commentFilterSettings.checkbox.top.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}
-            <H2 name="フィルタリング">
-                {commentFilterSettings.checkbox.filtering.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-                <CommentFilterArea />
-            </H2>
-            <H2 name="ログ">
-                {commentFilterSettings.checkbox.log.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
-            <H2 name="通知">
-                {commentFilterSettings.checkbox.notification.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
-            <H2 name="その他">
-                {commentFilterSettings.checkbox.other.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
+            {(
+                [
+                    ["フィルタリング", "filtering"],
+                    ["ログ", "log"],
+                    ["通知", "notification"],
+                    ["その他", "other"],
+                ] as const
+            ).map(([name, key]) => (
+                <>
+                    <H2 name={name} key={key}>
+                        {commentFilterSettings.checkbox[key].map((props) => (
+                            <Checkbox key={props.id} {...props} />
+                        ))}
+                    </H2>
+                    {key === "filtering" && <CommentFilterArea />}
+                </>
+            ))}
         </div>
     );
 }

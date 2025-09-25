@@ -13,20 +13,22 @@ export default function Backup() {
 
     return (
         <div className="settings-container">
-            <button
-                className="backup-button"
-                onClick={() => {
-                    if (input.current !== null) input.current.click();
-                }}
-            >
-                インポート
-            </button>
-            <button className="backup-button" onClick={() => exportBackup()}>
-                エクスポート
-            </button>
-            <button className="backup-button" onClick={() => reset()}>
-                リセット
-            </button>
+            {(
+                [
+                    [
+                        "インポート",
+                        () => {
+                            if (input.current !== null) input.current.click();
+                        },
+                    ],
+                    ["エクスポート", () => exportBackup()],
+                    ["リセット", () => reset()],
+                ] as const
+            ).map(([text, callback]) => (
+                <button key={text} className="backup-button" onClick={callback}>
+                    {text}
+                </button>
+            ))}
             <input
                 type="file"
                 accept=".json"

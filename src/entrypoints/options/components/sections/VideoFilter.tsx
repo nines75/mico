@@ -9,27 +9,21 @@ export default function VideoFilter() {
             {videoFilterSettings.checkbox.top.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}
-            <H2 name="フィルタリング">
-                {videoFilterSettings.checkbox.filtering.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-                <VideoFilterArea />
-            </H2>
-            <H2 name="ログ">
-                {videoFilterSettings.checkbox.log.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
-            <H2 name="通知">
-                {videoFilterSettings.checkbox.notification.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
-            <H2 name="その他">
-                {videoFilterSettings.checkbox.other.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
-            </H2>
+            {(
+                [
+                    ["フィルタリング", "filtering"],
+                    ["ログ", "log"],
+                    ["通知", "notification"],
+                    ["その他", "other"],
+                ] as const
+            ).map(([name, key]) => (
+                <H2 name={name} key={key}>
+                    {videoFilterSettings.checkbox[key].map((props) => (
+                        <Checkbox key={props.id} {...props} />
+                    ))}
+                    {key === "filtering" && <VideoFilterArea />}
+                </H2>
+            ))}
         </div>
     );
 }
