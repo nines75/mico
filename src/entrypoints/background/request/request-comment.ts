@@ -7,28 +7,29 @@ import { sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId, setLog, cleanupStorage } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
+import { LogData } from "@/types/storage/log.types.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
         const commentData = JSON.parse(buf) as CommentDataContainer;
+        const tabId = details.tabId;
+
         const [settings, log] = await Promise.all([
             loadSettings(),
-            getLogData(details.tabId),
+            getLogData(tabId),
         ]);
-        const tabId = details.tabId;
         const videoId = log?.videoId ?? undefined;
 
-        const [filteredData] = await Promise.all([
-            filterComment(
-                commentData.data?.threads,
-                settings,
-                log?.tags ?? [],
-                videoId,
-            ),
-            restorePlaybackTime(tabId),
-        ]);
+        await restorePlaybackTime(tabId, log);
+
+        const filteredData = filterComment(
+            commentData.data?.threads,
+            settings,
+            log?.tags ?? [],
+            videoId,
+        );
 
         filter.write(encoder.encode(JSON.stringify(commentData)));
         filter.disconnect();
@@ -63,20 +64,18 @@ export default function commentRequest(
     });
 }
 
-async function restorePlaybackTime(tabId: number) {
-    const tasks: Promise<void>[] = [];
+async function restorePlaybackTime(tabId: number, log: LogData | undefined) {
+    const playbackTime = log?.playbackTime ?? 0;
+    if (playbackTime <= 0) return;
 
-    const logData = await getLogData(tabId);
-    const playbackTime = logData?.playbackTime ?? 0;
-    if (playbackTime > 0) {
-        tasks.push(setLog({ playbackTime: 0 }, tabId));
-        tasks.push(
-            sendMessageToContent(tabId, {
-                type: "set-playback-time",
-                data: playbackTime,
-            }),
-        );
-    }
+    const tasks: Promise<void>[] = [];
+    tasks.push(setLog({ playbackTime: 0 }, tabId));
+    tasks.push(
+        sendMessageToContent(tabId, {
+            type: "set-playback-time",
+            data: playbackTime,
+        }),
+    );
 
     await Promise.all(tasks);
 }
