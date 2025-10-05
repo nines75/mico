@@ -1,20 +1,18 @@
 import js from "@eslint/js";
 import ts from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier";
-import * as reactHooks from "eslint-plugin-react-hooks";
+import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import importPlugin from "eslint-plugin-import";
 
-export default ts.config(
+export default defineConfig(
     // 下に行くほど優先される
 
     // https://typescript-eslint.io/getting-started
     js.configs.recommended,
     ts.configs.strict,
     ts.configs.stylistic,
-
-    // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
-    reactHooks.configs["recommended-latest"],
 
     // https://github.com/jsx-eslint/eslint-plugin-react
     react.configs.flat.recommended,
@@ -31,6 +29,10 @@ export default ts.config(
                 projectService: true, // tsconfig.jsonを自動で検索
             },
         },
+        plugins: {
+            "react-hooks": reactHooks, // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
+        },
+        extends: ["react-hooks/recommended"],
         settings: {
             // eslint-config-react
             react: {
