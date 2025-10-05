@@ -1,4 +1,4 @@
-import { useEffect, useInsertionEffect, useRef } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 import {
     EditorState,
     Extension,
@@ -151,7 +151,6 @@ interface EditorProps {
 export default function Editor({ id, value, onChange }: EditorProps) {
     const view = useRef<EditorView | null>(null);
     const parent = useRef<HTMLDivElement | null>(null);
-    const initialEditorState = useRef<EditorState | null>(null);
 
     const getExtensions = () => {
         const settings = useStorageStore.getState().settings;
@@ -183,21 +182,18 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             ...dynamicExtensions,
         ];
     };
-
-    // useEffectEventの模倣
-    useInsertionEffect(() => {
-        initialEditorState.current = EditorState.create({
+    const createEditorState = useEffectEvent(() => {
+        return EditorState.create({
             doc: value,
             extensions: getExtensions(),
         });
-    }, []);
+    });
 
     useEffect(() => {
-        if (parent.current === null || initialEditorState.current === null)
-            return;
+        if (parent.current === null) return;
 
         view.current = new EditorView({
-            state: initialEditorState.current,
+            state: createEditorState(),
             parent: parent.current,
         });
 
