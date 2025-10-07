@@ -17,14 +17,12 @@ export default function CommentFilter() {
                     ["その他", "other"],
                 ] as const
             ).map(([name, key]) => (
-                <>
-                    <H2 name={name} key={key}>
-                        {commentFilterSettings.checkbox[key].map((props) => (
-                            <Checkbox key={props.id} {...props} />
-                        ))}
-                    </H2>
+                <H2 name={name} key={key}>
+                    {commentFilterSettings.checkbox[key].map((props) => (
+                        <Checkbox key={props.id} {...props} />
+                    ))}
                     {key === "filtering" && <CommentFilterArea />}
-                </>
+                </H2>
             ))}
         </div>
     );
