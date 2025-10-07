@@ -22,6 +22,10 @@ export const defaultSettings: Settings = {
     isHighlightTrailingWhitespace: true,
     isVimKeybindingsEnabled: false,
 
+    // 高度な機能
+    isAdvancedFeatureVisible: false,
+    isDisableImeByContext: false,
+
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
     // -------------------------------------------------------------------------------------------
@@ -293,11 +297,31 @@ export const generalSettings = {
                 label: "Vimモードを有効にする",
             },
         ],
+        advanced: {
+            top: [
+                {
+                    id: "isAdvancedFeatureVisible",
+                    label: "高度な機能を表示する",
+                },
+            ],
+            features: [
+                {
+                    id: "isDisableImeByContext",
+                    label: "コンテキストに応じてIMEを無効化する",
+                    details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
+                    ネイティブメッセージング権限とバイナリのインストールが必要です。`,
+                },
+            ],
+        },
     },
 } as const satisfies {
     checkbox: {
         filtering: CheckboxProps[];
         editor: CheckboxProps[];
+        advanced: {
+            top: CheckboxProps[];
+            features: CheckboxProps[];
+        };
     };
 };
 

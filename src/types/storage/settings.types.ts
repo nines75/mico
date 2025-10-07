@@ -22,6 +22,10 @@ export interface Settings {
     isHighlightTrailingWhitespace: boolean;
     isVimKeybindingsEnabled: boolean;
 
+    // 高度な機能
+    isAdvancedFeatureVisible: boolean;
+    isDisableImeByContext: boolean;
+
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
     // -------------------------------------------------------------------------------------------

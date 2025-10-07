@@ -3,10 +3,14 @@ import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
-import { isNiconicoPage, isWatchPage, sendNotification } from "@/utils/util.js";
+import {
+    isNiconicoPage,
+    isWatchPage,
+    tryWithPermission,
+} from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
-import { messages, pattern } from "@/utils/config.js";
+import { pattern } from "@/utils/config.js";
 import { playlistSearchRequest } from "./request/request-playlist-search.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
@@ -114,21 +118,10 @@ export default defineBackground(() => {
         }
 
         if (command === "add-ng-from-clipboard") {
-            const hasPermission = await browser.permissions.contains({
-                permissions: ["clipboardRead"],
-            });
-
-            if (hasPermission) {
+            await tryWithPermission("clipboardRead", async () => {
                 const text = await navigator.clipboard.readText();
                 await addNgIdFromUrl(text);
-            } else {
-                await sendNotification(
-                    messages.other.permissionRequired.replace(
-                        "{target}",
-                        "クリップボードからのデータ取得",
-                    ),
-                );
-            }
+            });
         }
     });
 

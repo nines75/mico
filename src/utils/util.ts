@@ -1,5 +1,6 @@
+import { Browser } from "#imports";
 import { CommonLog } from "../types/storage/log.types.js";
-import { pattern } from "./config.js";
+import { messages, pattern } from "./config.js";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;
@@ -71,5 +72,22 @@ export function pushCommonLog(log: CommonLog, key: string, value: string) {
         array.push(value);
     } else {
         log.set(key, [value]);
+    }
+}
+
+export async function tryWithPermission(
+    permission: Browser.runtime.ManifestPermissions,
+    callback: () => void | Promise<void>,
+) {
+    const hasPermission = await browser.permissions.contains({
+        permissions: [permission],
+    });
+
+    if (hasPermission) {
+        await callback();
+    } else {
+        await sendNotification(
+            messages.other.permissionRequired.replace("{target}", permission),
+        );
     }
 }

@@ -36,6 +36,7 @@ import {
 import { getCM, vim } from "@replit/codemirror-vim";
 import { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 
 const generalHighlights = createHighlights([
     { regex: /(?<!\\)#.*/g, style: "color: gray" },
@@ -196,6 +197,26 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             state: createEditorState(),
             parent: parent.current,
         });
+
+        // エディタはコンテンツスクリプト(クイック編集)でも使うのでメッセージ経由でIMEをオフにする
+        const settings = useStorageStore.getState().settings;
+        if (
+            settings.isVimKeybindingsEnabled &&
+            settings.isDisableImeByContext
+        ) {
+            // ノーマルモードに戻った時
+            const cm = getCM(view.current);
+            cm?.on("vim-mode-change", async (obj: { mode: string }) => {
+                if (obj.mode === "normal") {
+                    await sendMessageToBackground({ type: "disable-ime" });
+                }
+            });
+
+            // エディタにフォーカスした時
+            view.current.contentDOM.addEventListener("focus", async () => {
+                await sendMessageToBackground({ type: "disable-ime" });
+            });
+        }
 
         // クリーンアップ処理
         return () => {

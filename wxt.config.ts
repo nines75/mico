@@ -55,7 +55,7 @@ export default defineConfig({
                 "https://nvapi.nicovideo.jp/",
                 "https://public.nvcomment.nicovideo.jp/",
             ],
-            optional_permissions: ["clipboardRead"],
+            optional_permissions: ["clipboardRead", "nativeMessaging"],
             commands: {
                 "open-settings": {
                     description: "設定ページを開く",

@@ -1,6 +1,6 @@
 import { messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
-import { sendNotification } from "@/utils/util.js";
+import { sendNotification, tryWithPermission } from "@/utils/util.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -64,6 +64,9 @@ type BackgroundMessage =
     | {
           type: "remove-ng-id";
           data: string;
+      }
+    | {
+          type: "disable-ime";
       };
 
 export async function sendMessageToBackground(message: BackgroundMessage) {
@@ -124,6 +127,10 @@ export async function backgroundMessageHandler(
             }
             case "remove-ng-id": {
                 await removeNgId(message.data);
+                break;
+            }
+            case "disable-ime": {
+                await disableIme();
                 break;
             }
         }
@@ -208,4 +215,11 @@ async function filterOldSearch(
         }),
     ]);
     await cleanupStorage();
+}
+
+async function disableIme() {
+    await tryWithPermission("nativeMessaging", () => {
+        const port = browser.runtime.connectNative("mico.ime");
+        port.disconnect();
+    });
 }

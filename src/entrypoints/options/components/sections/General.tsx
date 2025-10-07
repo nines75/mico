@@ -1,8 +1,13 @@
 import { generalSettings } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
 import H2 from "../ui/H2.js";
+import { useStorageStore } from "@/utils/store.js";
 
 export default function General() {
+    const isAdvancedFeatureVisible = useStorageStore(
+        (state) => state.settings.isAdvancedFeatureVisible,
+    );
+
     return (
         <div className="settings-container">
             {(
@@ -17,6 +22,15 @@ export default function General() {
                     ))}
                 </H2>
             ))}
+            <H2 name={"高度な機能"}>
+                {generalSettings.checkbox.advanced.top.map((props) => (
+                    <Checkbox key={props.id} {...props} />
+                ))}
+                {isAdvancedFeatureVisible &&
+                    generalSettings.checkbox.advanced.features.map((props) => (
+                        <Checkbox key={props.id} {...props} />
+                    ))}
+            </H2>
         </div>
     );
 }
