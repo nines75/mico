@@ -2,16 +2,19 @@
  * https://www.nicovideo.jp/ranking/genre
  */
 
-import { NiconicoVideo } from "./niconico-video.types.js";
+import { z } from "@/utils/zod.js";
+import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export interface RankingData {
-    data: {
-        response: {
-            $getTeibanRanking: {
-                data: {
-                    items: NiconicoVideo[];
-                };
-            };
-        };
-    };
-}
+export const rankingDataSchema = z.looseObject({
+    data: z.looseObject({
+        response: z.looseObject({
+            $getTeibanRanking: z.looseObject({
+                data: z.looseObject({
+                    items: z.array(niconicoVideoSchema),
+                }),
+            }),
+        }),
+    }),
+});
+
+export type RankingData = z.infer<typeof rankingDataSchema>;

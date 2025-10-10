@@ -3,9 +3,10 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
-import { RankingData } from "@/types/api/ranking.types.js";
+import { RankingData, rankingDataSchema } from "@/types/api/ranking.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { cleanupStorage } from "@/utils/storage-write.js";
+import { safeParseJson } from "@/utils/util.js";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -13,18 +14,22 @@ export function rankingRequest(
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
 
-        const { filteredBuf, filteredData } =
+        const res =
             details.type === "main_frame"
                 ? mainFrameFilter(buf, settings)
                 : xhrFilter(buf, settings);
+        if (res === undefined) return true;
+
+        const { filteredBuf, filteredData } = res;
+        if (filteredData === undefined) return true;
 
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
-        if (filteredData === undefined) return;
-
         await saveLog(filteredData, details.tabId, true);
         await cleanupStorage();
+
+        return false;
     });
 }
 
@@ -33,8 +38,12 @@ function mainFrameFilter(buf: string, settings: Settings) {
     const html = parser.parseFromString(buf, "text/html");
 
     const meta = html.querySelector("meta[name='server-response']");
-    const content = meta?.getAttribute("content") as string;
-    const rankingData = JSON.parse(content) as RankingData;
+    const content = meta?.getAttribute("content");
+    const rankingData: RankingData | undefined = safeParseJson(
+        content,
+        rankingDataSchema,
+    );
+    if (rankingData === undefined) return;
 
     const filteredData = rankingDataFilter(rankingData, settings, meta);
 
@@ -45,7 +54,12 @@ function mainFrameFilter(buf: string, settings: Settings) {
 }
 
 function xhrFilter(buf: string, settings: Settings) {
-    const rankingData = JSON.parse(buf) as RankingData;
+    const rankingData: RankingData | undefined = safeParseJson(
+        buf,
+        rankingDataSchema,
+    );
+    if (rankingData === undefined) return;
+
     const filteredData = rankingDataFilter(rankingData, settings);
 
     return {

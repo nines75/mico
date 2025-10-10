@@ -1,20 +1,24 @@
-import { CommentDataContainer } from "@/types/api/comment.types.js";
 import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
 import { messages } from "@/utils/config.js";
 import { loadSettings, getLogData } from "@/utils/storage.js";
-import { sendNotification } from "@/utils/util.js";
+import { safeParseJson, sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId, setLog, cleanupStorage } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
 import { LogData } from "@/types/storage/log.types.js";
+import { CommentData, commentDataSchema } from "@/types/api/comment.types.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
-        const commentData = JSON.parse(buf) as CommentDataContainer;
         const tabId = details.tabId;
+        const commentData: CommentData | undefined = safeParseJson(
+            buf,
+            commentDataSchema,
+        );
+        if (commentData === undefined) return true;
 
         const [settings, log] = await Promise.all([
             loadSettings(),
@@ -30,11 +34,10 @@ export default function commentRequest(
             log?.tags ?? [],
             videoId,
         );
+        if (filteredData === undefined) return true;
 
         filter.write(encoder.encode(JSON.stringify(commentData)));
         filter.disconnect();
-
-        if (filteredData === undefined || videoId === undefined) return;
 
         // ログをソートするときに参照するので先に保存する
         const strictNgUserIds = filteredData.strictNgUserIds;
@@ -61,6 +64,8 @@ export default function commentRequest(
 
         await Promise.all(tasks);
         await cleanupStorage();
+
+        return false;
     });
 }
 

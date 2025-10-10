@@ -2,35 +2,40 @@
  * https://public.nvcomment.nicovideo.jp/v1/threads
  */
 
-export interface CommentDataContainer {
-    data?: CommentData;
-}
+import { z } from "@/utils/zod.js";
 
-interface CommentData {
-    threads: Thread[];
-}
+const niconicoCommentSchema = z.looseObject({
+    id: z.string(),
+    body: z.string(),
+    commands: z.array(z.string()),
+    userId: z.string(),
+    postedAt: z.string(),
+    nicoruId: z.string().nullable(), // ユーザーがこのコメントをニコっていない場合はnull
 
-export interface Thread {
-    fork: "owner" | "main" | "easy";
-    commentCount: number;
-    comments: NiconicoComment[];
-}
+    no: z.number().int(), // 動画内での投稿順
+    vposMs: z.number().int(),
+    score: z.number().int(),
+    nicoruCount: z.number().int(),
 
-export interface NiconicoComment {
-    id: string;
-    body: string;
-    commands: string[];
-    userId: string;
-    postedAt: string;
-    nicoruId: string | null; // ユーザーがこのコメントをニコっていない場合はnull
+    isPremium: z.boolean(),
+    isMyPost: z.boolean(),
 
-    no: number; // 動画内での投稿順
-    vposMs: number;
-    score: number;
-    nicoruCount: number;
+    source: z.literal(["trunk", "leaf", "nicoru"]),
+});
+export type NiconicoComment = z.infer<typeof niconicoCommentSchema>;
 
-    isPremium: boolean;
-    isMyPost: boolean;
+const threadSchema = z.looseObject({
+    fork: z.literal(["owner", "main", "easy"]),
+    commentCount: z.number().int(),
+    comments: z.array(niconicoCommentSchema),
+});
+export type Thread = z.infer<typeof threadSchema>;
 
-    source: "trunk" | "leaf" | "nicoru";
-}
+export const commentDataSchema = z.looseObject({
+    data: z
+        .looseObject({
+            threads: z.array(threadSchema),
+        })
+        .optional(),
+});
+export type CommentData = z.infer<typeof commentDataSchema>;

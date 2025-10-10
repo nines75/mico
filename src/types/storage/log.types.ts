@@ -14,7 +14,7 @@ export interface LogData {
 
     videoId?: string | null;
     title?: string | null;
-    userId?: string | null;
+    userId?: string | number | null;
     userName?: string | null;
     tags?: string[];
 }

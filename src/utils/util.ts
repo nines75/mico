@@ -1,6 +1,7 @@
 import { Browser } from "#imports";
 import { CommonLog } from "../types/storage/log.types.js";
 import { messages, pattern } from "./config.js";
+import { z } from "./zod.js";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;
@@ -89,5 +90,25 @@ export async function tryWithPermission(
         await sendNotification(
             messages.other.permissionRequired.replace("{target}", permission),
         );
+    }
+}
+
+export function safeParseJson<T>(
+    text: string | null | undefined,
+    schema: z.ZodSchema<T>,
+): T | undefined {
+    try {
+        if (text === null || text === undefined) return;
+
+        const data = JSON.parse(text);
+        const result = schema.safeParse(data);
+
+        if (result.error !== undefined) {
+            console.error(result.error);
+        }
+
+        return result.success ? result.data : undefined;
+    } catch {
+        return;
     }
 }

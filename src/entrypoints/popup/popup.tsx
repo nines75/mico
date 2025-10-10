@@ -209,6 +209,6 @@ async function onClickNgUserButton() {
 
     await sendMessageToBackground({
         type: "add-ng-id",
-        data: formatNgId(userId, userName, settings),
+        data: formatNgId(userId.toString(), userName, settings),
     });
 }

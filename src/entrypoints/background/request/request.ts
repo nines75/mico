@@ -5,7 +5,7 @@ export function filterResponse(
         filter: browser.webRequest.StreamFilter,
         encoder: TextEncoder,
         buf: string,
-    ) => Promise<void>,
+    ) => Promise<boolean>,
 ) {
     if (details.method !== method) return;
 
@@ -19,6 +19,10 @@ export function filterResponse(
     };
 
     filter.onstop = async () => {
-        await callback(filter, encoder, buf);
+        const isCancel = await callback(filter, encoder, buf);
+        if (isCancel) {
+            filter.write(encoder.encode(buf));
+            filter.disconnect();
+        }
     };
 }

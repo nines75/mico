@@ -1,8 +1,12 @@
-import { RecommendData } from "@/types/api/recommend.types.js";
+import {
+    recommendDataSchema,
+    RecommendData,
+} from "@/types/api/recommend.types.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
+import { safeParseJson } from "@/utils/util.js";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -12,8 +16,12 @@ export function recommendRequest(
             loadSettings(),
             getLogData(details.tabId),
         ]);
-        const recommendData = JSON.parse(buf) as RecommendData;
         const tabId = details.tabId;
+        const recommendData: RecommendData | undefined = safeParseJson(
+            buf,
+            recommendDataSchema,
+        );
+        if (recommendData === undefined) return true;
 
         // シリーズの次の動画を追加
         const series = log?.series;
@@ -34,19 +42,18 @@ export function recommendRequest(
             .filter((item) => item.contentType === "video")
             .map((item) => item.content);
         const filteredData = filterVideo(videos, settings, true);
+        if (filteredData === undefined) return true;
 
         // 実際にフィルタリング
-        if (filteredData !== undefined) {
-            recommendData.data.items = recommendData.data.items.filter(
-                (item) => !filteredData.filteredIds.has(item.id),
-            );
-        }
+        recommendData.data.items = recommendData.data.items.filter(
+            (item) => !filteredData.filteredIds.has(item.id),
+        );
 
         filter.write(encoder.encode(JSON.stringify(recommendData)));
         filter.disconnect();
 
-        if (filteredData === undefined) return;
-
         await saveLog(filteredData, tabId);
+
+        return false;
     });
 }

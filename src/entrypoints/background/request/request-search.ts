@@ -3,8 +3,9 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
-import { SearchData } from "@/types/api/search.types.js";
+import { SearchData, SearchDataSchema } from "@/types/api/search.types.js";
 import { cleanupStorage, setLog } from "@/utils/storage-write.js";
+import { safeParseJson } from "@/utils/util.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -15,22 +16,22 @@ export function searchRequest(
             setLog({ videoId: null }, details.tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
-        const data =
+        const res =
             details.type === "main_frame"
                 ? mainFrameFilter(buf, settings)
                 : xhrFilter(buf, settings);
-        const filteredBuf = data?.filteredBuf;
-        const filteredData = data?.filteredData;
+        if (res === undefined) return true;
 
-        filter.write(
-            encoder.encode(filteredBuf === undefined ? buf : filteredBuf),
-        );
+        const { filteredBuf, filteredData } = res;
+        if (filteredData === undefined) return true;
+
+        filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
-
-        if (filteredData === undefined) return;
 
         await saveLog(filteredData, details.tabId, true);
         await cleanupStorage();
+
+        return false;
     });
 }
 
@@ -39,10 +40,12 @@ function mainFrameFilter(buf: string, settings: Settings) {
     const html = parser.parseFromString(buf, "text/html");
 
     const meta = html.querySelector("meta[name='server-response']");
-    if (meta === null) return; // 旧検索ページなら終了
-
-    const content = meta.getAttribute("content") as string;
-    const searchData = JSON.parse(content) as SearchData;
+    const content = meta?.getAttribute("content");
+    const searchData: SearchData | undefined = safeParseJson(
+        content,
+        SearchDataSchema,
+    );
+    if (searchData === undefined) return;
 
     const filteredData = searchDataFilter(searchData, settings, meta);
 
@@ -53,7 +56,12 @@ function mainFrameFilter(buf: string, settings: Settings) {
 }
 
 function xhrFilter(buf: string, settings: Settings) {
-    const searchData = JSON.parse(buf) as SearchData;
+    const searchData: SearchData | undefined = safeParseJson(
+        buf,
+        SearchDataSchema,
+    );
+    if (searchData === undefined) return;
+
     const filteredData = searchDataFilter(searchData, settings);
 
     return {

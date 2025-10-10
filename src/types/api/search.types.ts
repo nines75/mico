@@ -3,16 +3,19 @@
  * https://www.nicovideo.jp/tag
  */
 
-import { NiconicoVideo } from "./niconico-video.types.js";
+import { z } from "@/utils/zod.js";
+import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export interface SearchData {
-    data: {
-        response: {
-            $getSearchVideoV2: {
-                data: {
-                    items: NiconicoVideo[];
-                };
-            };
-        };
-    };
-}
+export const SearchDataSchema = z.looseObject({
+    data: z.looseObject({
+        response: z.looseObject({
+            $getSearchVideoV2: z.looseObject({
+                data: z.looseObject({
+                    items: z.array(niconicoVideoSchema),
+                }),
+            }),
+        }),
+    }),
+});
+
+export type SearchData = z.infer<typeof SearchDataSchema>;
