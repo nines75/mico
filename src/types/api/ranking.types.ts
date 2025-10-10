@@ -5,7 +5,7 @@
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export const rankingDataSchema = z.looseObject({
+export const rankingApiSchema = z.looseObject({
     data: z.looseObject({
         response: z.looseObject({
             $getTeibanRanking: z.looseObject({
@@ -17,4 +17,4 @@ export const rankingDataSchema = z.looseObject({
     }),
 });
 
-export type RankingData = z.infer<typeof rankingDataSchema>;
+export type RankingApi = z.infer<typeof rankingApiSchema>;

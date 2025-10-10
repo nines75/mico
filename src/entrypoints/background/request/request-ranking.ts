@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { RankingData, rankingDataSchema } from "@/types/api/ranking.types.js";
+import { RankingApi, rankingApiSchema } from "@/types/api/ranking.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { cleanupStorage } from "@/utils/storage-write.js";
 
@@ -17,8 +17,8 @@ export function rankingRequest(
             details,
             buf,
             settings,
-            rankingDataSchema,
-            rankingDataFilter,
+            rankingApiSchema,
+            rankingApiFilter,
         );
         if (res === undefined) return true;
 
@@ -35,12 +35,12 @@ export function rankingRequest(
     });
 }
 
-function rankingDataFilter(
-    rankingData: RankingData,
+function rankingApiFilter(
+    rankingApi: RankingApi,
     settings: Settings,
     meta?: Element | null,
 ) {
-    const videos = rankingData.data.response.$getTeibanRanking.data.items;
+    const videos = rankingApi.data.response.$getTeibanRanking.data.items;
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
@@ -55,8 +55,8 @@ function rankingDataFilter(
           )
         : videos.filter((video) => !filteredData.filteredIds.has(video.id));
 
-    rankingData.data.response.$getTeibanRanking.data.items = filteredVideos;
-    meta?.setAttribute("content", JSON.stringify(rankingData));
+    rankingApi.data.response.$getTeibanRanking.data.items = filteredVideos;
+    meta?.setAttribute("content", JSON.stringify(rankingApi));
 
     return filteredData;
 }

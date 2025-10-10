@@ -1,34 +1,34 @@
 import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { filterResponse } from "./request.js";
-import {
-    PlaylistSearchData,
-    playlistSearchSchema,
-} from "@/types/api/playlist-search.types.js";
 import { safeParseJson } from "@/utils/util.js";
+import {
+    PlaylistFromSearchApi,
+    playlistFromSearchApiSchema,
+} from "@/types/api/playlist-from-search.types.js";
 
-export function playlistSearchRequest(
+export function playlistFromSearchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
-        const data: PlaylistSearchData | undefined = safeParseJson(
+        const playlistApi: PlaylistFromSearchApi | undefined = safeParseJson(
             buf,
-            playlistSearchSchema,
+            playlistFromSearchApiSchema,
         );
-        if (data === undefined) return true;
+        if (playlistApi === undefined) return true;
 
         // フィルタリング対象の動画IDを調べる
-        const videos = data.data.items.map((item) => item.content);
+        const videos = playlistApi.data.items.map((item) => item.content);
         const filteredData = filterVideo(videos, settings);
         if (filteredData === undefined) return true;
 
         // 実際にフィルタリング
-        data.data.items = data.data.items.filter(
+        playlistApi.data.items = playlistApi.data.items.filter(
             (item) => !filteredData.filteredIds.has(item.watchId),
         );
 
-        filter.write(encoder.encode(JSON.stringify(data)));
+        filter.write(encoder.encode(JSON.stringify(playlistApi)));
         filter.disconnect();
 
         return false;

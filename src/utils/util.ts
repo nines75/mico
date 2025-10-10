@@ -95,7 +95,7 @@ export async function tryWithPermission(
 
 export function safeParseJson<T>(
     text: string | null | undefined,
-    schema: z.ZodSchema<T>,
+    schema: z.ZodType<T>,
 ): T | undefined {
     try {
         if (text === null || text === undefined) return;

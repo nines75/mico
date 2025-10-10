@@ -1,6 +1,6 @@
 import {
-    recommendDataSchema,
-    RecommendData,
+    recommendApiSchema,
+    RecommendApi,
 } from "@/types/api/recommend.types.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
@@ -17,19 +17,19 @@ export function recommendRequest(
             getLogData(details.tabId),
         ]);
         const tabId = details.tabId;
-        const recommendData: RecommendData | undefined = safeParseJson(
+        const recommendApi: RecommendApi | undefined = safeParseJson(
             buf,
-            recommendDataSchema,
+            recommendApiSchema,
         );
-        if (recommendData === undefined) return true;
+        if (recommendApi === undefined) return true;
 
         // シリーズの次の動画を追加
         const series = log?.series;
         if (series?.data !== undefined && series.hasNext) {
             const videoId = series.data.id;
 
-            if (recommendData.data.items.every((item) => item.id !== videoId)) {
-                recommendData.data.items.push({
+            if (recommendApi.data.items.every((item) => item.id !== videoId)) {
+                recommendApi.data.items.push({
                     id: videoId,
                     content: series.data,
                     contentType: "video",
@@ -38,18 +38,18 @@ export function recommendRequest(
         }
 
         // フィルタリング対象の動画IDを調べる
-        const videos = recommendData.data.items
+        const videos = recommendApi.data.items
             .filter((item) => item.contentType === "video")
             .map((item) => item.content);
         const filteredData = filterVideo(videos, settings, true);
         if (filteredData === undefined) return true;
 
         // 実際にフィルタリング
-        recommendData.data.items = recommendData.data.items.filter(
+        recommendApi.data.items = recommendApi.data.items.filter(
             (item) => !filteredData.filteredIds.has(item.id),
         );
 
-        filter.write(encoder.encode(JSON.stringify(recommendData)));
+        filter.write(encoder.encode(JSON.stringify(recommendApi)));
         filter.disconnect();
 
         await saveLog(filteredData, tabId);

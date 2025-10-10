@@ -31,11 +31,11 @@ const threadSchema = z.looseObject({
 });
 export type Thread = z.infer<typeof threadSchema>;
 
-export const commentDataSchema = z.looseObject({
+export const commentApiSchema = z.looseObject({
     data: z
         .looseObject({
             threads: z.array(threadSchema),
         })
         .optional(),
 });
-export type CommentData = z.infer<typeof commentDataSchema>;
+export type CommentApi = z.infer<typeof commentApiSchema>;

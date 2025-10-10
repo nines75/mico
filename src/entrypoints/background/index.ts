@@ -11,10 +11,10 @@ import {
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { pattern } from "@/utils/config.js";
-import { playlistSearchRequest } from "./request/request-playlist-search.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { watchRequest } from "./request/request-watch.js";
+import { playlistFromSearchRequest } from "./request/request-playlist-from-search.js";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -73,9 +73,9 @@ export default defineBackground(() => {
         ["blocking"],
     );
 
-    // プレイリスト(検索)のリクエストを監視
+    // 検索から視聴ページに遷移した際に表示されるプレイリストのリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
-        playlistSearchRequest,
+        playlistFromSearchRequest,
         {
             urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
             types: ["xmlhttprequest"],

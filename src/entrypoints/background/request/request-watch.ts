@@ -5,7 +5,7 @@ import { LogData, SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { pattern } from "@/utils/config.js";
 import { setLog } from "@/utils/storage-write.js";
-import { WatchData, watchDataSchema } from "@/types/api/watch.types.js";
+import { WatchApi, watchApiSchema } from "@/types/api/watch.types.js";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -17,8 +17,8 @@ export function watchRequest(
             details,
             buf,
             settings,
-            watchDataSchema,
-            watchDataFilter,
+            watchApiSchema,
+            watchApiFilter,
         );
         if (res === undefined) return true;
 
@@ -34,13 +34,13 @@ export function watchRequest(
     });
 }
 
-function watchDataFilter(
-    watchData: WatchData,
+function watchApiFilter(
+    watchApi: WatchApi,
     settings: Settings,
     meta?: Element | null,
 ): LogData {
-    const response = watchData.data.response;
-    const metadata = watchData.data.metadata;
+    const response = watchApi.data.response;
+    const metadata = watchApi.data.metadata;
 
     const seriesData: SeriesData = (() => {
         const series = response.series?.video;
@@ -56,7 +56,7 @@ function watchDataFilter(
                     series.next.latestCommentSummary = "";
                 }
 
-                meta?.setAttribute("content", JSON.stringify(watchData));
+                meta?.setAttribute("content", JSON.stringify(watchApi));
             }
 
             return { hasNext: true, data: video };

@@ -5,7 +5,7 @@
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export const watchDataSchema = z.looseObject({
+export const watchApiSchema = z.looseObject({
     data: z.looseObject({
         metadata: z.looseObject({
             jsonLds: z.array(
@@ -62,4 +62,4 @@ export const watchDataSchema = z.looseObject({
     }),
 });
 
-export type WatchData = z.infer<typeof watchDataSchema>;
+export type WatchApi = z.infer<typeof watchApiSchema>;

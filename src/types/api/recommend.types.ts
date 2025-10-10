@@ -5,7 +5,7 @@
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export const recommendDataSchema = z.looseObject({
+export const recommendApiSchema = z.looseObject({
     data: z.looseObject({
         items: z.array(
             z.union([
@@ -23,4 +23,4 @@ export const recommendDataSchema = z.looseObject({
     }),
 });
 
-export type RecommendData = z.infer<typeof recommendDataSchema>;
+export type RecommendApi = z.infer<typeof recommendApiSchema>;

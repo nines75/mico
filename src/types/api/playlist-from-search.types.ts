@@ -5,7 +5,7 @@
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export const playlistSearchSchema = z.looseObject({
+export const playlistFromSearchApiSchema = z.looseObject({
     data: z.looseObject({
         items: z.array(
             z.looseObject({
@@ -16,4 +16,4 @@ export const playlistSearchSchema = z.looseObject({
     }),
 });
 
-export type PlaylistSearchData = z.infer<typeof playlistSearchSchema>;
+export type PlaylistFromSearchApi = z.infer<typeof playlistFromSearchApiSchema>;

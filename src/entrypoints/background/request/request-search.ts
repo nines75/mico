@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { SearchData, SearchDataSchema } from "@/types/api/search.types.js";
+import { SearchApi, SearchApiSchema } from "@/types/api/search.types.js";
 import { cleanupStorage, setLog } from "@/utils/storage-write.js";
 
 export function searchRequest(
@@ -19,8 +19,8 @@ export function searchRequest(
             details,
             buf,
             settings,
-            SearchDataSchema,
-            searchDataFilter,
+            SearchApiSchema,
+            searchApiFilter,
         );
         if (res === undefined) return true;
 
@@ -37,13 +37,13 @@ export function searchRequest(
     });
 }
 
-function searchDataFilter(
-    searchData: SearchData,
+function searchApiFilter(
+    searchApi: SearchApi,
     settings: Settings,
     meta?: Element | null,
 ) {
     // フィルタリング対象の動画IDを調べる
-    const videos = searchData.data.response.$getSearchVideoV2.data.items;
+    const videos = searchApi.data.response.$getSearchVideoV2.data.items;
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
@@ -52,8 +52,8 @@ function searchDataFilter(
         (video) => !filteredData.filteredIds.has(video.id),
     );
 
-    searchData.data.response.$getSearchVideoV2.data.items = filteredVideos;
-    meta?.setAttribute("content", JSON.stringify(searchData));
+    searchApi.data.response.$getSearchVideoV2.data.items = filteredVideos;
+    meta?.setAttribute("content", JSON.stringify(searchApi));
 
     return filteredData;
 }

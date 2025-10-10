@@ -7,18 +7,18 @@ import { filterResponse } from "./request.js";
 import { addNgUserId, setLog, cleanupStorage } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
 import { LogData } from "@/types/storage/log.types.js";
-import { CommentData, commentDataSchema } from "@/types/api/comment.types.js";
+import { CommentApi, commentApiSchema } from "@/types/api/comment.types.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
         const tabId = details.tabId;
-        const commentData: CommentData | undefined = safeParseJson(
+        const commentApi: CommentApi | undefined = safeParseJson(
             buf,
-            commentDataSchema,
+            commentApiSchema,
         );
-        if (commentData === undefined) return true;
+        if (commentApi === undefined) return true;
 
         const [settings, log] = await Promise.all([
             loadSettings(),
@@ -29,14 +29,14 @@ export default function commentRequest(
         await restorePlaybackTime(tabId, log);
 
         const filteredData = filterComment(
-            commentData.data?.threads,
+            commentApi.data?.threads,
             settings,
             log?.tags ?? [],
             videoId,
         );
         if (filteredData === undefined) return true;
 
-        filter.write(encoder.encode(JSON.stringify(commentData)));
+        filter.write(encoder.encode(JSON.stringify(commentApi)));
         filter.disconnect();
 
         // ログをソートするときに参照するので先に保存する
