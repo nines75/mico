@@ -2,10 +2,9 @@ import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
-import { filterResponse } from "./request.js";
+import { filterResponse, spaFilter } from "./request.js";
 import { SearchData, SearchDataSchema } from "@/types/api/search.types.js";
 import { cleanupStorage, setLog } from "@/utils/storage-write.js";
-import { safeParseJson } from "@/utils/util.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -16,10 +15,13 @@ export function searchRequest(
             setLog({ videoId: null }, details.tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
-        const res =
-            details.type === "main_frame"
-                ? mainFrameFilter(buf, settings)
-                : xhrFilter(buf, settings);
+        const res = spaFilter(
+            details,
+            buf,
+            settings,
+            SearchDataSchema,
+            searchDataFilter,
+        );
         if (res === undefined) return true;
 
         const { filteredBuf, filteredData } = res;
@@ -33,41 +35,6 @@ export function searchRequest(
 
         return false;
     });
-}
-
-function mainFrameFilter(buf: string, settings: Settings) {
-    const parser = new DOMParser();
-    const html = parser.parseFromString(buf, "text/html");
-
-    const meta = html.querySelector("meta[name='server-response']");
-    const content = meta?.getAttribute("content");
-    const searchData: SearchData | undefined = safeParseJson(
-        content,
-        SearchDataSchema,
-    );
-    if (searchData === undefined) return;
-
-    const filteredData = searchDataFilter(searchData, settings, meta);
-
-    return {
-        filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
-        filteredData,
-    };
-}
-
-function xhrFilter(buf: string, settings: Settings) {
-    const searchData: SearchData | undefined = safeParseJson(
-        buf,
-        SearchDataSchema,
-    );
-    if (searchData === undefined) return;
-
-    const filteredData = searchDataFilter(searchData, settings);
-
-    return {
-        filteredBuf: JSON.stringify(searchData),
-        filteredData,
-    };
 }
 
 function searchDataFilter(

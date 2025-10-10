@@ -2,11 +2,10 @@ import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { LogData, SeriesData } from "@/types/storage/log.types.js";
-import { filterResponse } from "./request.js";
+import { filterResponse, spaFilter } from "./request.js";
 import { pattern } from "@/utils/config.js";
 import { setLog } from "@/utils/storage-write.js";
 import { WatchData, watchDataSchema } from "@/types/api/watch.types.js";
-import { safeParseJson } from "@/utils/util.js";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -14,57 +13,25 @@ export function watchRequest(
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
 
-        const res =
-            details.type === "main_frame"
-                ? mainFrameFilter(buf, settings)
-                : xhrFilter(buf, settings);
+        const res = spaFilter(
+            details,
+            buf,
+            settings,
+            watchDataSchema,
+            watchDataFilter,
+        );
         if (res === undefined) return true;
 
-        const { filteredBuf, log } = res;
+        const { filteredBuf, filteredData } = res;
 
         // 以降のリクエストで使用するためフィルタを切断する前に保存する
-        await setLog(log, details.tabId);
+        await setLog(filteredData, details.tabId);
 
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
         return false;
     });
-}
-
-function mainFrameFilter(buf: string, settings: Settings) {
-    const parser = new DOMParser();
-    const html = parser.parseFromString(buf, "text/html");
-
-    const meta = html.querySelector("meta[name='server-response']");
-    const content = meta?.getAttribute("content");
-    const watchData: WatchData | undefined = safeParseJson(
-        content,
-        watchDataSchema,
-    );
-    if (watchData === undefined) return;
-
-    const log = watchDataFilter(watchData, settings, meta);
-
-    return {
-        filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
-        log,
-    };
-}
-
-function xhrFilter(buf: string, settings: Settings) {
-    const watchData: WatchData | undefined = safeParseJson(
-        buf,
-        watchDataSchema,
-    );
-    if (watchData === undefined) return;
-
-    const log = watchDataFilter(watchData, settings);
-
-    return {
-        filteredBuf: JSON.stringify(watchData),
-        log,
-    };
 }
 
 function watchDataFilter(

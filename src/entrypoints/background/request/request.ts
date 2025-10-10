@@ -1,3 +1,7 @@
+import { Settings } from "@/types/storage/settings.types.js";
+import { safeParseJson } from "@/utils/util.js";
+import { z } from "@/utils/zod.js";
+
 export function filterResponse(
     details: browser.webRequest._OnBeforeRequestDetails,
     method: "GET" | "POST",
@@ -25,4 +29,40 @@ export function filterResponse(
             filter.disconnect();
         }
     };
+}
+
+export function spaFilter<T, U>(
+    details: browser.webRequest._OnBeforeRequestDetails,
+    buf: string,
+    settings: Settings,
+    schema: z.ZodType<T>,
+    callback: (data: T, settings: Settings, meta?: Element | null) => U,
+) {
+    if (details.type === "main_frame") {
+        const parser = new DOMParser();
+        const html = parser.parseFromString(buf, "text/html");
+
+        const meta = html.querySelector("meta[name='server-response']");
+        const content = meta?.getAttribute("content");
+        const data = safeParseJson(content, schema);
+        if (data === undefined) return;
+
+        // callbackではdataを変更するのでfilteredBufで参照される前に呼び出す
+        const filteredData = callback(data, settings, meta);
+
+        return {
+            filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
+            filteredData,
+        };
+    } else {
+        const data = safeParseJson(buf, schema);
+        if (data === undefined) return;
+
+        const filteredData = callback(data, settings);
+
+        return {
+            filteredBuf: JSON.stringify(data),
+            filteredData,
+        };
+    }
 }
