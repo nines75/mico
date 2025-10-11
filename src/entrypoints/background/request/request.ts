@@ -54,7 +54,7 @@ export function spaFilter<T, U>(
             filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
             filteredData,
         };
-    } else {
+    } else if (details.type === "xmlhttprequest") {
         const data = safeParseJson(buf, schema);
         if (data === undefined) return;
 
