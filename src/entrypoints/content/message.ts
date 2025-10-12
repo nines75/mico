@@ -19,6 +19,10 @@ type ContentMessage =
     | {
           type: "remove-old-search";
           data: Set<string>;
+      }
+    | {
+          type: "mount-log-id";
+          data: string;
       };
 
 export async function sendMessageToContent(
@@ -53,6 +57,10 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                 }
                 case "remove-old-search": {
                     removeOldSearch(message.data);
+                    break;
+                }
+                case "mount-log-id": {
+                    mountLogId(message.data);
                     break;
                 }
             }
@@ -175,4 +183,20 @@ export function removeOldSearch(ids: Set<string>) {
             element.style.display = "none";
         }
     });
+}
+
+function mountLogId(logId: string) {
+    const id = `${browser.runtime.getManifest().name}-log-id`;
+    const current = document.getElementById(id);
+
+    if (current === null) {
+        const div = document.createElement("div");
+        div.style.display = "none";
+        div.id = id;
+        div.textContent = logId;
+
+        document.body.appendChild(div);
+    } else {
+        current.textContent = logId;
+    }
 }

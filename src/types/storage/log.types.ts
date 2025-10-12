@@ -12,6 +12,7 @@ export interface LogData {
     series?: SeriesData;
     playbackTime?: number;
 
+    logId?: string;
     videoId?: string | null;
     title?: string | null;
     userId?: string | number | null;

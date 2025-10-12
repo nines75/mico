@@ -1,7 +1,9 @@
 import { Browser } from "#imports";
+import { sendMessageToContent } from "@/entrypoints/content/message.js";
 import { CommonLog } from "../types/storage/log.types.js";
 import { messages, pattern } from "./config.js";
 import { z } from "./zod.js";
+import delay from "delay";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;
@@ -111,4 +113,35 @@ export function safeParseJson<T>(
     } catch {
         return;
     }
+}
+
+export function createLogId() {
+    return crypto.randomUUID();
+}
+
+export async function tryMountLogId(logId: string, tabId: number) {
+    const mount = async () => {
+        try {
+            await sendMessageToContent(tabId, {
+                type: "mount-log-id",
+                data: logId,
+            });
+        } catch {
+            await delay(1);
+            await mount();
+        }
+    };
+    await mount();
+}
+
+export async function getLogId(
+    tabId: number | undefined,
+): Promise<string | undefined> {
+    if (tabId === undefined) return;
+
+    const res = await browser.tabs.executeScript(tabId, {
+        file: "/get-log-id.js",
+    });
+
+    return res[0];
 }

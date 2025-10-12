@@ -10,8 +10,9 @@ import { setLog } from "@/utils/storage-write.js";
 
 export async function saveLog(
     filteredData: FilteredData,
+    logId: string,
     tabId: number,
-    isChangeBadge = false,
+    isChangeBadge = true,
 ) {
     const start = performance.now();
 
@@ -23,7 +24,7 @@ export async function saveLog(
         filtering,
     };
     await Promise.all([
-        setLog({ videoFilterLog }, tabId),
+        setLog({ videoFilterLog }, logId, tabId),
         ...[
             isChangeBadge
                 ? changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)
@@ -41,6 +42,7 @@ export async function saveLog(
                 },
             },
         },
+        logId,
         tabId,
     );
 }

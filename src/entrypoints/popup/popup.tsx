@@ -85,13 +85,13 @@ function Main() {
     );
 
     const isWatchPage = useStorageStore.getState().isWatchPage;
-    const isDeleted = videoId === undefined || videoId === null;
-    const hasVideo = isWatchPage && !isDeleted;
+    // const isDeleted = videoId === undefined || videoId === null;
+    // const hasVideo = isWatchPage && !isDeleted;
 
     const isRankingPage = useStorageStore.getState().isRankingPage;
     const isSearchPage = useStorageStore.getState().isSearchPage;
 
-    if (!hasVideo && !isRankingPage && !isSearchPage) {
+    if (!isWatchPage && !isRankingPage && !isSearchPage) {
         return <div id="message">{messages.popup.notWorking}</div>;
     }
 
@@ -121,7 +121,7 @@ function Main() {
                     </div>
                 </section>
             )}
-            {hasVideo && (
+            {isWatchPage && (
                 <div>
                     {popupConfig.tab.map((filter) => (
                         <button

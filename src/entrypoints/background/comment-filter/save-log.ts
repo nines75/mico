@@ -12,7 +12,11 @@ import { colors } from "@/utils/config.js";
 import { parseFilter } from "../filter.js";
 import { setLog } from "@/utils/storage-write.js";
 
-export async function saveLog(filteredData: FilteredData, tabId: number) {
+export async function saveLog(
+    filteredData: FilteredData,
+    logId: string,
+    tabId: number,
+) {
     const start = performance.now();
 
     // strictルールで追加されたNGユーザーIDを反映した設定を読み込んで反映
@@ -27,7 +31,7 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
         filtering,
     };
     await Promise.all([
-        setLog({ commentFilterLog }, tabId),
+        setLog({ commentFilterLog }, logId, tabId),
         changeBadgeState(
             settings.isAddEasyCommentCount
                 ? count.totalBlocked
@@ -47,6 +51,7 @@ export async function saveLog(filteredData: FilteredData, tabId: number) {
                 },
             },
         },
+        logId,
         tabId,
     );
 }

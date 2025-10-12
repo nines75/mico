@@ -12,11 +12,14 @@ export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
+        const tabId = details.tabId;
         const [settings, log] = await Promise.all([
             loadSettings(),
-            getLogData(details.tabId),
+            getLogData(tabId, tabId),
         ]);
-        const tabId = details.tabId;
+        const logId = log?.logId;
+        if (logId === undefined) return true;
+
         const recommendApi: RecommendApi | undefined = safeParseJson(
             buf,
             recommendApiSchema,
@@ -52,7 +55,7 @@ export function recommendRequest(
         filter.write(encoder.encode(JSON.stringify(recommendApi)));
         filter.disconnect();
 
-        await saveLog(filteredData, tabId);
+        await saveLog(filteredData, logId, tabId, false);
 
         return false;
     });

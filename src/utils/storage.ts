@@ -5,7 +5,7 @@ import { defaultSettings } from "./config.js";
 import { storage } from "#imports";
 import { parse } from "superjson";
 
-export type LogType = `log-${number}`;
+export type LogType = `log-${string}`;
 export type StorageType = LogType | "settings";
 
 export const storageArea = "local";
@@ -33,8 +33,12 @@ export async function getAllData() {
     return await storage.snapshot(storageArea);
 }
 
-export async function getLogData(tabId: number, log?: string) {
-    const key: StorageType = `log-${tabId}` as const;
+export async function getLogData(
+    logId: string | number,
+    tabId: number,
+    log?: string,
+) {
+    const key: StorageType = `log-${logId}` as const;
     const res = log ?? (await storage.getItem<string>(`${storageArea}:${key}`));
 
     return res === null ? undefined : parse<LogData>(res);

@@ -1,6 +1,12 @@
 import { messages } from "@/utils/config.js";
 import { getLogData, loadSettings } from "@/utils/storage.js";
-import { sendNotification, tryWithPermission } from "@/utils/util.js";
+import {
+    createLogId,
+    getLogId,
+    sendNotification,
+    tryMountLogId,
+    tryWithPermission,
+} from "@/utils/util.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -13,7 +19,6 @@ import {
     removeNgUserId,
     addNgId,
     removeNgId,
-    cleanupStorage,
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { PartialDeep } from "type-fest";
@@ -101,7 +106,7 @@ export async function backgroundMessageHandler(
             case "set-log": {
                 const tabId = sender.tab?.id;
                 if (tabId !== undefined) {
-                    await setLog(message.data, tabId);
+                    await setLog(message.data, tabId, tabId);
                 }
 
                 break;
@@ -144,9 +149,10 @@ async function getUserIdForMount(
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
 
-    const logData = await getLogData(tabId);
+    const logData = await getLogData(logId, tabId);
     const userId =
         logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
     if (userId === undefined) return;
@@ -165,9 +171,10 @@ async function addNgUserIdFromDropdown(
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLogData(tabId);
+    const log = await getLogData(logId, tabId);
     const videoId = log?.videoId ?? undefined;
     const userId = log?.commentFilterLog?.filtering.noToUserId.get(
         data.commentNo,
@@ -207,14 +214,17 @@ async function filterOldSearch(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
+    const logId = createLogId();
+
     await Promise.all([
-        saveLog(filteredData, tabId, true),
+        saveLog(filteredData, logId, tabId),
+        tryMountLogId(logId, tabId),
         sendMessageToContent(tabId, {
             type: "remove-old-search",
             data: filteredData.filteredIds,
         }),
     ]);
-    await cleanupStorage();
+    // await cleanupStorage();
 }
 
 async function disableIme() {

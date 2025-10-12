@@ -6,13 +6,19 @@ import { filterResponse, spaFilter } from "./request.js";
 import { pattern } from "@/utils/config.js";
 import { setLog } from "@/utils/storage-write.js";
 import { WatchApi, watchApiSchema } from "@/types/api/watch.types.js";
+import { createLogId, tryMountLogId } from "@/utils/util.js";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const settings = await loadSettings();
+        // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
+        const logId = createLogId();
+        if (details.type === "xmlhttprequest") {
+            await tryMountLogId(logId, details.tabId);
+        }
 
+        const settings = await loadSettings();
         const res = spaFilter(
             details,
             buf,
@@ -23,12 +29,21 @@ export function watchRequest(
         if (res === undefined) return true;
 
         const { filteredBuf, filteredData } = res;
+        const tabId = details.tabId;
 
-        // 以降のリクエストで使用するためフィルタを切断する前に保存する
-        await setLog(filteredData, details.tabId);
+        filteredData.logId = logId;
+
+        await Promise.all([
+            setLog(filteredData, tabId, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
+            setLog({ videoId: filteredData.videoId ?? null }, logId, tabId),
+        ]);
 
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
+
+        if (details.type === "main_frame") {
+            await tryMountLogId(logId, tabId);
+        }
 
         return false;
     });

@@ -25,6 +25,7 @@
         "@icons-pack/react-simple-icons": "^13.8.0",
         "@replit/codemirror-vim": "^6.3.0",
         "deepmerge-ts": "^7.1.5",
+        "delay": "^6.0.0",
         "lucide-react": "^0.544.0",
         "p-queue": "^9.0.0",
         "react": "^19.2.0",

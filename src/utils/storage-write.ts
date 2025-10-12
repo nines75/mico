@@ -15,8 +15,6 @@ import {
     customMerge,
     storageArea,
     loadSettings,
-    getAllData,
-    LogType,
 } from "./storage.js";
 import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
@@ -43,6 +41,7 @@ export async function removeData(type: StorageType[]) {
 async function setValue(
     value: object | (() => Promise<object>),
     type: StorageType,
+    logId?: string | number,
     tabId?: number,
     isStringify = false,
 ) {
@@ -52,8 +51,12 @@ async function setValue(
         }
 
         const data = await (() => {
-            if (tabId !== undefined && type === `log-${tabId}`) {
-                return getLogData(tabId);
+            if (
+                logId !== undefined &&
+                tabId !== undefined &&
+                type === `log-${logId}`
+            ) {
+                return getLogData(logId, tabId);
             }
             if (type === "settings") {
                 return getSettingsData();
@@ -70,9 +73,10 @@ async function setValue(
 
 export async function setLog(
     value: PartialDeep<LogData> | (() => Promise<PartialDeep<LogData>>),
+    logId: string | number,
     tabId: number,
 ) {
-    await setValue(value, `log-${tabId}`, tabId, true);
+    await setValue(value, `log-${logId}`, logId, tabId, true);
 }
 
 export async function setSettings(
@@ -175,24 +179,24 @@ export async function addNgIdFromUrl(url: string | undefined) {
     }
 }
 
-export async function cleanupStorage() {
-    const [tabs, data] = await Promise.all([
-        browser.tabs.query({}),
-        getAllData(),
-    ]);
-    const aliveTabKeys = new Set(
-        tabs
-            .map((tab) => tab.id)
-            .filter((id) => id !== undefined)
-            .map((id) => `log-${id}`),
-    );
+// export async function cleanupStorage() {
+//     const [tabs, data] = await Promise.all([
+//         browser.tabs.query({}),
+//         getAllData(),
+//     ]);
+//     const aliveTabKeys = new Set(
+//         tabs
+//             .map((tab) => tab.id)
+//             .filter((id) => id !== undefined)
+//             .map((id) => `log-${id}`),
+//     );
 
-    const keys: LogType[] = [];
-    for (const key of Object.keys(data)) {
-        if (key.startsWith("log-") && !aliveTabKeys.has(key)) {
-            keys.push(key as LogType);
-        }
-    }
+//     const keys: LogType[] = [];
+//     for (const key of Object.keys(data)) {
+//         if (key.startsWith("log-") && !aliveTabKeys.has(key)) {
+//             keys.push(key as LogType);
+//         }
+//     }
 
-    await removeData(keys);
-}
+//     await removeData(keys);
+// }
