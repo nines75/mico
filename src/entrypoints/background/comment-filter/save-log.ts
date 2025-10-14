@@ -55,7 +55,8 @@ export async function saveLog(
         tabId,
     );
 }
-function getCount(
+
+export function getCount(
     filteredData: FilteredData,
     settings: Settings,
 ): CommentCount {
@@ -97,7 +98,7 @@ function getCount(
     };
 }
 
-function getLog(filteredData: FilteredData): CommentFiltering {
+export function getLog(filteredData: FilteredData): CommentFiltering {
     const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
         filteredData.filters;
     const comments = new Map(

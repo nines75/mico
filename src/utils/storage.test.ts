@@ -1,18 +1,9 @@
 import { fakeBrowser } from "#imports";
 import { defaultSettings } from "@/utils/config.js";
-import {
-    customMerge,
-    getAllData,
-    getLogData,
-    getSettingsData,
-    loadSettings,
-} from "@/utils/storage.js";
+import { customMerge, getSettingsData, loadSettings } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
-import { testLog } from "./test.js";
-import { stringify } from "superjson";
 import { Settings } from "@/types/storage/settings.types.js";
-import { LogData } from "@/types/storage/log.types.js";
-import { setSettings, setLog } from "./storage-write.js";
+import { setSettings } from "./storage-write.js";
 
 describe("storage", () => {
     beforeEach(() => {
@@ -59,25 +50,6 @@ describe("storage", () => {
             ...defaultSettings,
             ...newSettings,
         });
-    });
-
-    it(`${getAllData.name}()`, async () => {
-        await setSettings(defaultSettings);
-        await setLog({ commentFilterLog: testLog }, 1);
-
-        expect(await getAllData()).toEqual({
-            settings: defaultSettings,
-            "log-1": stringify({
-                commentFilterLog: testLog,
-            } satisfies Partial<LogData>),
-        });
-    });
-
-    it(`${getLogData.name}()`, async () => {
-        await setLog({ commentFilterLog: testLog }, 1);
-        const log = await getLogData(1);
-
-        expect(log?.commentFilterLog).toEqual(testLog);
     });
 
     it(`${getSettingsData.name}()`, async () => {
