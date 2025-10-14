@@ -15,14 +15,18 @@ import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user
 import { parseFilter } from "@/entrypoints/background/filter.js";
 import { pattern, messages } from "./config.js";
 import { sendNotification } from "./util.js";
+import { clearDb } from "./db.js";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
 
 export async function removeAllData() {
-    await queue.add(async () => {
-        await storage.clear(storageArea);
-    });
+    await Promise.all([
+        queue.add(async () => {
+            await storage.clear(storageArea);
+        }),
+        clearDb(),
+    ]);
 }
 
 export async function setSettings(
