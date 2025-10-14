@@ -68,7 +68,7 @@ function Main() {
     const settings = useStorageStore.getState().settings;
     const [videoId, rawSelectedTab, save] = useStorageStore(
         useShallow((state) => [
-            state.log?.videoId,
+            state.log?.tab?.videoId,
             state.settings.selectedPopupTab,
             state.saveSettings,
         ]),
@@ -180,8 +180,8 @@ async function onClickNgVideoButton() {
     if (!confirm(messages.ngVideoId.confirmAddition)) return;
 
     const settings = useStorageStore.getState().settings;
-    const videoId = useStorageStore.getState().log?.videoId ?? undefined;
-    const title = useStorageStore.getState().log?.title ?? undefined;
+    const videoId = useStorageStore.getState().log?.tab?.videoId ?? undefined;
+    const title = useStorageStore.getState().log?.tab?.title ?? undefined;
 
     if (videoId === undefined || title === undefined) {
         alert(messages.ngVideoId.additionFailed);
@@ -198,8 +198,8 @@ async function onClickNgUserButton() {
     if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
 
     const settings = useStorageStore.getState().settings;
-    const userId = useStorageStore.getState().log?.userId ?? undefined;
-    const userName = useStorageStore.getState().log?.userName ?? undefined;
+    const userId = useStorageStore.getState().log?.tab?.userId ?? undefined;
+    const userName = useStorageStore.getState().log?.tab?.userName ?? undefined;
 
     // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
     if (userId === undefined || userName === undefined) {

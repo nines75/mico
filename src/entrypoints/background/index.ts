@@ -1,4 +1,3 @@
-import { getAllData, LogType } from "@/utils/storage.js";
 import { backgroundMessageHandler } from "./message.js";
 import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
@@ -11,10 +10,11 @@ import {
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { pattern } from "@/utils/config.js";
-import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
+import { addNgIdFromUrl } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { watchRequest } from "./request/request-watch.js";
 import { playlistFromSearchRequest } from "./request/request-playlist-from-search.js";
+import { clearDb } from "@/utils/db.js";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -129,18 +129,7 @@ export default defineBackground(() => {
     browser.runtime.onMessage.addListener(backgroundMessageHandler);
 
     // ブラウザの起動時に実行する処理
-    browser.runtime.onStartup.addListener(async () => {
-        const data = await getAllData();
-
-        const keys: LogType[] = [];
-        for (const key of Object.keys(data)) {
-            if (key.startsWith("log-")) {
-                keys.push(key as LogType);
-            }
-        }
-
-        await removeData(keys);
-    });
+    browser.runtime.onStartup.addListener(async () => await clearDb());
 
     browser.contextMenus.create({
         id: "add-ng",

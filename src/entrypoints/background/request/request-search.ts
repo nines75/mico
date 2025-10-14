@@ -4,8 +4,8 @@ import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { SearchApi, SearchApiSchema } from "@/types/api/search.types.js";
-import { setLog } from "@/utils/storage-write.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
+import { cleanupDb, setTabData } from "@/utils/db.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -20,7 +20,7 @@ export function searchRequest(
 
         const [settings] = await Promise.all([
             loadSettings(),
-            setLog({ videoId: null }, tabId, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
+            setTabData({ videoId: null }, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
         const res = spaFilter(
@@ -45,7 +45,7 @@ export function searchRequest(
                 ? [tryMountLogId(logId, tabId)]
                 : []),
         ]);
-        // await cleanupStorage();
+        await cleanupDb();
 
         return false;
     });

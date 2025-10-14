@@ -6,12 +6,12 @@ import { testLog } from "./test.js";
 import {
     removeAllData,
     setSettings,
-    setLog,
     removeData,
     addNgUserId,
     removeNgUserId,
 } from "./storage-write.js";
 import { getNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
+import { setLog } from "./db.js";
 
 describe("storage-write", () => {
     beforeEach(() => {

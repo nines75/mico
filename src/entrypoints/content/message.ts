@@ -77,7 +77,7 @@ function reload() {
             clearInterval(id);
 
             await sendMessageToBackground({
-                type: "set-log",
+                type: "set-tab-data",
                 data: {
                     playbackTime: Math.floor(video.currentTime),
                 },

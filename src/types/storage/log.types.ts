@@ -1,6 +1,6 @@
-import { NiconicoVideo } from "../api/niconico-video.types.js";
 import { CommentFilterLog } from "./log-comment.types.js";
 import { VideoFilterLog } from "./log-video.types.js";
+import { TabData } from "./tab.types.js";
 
 export type CommonLog = Map<string, string[]>;
 
@@ -9,23 +9,10 @@ export interface LogData {
     commentFilterLog?: CommentFilterLog;
     videoFilterLog?: VideoFilterLog;
 
-    series?: SeriesData;
-    playbackTime?: number;
-
-    logId?: string;
-    videoId?: string | null;
-    title?: string | null;
-    userId?: string | number | null;
-    userName?: string | null;
-    tags?: string[];
+    tab?: TabData;
 }
 
 export interface ProcessingTimeData {
     filtering?: number;
     saveLog?: number;
-}
-
-export interface SeriesData {
-    hasNext: boolean;
-    data?: NiconicoVideo;
 }

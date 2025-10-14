@@ -35,6 +35,9 @@ importers:
       delay:
         specifier: ^6.0.0
         version: 6.0.0
+      dexie:
+        specifier: ^4.2.1
+        version: 4.2.1
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.2.0)
@@ -1511,6 +1514,9 @@ packages:
   detect-libc@2.1.1:
     resolution: {integrity: sha512-ecqj/sy1jcK1uWrwpR67UhYrIFQ+5WlGxth34WquCbamhFA6hkkwiu37o6J5xCHdo1oixJRfVRw+ywV+Hq/0Aw==}
     engines: {node: '>=8'}
+
+  dexie@4.2.1:
+    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -4860,6 +4866,8 @@ snapshots:
   destr@2.0.5: {}
 
   detect-libc@2.1.1: {}
+
+  dexie@4.2.1: {}
 
   doctrine@2.1.0:
     dependencies:

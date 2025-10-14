@@ -2,22 +2,23 @@ import {
     recommendApiSchema,
     RecommendApi,
 } from "@/types/api/recommend.types.js";
-import { getLogData, loadSettings } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
 import { safeParseJson } from "@/utils/util.js";
+import { getTabData } from "@/utils/db.js";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const tabId = details.tabId;
-        const [settings, log] = await Promise.all([
+        const [settings, tab] = await Promise.all([
             loadSettings(),
-            getLogData(tabId, tabId),
+            getTabData(tabId),
         ]);
-        const logId = log?.logId;
+        const logId = tab?.logId;
         if (logId === undefined) return true;
 
         const recommendApi: RecommendApi | undefined = safeParseJson(
@@ -27,7 +28,7 @@ export function recommendRequest(
         if (recommendApi === undefined) return true;
 
         // シリーズの次の動画を追加
-        const series = log?.series;
+        const series = tab?.series;
         if (series?.data !== undefined && series.hasNext) {
             const videoId = series.data.id;
 

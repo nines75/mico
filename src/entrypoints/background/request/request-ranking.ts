@@ -6,6 +6,7 @@ import { filterResponse, spaFilter } from "./request.js";
 import { RankingApi, rankingApiSchema } from "@/types/api/ranking.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
+import { cleanupDb } from "@/utils/db.js";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -39,7 +40,7 @@ export function rankingRequest(
                 ? [tryMountLogId(logId, tabId)]
                 : []),
         ]);
-        // await cleanupStorage();
+        await cleanupDb();
 
         return false;
     });

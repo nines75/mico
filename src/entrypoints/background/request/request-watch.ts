@@ -1,12 +1,12 @@
 import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { LogData, SeriesData } from "@/types/storage/log.types.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { pattern } from "@/utils/config.js";
-import { setLog } from "@/utils/storage-write.js";
 import { WatchApi, watchApiSchema } from "@/types/api/watch.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
+import { setLog, setTabData } from "@/utils/db.js";
+import { SeriesData, TabData } from "@/types/storage/tab.types.js";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -28,14 +28,14 @@ export function watchRequest(
         );
         if (res === undefined) return true;
 
-        const { filteredBuf, filteredData } = res;
+        const { filteredBuf, filteredData: tabData } = res;
         const tabId = details.tabId;
 
-        filteredData.logId = logId;
+        tabData.logId = logId;
 
         await Promise.all([
-            setLog(filteredData, tabId, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
-            setLog({ videoId: filteredData.videoId ?? null }, logId, tabId),
+            setTabData(tabData, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
+            setLog({ tab: tabData }, logId, tabId),
         ]);
 
         filter.write(encoder.encode(filteredBuf));
@@ -53,7 +53,7 @@ function watchApiFilter(
     watchApi: WatchApi,
     settings: Settings,
     meta?: Element | null,
-): LogData {
+): TabData {
     const response = watchApi.data.response;
     const metadata = watchApi.data.metadata;
 

@@ -6,7 +6,7 @@ import {
 import { FilteredData } from "./filter-video.js";
 import { changeBadgeState } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
-import { setLog } from "@/utils/storage-write.js";
+import { setLog } from "@/utils/db.js";
 
 export async function saveLog(
     filteredData: FilteredData,

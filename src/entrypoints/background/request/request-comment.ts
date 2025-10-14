@@ -1,28 +1,29 @@
 import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
 import { messages } from "@/utils/config.js";
-import { loadSettings, getLogData } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { safeParseJson, sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
-import { addNgUserId, setLog } from "@/utils/storage-write.js";
+import { addNgUserId } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
-import { LogData } from "@/types/storage/log.types.js";
 import { CommentApi, commentApiSchema } from "@/types/api/comment.types.js";
+import { cleanupDb, getTabData, setTabData } from "@/utils/db.js";
+import { TabData } from "@/types/storage/tab.types.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
         const tabId = details.tabId;
-        const [settings, log] = await Promise.all([
+        const [settings, tab] = await Promise.all([
             loadSettings(),
-            getLogData(tabId, tabId),
+            getTabData(tabId),
         ]);
 
         // キャンセルするかに関わらず必ず実行する処理
-        await restorePlaybackTime(tabId, log);
+        await restorePlaybackTime(tabId, tab);
 
-        const logId = log?.logId;
+        const logId = tab?.logId;
         if (logId === undefined) return true;
 
         const commentApi: CommentApi | undefined = safeParseJson(
@@ -34,8 +35,8 @@ export default function commentRequest(
         const filteredData = filterComment(
             commentApi.data?.threads,
             settings,
-            log?.tags ?? [],
-            log?.videoId ?? undefined,
+            tab?.tags ?? [],
+            tab?.videoId ?? undefined,
         );
         if (filteredData === undefined) return true;
 
@@ -66,18 +67,21 @@ export default function commentRequest(
         }
 
         await Promise.all(tasks);
-        // await cleanupStorage();
+        await cleanupDb();
 
         return false;
     });
 }
 
-async function restorePlaybackTime(tabId: number, log: LogData | undefined) {
-    const playbackTime = log?.playbackTime ?? 0;
+async function restorePlaybackTime(
+    tabId: number,
+    tabData: TabData | undefined,
+) {
+    const playbackTime = tabData?.playbackTime ?? 0;
     if (playbackTime <= 0) return;
 
     const tasks: Promise<void>[] = [];
-    tasks.push(setLog({ playbackTime: 0 }, tabId, tabId));
+    tasks.push(setTabData({ playbackTime: 0 }, tabId));
     tasks.push(
         sendMessageToContent(tabId, {
             type: "set-playback-time",

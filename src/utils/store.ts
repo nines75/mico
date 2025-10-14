@@ -2,10 +2,11 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Settings } from "../types/storage/settings.types.js";
 import { defaultSettings } from "./config.js";
-import { loadSettings, StorageType, getLogData } from "./storage.js";
+import { loadSettings } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
 import { getLogId, isRankingPage, isSearchPage, isWatchPage } from "./util.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { getLogData } from "./db.js";
 
 interface StorageState {
     settings: Settings;
@@ -46,9 +47,7 @@ export const useStorageStore = create<StorageState>()(
             const tabId = tab?.id;
             const logId = await getLogId(tabId);
             const log =
-                tabId === undefined || logId === undefined
-                    ? undefined
-                    : await getLogData(logId, tabId);
+                logId === undefined ? undefined : await getLogData(logId);
 
             set({
                 settings,
@@ -75,17 +74,8 @@ export function storageChangeHandler(
 ) {
     if (area !== "local") return;
 
-    // const tabId = useStorageStore.getState().tabId;
-
     Object.entries(changes).forEach(async ([key, value]) => {
-        const type = key as StorageType;
-
-        // if (tabId !== undefined && type === `log-${tabId}`) {
-        //     useStorageStore.setState({
-        //         log: await getLogData(tabId, value.newValue),
-        //     });
-        // }
-        if (type === "settings") {
+        if (key === "settings") {
             useStorageStore.setState({
                 settings: await loadSettings(value.newValue),
             });

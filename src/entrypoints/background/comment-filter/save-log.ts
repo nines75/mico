@@ -10,7 +10,7 @@ import {
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
 import { parseFilter } from "../filter.js";
-import { setLog } from "@/utils/storage-write.js";
+import { setLog } from "@/utils/db.js";
 
 export async function saveLog(
     filteredData: FilteredData,

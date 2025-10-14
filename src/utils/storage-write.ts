@@ -3,14 +3,9 @@
  */
 
 import { storage } from "#imports";
-import { LogData } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import PQueue from "p-queue";
-import { stringify } from "superjson";
-import { PartialDeep } from "type-fest";
 import {
-    StorageType,
-    getLogData,
     getSettingsData,
     customMerge,
     storageArea,
@@ -30,59 +25,19 @@ export async function removeAllData() {
     });
 }
 
-export async function removeData(type: StorageType[]) {
-    await queue.add(async () => {
-        const keys = type.map((key) => `${storageArea}:${key}` as const);
-
-        await storage.removeItems(keys);
-    });
-}
-
-async function setValue(
-    value: object | (() => Promise<object>),
-    type: StorageType,
-    logId?: string | number,
-    tabId?: number,
-    isStringify = false,
+export async function setSettings(
+    value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
     await queue.add(async () => {
         if (typeof value === "function") {
             value = await value();
         }
 
-        const data = await (() => {
-            if (
-                logId !== undefined &&
-                tabId !== undefined &&
-                type === `log-${logId}`
-            ) {
-                return getLogData(logId, tabId);
-            }
-            if (type === "settings") {
-                return getSettingsData();
-            }
-        })();
-        const mergedValue = customMerge(data, value);
+        const settings = await getSettingsData();
+        const newSettings = customMerge(settings, value);
 
-        await storage.setItem(
-            `${storageArea}:${type}`,
-            isStringify ? stringify(mergedValue) : mergedValue,
-        );
+        await storage.setItem(`${storageArea}:settings`, newSettings);
     });
-}
-
-export async function setLog(
-    value: PartialDeep<LogData> | (() => Promise<PartialDeep<LogData>>),
-    logId: string | number,
-    tabId: number,
-) {
-    await setValue(value, `log-${logId}`, logId, tabId, true);
-}
-
-export async function setSettings(
-    value: Partial<Settings> | (() => Promise<Partial<Settings>>),
-) {
-    await setValue(value, "settings");
 }
 
 export async function addNgUserId(userIds: Set<string>) {
@@ -178,25 +133,3 @@ export async function addNgIdFromUrl(url: string | undefined) {
         );
     }
 }
-
-// export async function cleanupStorage() {
-//     const [tabs, data] = await Promise.all([
-//         browser.tabs.query({}),
-//         getAllData(),
-//     ]);
-//     const aliveTabKeys = new Set(
-//         tabs
-//             .map((tab) => tab.id)
-//             .filter((id) => id !== undefined)
-//             .map((id) => `log-${id}`),
-//     );
-
-//     const keys: LogType[] = [];
-//     for (const key of Object.keys(data)) {
-//         if (key.startsWith("log-") && !aliveTabKeys.has(key)) {
-//             keys.push(key as LogType);
-//         }
-//     }
-
-//     await removeData(keys);
-// }

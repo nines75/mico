@@ -1,5 +1,5 @@
 import { messages } from "@/utils/config.js";
-import { getLogData, loadSettings } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import {
     createLogId,
     getLogId,
@@ -12,7 +12,6 @@ import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
-    setLog,
     setSettings,
     removeAllData,
     addNgUserId,
@@ -21,8 +20,8 @@ import {
     removeNgId,
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
-import { PartialDeep } from "type-fest";
-import { LogData } from "@/types/storage/log.types.js";
+import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
+import { TabData } from "@/types/storage/tab.types.js";
 
 type BackgroundMessage =
     | {
@@ -45,8 +44,8 @@ type BackgroundMessage =
           data: Partial<Settings>;
       }
     | {
-          type: "set-log";
-          data: PartialDeep<LogData>;
+          type: "set-tab-data";
+          data: Partial<TabData>;
       }
     | {
           type: "remove-all-data";
@@ -103,10 +102,10 @@ export async function backgroundMessageHandler(
                 await setSettings(message.data);
                 break;
             }
-            case "set-log": {
+            case "set-tab-data": {
                 const tabId = sender.tab?.id;
                 if (tabId !== undefined) {
-                    await setLog(message.data, tabId, tabId);
+                    await setTabData(message.data, tabId);
                 }
 
                 break;
@@ -152,7 +151,7 @@ async function getUserIdForMount(
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
 
-    const logData = await getLogData(logId, tabId);
+    const logData = await getLogData(logId);
     const userId =
         logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
     if (userId === undefined) return;
@@ -174,8 +173,8 @@ async function addNgUserIdFromDropdown(
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLogData(logId, tabId);
-    const videoId = log?.videoId ?? undefined;
+    const log = await getLogData(logId);
+    const videoId = log?.tab?.videoId ?? undefined;
     const userId = log?.commentFilterLog?.filtering.noToUserId.get(
         data.commentNo,
     );
@@ -224,7 +223,7 @@ async function filterOldSearch(
             data: filteredData.filteredIds,
         }),
     ]);
-    // await cleanupStorage();
+    await cleanupDb();
 }
 
 async function disableIme() {
