@@ -65,7 +65,6 @@ function Page() {
 }
 
 function Main() {
-    const settings = useStorageStore.getState().settings;
     const [videoId, rawSelectedTab, save] = useStorageStore(
         useShallow((state) => [
             state.log?.tab?.videoId,
@@ -74,20 +73,7 @@ function Main() {
         ]),
     );
 
-    const getDisabledMessage = (text: string) => (
-        <section>
-            <span id="disabled-message">
-                {text}
-                <br />
-                {messages.popup.outdatedLog}
-            </span>
-        </section>
-    );
-
     const isWatchPage = useStorageStore.getState().isWatchPage;
-    // const isDeleted = videoId === undefined || videoId === null;
-    // const hasVideo = isWatchPage && !isDeleted;
-
     const isRankingPage = useStorageStore.getState().isRankingPage;
     const isSearchPage = useStorageStore.getState().isSearchPage;
 
@@ -136,22 +122,6 @@ function Main() {
                     ))}
                 </div>
             )}
-            {(() => {
-                switch (selectedTab) {
-                    case "commentFilter":
-                        if (settings.isCommentFilterEnabled) return null;
-
-                        return getDisabledMessage(
-                            messages.popup.commentFilterDisabled,
-                        );
-                    case "videoFilter":
-                        if (settings.isVideoFilterEnabled) return null;
-
-                        return getDisabledMessage(
-                            messages.popup.videoFilterDisabled,
-                        );
-                }
-            })()}
             <Details id={"isOpenProcessingTime"} summary="処理時間">
                 <ProcessingTime {...{ selectedTab }} />
             </Details>

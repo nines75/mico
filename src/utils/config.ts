@@ -187,10 +187,6 @@ export const messages = {
     popup: {
         notWorking: "このページでは動作しません",
         outdatedLog: "表示されているログは古いものである可能性があります",
-
-        // toggle
-        commentFilterDisabled: "コメントフィルターが無効になっています",
-        videoFilterDisabled: "動画フィルターが無効になっています",
     },
     other: {
         permissionRequired: "以下の権限が必要です\n\n{target}",
