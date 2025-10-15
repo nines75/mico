@@ -24,6 +24,10 @@ export async function loadSettings(settings?: Partial<Settings>) {
     return customMerge(defaultSettings, data) as Settings;
 }
 
+export async function getAllData() {
+    return await storage.snapshot(storageArea);
+}
+
 const settingsStorage = storage.defineItem<Partial<Settings> | null>(
     `${storageArea}:settings`,
 );
