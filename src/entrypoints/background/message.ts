@@ -1,6 +1,7 @@
-import { messages } from "@/utils/config.js";
+import { colors, messages } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import {
+    changeBadgeState,
     createLogId,
     getLogId,
     sendNotification,
@@ -71,6 +72,9 @@ type BackgroundMessage =
       }
     | {
           type: "disable-ime";
+      }
+    | {
+          type: "restore-badge";
       };
 
 export async function sendMessageToBackground(message: BackgroundMessage) {
@@ -135,6 +139,10 @@ export async function backgroundMessageHandler(
             }
             case "disable-ime": {
                 await disableIme();
+                break;
+            }
+            case "restore-badge": {
+                await restoreBadge(sender);
                 break;
             }
         }
@@ -231,4 +239,16 @@ async function disableIme() {
         const port = browser.runtime.connectNative("mico.ime");
         port.disconnect();
     });
+}
+
+async function restoreBadge(sender: browser.runtime.MessageSender) {
+    const tabId = sender.tab?.id;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
+
+    const log = await getLogData(logId);
+    const count = log?.videoFilterLog?.count.totalBlocked;
+    if (count === undefined) return;
+
+    await changeBadgeState(count, colors.videoBadge, tabId);
 }
