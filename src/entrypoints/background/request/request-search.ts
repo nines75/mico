@@ -40,7 +40,6 @@ export function searchRequest(
 
         await Promise.all([
             saveLog(filteredData, logId, tabId),
-            // main_frame用に再mount
             ...(details.type === "main_frame"
                 ? [tryMountLogId(logId, tabId)]
                 : []),

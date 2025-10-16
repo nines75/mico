@@ -12,10 +12,12 @@ export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
+        const tabId = details.tabId;
+
         // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
         const logId = createLogId();
         if (details.type === "xmlhttprequest") {
-            await tryMountLogId(logId, details.tabId);
+            await tryMountLogId(logId, tabId);
         }
 
         const settings = await loadSettings();
@@ -29,7 +31,6 @@ export function watchRequest(
         if (res === undefined) return true;
 
         const { filteredBuf, filteredData: tabData } = res;
-        const tabId = details.tabId;
 
         tabData.logId = logId;
 
