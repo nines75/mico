@@ -1,6 +1,6 @@
 import { Browser } from "#imports";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
-import { CommonLog } from "../types/storage/log.types.js";
+import { CommonLog, LogId } from "../types/storage/log.types.js";
 import { messages, pattern } from "./config.js";
 import { z } from "./zod.js";
 import delay from "delay";
@@ -119,7 +119,7 @@ export function createLogId() {
     return crypto.randomUUID();
 }
 
-export async function tryMountLogId(logId: string, tabId: number) {
+export async function tryMountLogId(logId: LogId, tabId: number) {
     const mount = async () => {
         try {
             await sendMessageToContent(tabId, {

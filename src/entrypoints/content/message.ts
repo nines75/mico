@@ -1,4 +1,5 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
+import { LogId } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "../background/message.js";
 
 type ContentMessage =
@@ -22,7 +23,7 @@ type ContentMessage =
       }
     | {
           type: "mount-log-id";
-          data: string;
+          data: LogId;
       };
 
 export async function sendMessageToContent(
@@ -185,7 +186,7 @@ export function removeOldSearch(ids: Set<string>) {
     });
 }
 
-function mountLogId(logId: string) {
+function mountLogId(logId: LogId) {
     const id = `${browser.runtime.getManifest().name}-log-id`;
     const current = document.getElementById(id);
 
