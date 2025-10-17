@@ -34,14 +34,17 @@ export async function sendMessageToContent(
 }
 
 export function createContentMessageHandler(ctx: ContentScriptContext) {
-    return (message: ContentMessage, sender: browser.runtime.MessageSender) => {
+    return async (
+        message: ContentMessage,
+        sender: browser.runtime.MessageSender,
+    ) => {
         // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
         try {
             if (sender.id !== browser.runtime.id) return;
 
             switch (message.type) {
                 case "reload": {
-                    reload();
+                    await reload();
                     break;
                 }
                 case "set-playback-time": {
@@ -71,22 +74,18 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
     };
 }
 
-function reload() {
-    const id = setInterval(async () => {
-        const video = document.querySelector("video");
-        if (video !== null) {
-            clearInterval(id);
+async function reload() {
+    const video = document.querySelector("video");
+    if (video === null) return;
 
-            await sendMessageToBackground({
-                type: "set-tab-data",
-                data: {
-                    playbackTime: Math.floor(video.currentTime),
-                },
-            });
+    await sendMessageToBackground({
+        type: "set-tab-data",
+        data: {
+            playbackTime: Math.floor(video.currentTime),
+        },
+    });
 
-            location.reload();
-        }
-    }, 10);
+    location.reload();
 }
 
 function setPlaybackTime(time: number) {
