@@ -1,4 +1,5 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
+import { LogId } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "../background/message.js";
 
 type ContentMessage =
@@ -19,6 +20,10 @@ type ContentMessage =
     | {
           type: "remove-old-search";
           data: Set<string>;
+      }
+    | {
+          type: "mount-log-id";
+          data: LogId;
       };
 
 export async function sendMessageToContent(
@@ -55,6 +60,10 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     removeOldSearch(message.data);
                     break;
                 }
+                case "mount-log-id": {
+                    mountLogId(message.data);
+                    break;
+                }
             }
         } catch (e) {
             console.error(e);
@@ -69,7 +78,7 @@ function reload() {
             clearInterval(id);
 
             await sendMessageToBackground({
-                type: "set-log",
+                type: "set-tab-data",
                 data: {
                     playbackTime: Math.floor(video.currentTime),
                 },
@@ -175,4 +184,20 @@ export function removeOldSearch(ids: Set<string>) {
             element.style.display = "none";
         }
     });
+}
+
+function mountLogId(logId: LogId) {
+    const id = `${browser.runtime.getManifest().name}-log-id`;
+    const current = document.getElementById(id);
+
+    if (current === null) {
+        const div = document.createElement("div");
+        div.style.display = "none";
+        div.id = id;
+        div.textContent = logId;
+
+        document.body.appendChild(div);
+    } else {
+        current.textContent = logId;
+    }
 }

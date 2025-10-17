@@ -25,11 +25,12 @@
         "@icons-pack/react-simple-icons": "^13.8.0",
         "@replit/codemirror-vim": "^6.3.0",
         "deepmerge-ts": "^7.1.5",
+        "delay": "^6.0.0",
+        "dexie": "^4.2.1",
         "lucide-react": "^0.544.0",
         "p-queue": "^9.0.0",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "superjson": "^2.2.2",
         "type-fest": "^5.0.1",
         "zod": "^4.1.12",
         "zustand": "^5.0.8"

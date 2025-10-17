@@ -4,15 +4,23 @@ import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { SearchApi, SearchApiSchema } from "@/types/api/search.types.js";
-import { cleanupStorage, setLog } from "@/utils/storage-write.js";
+import { createLogId, tryMountLogId } from "@/utils/util.js";
+import { cleanupDb, setTabData } from "@/utils/db.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
+        const tabId = details.tabId;
+        const logId = createLogId();
+        if (details.type === "xmlhttprequest") {
+            // XHRでないとmountできない
+            await tryMountLogId(logId, tabId);
+        }
+
         const [settings] = await Promise.all([
             loadSettings(),
-            setLog({ videoId: null }, details.tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
+            setTabData({ videoId: null }, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
         const res = spaFilter(
@@ -30,8 +38,13 @@ export function searchRequest(
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
-        await saveLog(filteredData, details.tabId, true);
-        await cleanupStorage();
+        await Promise.all([
+            saveLog(filteredData, logId, tabId),
+            ...(details.type === "main_frame"
+                ? [tryMountLogId(logId, tabId)]
+                : []),
+        ]);
+        await cleanupDb();
 
         return false;
     });

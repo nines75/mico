@@ -127,6 +127,13 @@ export default defineConfig(
                             ],
                             from: "./src/utils/storage-write.ts",
                         },
+                        {
+                            target: [
+                                "./src/utils/util.ts",
+                                "./src/entrypoints/content",
+                            ],
+                            from: "./src/utils/db.ts",
+                        },
                     ],
                 },
             ],

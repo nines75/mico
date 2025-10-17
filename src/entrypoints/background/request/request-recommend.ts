@@ -2,21 +2,25 @@ import {
     recommendApiSchema,
     RecommendApi,
 } from "@/types/api/recommend.types.js";
-import { getLogData, loadSettings } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
 import { safeParseJson } from "@/utils/util.js";
+import { getTabData } from "@/utils/db.js";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const [settings, log] = await Promise.all([
-            loadSettings(),
-            getLogData(details.tabId),
-        ]);
         const tabId = details.tabId;
+        const [settings, tab] = await Promise.all([
+            loadSettings(),
+            getTabData(tabId),
+        ]);
+        const logId = tab?.logId;
+        if (logId === undefined) return true;
+
         const recommendApi: RecommendApi | undefined = safeParseJson(
             buf,
             recommendApiSchema,
@@ -24,7 +28,7 @@ export function recommendRequest(
         if (recommendApi === undefined) return true;
 
         // シリーズの次の動画を追加
-        const series = log?.series;
+        const series = tab?.series;
         if (series?.data !== undefined && series.hasNext) {
             const videoId = series.data.id;
 
@@ -52,7 +56,7 @@ export function recommendRequest(
         filter.write(encoder.encode(JSON.stringify(recommendApi)));
         filter.disconnect();
 
-        await saveLog(filteredData, tabId);
+        await saveLog(filteredData, logId, tabId, false);
 
         return false;
     });

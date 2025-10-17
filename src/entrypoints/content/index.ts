@@ -5,9 +5,10 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
-import { isSearchPage, isWatchPage } from "@/utils/util.js";
+import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
 import "@/assets/ranking.css";
+import { sendMessageToBackground } from "../background/message.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
@@ -27,6 +28,18 @@ export default defineContentScript({
         });
 
         browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
+
+        // ブラウザの進む/戻るで消えたバッジを復元
+        if (isRankingPage(location.href) || isSearchPage(location.href)) {
+            window.addEventListener("pageshow", async (e) => {
+                // キャッシュによる発火か判定
+                if (!e.persisted) return;
+
+                await sendMessageToBackground({
+                    type: "restore-badge",
+                });
+            });
+        }
 
         if (isSearchPage(location.href)) {
             const id = document.body.querySelector(":scope > div")?.id;

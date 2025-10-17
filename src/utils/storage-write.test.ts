@@ -1,41 +1,9 @@
 import { fakeBrowser } from "#imports";
 import { defaultSettings } from "@/utils/config.js";
-import { getAllData, loadSettings } from "@/utils/storage.js";
+import { loadSettings } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
-import { testLog } from "./test.js";
-import {
-    removeAllData,
-    setSettings,
-    setLog,
-    removeData,
-    addNgUserId,
-    removeNgUserId,
-} from "./storage-write.js";
+import { setSettings, addNgUserId, removeNgUserId } from "./storage-write.js";
 import { getNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-
-describe("storage-write", () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
-    it(`${removeAllData.name}()`, async () => {
-        await setSettings(defaultSettings);
-        await setLog({ commentFilterLog: testLog }, 1);
-
-        await removeAllData();
-
-        expect(await getAllData()).toEqual({});
-    });
-
-    it(`${removeData.name}()`, async () => {
-        await setSettings(defaultSettings);
-        await setLog({ commentFilterLog: testLog }, 1);
-
-        await removeData(["log-1"]);
-
-        expect(await getAllData()).toEqual({ settings: defaultSettings });
-    });
-});
 
 const userIds = ["user-id-owner", "user-id-main-1"];
 const videoUserIds = userIds.map((id) => `sm1@${id}`);

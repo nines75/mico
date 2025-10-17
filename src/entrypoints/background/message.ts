@@ -1,23 +1,28 @@
-import { messages } from "@/utils/config.js";
-import { getLogData, loadSettings } from "@/utils/storage.js";
-import { sendNotification, tryWithPermission } from "@/utils/util.js";
+import { colors, messages } from "@/utils/config.js";
+import { loadSettings } from "@/utils/storage.js";
+import {
+    changeBadgeState,
+    createLogId,
+    getLogId,
+    sendNotification,
+    tryMountLogId,
+    tryWithPermission,
+} from "@/utils/util.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
-    setLog,
     setSettings,
     removeAllData,
     addNgUserId,
     removeNgUserId,
     addNgId,
     removeNgId,
-    cleanupStorage,
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
-import { PartialDeep } from "type-fest";
-import { LogData } from "@/types/storage/log.types.js";
+import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
+import { TabData } from "@/types/storage/tab.types.js";
 
 type BackgroundMessage =
     | {
@@ -40,8 +45,8 @@ type BackgroundMessage =
           data: Partial<Settings>;
       }
     | {
-          type: "set-log";
-          data: PartialDeep<LogData>;
+          type: "set-tab-data";
+          data: Partial<TabData>;
       }
     | {
           type: "remove-all-data";
@@ -67,6 +72,9 @@ type BackgroundMessage =
       }
     | {
           type: "disable-ime";
+      }
+    | {
+          type: "restore-badge";
       };
 
 export async function sendMessageToBackground(message: BackgroundMessage) {
@@ -98,10 +106,10 @@ export async function backgroundMessageHandler(
                 await setSettings(message.data);
                 break;
             }
-            case "set-log": {
+            case "set-tab-data": {
                 const tabId = sender.tab?.id;
                 if (tabId !== undefined) {
-                    await setLog(message.data, tabId);
+                    await setTabData(message.data, tabId);
                 }
 
                 break;
@@ -133,6 +141,10 @@ export async function backgroundMessageHandler(
                 await disableIme();
                 break;
             }
+            case "restore-badge": {
+                await restoreBadge(sender);
+                break;
+            }
         }
     } catch (e) {
         console.error(e);
@@ -144,9 +156,10 @@ async function getUserIdForMount(
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
 
-    const logData = await getLogData(tabId);
+    const logData = await getLogData(logId);
     const userId =
         logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
     if (userId === undefined) return;
@@ -165,10 +178,11 @@ async function addNgUserIdFromDropdown(
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLogData(tabId);
-    const videoId = log?.videoId ?? undefined;
+    const log = await getLogData(logId);
+    const videoId = log?.tab?.videoId ?? undefined;
     const userId = log?.commentFilterLog?.filtering.noToUserId.get(
         data.commentNo,
     );
@@ -207,14 +221,17 @@ async function filterOldSearch(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
+    const logId = createLogId();
+
     await Promise.all([
-        saveLog(filteredData, tabId, true),
+        saveLog(filteredData, logId, tabId),
+        tryMountLogId(logId, tabId),
         sendMessageToContent(tabId, {
             type: "remove-old-search",
             data: filteredData.filteredIds,
         }),
     ]);
-    await cleanupStorage();
+    await cleanupDb();
 }
 
 async function disableIme() {
@@ -222,4 +239,16 @@ async function disableIme() {
         const port = browser.runtime.connectNative("mico.ime");
         port.disconnect();
     });
+}
+
+async function restoreBadge(sender: browser.runtime.MessageSender) {
+    const tabId = sender.tab?.id;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
+
+    const log = await getLogData(logId);
+    const count = log?.videoFilterLog?.count.totalBlocked;
+    if (count === undefined) return;
+
+    await changeBadgeState(count, colors.videoBadge, tabId);
 }

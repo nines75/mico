@@ -1,12 +1,7 @@
-import { LogData } from "../types/storage/log.types.js";
 import { Settings } from "../types/storage/settings.types.js";
 import { deepmergeCustom, type DeepMergeLeafURI } from "deepmerge-ts";
 import { defaultSettings } from "./config.js";
 import { storage } from "#imports";
-import { parse } from "superjson";
-
-export type LogType = `log-${number}`;
-export type StorageType = LogType | "settings";
 
 export const storageArea = "local";
 
@@ -33,15 +28,8 @@ export async function getAllData() {
     return await storage.snapshot(storageArea);
 }
 
-export async function getLogData(tabId: number, log?: string) {
-    const key: StorageType = `log-${tabId}` as const;
-    const res = log ?? (await storage.getItem<string>(`${storageArea}:${key}`));
-
-    return res === null ? undefined : parse<LogData>(res);
-}
-
 const settingsStorage = storage.defineItem<Partial<Settings> | null>(
-    `${storageArea}:${"settings" satisfies StorageType}`,
+    `${storageArea}:settings`,
 );
 
 export async function getSettingsData() {
