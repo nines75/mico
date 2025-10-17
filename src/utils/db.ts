@@ -21,6 +21,7 @@ const db = new Dexie("main") as Dexie & {
 };
 
 db.version(1).stores({
+    // 主キーやwhereで使うキー以外はインデックスを作成しない
     log: "id, tabId",
     tab: "tabId",
 });
@@ -65,17 +66,19 @@ export async function cleanupDb() {
         .map((tab) => tab.id)
         .filter((id) => id !== undefined);
 
-    const deleteKeys = async (target: Dexie.Table) => {
-        await db.transaction("rw", target, async () => {
-            const keys = await target
-                .where("tabId")
-                .noneOf(aliveTabIds)
-                .primaryKeys();
-            if (keys.length > 0) await target.bulkDelete(keys);
-        });
+    const deleteKeys = async (...tables: Dexie.Table[]) => {
+        for (const table of tables) {
+            await db.transaction("rw", table, async () => {
+                const keys = await table
+                    .where("tabId")
+                    .noneOf(aliveTabIds)
+                    .primaryKeys();
+                if (keys.length > 0) await table.bulkDelete(keys);
+            });
+        }
     };
 
-    await Promise.all([deleteKeys(db.log), deleteKeys(db.tab)]);
+    await Promise.all([deleteKeys(db.log, db.tab)]);
 }
 
 export async function clearDb() {
