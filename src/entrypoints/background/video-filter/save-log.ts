@@ -25,11 +25,9 @@ export async function saveLog(
     };
     await Promise.all([
         setLog({ videoFilterLog }, logId, tabId),
-        ...[
-            isChangeBadge
-                ? changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)
-                : [],
-        ],
+        ...(isChangeBadge
+            ? [changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
+            : []),
     ]);
 
     const end = performance.now();
