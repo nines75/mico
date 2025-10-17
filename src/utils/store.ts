@@ -68,17 +68,17 @@ export const useStorageStore = create<StorageState>()(
     })),
 );
 
-export function storageChangeHandler(
+export async function storageChangeHandler(
     changes: Record<string, browser.storage.StorageChange>,
     area: string,
 ) {
     if (area !== "local") return;
 
-    Object.entries(changes).forEach(async ([key, value]) => {
+    for (const [key, value] of Object.entries(changes)) {
         if (key === "settings") {
             useStorageStore.setState({
                 settings: await loadSettings(value.newValue),
             });
         }
-    });
+    }
 }
