@@ -11,8 +11,8 @@
         "preversion": "pnpm check",
         "compile": "tsc --noEmit",
         "lint": "eslint src/ --max-warnings=0",
-        "format": "prettier . --write",
-        "format:ci": "prettier . --check",
+        "format": "prettier . -w -l",
+        "format:ci": "prettier . -c",
         "test": "vitest",
         "test:ci": "vitest run",
         "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'"
