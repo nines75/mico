@@ -25,9 +25,9 @@ export function filterComment(
     threads: Thread[],
     settings: Settings,
     tags: string[],
-    videoId: string | undefined,
+    videoId: string,
 ): FilteredData | undefined {
-    if (!settings.isCommentFilterEnabled || videoId === undefined) return;
+    if (!settings.isCommentFilterEnabled) return;
 
     const start = performance.now();
 

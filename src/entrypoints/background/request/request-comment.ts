@@ -2,7 +2,7 @@ import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
 import { messages } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
-import { safeParseJson, sendNotification } from "@/utils/util.js";
+import { isWatchPage, safeParseJson, sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
@@ -15,16 +15,19 @@ export default function commentRequest(
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
         const tabId = details.tabId;
-        const [settings, tab] = await Promise.all([
+        const [settings, tabData, tab] = await Promise.all([
             loadSettings(),
             getTabData(tabId),
+            browser.tabs.get(tabId),
         ]);
-        if (tab === undefined) return true;
+
+        // プレビュー再生のコメントをフィルタリングしないように視聴ページか判定
+        if (tabData === undefined || !isWatchPage(tab.url)) return true;
 
         // フィルタリングするかに関わらず実行する処理
-        await restorePlaybackTime(tabId, tab);
+        await restorePlaybackTime(tabId, tabData);
 
-        const logId = tab.logId;
+        const logId = tabData.logId;
         if (logId === undefined) return true;
 
         const commentApi: CommentApi | undefined = safeParseJson(
@@ -36,8 +39,8 @@ export default function commentRequest(
         const filteredData = filterComment(
             commentApi.data.threads,
             settings,
-            tab.tags,
-            tab.videoId,
+            tabData.tags,
+            tabData.videoId,
         );
         if (filteredData === undefined) return true;
 

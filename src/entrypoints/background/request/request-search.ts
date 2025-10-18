@@ -5,7 +5,7 @@ import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { SearchApi, SearchApiSchema } from "@/types/api/search.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
-import { cleanupDb, setTabData } from "@/utils/db.js";
+import { cleanupDb } from "@/utils/db.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -18,11 +18,7 @@ export function searchRequest(
             await tryMountLogId(logId, tabId);
         }
 
-        const [settings] = await Promise.all([
-            loadSettings(),
-            setTabData({ videoId: undefined }, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
-        ]);
-
+        const settings = await loadSettings();
         const res = spaFilter(
             details,
             buf,
