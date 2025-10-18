@@ -1,6 +1,5 @@
 import { LogData } from "@/types/storage/log.types.js";
 import Dexie, { type EntityTable } from "dexie";
-import { PartialDeep } from "type-fest";
 import { customMerge } from "./storage.js";
 import { TabData } from "@/types/storage/tab.types.js";
 
@@ -39,7 +38,7 @@ export async function getTabData(tabId: number) {
 }
 
 export async function setLog(
-    value: PartialDeep<LogData>,
+    value: Partial<LogData>,
     id: string,
     tabId: number,
 ) {

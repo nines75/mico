@@ -1,8 +1,4 @@
-import {
-    VideoFilterLog,
-    VideoFiltering,
-    VideoCount,
-} from "@/types/storage/log-video.types.js";
+import { VideoFiltering, VideoCount } from "@/types/storage/log-video.types.js";
 import { FilteredData } from "./filter-video.js";
 import { changeBadgeState } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
@@ -19,12 +15,8 @@ export async function saveLog(
     const count = getCount(filteredData);
     const filtering = getLog(filteredData);
 
-    const videoFilterLog: VideoFilterLog = {
-        count,
-        filtering,
-    };
     await Promise.all([
-        setLog({ videoFilterLog }, logId, tabId),
+        setLog({ videoFilterLog: { count, filtering } }, logId, tabId),
         ...(isChangeBadge
             ? [changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
             : []),
@@ -44,6 +36,7 @@ export async function saveLog(
         tabId,
     );
 }
+
 function getCount(filteredData: FilteredData): VideoCount {
     const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
         filteredData.filters;

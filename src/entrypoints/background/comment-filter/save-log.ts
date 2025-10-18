@@ -6,7 +6,6 @@ import { Settings } from "@/types/storage/settings.types.js";
 import {
     CommentCount,
     CommentFiltering,
-    CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
 import { parseFilter } from "../filter.js";
@@ -26,12 +25,8 @@ export async function saveLog(
     const count = getCount(filteredData, settings);
     const filtering = getLog(filteredData);
 
-    const commentFilterLog: CommentFilterLog = {
-        count,
-        filtering,
-    };
     await Promise.all([
-        setLog({ commentFilterLog }, logId, tabId),
+        setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
         changeBadgeState(
             settings.isAddEasyCommentCount
                 ? count.totalBlocked

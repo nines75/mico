@@ -15,8 +15,8 @@ export interface IdLog {
 export type VideoData = Map<string, NiconicoVideo>;
 
 export interface VideoFilterLog {
-    count: VideoCount;
-    filtering: VideoFiltering;
+    count?: VideoCount;
+    filtering?: VideoFiltering;
     processingTime?: ProcessingTimeData;
 }
 

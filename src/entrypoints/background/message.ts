@@ -161,7 +161,7 @@ async function getUserIdForMount(
 
     const logData = await getLogData(logId);
     const userId =
-        logData?.commentFilterLog?.filtering.noToUserId.get(commentNo);
+        logData?.commentFilterLog?.filtering?.noToUserId.get(commentNo);
     if (userId === undefined) return;
 
     await sendMessageToContent(tabId, {
@@ -183,7 +183,7 @@ async function addNgUserIdFromDropdown(
 
     const log = await getLogData(logId);
     const videoId = log?.tab?.videoId ?? undefined;
-    const userId = log?.commentFilterLog?.filtering.noToUserId.get(
+    const userId = log?.commentFilterLog?.filtering?.noToUserId.get(
         data.commentNo,
     );
     if (log === undefined || videoId === undefined || userId === undefined) {
@@ -247,7 +247,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     if (tabId === undefined || logId === undefined) return;
 
     const log = await getLogData(logId);
-    const count = log?.videoFilterLog?.count.totalBlocked;
+    const count = log?.videoFilterLog?.count?.totalBlocked;
     if (count === undefined) return;
 
     await changeBadgeState(count, colors.videoBadge, tabId);

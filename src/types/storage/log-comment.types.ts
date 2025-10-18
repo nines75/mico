@@ -8,8 +8,8 @@ export type CommentData = Map<string, NiconicoComment>;
 export type NoToUserId = Map<number, string>;
 
 export interface CommentFilterLog {
-    count: CommentCount;
-    filtering: CommentFiltering;
+    count?: CommentCount;
+    filtering?: CommentFiltering;
     processingTime?: ProcessingTimeData;
 }
 
