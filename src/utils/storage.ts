@@ -29,7 +29,7 @@ export const customMerge = deepmergeCustom<
 
 export async function loadSettings(settings?: Partial<Settings>) {
     const data = settings ?? (await getSettingsData());
-    if (data === undefined) return defaultSettings;
+    if (data === null) return defaultSettings;
 
     return customMerge(defaultSettings, data) as Settings;
 }
@@ -38,12 +38,10 @@ export async function getAllData() {
     return await storage.snapshot(storageArea);
 }
 
-const settingsStorage = storage.defineItem<Partial<Settings> | null>(
+const settingsStorage = storage.defineItem<Partial<Settings>>(
     `${storageArea}:settings`,
 );
 
 export async function getSettingsData() {
-    const res = await settingsStorage.getValue();
-
-    return res ?? undefined;
+    return await settingsStorage.getValue();
 }

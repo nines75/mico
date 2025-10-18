@@ -80,7 +80,7 @@ function importBackup(
 
 async function exportBackup() {
     const settingsData = await getSettingsData();
-    if (settingsData === undefined) {
+    if (settingsData === null) {
         // 一度も設定が保存されていない場合
         alert(messages.settings.neverReset);
         return;
