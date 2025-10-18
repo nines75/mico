@@ -86,7 +86,7 @@ function Main() {
 
     return (
         <main>
-            {videoId !== undefined && videoId !== null && (
+            {videoId !== undefined && (
                 <section>
                     <span id="video-id">{videoId}</span>
                     <div className="ng-button-container">
@@ -150,8 +150,8 @@ async function onClickNgVideoButton() {
     if (!confirm(messages.ngVideoId.confirmAddition)) return;
 
     const settings = useStorageStore.getState().settings;
-    const videoId = useStorageStore.getState().log?.tab?.videoId ?? undefined;
-    const title = useStorageStore.getState().log?.tab?.title ?? undefined;
+    const videoId = useStorageStore.getState().log?.tab?.videoId;
+    const title = useStorageStore.getState().log?.tab?.title;
 
     if (videoId === undefined || title === undefined) {
         alert(messages.ngVideoId.additionFailed);
@@ -168,8 +168,8 @@ async function onClickNgUserButton() {
     if (!confirm(messages.ngUserId.confirmAdditionByVideo)) return;
 
     const settings = useStorageStore.getState().settings;
-    const userId = useStorageStore.getState().log?.tab?.userId ?? undefined;
-    const userName = useStorageStore.getState().log?.tab?.userName ?? undefined;
+    const userId = useStorageStore.getState().log?.tab?.userId;
+    const userName = useStorageStore.getState().log?.tab?.userName;
 
     // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
     if (userId === undefined || userName === undefined) {

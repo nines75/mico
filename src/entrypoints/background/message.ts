@@ -182,7 +182,7 @@ async function addNgUserIdFromDropdown(
     if (tabId === undefined || logId === undefined) return;
 
     const log = await getLogData(logId);
-    const videoId = log?.tab?.videoId ?? undefined;
+    const videoId = log?.tab?.videoId;
     const userId = log?.commentFilterLog?.filtering?.noToUserId.get(
         data.commentNo,
     );

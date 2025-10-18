@@ -105,10 +105,6 @@ export function safeParseJson<T>(
         const data = JSON.parse(text);
         const result = schema.safeParse(data);
 
-        if (result.error !== undefined) {
-            console.error(result.error);
-        }
-
         return result.success ? result.data : undefined;
     } catch {
         return;

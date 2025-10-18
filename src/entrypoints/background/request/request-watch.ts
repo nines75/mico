@@ -81,21 +81,20 @@ function watchApiFilter(
         }
     })();
 
-    const videoId = response.video?.id ?? null;
-    const title = response.video?.title ?? null;
+    const videoId = response.video.id;
+    const title = response.video.title;
     const userId =
         response.owner?.id ?? // 通常のユーザー
         response.channel?.id ?? // チャンネル
+        // ユーザーが退会済み
         metadata.jsonLds[0]?.author?.url.match(
             pattern.regex.extractUserId, // 誤った値が抽出されないように完全なURLでチェックする
-        )?.[1] ?? // ユーザーが退会済み
-        null;
+        )?.[1];
     const userName =
         response.owner?.nickname ??
         response.channel?.name ??
-        metadata.jsonLds[0]?.author?.name ??
-        null;
-    const tags = response.tag?.items.map((data) => data.name) ?? [];
+        metadata.jsonLds[0]?.author?.name;
+    const tags = response.tag.items.map((data) => data.name);
 
     return {
         series: seriesData,

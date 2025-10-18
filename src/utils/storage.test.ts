@@ -18,6 +18,7 @@ describe("storage", () => {
             array: [1],
             map: new Map([["a", 1]]),
             set: new Set([1]),
+            undefined: true,
         };
         const newObj = {
             nest: {
@@ -26,9 +27,10 @@ describe("storage", () => {
             array: [2],
             map: new Map([["b", 2]]),
             set: new Set([2]),
+            undefined: undefined,
         };
 
-        expect(customMerge(oldObj, newObj)).toEqual({
+        expect(customMerge(oldObj, newObj)).toStrictEqual({
             nest: {
                 a: true,
                 b: false,
@@ -36,20 +38,28 @@ describe("storage", () => {
             array: [2],
             map: new Map([["b", 2]]),
             set: new Set([2]),
+            undefined: undefined,
         });
     });
 
-    it(`${loadSettings.name}()`, async () => {
-        const newSettings = {
-            isCommentFilterEnabled: false,
-        } satisfies Partial<Settings>;
+    it.each([
+        {
+            name: "設定なし",
+            expected: defaultSettings,
+        },
+        {
+            name: "設定あり",
+            settings: { isCommentFilterEnabled: false },
+            expected: { ...defaultSettings, isCommentFilterEnabled: false },
+        },
+    ] satisfies {
+        name: string;
+        settings?: Partial<Settings>;
+        expected: Settings;
+    }[])(`${loadSettings.name}():$name`, async ({ settings, expected }) => {
+        if (settings !== undefined) await setSettings(settings);
 
-        await setSettings(newSettings);
-
-        expect(await loadSettings()).toEqual({
-            ...defaultSettings,
-            ...newSettings,
-        });
+        expect(await loadSettings()).toEqual(expected);
     });
 
     it(`${getSettingsData.name}()`, async () => {

@@ -15,49 +15,41 @@ export const watchApiSchema = z.looseObject({
                             name: z.string(),
                             url: z.string(),
                         })
-                        .optional(),
+                        .optional(), // jsonLds配列の中でauthorプロパティが存在するのは一部
                 }),
             ),
         }),
-        // 削除済みの動画のレスポンスで存在しないプロパティはオプショナルにする
         response: z.looseObject({
             series: z
                 .looseObject({
                     video: z.looseObject({
-                        next: niconicoVideoSchema.nullable(),
+                        next: niconicoVideoSchema.nullable(), // シリーズの次の動画がなければnull
                     }),
                 })
-                .nullable() // シリーズに登録されていなければnull
-                .optional(),
-            tag: z
-                .looseObject({
-                    items: z.array(
-                        z.looseObject({
-                            name: z.string(),
-                        }),
-                    ),
-                })
-                .optional(),
-            video: z
-                .looseObject({
-                    id: z.string(),
-                    title: z.string(),
-                })
-                .optional(),
+                .nullable(), // シリーズに登録されていなければnull
+            tag: z.looseObject({
+                items: z.array(
+                    z.looseObject({
+                        name: z.string(),
+                    }),
+                ),
+            }),
+            video: z.looseObject({
+                id: z.string(),
+                title: z.string(),
+            }),
             channel: z
                 .looseObject({
                     id: z.string(),
                     name: z.string(),
                 })
-                .nullable() // チャンネル動画でなければnull
-                .optional(),
+                .nullable(), // チャンネル動画でなければnull
             owner: z
                 .looseObject({
                     id: z.number().int(),
                     nickname: z.string(),
                 })
-                .nullable() // チャンネル動画ならnull
-                .optional(),
+                .nullable(), // チャンネル動画やユーザーが退会済みならnull
         }),
     }),
 });

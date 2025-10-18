@@ -1,9 +1,9 @@
 import { z } from "@/utils/zod.js";
 
+// optionalにしているプロパティは旧検索で生成した動画データに含まれていないもの
 export const niconicoVideoSchema = z.looseObject({
     id: z.string(),
     title: z.string(),
-    registeredAt: z.string().optional(),
     latestCommentSummary: z.string().optional(),
     isPaymentRequired: z.boolean(),
     count: z
@@ -17,7 +17,7 @@ export const niconicoVideoSchema = z.looseObject({
     owner: z
         .looseObject({
             id: z.string(),
-            name: z.string().nullable(),
+            name: z.string().nullable(), // ユーザーが退会済みならnull
             visibility: z.literal(["visible", "hidden"]),
         })
         .optional(),

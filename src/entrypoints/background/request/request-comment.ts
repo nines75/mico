@@ -19,11 +19,12 @@ export default function commentRequest(
             loadSettings(),
             getTabData(tabId),
         ]);
+        if (tab === undefined) return true;
 
-        // キャンセルするかに関わらず必ず実行する処理
+        // フィルタリングするかに関わらず実行する処理
         await restorePlaybackTime(tabId, tab);
 
-        const logId = tab?.logId;
+        const logId = tab.logId;
         if (logId === undefined) return true;
 
         const commentApi: CommentApi | undefined = safeParseJson(
@@ -33,10 +34,10 @@ export default function commentRequest(
         if (commentApi === undefined) return true;
 
         const filteredData = filterComment(
-            commentApi.data?.threads,
+            commentApi.data.threads,
             settings,
-            tab?.tags ?? [],
-            tab?.videoId ?? undefined,
+            tab.tags,
+            tab.videoId,
         );
         if (filteredData === undefined) return true;
 
@@ -73,11 +74,8 @@ export default function commentRequest(
     });
 }
 
-async function restorePlaybackTime(
-    tabId: number,
-    tabData: TabData | undefined,
-) {
-    const playbackTime = tabData?.playbackTime ?? 0;
+async function restorePlaybackTime(tabId: number, tabData: TabData) {
+    const playbackTime = tabData.playbackTime ?? 0;
     if (playbackTime <= 0) return;
 
     const tasks: Promise<void>[] = [];

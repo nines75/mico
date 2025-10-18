@@ -32,10 +32,8 @@ const threadSchema = z.looseObject({
 export type Thread = z.infer<typeof threadSchema>;
 
 export const commentApiSchema = z.looseObject({
-    data: z
-        .looseObject({
-            threads: z.array(threadSchema),
-        })
-        .optional(),
+    data: z.looseObject({
+        threads: z.array(threadSchema),
+    }),
 });
 export type CommentApi = z.infer<typeof commentApiSchema>;

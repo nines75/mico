@@ -22,17 +22,12 @@ export interface FilteredData {
 }
 
 export function filterComment(
-    threads: Thread[] | undefined,
+    threads: Thread[],
     settings: Settings,
     tags: string[],
     videoId: string | undefined,
 ): FilteredData | undefined {
-    if (
-        !settings.isCommentFilterEnabled ||
-        threads === undefined ||
-        videoId === undefined
-    )
-        return;
+    if (!settings.isCommentFilterEnabled || videoId === undefined) return;
 
     const start = performance.now();
 

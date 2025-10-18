@@ -20,7 +20,7 @@ export function searchRequest(
 
         const [settings] = await Promise.all([
             loadSettings(),
-            setTabData({ videoId: null }, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
+            setTabData({ videoId: undefined }, tabId), // 検索のプレビューにコメントフィルターが適用されないように動画IDをリセットする
         ]);
 
         const res = spaFilter(

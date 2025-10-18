@@ -6,10 +6,10 @@ export interface TabData {
     playbackTime?: number;
 
     logId?: string;
-    videoId: string | null;
-    title: string | null;
-    userId: string | number | null;
-    userName: string | null;
+    videoId: string | undefined;
+    title: string;
+    userId: string | number | undefined;
+    userName: string | undefined;
     tags: string[];
 }
 

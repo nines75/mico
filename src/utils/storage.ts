@@ -1,5 +1,9 @@
 import { Settings } from "../types/storage/settings.types.js";
-import { deepmergeCustom, type DeepMergeLeafURI } from "deepmerge-ts";
+import {
+    deepmergeCustom,
+    type DeepMergeLeafURI,
+    type DeepMergeNoFilteringURI,
+} from "deepmerge-ts";
 import { defaultSettings } from "./config.js";
 import { storage } from "#imports";
 
@@ -11,16 +15,22 @@ export const customMerge = deepmergeCustom<
         DeepMergeArraysURI: DeepMergeLeafURI;
         DeepMergeMapsURI: DeepMergeLeafURI;
         DeepMergeSetsURI: DeepMergeLeafURI;
+        DeepMergeFilterValuesURI: DeepMergeNoFilteringURI;
     }
 >({
-    // マージではなく上書きするように変更
+    // マージではなく上書きする
     mergeArrays: false,
     mergeMaps: false,
     mergeSets: false,
+
+    // 値がundefinedでも上書きする
+    filterValues: false,
 });
 
 export async function loadSettings(settings?: Partial<Settings>) {
     const data = settings ?? (await getSettingsData());
+    if (data === undefined) return defaultSettings;
+
     return customMerge(defaultSettings, data) as Settings;
 }
 
