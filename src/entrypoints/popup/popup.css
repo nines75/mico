@@ -26,6 +26,7 @@ summary {
     width: auto;
     height: auto;
     text-align: center;
+    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
 }
 .filtering-type {
     font-size: 20px;
