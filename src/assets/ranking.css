@@ -1,3 +1,0 @@
-div:has(> div > div[data-decoration-video-id="dummy-id"]) {
-    display: none;
-}

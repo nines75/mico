@@ -83,7 +83,6 @@ export interface Settings {
 
     // その他
     isNgContextAppendedOnAdd: boolean;
-    isVideoIdSpoofed: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 拡張ニコる

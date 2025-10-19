@@ -7,7 +7,6 @@ import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
-import "@/assets/ranking.css";
 import { sendMessageToBackground } from "../background/message.js";
 
 export interface customObserver extends MutationObserver {

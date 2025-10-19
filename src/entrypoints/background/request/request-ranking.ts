@@ -4,7 +4,6 @@ import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import { RankingApi, rankingApiSchema } from "@/types/api/ranking.types.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
 
@@ -55,16 +54,9 @@ function rankingApiFilter(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
-    const filteredVideos = settings.isVideoIdSpoofed
-        ? videos.map(
-              (video): NiconicoVideo => ({
-                  ...video,
-                  ...(filteredData.filteredIds.has(video.id)
-                      ? { id: "dummy-id" }
-                      : {}),
-              }),
-          )
-        : videos.filter((video) => !filteredData.filteredIds.has(video.id));
+    const filteredVideos = videos.filter(
+        (video) => !filteredData.filteredIds.has(video.id),
+    );
 
     rankingApi.data.response.$getTeibanRanking.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(rankingApi));
