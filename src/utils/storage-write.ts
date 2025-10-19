@@ -23,7 +23,8 @@ const queue = new PQueue({ concurrency: 1 });
 export async function removeAllData() {
     await Promise.all([
         queue.add(async () => {
-            await storage.clear(storageArea);
+            // すべてのデータを削除するとバージョン情報まで消えるため単体で削除
+            await storage.removeItem(`${storageArea}:settings`);
         }),
         clearDb(),
     ]);
