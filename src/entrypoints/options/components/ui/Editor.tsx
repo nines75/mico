@@ -32,6 +32,7 @@ import {
     CompletionContext,
     completionKeymap,
     CompletionResult,
+    snippetCompletion,
 } from "@codemirror/autocomplete";
 import { getCM, vim } from "@replit/codemirror-vim";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -45,7 +46,7 @@ const ngWordHighlights = createHighlights([
     { regex: /^(@strict|!)/g, style: "color: coral" },
     { regex: /^(@include|@exclude)/g, style: "color: lime" },
     { regex: /^@end/g, style: "color: cyan" },
-    { regex: /^\\/g, style: "color: red" },
+    { regex: /^@escape/g, style: "color: pink" },
 ]);
 const ngCommandHighlights = [
     ...createHighlights([{ regex: /^@disable/g, style: "color: yellow" }]),
@@ -69,6 +70,10 @@ const ngWordCompletions: Completion[] = [
         label: "@end",
         type: "keyword",
     },
+    snippetCompletion("@escape(${1})", {
+        label: "@escape",
+        type: "keyword",
+    }),
 ];
 const ngCommandCompletions: Completion[] = [
     {

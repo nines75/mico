@@ -106,11 +106,11 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
             }
         });
 
+        const escapedRule = rule.match(/^@escape\((.+)\)/)?.[1];
         const hasStrictSymbol = rule.startsWith("!");
-        const hasEscapeSymbol = rule.startsWith("\\");
 
         rules.push({
-            rule: hasStrictSymbol || hasEscapeSymbol ? rule.slice(1) : rule,
+            rule: escapedRule ?? (hasStrictSymbol ? rule.slice(1) : rule),
             isStrict: isStrict || hasStrictSymbol,
             isDisable,
             include,
