@@ -122,13 +122,13 @@ function Main() {
                     ))}
                 </div>
             )}
-            <Details id={"isOpenProcessingTime"} summary="処理時間">
+            <Details id={"isProcessingTimeOpen"} summary="処理時間">
                 <ProcessingTime {...{ selectedTab }} />
             </Details>
-            <Details id={"isOpenCount"} summary="カウント情報">
+            <Details id={"isCountOpen"} summary="カウント情報">
                 <Count {...{ selectedTab }} />
             </Details>
-            <Details id={"isOpenVideoLog"} summary="フィルタリングログ">
+            <Details id={"isLogOpen"} summary="フィルタリングログ">
                 {(() => {
                     switch (selectedTab) {
                         case "commentFilter":

@@ -55,7 +55,7 @@ function rankingApiFilter(
     const filteredData = filterVideo(videos, settings);
     if (filteredData === undefined) return;
 
-    const filteredVideos = settings.isSpoofVideoId
+    const filteredVideos = settings.isVideoIdSpoofed
         ? videos.map(
               (video): NiconicoVideo => ({
                   ...video,

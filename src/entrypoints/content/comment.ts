@@ -23,7 +23,7 @@ export function renderComment(element: Element, settings: Settings) {
 
     const nicoruColor = settings.nicoruColors[id];
 
-    const isGradate = nicoruColor?.isGradate ?? false;
+    const isGradient = nicoruColor?.isGradient ?? false;
     const primary = nicoruColor?.primary ?? "";
     const secondary = nicoruColor?.secondary ?? "";
 
@@ -33,12 +33,12 @@ export function renderComment(element: Element, settings: Settings) {
     timeElement.style.color = "dimgray";
 
     // コメント本文を強調
-    if (settings.isHighlightCommentBody) {
+    if (settings.isCommentBodyHighlighted) {
         textElement.style.fontSize = "16px";
     }
 
     // 背景色を変更
-    if (isGradate) {
+    if (isGradient) {
         subElement.style.background = `linear-gradient(to bottom right, ${primary}, ${secondary})`;
     } else {
         subElement.style.background = primary;

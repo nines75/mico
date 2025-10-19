@@ -23,7 +23,7 @@ describe(`${saveLog.name}()`, () => {
     it("all", () => {
         const settings = {
             ...defaultSettings,
-            isHideEasyComment: true,
+            isEasyCommentHidden: true,
             isScoreFilterEnabled: true,
             scoreFilterCount: -1001,
             ngUserId: "user-id-owner",

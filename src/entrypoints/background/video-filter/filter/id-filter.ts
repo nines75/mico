@@ -125,7 +125,7 @@ export function formatNgId(
     context: string | undefined,
     settings: Settings,
 ) {
-    return settings.isAddNgContext && context !== undefined
+    return settings.isNgContextAppendedOnAdd && context !== undefined
         ? `${id} # ${context}`
         : id;
 }

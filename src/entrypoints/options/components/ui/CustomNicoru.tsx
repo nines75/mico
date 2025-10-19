@@ -7,9 +7,9 @@ interface CustomNicoruProps {
 }
 
 export default function CustomNicoru({ id }: CustomNicoruProps) {
-    const [isGradate, nicoruCounts, save] = useStorageStore(
+    const [isGradient, nicoruCounts, save] = useStorageStore(
         useShallow((state) => [
-            state.settings.nicoruColors[id]?.isGradate ?? false,
+            state.settings.nicoruColors[id]?.isGradient ?? false,
             state.settings.nicoruCounts,
             state.saveSettings,
         ]),
@@ -28,12 +28,12 @@ export default function CustomNicoru({ id }: CustomNicoruProps) {
             <label>
                 <input
                     type="checkbox"
-                    checked={isGradate}
+                    checked={isGradient}
                     onChange={(e) =>
                         save({
                             nicoruColors: {
                                 [id]: {
-                                    isGradate: e.target.checked,
+                                    isGradient: e.target.checked,
                                 },
                             },
                         })

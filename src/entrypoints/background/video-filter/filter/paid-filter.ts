@@ -6,7 +6,7 @@ export class PaidFilter extends Filter<PaidLog> {
     protected override log: PaidLog = [];
 
     override filtering(data: { videos: NiconicoVideo[] }): void {
-        if (!this.settings.isHidePaidVideo) return;
+        if (!this.settings.isPaidVideoHidden) return;
 
         data.videos = data.videos.filter((video) => {
             if (video.isPaymentRequired) {
@@ -21,7 +21,7 @@ export class PaidFilter extends Filter<PaidLog> {
     }
 
     override isNgVideo(video: NiconicoVideo): boolean {
-        if (!this.settings.isHidePaidVideo) return false;
+        if (!this.settings.isPaidVideoHidden) return false;
 
         return video.isPaymentRequired;
     }

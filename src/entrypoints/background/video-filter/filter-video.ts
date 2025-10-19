@@ -52,7 +52,7 @@ export function filterVideo(
         ]),
     );
 
-    if (settings.isHideCommentPreview) {
+    if (settings.isCommentPreviewHidden) {
         data.videos.forEach((video) => (video.latestCommentSummary = ""));
     }
 

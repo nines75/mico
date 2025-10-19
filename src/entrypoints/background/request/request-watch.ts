@@ -68,7 +68,7 @@ function watchApiFilter(
                     series.next = null;
                 }
 
-                if (settings.isHideCommentPreview && series.next !== null) {
+                if (settings.isCommentPreviewHidden && series.next !== null) {
                     series.next.latestCommentSummary = "";
                 }
 

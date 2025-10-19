@@ -4,8 +4,8 @@ import H2 from "../ui/H2.js";
 import { useStorageStore } from "@/utils/store.js";
 
 export default function General() {
-    const isAdvancedFeatureVisible = useStorageStore(
-        (state) => state.settings.isAdvancedFeatureVisible,
+    const isAdvancedFeaturesVisible = useStorageStore(
+        (state) => state.settings.isAdvancedFeaturesVisible,
     );
 
     return (
@@ -26,7 +26,7 @@ export default function General() {
                 {generalSettings.checkbox.advanced.top.map((props) => (
                     <Checkbox key={props.id} {...props} />
                 ))}
-                {isAdvancedFeatureVisible &&
+                {isAdvancedFeaturesVisible &&
                     generalSettings.checkbox.advanced.features.map((props) => (
                         <Checkbox key={props.id} {...props} />
                     ))}

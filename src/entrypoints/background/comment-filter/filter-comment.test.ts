@@ -83,10 +83,10 @@ device:Switch`,
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isHideEasyComment" satisfies keyof Settings}`, () => {
+    it(`Settings.${"isEasyCommentHidden" satisfies keyof Settings}`, () => {
         filterComment(
             threads,
-            createSettings({ isHideEasyComment: true }),
+            createSettings({ isEasyCommentHidden: true }),
             [],
             "sm1",
         );

@@ -20,11 +20,11 @@ export interface Settings {
     // エディター
     isCloseBrackets: boolean;
     isHighlightTrailingWhitespace: boolean;
-    isVimKeybindingsEnabled: boolean;
+    isVimModeEnabled: boolean;
 
     // 高度な機能
-    isAdvancedFeatureVisible: boolean;
-    isDisableImeByContext: boolean;
+    isAdvancedFeaturesVisible: boolean;
+    isImeDisabledByContext: boolean;
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
@@ -33,23 +33,23 @@ export interface Settings {
     isCommentFilterEnabled: boolean;
 
     // フィルタリング
-    isHideEasyComment: boolean;
-    isAddEasyCommentCount: boolean;
+    isEasyCommentHidden: boolean;
+    isHiddenEasyCommentAdded: boolean;
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
     isIgnoreByNicoru: boolean;
-    IgnoreByNicoruCount: number;
+    ignoreByNicoruCount: number;
     selectedCommentFilter: CommentFilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;
 
     // ログ
-    isShowNgScoreInLog: boolean;
-    isShowNicoruInLog: boolean;
-    showNicoruInLogCount: number;
-    isShowDuplicateInLog: boolean;
-    showDuplicateInLogCount: number;
+    isNgScoreVisible: boolean;
+    isNicoruVisible: boolean;
+    nicoruVisibleCount: number;
+    isDuplicateVisible: boolean;
+    duplicateVisibleCount: number;
 
     // 通知
     isNotifyAddNgUserId: boolean;
@@ -57,7 +57,7 @@ export interface Settings {
 
     // その他
     isAutoReload: boolean;
-    isShowUserIdInDropdown: boolean;
+    isUserIdMountedToDropdown: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
@@ -66,8 +66,8 @@ export interface Settings {
     isVideoFilterEnabled: boolean;
 
     // フィルタリング
-    isHidePaidVideo: boolean;
-    isHideCommentPreview: boolean;
+    isPaidVideoHidden: boolean;
+    isCommentPreviewHidden: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
     selectedVideoFilter: VideoFilterId;
@@ -76,14 +76,14 @@ export interface Settings {
     ngTitle: string;
 
     // ログ
-    isRenderTitleAsLink: boolean;
+    isTitleRenderedAsLink: boolean;
 
     // 通知
     isNotifyAddNgId: boolean;
 
     // その他
-    isAddNgContext: boolean;
-    isSpoofVideoId: boolean;
+    isNgContextAppendedOnAdd: boolean;
+    isVideoIdSpoofed: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 拡張ニコる
@@ -92,7 +92,7 @@ export interface Settings {
     isExpandNicoruEnabled: boolean;
 
     // スタイル
-    isHighlightCommentBody: boolean;
+    isCommentBodyHighlighted: boolean;
     nicoruCounts: number[];
     nicoruColors: Record<string, NicoruColor>;
 
@@ -106,13 +106,13 @@ export interface Settings {
     selectedQuickEditTab: FilterTab;
 
     // 開閉
-    isOpenProcessingTime: boolean;
-    isOpenCount: boolean;
-    isOpenVideoLog: boolean;
+    isProcessingTimeOpen: boolean;
+    isCountOpen: boolean;
+    isLogOpen: boolean;
 }
 
-interface NicoruColor {
+export interface NicoruColor {
     primary?: string;
     secondary?: string;
-    isGradate?: boolean;
+    isGradient?: boolean;
 }

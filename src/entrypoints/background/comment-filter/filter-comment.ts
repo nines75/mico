@@ -74,7 +74,7 @@ export function filterComment(
     // かんたんコメントを非表示
     const easyCommentCount = threads
         .map((thread) => {
-            if (settings.isHideEasyComment && thread.fork === "easy") {
+            if (settings.isEasyCommentHidden && thread.fork === "easy") {
                 const count = thread.comments.length;
                 thread.comments = [];
 

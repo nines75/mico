@@ -38,7 +38,7 @@ export abstract class Filter<T> {
     isIgnoreByNicoru(comment: NiconicoComment): boolean {
         return (
             this.settings.isIgnoreByNicoru &&
-            comment.nicoruCount >= this.settings.IgnoreByNicoruCount
+            comment.nicoruCount >= this.settings.ignoreByNicoruCount
         );
     }
 
@@ -57,7 +57,7 @@ export abstract class Filter<T> {
         log.forEach((ids, key) => {
             log.set(
                 key,
-                this.settings.isShowNgScoreInLog
+                this.settings.isNgScoreVisible
                     ? sortCommentId(ids, this.filteredComments, true)
                     : sortCommentId(ids, this.filteredComments),
             );

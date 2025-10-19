@@ -95,7 +95,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
 
             elements.push(
                 <div key={videoId} className="log-line">
-                    {settings.isRenderTitleAsLink ? (
+                    {settings.isTitleRenderedAsLink ? (
                         renderVideoLink(video)
                     ) : (
                         <span>{escapeNewline(video.title)}</span>
@@ -127,7 +127,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
 
             elements.push(
                 <div key={videoId} className="log-line">
-                    {settings.isRenderTitleAsLink ? (
+                    {settings.isTitleRenderedAsLink ? (
                         renderVideoLink(video)
                     ) : (
                         <span
@@ -186,7 +186,7 @@ function renderCommonVideos(
 
         elements.push(
             <div key={videoId} className="log-line">
-                {settings.isRenderTitleAsLink ? (
+                {settings.isTitleRenderedAsLink ? (
                     renderVideoLink(video)
                 ) : userId === undefined ? (
                     escapedTitle

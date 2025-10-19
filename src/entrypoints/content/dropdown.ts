@@ -18,7 +18,7 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     appendButton(dropdownContent, commentNo, buttons.AddNgUserId, false);
     appendButton(dropdownContent, commentNo, buttons.AddSpecificNgUserId, true);
 
-    if (settings.isShowUserIdInDropdown) {
+    if (settings.isUserIdMountedToDropdown) {
         await sendMessageToBackground({
             type: "get-user-id-for-mount",
             data: Number(commentNo),

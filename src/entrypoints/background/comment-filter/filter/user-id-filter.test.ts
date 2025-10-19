@@ -86,7 +86,7 @@ user-id-main-1
         checkComment(threads, ["1000", "1001", "1002"]);
     });
 
-    it(`Settings.${"IgnoreByNicoruCount" satisfies keyof Settings}`, () => {
+    it(`Settings.${"ignoreByNicoruCount" satisfies keyof Settings}`, () => {
         const filter = `
 user-id-main-1
 user-id-main-2

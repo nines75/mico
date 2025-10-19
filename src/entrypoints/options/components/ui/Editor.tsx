@@ -174,7 +174,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
         ];
 
         return [
-            ...(settings.isVimKeybindingsEnabled ? vimExtensions : []), // Vim拡張は他のkeymapに関する拡張より前に配置する
+            ...(settings.isVimModeEnabled ? vimExtensions : []), // Vim拡張は他のkeymapに関する拡張より前に配置する
             ...(settings.isCloseBrackets ? [closeBrackets()] : []),
             ...(settings.isHighlightTrailingWhitespace
                 ? [highlightTrailingWhitespace()]
@@ -200,10 +200,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
 
         // エディタはコンテンツスクリプト(クイック編集)でも使うのでメッセージ経由でIMEをオフにする
         const settings = useStorageStore.getState().settings;
-        if (
-            settings.isVimKeybindingsEnabled &&
-            settings.isDisableImeByContext
-        ) {
+        if (settings.isVimModeEnabled && settings.isImeDisabledByContext) {
             // ノーマルモードに戻った時
             const cm = getCM(view.current);
             cm?.on("vim-mode-change", async (obj: { mode: string }) => {

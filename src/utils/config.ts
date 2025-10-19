@@ -20,11 +20,11 @@ export const defaultSettings: Settings = {
     // エディター
     isCloseBrackets: true,
     isHighlightTrailingWhitespace: true,
-    isVimKeybindingsEnabled: false,
+    isVimModeEnabled: false,
 
     // 高度な機能
-    isAdvancedFeatureVisible: false,
-    isDisableImeByContext: false,
+    isAdvancedFeaturesVisible: false,
+    isImeDisabledByContext: false,
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
@@ -33,23 +33,23 @@ export const defaultSettings: Settings = {
     isCommentFilterEnabled: true,
 
     // フィルタリング
-    isHideEasyComment: false,
-    isAddEasyCommentCount: true,
+    isEasyCommentHidden: false,
+    isHiddenEasyCommentAdded: true,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
     isIgnoreByNicoru: false,
-    IgnoreByNicoruCount: 30,
+    ignoreByNicoruCount: 30,
     selectedCommentFilter: "ngUserId",
     ngUserId: "",
     ngCommand: "",
     ngWord: "",
 
     // ログ
-    isShowNgScoreInLog: true,
-    isShowNicoruInLog: true,
-    showNicoruInLogCount: 30,
-    isShowDuplicateInLog: true,
-    showDuplicateInLogCount: 2,
+    isNgScoreVisible: true,
+    isNicoruVisible: true,
+    nicoruVisibleCount: 30,
+    isDuplicateVisible: true,
+    duplicateVisibleCount: 2,
 
     // 通知
     isNotifyAddNgUserId: true,
@@ -57,7 +57,7 @@ export const defaultSettings: Settings = {
 
     // その他
     isAutoReload: false,
-    isShowUserIdInDropdown: false,
+    isUserIdMountedToDropdown: false,
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
@@ -66,8 +66,8 @@ export const defaultSettings: Settings = {
     isVideoFilterEnabled: true,
 
     // フィルタリング
-    isHidePaidVideo: false,
-    isHideCommentPreview: false,
+    isPaidVideoHidden: false,
+    isCommentPreviewHidden: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
     selectedVideoFilter: "ngId",
@@ -76,14 +76,14 @@ export const defaultSettings: Settings = {
     ngUserName: "",
 
     // ログ
-    isRenderTitleAsLink: false,
+    isTitleRenderedAsLink: false,
 
     // 通知
     isNotifyAddNgId: true,
 
     // その他
-    isAddNgContext: false,
-    isSpoofVideoId: false,
+    isNgContextAppendedOnAdd: false,
+    isVideoIdSpoofed: false,
 
     // -------------------------------------------------------------------------------------------
     // 拡張ニコる
@@ -92,39 +92,39 @@ export const defaultSettings: Settings = {
     isExpandNicoruEnabled: false,
 
     // スタイル
-    isHighlightCommentBody: true,
+    isCommentBodyHighlighted: true,
     nicoruCounts: [300, 200, 100, 50, 30, 15], // 降順である必要がある
     nicoruColors: {
         // 明示的に設定しないとリセット時に前の値を上書きできない
         "15": {
             primary: "#fcc442",
             secondary: "",
-            isGradate: false,
+            isGradient: false,
         },
         "30": {
             primary: "#fcb242",
             secondary: "",
-            isGradate: false,
+            isGradient: false,
         },
         "50": {
             primary: "#fc9f42",
             secondary: "",
-            isGradate: false,
+            isGradient: false,
         },
         "100": {
             primary: "#ffee9d",
             secondary: "#d9a300",
-            isGradate: true,
+            isGradient: true,
         },
         "200": {
             primary: "#ffcccc",
             secondary: "#ff8080",
-            isGradate: true,
+            isGradient: true,
         },
         "300": {
             primary: "#ff8080",
             secondary: "#ff0000",
-            isGradate: true,
+            isGradient: true,
         },
     },
 
@@ -138,9 +138,9 @@ export const defaultSettings: Settings = {
     selectedQuickEditTab: "commentFilter",
 
     // 開閉
-    isOpenProcessingTime: false,
-    isOpenCount: true,
-    isOpenVideoLog: true,
+    isProcessingTimeOpen: false,
+    isCountOpen: true,
+    isLogOpen: true,
 } as const;
 
 export const buttons = {
@@ -289,20 +289,20 @@ export const generalSettings = {
                 label: "行末の空白文字をハイライトする",
             },
             {
-                id: "isVimKeybindingsEnabled",
+                id: "isVimModeEnabled",
                 label: "Vimモードを有効にする",
             },
         ],
         advanced: {
             top: [
                 {
-                    id: "isAdvancedFeatureVisible",
+                    id: "isAdvancedFeaturesVisible",
                     label: "高度な機能を表示する",
                 },
             ],
             features: [
                 {
-                    id: "isDisableImeByContext",
+                    id: "isImeDisabledByContext",
                     label: "コンテキストに応じてIMEを無効化する",
                     details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
                     ネイティブメッセージング権限とバイナリのインストールが必要です。`,
@@ -331,11 +331,11 @@ export const commentFilterSettings = {
         ],
         filtering: [
             {
-                id: "isHideEasyComment",
+                id: "isEasyCommentHidden",
                 label: "かんたんコメントを非表示にする",
                 childrenProps: [
                     {
-                        id: "isAddEasyCommentCount",
+                        id: "isHiddenEasyCommentAdded",
                         label: "非表示にした数をバッジに加算する",
                     },
                 ],
@@ -354,7 +354,7 @@ export const commentFilterSettings = {
                 label: "ニコるの数に応じてフィルタリングの対象外にする",
                 details: "かんたんコメントの非表示には影響しません。",
                 input: {
-                    id: "IgnoreByNicoruCount",
+                    id: "ignoreByNicoruCount",
                     label: "回以上ニコられていた場合に除外",
                     min: 0,
                 },
@@ -362,23 +362,23 @@ export const commentFilterSettings = {
         ],
         log: [
             {
-                id: "isShowNgScoreInLog",
+                id: "isNgScoreVisible",
                 label: "NGスコアを表示する",
             },
             {
-                id: "isShowNicoruInLog",
+                id: "isNicoruVisible",
                 label: "ニコるの数を表示する",
                 input: {
-                    id: "showNicoruInLogCount",
+                    id: "nicoruVisibleCount",
                     label: "回以上ニコられていた場合に表示",
                     min: 0,
                 },
             },
             {
-                id: "isShowDuplicateInLog",
+                id: "isDuplicateVisible",
                 label: "本文が重複したコメントの数を表示する",
                 input: {
-                    id: "showDuplicateInLogCount",
+                    id: "duplicateVisibleCount",
                     label: "回以上重複していた場合に表示",
                     min: 1,
                 },
@@ -402,7 +402,7 @@ export const commentFilterSettings = {
                 読み込み後、リロードする前の再生時間が自動で再設定されます。`,
             },
             {
-                id: "isShowUserIdInDropdown",
+                id: "isUserIdMountedToDropdown",
                 label: "ドロップダウンにユーザーIDを表示する",
             },
         ],
@@ -442,11 +442,11 @@ export const videoFilterSettings = {
         ],
         filtering: [
             {
-                id: "isHidePaidVideo",
+                id: "isPaidVideoHidden",
                 label: "有料動画を非表示にする",
             },
             {
-                id: "isHideCommentPreview",
+                id: "isCommentPreviewHidden",
                 label: "コメントプレビューを非表示にする",
             },
             {
@@ -462,7 +462,7 @@ export const videoFilterSettings = {
         ],
         log: [
             {
-                id: "isRenderTitleAsLink",
+                id: "isTitleRenderedAsLink",
                 label: "動画タイトルをリンクとして表示する",
                 details:
                     "動画タイトルをクリックしてNG登録/解除することは出来なくなります。",
@@ -478,13 +478,13 @@ export const videoFilterSettings = {
         ],
         other: [
             {
-                id: "isAddNgContext",
+                id: "isNgContextAppendedOnAdd",
                 label: "NG追加時にコンテキスト情報を付与する",
                 details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
                 コンテキストメニューからNG登録した場合は付与されません。`,
             },
             {
-                id: "isSpoofVideoId",
+                id: "isVideoIdSpoofed",
                 label: "動画IDを偽装する",
                 details:
                     "ランキング(カテゴリ)の順位が正しく表示されるようになりますが、予期しない不具合が発生する可能性があります。",
@@ -526,7 +526,7 @@ export const expandNicoruSettings = {
         ],
         style: [
             {
-                id: "isHighlightCommentBody",
+                id: "isCommentBodyHighlighted",
                 label: "装飾対象のコメントの本文を強調する",
             },
         ],

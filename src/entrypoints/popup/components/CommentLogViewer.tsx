@@ -37,7 +37,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     const settings = useStorageStore.getState().settings;
 
     // フィルタリングが無効に設定されている場合はレンダリングしない
-    if (id === "easyComment" && !settings.isHideEasyComment) return null;
+    if (id === "easyComment" && !settings.isEasyCommentHidden) return null;
     if (id === "ngScore" && !settings.isScoreFilterEnabled) return null;
 
     const blocked = count?.blocked[id];
@@ -185,7 +185,7 @@ function renderScoreLog(
                     comment,
                     {
                         ...settings,
-                        ...{ isShowNgScoreInLog: true },
+                        ...{ isNgScoreVisible: true },
                     },
                     true,
                 )}
@@ -281,8 +281,8 @@ function formatComment(
     ];
 
     const isNicoru =
-        settings.isShowNicoruInLog && nicoru >= settings.showNicoruInLogCount;
-    const isNgScore = settings.isShowNgScoreInLog && score < 0;
+        settings.isNicoruVisible && nicoru >= settings.nicoruVisibleCount;
+    const isNgScore = settings.isNgScoreVisible && score < 0;
 
     const elements: JSX.Element[] = [];
 
@@ -333,10 +333,7 @@ function formatCommentWithDuplicate(
     const elements: JSX.Element[] = [];
     const cnt = comments.length;
 
-    if (
-        settings.isShowDuplicateInLog &&
-        cnt >= settings.showDuplicateInLogCount
-    ) {
+    if (settings.isDuplicateVisible && cnt >= settings.duplicateVisibleCount) {
         elements.push(
             <span
                 key={`cnt`}
