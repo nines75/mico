@@ -135,9 +135,14 @@ export async function getLogId(
 ): Promise<string | undefined> {
     if (tabId === undefined) return;
 
-    const res = await browser.tabs.executeScript(tabId, {
-        file: "/get-log-id.js",
-    });
+    // スクリプトを実行するタブのhost権限がないとエラーが発生する
+    try {
+        const res = await browser.tabs.executeScript(tabId, {
+            file: "/get-log-id.js",
+        });
 
-    return res[0];
+        return res[0];
+    } catch {
+        return;
+    }
 }
