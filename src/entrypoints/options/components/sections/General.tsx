@@ -1,11 +1,22 @@
-import { generalSettings } from "@/utils/config.js";
+import { defaultSettings, generalSettings, messages } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
 import H2 from "../ui/H2.js";
 import { useStorageStore } from "@/utils/store.js";
+import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { BackupData } from "@/types/storage/backup.types.js";
+import { Settings } from "@/types/storage/settings.types.js";
+import { getSettingsData } from "@/utils/storage.js";
+import { ValueOf } from "type-fest";
+import { useRef } from "react";
+import { useShallow } from "zustand/shallow";
 
 export default function General() {
-    const isAdvancedFeaturesVisible = useStorageStore(
-        (state) => state.settings.isAdvancedFeaturesVisible,
+    const input = useRef<HTMLInputElement | null>(null);
+    const [isAdvancedFeaturesVisible, saveSettings] = useStorageStore(
+        useShallow((state) => [
+            state.settings.isAdvancedFeaturesVisible,
+            state.saveSettings,
+        ]),
     );
 
     return (
@@ -31,6 +42,108 @@ export default function General() {
                         <Checkbox key={props.id} {...props} />
                     ))}
             </H2>
+            <H2 name="バックアップ">
+                {(
+                    [
+                        [
+                            "インポート",
+                            () => {
+                                if (input.current !== null)
+                                    input.current.click();
+                            },
+                        ],
+                        ["エクスポート", () => exportBackup()],
+                        ["リセット", () => reset()],
+                    ] as const
+                ).map(([text, callback]) => (
+                    <button
+                        key={text}
+                        className="common-button"
+                        onClick={callback}
+                    >
+                        {text}
+                    </button>
+                ))}
+                <input
+                    type="file"
+                    accept=".json"
+                    style={{ display: "none" }}
+                    ref={input}
+                    onChange={(e) => importBackup(e, saveSettings)}
+                />
+            </H2>
         </div>
     );
+}
+
+function importBackup(
+    event: React.ChangeEvent<HTMLInputElement>,
+    saveSettings: (settings: Partial<Settings>) => void,
+) {
+    const reader = new FileReader();
+    reader.onload = (f) => {
+        const res = f.target?.result;
+
+        if (typeof res === "string") {
+            const backup = JSON.parse(res) as BackupData;
+
+            if (backup.settings !== undefined) {
+                type valuesType = ValueOf<typeof defaultSettings>;
+
+                const newSettings: Record<string, valuesType> = {};
+                const keys = new Set(Object.keys(defaultSettings));
+
+                // defaultSettingsに存在するキーのみを抽出
+                Object.keys(backup.settings).forEach((key) => {
+                    if (keys.has(key)) {
+                        const value = backup.settings?.[key as keyof Settings];
+
+                        if (value !== undefined) newSettings[key] = value;
+                    }
+                });
+
+                saveSettings(newSettings);
+            }
+        }
+    };
+
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file === undefined) return;
+
+    reader.readAsText(file);
+}
+
+async function exportBackup() {
+    const settingsData = await getSettingsData();
+    if (settingsData === null) {
+        // 一度も設定が保存されていない場合
+        alert(messages.settings.neverReset);
+        return;
+    }
+
+    // valueがundefinedの場合でもkey自体が作成されないので問題ない
+    const data: BackupData = {
+        settings: settingsData,
+    };
+    const dataStr = JSON.stringify(data);
+
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const filename = `${browser.runtime.getManifest().name}-backup.json`;
+
+    // downloads権限なしでダウンロード
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+}
+
+async function reset() {
+    if (!confirm(messages.settings.confirmReset)) return;
+
+    await sendMessageToBackground({
+        type: "remove-all-data",
+    });
 }

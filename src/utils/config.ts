@@ -217,6 +217,10 @@ export const colors = {
 
 export const urls = {
     repository: "https://github.com/nines75/mico",
+    changeLog: "https://github.com/nines75/mico/releases",
+    wiki: "https://github.com/nines75/mico/wiki",
+    issues: "https://github.com/nines75/mico/issues",
+    discussions: "https://github.com/nines75/mico/discussions",
 } as const;
 
 export const pattern = {
@@ -257,8 +261,8 @@ export const settingsConfig = {
             name: "拡張ニコる",
         },
         {
-            id: "backup",
-            name: "バックアップ",
+            id: "support",
+            name: "サポート",
         },
     ],
 } as const satisfies {

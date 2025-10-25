@@ -22,7 +22,7 @@ export default function VideoFilterArea() {
                 {videoFilterSettings.filter.map((filter) => (
                     <button
                         key={filter.id}
-                        className={`filter-button${id === filter.id ? " selected-filter-button" : ""}`}
+                        className={`common-button filter-button${id === filter.id ? " selected-filter-button" : ""}`}
                         onClick={() => save({ selectedVideoFilter: filter.id })}
                     >
                         <span>{filter.name}</span>

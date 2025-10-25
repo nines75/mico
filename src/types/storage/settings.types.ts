@@ -7,7 +7,7 @@ export type SettingsTab =
     | "commentFilter"
     | "videoFilter"
     | "expandNicoru"
-    | "backup";
+    | "support";
 
 export interface Settings {
     // -------------------------------------------------------------------------------------------

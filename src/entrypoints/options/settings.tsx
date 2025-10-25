@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import Backup from "./components/sections/Backup.js";
 import CommentFilter from "./components/sections/CommentFilter.js";
 import ExpandNicoru from "./components/sections/ExpandNicoru.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
@@ -9,6 +8,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import VideoFilter from "./components/sections/VideoFilter.js";
 import General from "./components/sections/General.js";
 import { useShallow } from "zustand/shallow";
+import Support from "./components/sections/Support.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -80,8 +80,8 @@ function Page() {
                         return <VideoFilter />;
                     case "expandNicoru":
                         return <ExpandNicoru />;
-                    case "backup":
-                        return <Backup />;
+                    case "support":
+                        return <Support />;
                 }
             })()}
         </>
