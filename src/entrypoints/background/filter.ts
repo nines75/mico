@@ -62,7 +62,6 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 
-        // セクション解析
         if (rule.startsWith("@include ")) {
             directives.push({ type: "include", params: parseParams(rule) });
             return;
