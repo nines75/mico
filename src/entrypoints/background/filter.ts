@@ -42,15 +42,15 @@ export function parseFilter(filter: string) {
 }
 
 export function parseCustomFilter(filter: string): RawCustomRule[] {
-    interface Section {
+    interface Directive {
         type: "include" | "exclude" | "strict" | "disable";
-        value: string[];
+        params: string[];
     }
 
-    const section: Section[] = [];
+    const directives: Directive[] = [];
     const rules: RawCustomRule[] = [];
 
-    const parseDirective = (str: string) => {
+    const parseParams = (str: string) => {
         return str
             .split(" ")
             .filter((rule) => rule !== "")
@@ -64,38 +64,37 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
 
         // セクション解析
         if (rule.startsWith("@include ")) {
-            section.push({ type: "include", value: parseDirective(rule) });
+            directives.push({ type: "include", params: parseParams(rule) });
             return;
         }
         if (rule.startsWith("@exclude ")) {
-            section.push({ type: "exclude", value: parseDirective(rule) });
+            directives.push({ type: "exclude", params: parseParams(rule) });
             return;
         }
         if (trimmedRule === "@strict") {
-            section.push({ type: "strict", value: [] });
+            directives.push({ type: "strict", params: [] });
             return;
         }
         if (trimmedRule === "@disable") {
-            section.push({ type: "disable", value: [] });
+            directives.push({ type: "disable", params: [] });
             return;
         }
         if (trimmedRule === "@end") {
-            section.pop();
+            directives.pop();
             return;
         }
 
-        // 現在のセクションをもとに適用させるルールを取り出す
         const include: string[] = [];
         const exclude: string[] = [];
         let isStrict = false as boolean; // no-unnecessary-conditionによる誤検知を抑制
         let isDisable = false;
-        section.forEach(({ type, value }) => {
+        directives.forEach(({ type, params }) => {
             switch (type) {
                 case "include":
-                    include.push(...value);
+                    include.push(...params);
                     break;
                 case "exclude":
-                    exclude.push(...value);
+                    exclude.push(...params);
                     break;
                 case "strict":
                     isStrict = true;

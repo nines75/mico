@@ -77,7 +77,7 @@ export async function cleanupDb() {
         }
     };
 
-    await Promise.all([deleteKeys(db.log, db.tab)]);
+    await deleteKeys(db.log, db.tab);
 }
 
 export async function clearDb() {

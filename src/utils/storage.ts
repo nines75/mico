@@ -43,6 +43,7 @@ const settingsStorage = storage.defineItem<Partial<Settings>>(
     `${storageArea}:settings`,
     {
         version: 2,
+        // TODO: しばらくしたら消す
         migrations: {
             2: migrationSettingsToV2,
         },

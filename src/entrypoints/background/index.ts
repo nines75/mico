@@ -150,7 +150,7 @@ export default defineBackground(() => {
         }
     });
 
-    // しばらくしたらgetAllData/removeDataも含めて消す
+    // TODO: しばらくしたらgetAllData/removeDataも含めて消す
     browser.runtime.onInstalled.addListener(async (details) => {
         if (details.reason !== "update") return;
 
