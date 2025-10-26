@@ -4,6 +4,3 @@ onlyBuiltDependencies:
   - sharp
   - spawn-sync
   - unrs-resolver
-
-overrides:
-  vite: ^6
