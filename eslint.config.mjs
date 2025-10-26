@@ -14,6 +14,9 @@ export default defineConfig(
     ts.configs.strict,
     ts.configs.stylistic,
 
+    // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
+    reactHooks.configs.flat.recommended,
+
     // https://github.com/jsx-eslint/eslint-plugin-react
     react.configs.flat.recommended,
     react.configs.flat["jsx-runtime"], // React17以降で必要
@@ -29,10 +32,6 @@ export default defineConfig(
                 projectService: true, // tsconfig.jsonを自動で検索
             },
         },
-        plugins: {
-            "react-hooks": reactHooks, // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
-        },
-        extends: ["react-hooks/recommended"],
         settings: {
             // eslint-config-react
             react: {

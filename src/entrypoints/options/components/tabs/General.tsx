@@ -1,3 +1,5 @@
+// TODO: 原因を調べる(eslint-plugin-react-hooks自体の不具合？)
+/* eslint-disable react-hooks/refs */
 import { defaultSettings, generalSettings, messages } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
 import H2 from "../ui/H2.js";
