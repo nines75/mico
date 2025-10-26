@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import CommentFilter from "./components/sections/CommentFilter.js";
-import ExpandNicoru from "./components/sections/ExpandNicoru.js";
 import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
 import { settingsConfig, urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import VideoFilter from "./components/sections/VideoFilter.js";
-import General from "./components/sections/General.js";
 import { useShallow } from "zustand/shallow";
-import Support from "./components/sections/Support.js";
+import CommentFilter from "./components/tabs/CommentFilter.js";
+import ExpandNicoru from "./components/tabs/ExpandNicoru.js";
+import General from "./components/tabs/General.js";
+import Support from "./components/tabs/Support.js";
+import VideoFilter from "./components/tabs/VideoFilter.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
