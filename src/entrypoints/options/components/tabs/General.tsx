@@ -106,7 +106,6 @@ async function exportBackup() {
         return;
     }
 
-    // valueがundefinedの場合でもkey自体が作成されないので問題ない
     const data: BackupData = {
         settings: settingsData,
     };
@@ -114,13 +113,12 @@ async function exportBackup() {
 
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-
-    const filename = `${browser.runtime.getManifest().name}-backup.json`;
+    const fileName = `${browser.runtime.getManifest().name}-backup.json`;
 
     // downloads権限なしでダウンロード
     const a = document.createElement("a");
     a.href = url;
-    a.download = filename;
+    a.download = fileName;
     a.click();
 }
 
