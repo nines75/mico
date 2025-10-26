@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Checkbox from "../ui/Checkbox.js";
 import { useShallow } from "zustand/shallow";
 import CustomNicoru from "../ui/CustomNicoru.js";
 import {
@@ -8,7 +7,7 @@ import {
     messages,
 } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import H2 from "../ui/H2.js";
+import CheckboxSection from "../ui/CheckboxSection.js";
 
 export default function ExpandNicoru() {
     const [nicoruCounts, save] = useStorageStore(
@@ -52,13 +51,7 @@ export default function ExpandNicoru() {
 
     return (
         <div className="settings-container">
-            {expandNicoruSettings.checkbox.top.map((props) => (
-                <Checkbox key={props.id} {...props} />
-            ))}
-            <H2 name={"スタイル"}>
-                {expandNicoruSettings.checkbox.style.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
+            <CheckboxSection groups={expandNicoruSettings.checkbox}>
                 <div className="setting">
                     <button
                         className="small-button"
@@ -93,7 +86,7 @@ export default function ExpandNicoru() {
                         <CustomNicoru key={id} {...{ id }} />
                     ))}
                 </div>
-            </H2>
+            </CheckboxSection>
         </div>
     );
 }

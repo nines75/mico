@@ -8,6 +8,7 @@ import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
 import { CommentFilterAreaProps } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
 import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
 import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
+import { CheckboxGroups } from "@/entrypoints/options/components/ui/CheckboxSection.js";
 
 export const defaultSettings: Settings = {
     // -------------------------------------------------------------------------------------------
@@ -273,143 +274,160 @@ export const settingsConfig = {
 };
 
 export const generalSettings = {
-    checkbox: {
-        filtering: [
-            {
-                id: "isCaseInsensitive",
-                label: "大小文字を区別しない",
-                details:
-                    "正規表現が使用可能なフィルターに対してのみ有効になります。",
-            },
-        ],
-        editor: [
-            {
-                id: "isCloseBrackets",
-                label: "括弧を自動で閉じる",
-            },
-            {
-                id: "isHighlightTrailingWhitespace",
-                label: "行末の空白文字をハイライトする",
-            },
-            {
-                id: "isVimModeEnabled",
-                label: "Vimモードを有効にする",
-            },
-        ],
-        advanced: {
-            top: [
+    checkbox: [
+        {
+            header: "フィルタリング",
+            items: [
+                {
+                    id: "isCaseInsensitive",
+                    label: "大小文字を区別しない",
+                    details:
+                        "正規表現が使用可能なフィルターに対してのみ有効になります。",
+                },
+            ],
+        },
+        {
+            header: "エディター",
+            items: [
+                {
+                    id: "isCloseBrackets",
+                    label: "括弧を自動で閉じる",
+                },
+                {
+                    id: "isHighlightTrailingWhitespace",
+                    label: "行末の空白文字をハイライトする",
+                },
+                {
+                    id: "isVimModeEnabled",
+                    label: "Vimモードを有効にする",
+                },
+            ],
+        },
+        {
+            header: "高度な機能",
+            isChildren: true,
+            items: [
                 {
                     id: "isAdvancedFeaturesVisible",
                     label: "高度な機能を表示する",
                 },
             ],
-            features: [
-                {
-                    id: "isImeDisabledByContext",
-                    label: "コンテキストに応じてIMEを無効化する",
-                    details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
-                    ネイティブメッセージング権限とバイナリのインストールが必要です。`,
-                },
-            ],
         },
-    },
+    ],
+    advanced: [
+        {
+            id: "isImeDisabledByContext",
+            label: "コンテキストに応じてIMEを無効化する",
+            details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
+            ネイティブメッセージング権限とバイナリのインストールが必要です。`,
+        },
+    ],
 } as const satisfies {
-    checkbox: {
-        filtering: CheckboxProps[];
-        editor: CheckboxProps[];
-        advanced: {
-            top: CheckboxProps[];
-            features: CheckboxProps[];
-        };
-    };
+    checkbox: CheckboxGroups;
+    advanced: CheckboxProps[];
 };
 
 export const commentFilterSettings = {
-    checkbox: {
-        top: [
-            {
-                id: "isCommentFilterEnabled",
-                label: "コメントフィルターを有効にする",
-            },
-        ],
-        filtering: [
-            {
-                id: "isEasyCommentHidden",
-                label: "かんたんコメントを非表示にする",
-                childrenProps: [
-                    {
-                        id: "isHiddenEasyCommentAdded",
-                        label: "非表示にした数をバッジに加算する",
+    checkbox: [
+        {
+            items: [
+                {
+                    id: "isCommentFilterEnabled",
+                    label: "コメントフィルターを有効にする",
+                },
+            ],
+        },
+        {
+            header: "フィルタリング",
+            isChildren: true,
+            items: [
+                {
+                    id: "isEasyCommentHidden",
+                    label: "かんたんコメントを非表示にする",
+                    childrenProps: [
+                        {
+                            id: "isHiddenEasyCommentAdded",
+                            label: "非表示にした数をバッジに加算する",
+                        },
+                    ],
+                },
+                {
+                    id: "isScoreFilterEnabled",
+                    label: "NGスコアによるフィルタリングを有効にする",
+                    input: {
+                        id: "scoreFilterCount",
+                        label: "以下の場合にフィルタリング",
+                        max: 0,
                     },
-                ],
-            },
-            {
-                id: "isScoreFilterEnabled",
-                label: "NGスコアによるフィルタリングを有効にする",
-                input: {
-                    id: "scoreFilterCount",
-                    label: "以下の場合にフィルタリング",
-                    max: 0,
                 },
-            },
-            {
-                id: "isIgnoreByNicoru",
-                label: "ニコるの数に応じてフィルタリングの対象外にする",
-                details: "かんたんコメントの非表示には影響しません。",
-                input: {
-                    id: "ignoreByNicoruCount",
-                    label: "回以上ニコられていた場合に除外",
-                    min: 0,
+                {
+                    id: "isIgnoreByNicoru",
+                    label: "ニコるの数に応じてフィルタリングの対象外にする",
+                    details: "かんたんコメントの非表示には影響しません。",
+                    input: {
+                        id: "ignoreByNicoruCount",
+                        label: "回以上ニコられていた場合に除外",
+                        min: 0,
+                    },
                 },
-            },
-        ],
-        log: [
-            {
-                id: "isNgScoreVisible",
-                label: "NGスコアを表示する",
-            },
-            {
-                id: "isNicoruVisible",
-                label: "ニコるの数を表示する",
-                input: {
-                    id: "nicoruVisibleCount",
-                    label: "回以上ニコられていた場合に表示",
-                    min: 0,
+            ],
+        },
+        {
+            header: "ログ",
+            items: [
+                {
+                    id: "isNgScoreVisible",
+                    label: "NGスコアを表示する",
                 },
-            },
-            {
-                id: "isDuplicateVisible",
-                label: "本文が重複したコメントの数を表示する",
-                input: {
-                    id: "duplicateVisibleCount",
-                    label: "回以上重複していた場合に表示",
-                    min: 1,
+                {
+                    id: "isNicoruVisible",
+                    label: "ニコるの数を表示する",
+                    input: {
+                        id: "nicoruVisibleCount",
+                        label: "回以上ニコられていた場合に表示",
+                        min: 0,
+                    },
                 },
-            },
-        ],
-        notification: [
-            {
-                id: "isNotifyAddNgUserId",
-                label: "NGユーザーIDの手動追加時に通知する",
-            },
-            {
-                id: "isNotifyAutoAddNgUserId",
-                label: "NGユーザーIDの自動追加時に通知する",
-            },
-        ],
-        other: [
-            {
-                id: "isAutoReload",
-                label: "自動リロードを有効にする",
-                details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
-                読み込み後、リロードする前の再生時間が自動で再設定されます。`,
-            },
-            {
-                id: "isUserIdMountedToDropdown",
-                label: "ドロップダウンにユーザーIDを表示する",
-            },
-        ],
-    },
+                {
+                    id: "isDuplicateVisible",
+                    label: "本文が重複したコメントの数を表示する",
+                    input: {
+                        id: "duplicateVisibleCount",
+                        label: "回以上重複していた場合に表示",
+                        min: 1,
+                    },
+                },
+            ],
+        },
+        {
+            header: "通知",
+            items: [
+                {
+                    id: "isNotifyAddNgUserId",
+                    label: "NGユーザーIDの手動追加時に通知する",
+                },
+                {
+                    id: "isNotifyAutoAddNgUserId",
+                    label: "NGユーザーIDの自動追加時に通知する",
+                },
+            ],
+        },
+        {
+            header: "その他",
+            items: [
+                {
+                    id: "isAutoReload",
+                    label: "自動リロードを有効にする",
+                    details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
+                    読み込み後、リロードする前の再生時間が自動で再設定されます。`,
+                },
+                {
+                    id: "isUserIdMountedToDropdown",
+                    label: "ドロップダウンにユーザーIDを表示する",
+                },
+            ],
+        },
+    ],
     filter: [
         {
             id: "ngUserId",
@@ -425,69 +443,78 @@ export const commentFilterSettings = {
         },
     ],
 } as const satisfies {
-    checkbox: {
-        top: CheckboxProps[];
-        filtering: CheckboxProps[];
-        log: CheckboxProps[];
-        notification: CheckboxProps[];
-        other: CheckboxProps[];
-    };
+    checkbox: CheckboxGroups;
     filter: CommentFilterAreaProps[];
 };
 
 export const videoFilterSettings = {
-    checkbox: {
-        top: [
-            {
-                id: "isVideoFilterEnabled",
-                label: "動画フィルターを有効にする",
-            },
-        ],
-        filtering: [
-            {
-                id: "isPaidVideoHidden",
-                label: "有料動画を非表示にする",
-            },
-            {
-                id: "isCommentPreviewHidden",
-                label: "コメントプレビューを非表示にする",
-            },
-            {
-                id: "isViewsFilterEnabled",
-                label: "再生回数によるフィルタリングを有効にする",
-                details: "対象となるのは視聴ページの関連動画のみです。",
-                input: {
-                    id: "viewsFilterCount",
-                    label: "再生以下だった場合にフィルタリング",
-                    min: 0,
+    checkbox: [
+        {
+            items: [
+                {
+                    id: "isVideoFilterEnabled",
+                    label: "動画フィルターを有効にする",
                 },
-            },
-        ],
-        log: [
-            {
-                id: "isTitleRenderedAsLink",
-                label: "動画タイトルをリンクとして表示する",
-                details:
-                    "動画タイトルをクリックしてNG登録/解除することは出来なくなります。",
-            },
-        ],
-        notification: [
-            {
-                id: "isNotifyAddNgId",
-                label: "NG登録時に通知する",
-                details:
-                    "コンテキストメニューやクリップボードからNG登録した際に通知されます。",
-            },
-        ],
-        other: [
-            {
-                id: "isNgContextAppendedOnAdd",
-                label: "NG追加時にコンテキスト情報を付与する",
-                details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
-                コンテキストメニューからNG登録した場合は付与されません。`,
-            },
-        ],
-    },
+            ],
+        },
+        {
+            header: "フィルタリング",
+            isChildren: true,
+            items: [
+                {
+                    id: "isPaidVideoHidden",
+                    label: "有料動画を非表示にする",
+                },
+                {
+                    id: "isCommentPreviewHidden",
+                    label: "コメントプレビューを非表示にする",
+                },
+                {
+                    id: "isViewsFilterEnabled",
+                    label: "再生回数によるフィルタリングを有効にする",
+                    details: "対象となるのは視聴ページの関連動画のみです。",
+                    input: {
+                        id: "viewsFilterCount",
+                        label: "再生以下だった場合にフィルタリング",
+                        min: 0,
+                    },
+                },
+            ],
+        },
+        {
+            header: "ログ",
+            items: [
+                {
+                    id: "isTitleRenderedAsLink",
+                    label: "動画タイトルをリンクとして表示する",
+                    details:
+                        "動画タイトルをクリックしてNG登録/解除することは出来なくなります。",
+                },
+            ],
+        },
+        {
+            header: "通知",
+            items: [
+                {
+                    id: "isNotifyAddNgId",
+                    label: "NG登録時に通知する",
+                    details:
+                        "コンテキストメニューやクリップボードからNG登録した際に通知されます。",
+                },
+            ],
+        },
+        {
+            header: "その他",
+            items: [
+                {
+                    id: "isNgContextAppendedOnAdd",
+                    label: "NG追加時にコンテキスト情報を付与する",
+                    details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
+                    コンテキストメニューからNG登録した場合は付与されません。`,
+                },
+            ],
+        },
+    ],
     filter: [
         {
             id: "ngId",
@@ -503,36 +530,71 @@ export const videoFilterSettings = {
         },
     ],
 } as const satisfies {
-    checkbox: {
-        top: CheckboxProps[];
-        filtering: CheckboxProps[];
-        log: CheckboxProps[];
-        notification: CheckboxProps[];
-        other: CheckboxProps[];
-    };
+    checkbox: CheckboxGroups;
     filter: VideoFilterAreaProps[];
 };
 
 export const expandNicoruSettings = {
-    checkbox: {
-        top: [
-            {
-                id: "isExpandNicoruEnabled",
-                label: "拡張ニコるを有効にする",
-            },
-        ],
-        style: [
-            {
-                id: "isCommentBodyHighlighted",
-                label: "装飾対象のコメントの本文を強調する",
-            },
-        ],
-    },
+    checkbox: [
+        {
+            items: [
+                {
+                    id: "isExpandNicoruEnabled",
+                    label: "拡張ニコるを有効にする",
+                },
+            ],
+        },
+        {
+            header: "スタイル",
+            isChildren: true,
+            items: [
+                {
+                    id: "isCommentBodyHighlighted",
+                    label: "装飾対象のコメントの本文を強調する",
+                },
+            ],
+        },
+    ],
 } as const satisfies {
-    checkbox: {
-        top: CheckboxProps[];
-        style: CheckboxProps[];
-    };
+    checkbox: CheckboxGroups;
+};
+
+export const supportSettings = {
+    links: [
+        {
+            header: "リンク",
+            items: [
+                { name: "リポジトリ", url: urls.repository },
+                { name: "変更履歴", url: urls.changeLog },
+                { name: "wiki", url: urls.wiki },
+            ],
+        },
+        {
+            header: "コンタクト",
+            items: [
+                { name: "要望/バグ報告", url: urls.issues },
+                { name: "質問", url: urls.discussions },
+                { name: "メール", url: "mailto:zs4vbe5l3@mozmail.com" },
+            ],
+        },
+        {
+            header: "その他",
+            items: [
+                {
+                    name: "サードパーティライセンス",
+                    url: "/third-party-notices.txt",
+                },
+            ],
+        },
+    ],
+} as const satisfies {
+    links: {
+        header: string;
+        items: {
+            name: string;
+            url: string;
+        }[];
+    }[];
 };
 
 export const popupConfig = {

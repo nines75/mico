@@ -9,6 +9,7 @@ import { getSettingsData } from "@/utils/storage.js";
 import { ValueOf } from "type-fest";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
+import CheckboxSection from "../ui/CheckboxSection.js";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
@@ -19,39 +20,22 @@ export default function General() {
         ]),
     );
 
+    const clickInput = () => {
+        if (input.current !== null) input.current.click();
+    };
+
     return (
         <div className="settings-container">
-            {(
-                [
-                    ["フィルタリング", "filtering"],
-                    ["エディター", "editor"],
-                ] as const
-            ).map(([name, key]) => (
-                <H2 name={name} key={key}>
-                    {generalSettings.checkbox[key].map((props) => (
-                        <Checkbox key={props.id} {...props} />
-                    ))}
-                </H2>
-            ))}
-            <H2 name={"高度な機能"}>
-                {generalSettings.checkbox.advanced.top.map((props) => (
-                    <Checkbox key={props.id} {...props} />
-                ))}
+            <CheckboxSection groups={generalSettings.checkbox}>
                 {isAdvancedFeaturesVisible &&
-                    generalSettings.checkbox.advanced.features.map((props) => (
+                    generalSettings.advanced.map((props) => (
                         <Checkbox key={props.id} {...props} />
                     ))}
-            </H2>
+            </CheckboxSection>
             <H2 name="バックアップ">
                 {(
                     [
-                        [
-                            "インポート",
-                            () => {
-                                if (input.current !== null)
-                                    input.current.click();
-                            },
-                        ],
+                        ["インポート", () => clickInput()],
                         ["エクスポート", () => exportBackup()],
                         ["リセット", () => reset()],
                     ] as const
