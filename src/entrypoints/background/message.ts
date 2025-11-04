@@ -186,7 +186,7 @@ async function addNgUserIdFromDropdown(
     const userId = log?.commentFilterLog?.filtering?.noToUserId.get(
         data.commentNo,
     );
-    if (log === undefined || videoId === undefined || userId === undefined) {
+    if (videoId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
     }
