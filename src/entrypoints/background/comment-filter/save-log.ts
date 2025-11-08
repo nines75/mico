@@ -1,6 +1,6 @@
 import { FilteredData } from "./filter-comment.js";
 import { loadSettings } from "@/utils/storage.js";
-import { changeBadgeState } from "@/utils/util.js";
+import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { getCustomFilters } from "./filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import {
@@ -75,21 +75,24 @@ export function getCount(
     return {
         rule,
         blocked,
-        totalBlocked: Object.values(blocked).reduce(
-            (sum, value) => sum + value,
-            0,
-        ),
+        totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedCommentCount,
-        include: Object.values(customFilters)
-            .map((filter) => filter.getIncludeCount())
-            .reduce((sum, current) => sum + current, 0),
-        exclude: Object.values(customFilters)
-            .map((filter) => filter.getExcludeCount())
-            .reduce((sum, current) => sum + current, 0),
+        include: sumNumbers(
+            Object.values(customFilters).map((filter) =>
+                filter.getIncludeCount(),
+            ),
+        ),
+        exclude: sumNumbers(
+            Object.values(customFilters).map((filter) =>
+                filter.getExcludeCount(),
+            ),
+        ),
         disable: commandFilter.getDisableCount(),
-        invalid: Object.values(customFilters)
-            .map((filter) => filter.getInvalidCount())
-            .reduce((sum, current) => sum + current, 0),
+        invalid: sumNumbers(
+            Object.values(customFilters).map((filter) =>
+                filter.getInvalidCount(),
+            ),
+        ),
     };
 }
 

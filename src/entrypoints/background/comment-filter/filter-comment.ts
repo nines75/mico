@@ -6,6 +6,7 @@ import { ScoreFilter } from "./filter/score-filter.js";
 import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
 import { NoToUserId } from "@/types/storage/log-comment.types.js";
+import { sumNumbers } from "@/utils/util.js";
 
 export interface FilteredData {
     filters: {
@@ -72,8 +73,8 @@ export function filterComment(
     // -------------------------------------------------------------------------------------------
 
     // かんたんコメントを非表示
-    const easyCommentCount = threads
-        .map((thread) => {
+    const easyCommentCount = sumNumbers(
+        threads.map((thread) => {
             if (settings.isEasyCommentHidden && thread.fork === "easy") {
                 const count = thread.comments.length;
                 thread.comments = [];
@@ -82,8 +83,8 @@ export function filterComment(
             }
 
             return 0;
-        })
-        .reduce((sum, current) => sum + current, 0);
+        }),
+    );
 
     // strictルールのみでフィルタリング
     Object.values(customFilters).forEach((filter) =>

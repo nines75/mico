@@ -1,6 +1,6 @@
 import { VideoFiltering, VideoCount } from "@/types/storage/log-video.types.js";
 import { FilteredData } from "./filter-video.js";
-import { changeBadgeState } from "@/utils/util.js";
+import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
 
@@ -57,14 +57,13 @@ function getCount(filteredData: FilteredData): VideoCount {
     return {
         rule,
         blocked,
-        totalBlocked: Object.values(blocked).reduce(
-            (sum, value) => sum + value,
-            0,
-        ),
+        totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedVideoCount,
-        invalid: Object.values(filteredData.filters)
-            .map((filter) => filter.getInvalidCount())
-            .reduce((sum, current) => sum + current, 0),
+        invalid: sumNumbers(
+            Object.values(filteredData.filters).map((filter) =>
+                filter.getInvalidCount(),
+            ),
+        ),
     };
 }
 

@@ -146,3 +146,7 @@ export async function getLogId(
         return;
     }
 }
+
+export function sumNumbers(numbers: number[]) {
+    return numbers.reduce((sum, num) => sum + num, 0);
+}
