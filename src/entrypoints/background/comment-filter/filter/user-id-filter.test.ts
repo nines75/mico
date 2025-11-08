@@ -2,8 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
 import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { UserIdFilter } from "./user-id-filter.js";
+import { getNgUserId, UserIdFilter } from "./user-id-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
+import { Rule } from "../../filter.js";
 
 describe(UserIdFilter.name, () => {
     let threads: Thread[];
@@ -121,5 +122,46 @@ user-id-owner
             ["user-id-main-1", ["1002"]],
             ["user-id-owner", ["1000", "1001"]],
         ]);
+    });
+});
+
+describe(getNgUserId.name, () => {
+    it.each([
+        {
+            name: "すべてのルール",
+            expected: [
+                { rule: "user1", index: 1 },
+                { rule: "user2", index: 2 },
+                { rule: "user3", index: 3 },
+            ],
+        },
+        {
+            name: "通常のルール+動画限定ルール",
+            videoId: "sm1",
+            expected: [
+                { rule: "user1", index: 1 },
+                { rule: "user2", index: 2 },
+            ],
+        },
+        {
+            name: "通常のルールのみ",
+            videoId: "",
+            expected: [{ rule: "user1", index: 1 }],
+        },
+    ] satisfies {
+        name: string;
+        videoId?: string;
+        expected: Rule[];
+    }[])("$name", ({ videoId, expected }) => {
+        const settings = {
+            ...defaultSettings,
+            ngUserId: `
+user1
+sm1@user2
+sm2@user3
+`,
+        };
+
+        expect(getNgUserId(settings, videoId)).toEqual(expected);
     });
 });
