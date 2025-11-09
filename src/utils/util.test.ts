@@ -27,8 +27,8 @@ describe("util", () => {
     });
 
     it.each([
-        { url: "https://www.nicovideo.jp/watch/sm1234", expected: true },
-        { url: "https://www.nicovideo.jp/watch/1234", expected: true }, // https://github.com/nines75/mico/issues/13
+        { url: "https://www.nicovideo.jp/watch/sm0", expected: true },
+        { url: "https://www.nicovideo.jp/watch/0", expected: true }, // https://github.com/nines75/mico/issues/13
         { url: "https://www.nicovideo.jp/", expected: false },
         { expected: false },
     ])(`${isWatchPage.name}($url)`, ({ url, expected }) => {
@@ -36,12 +36,12 @@ describe("util", () => {
     });
 
     it.each([
+        { url: "https://www.nicovideo.jp/ranking", expected: true },
         { url: "https://www.nicovideo.jp/ranking/genre", expected: true },
         {
             url: "https://www.nicovideo.jp/ranking/genre/e9uj2uks",
             expected: true,
         },
-        { url: "https://www.nicovideo.jp/ranking/for_you", expected: false },
         { url: "https://www.nicovideo.jp/ranking/custom", expected: false },
         { url: "https://www.nicovideo.jp/", expected: false },
         { expected: false },

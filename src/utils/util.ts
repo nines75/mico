@@ -20,7 +20,10 @@ export function isWatchPage(url: string | undefined) {
 export function isRankingPage(url: string | undefined) {
     if (url === undefined) return false;
 
-    return url.startsWith(pattern.rankingPageUrl);
+    return (
+        url.startsWith(pattern.rankingPageUrl) &&
+        !url.startsWith(pattern.customRankingPageUrl)
+    );
 }
 
 export function isSearchPage(url: string | undefined) {

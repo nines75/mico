@@ -55,7 +55,7 @@ export default defineBackground(() => {
     browser.webRequest.onBeforeRequest.addListener(
         rankingRequest,
         {
-            urls: ["https://www.nicovideo.jp/ranking/genre*"],
+            urls: ["https://www.nicovideo.jp/ranking*"],
             types: ["main_frame", "xmlhttprequest"],
         },
         ["blocking"],
