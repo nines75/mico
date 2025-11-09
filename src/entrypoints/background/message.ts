@@ -75,10 +75,14 @@ type BackgroundMessage =
       }
     | {
           type: "restore-badge";
+      }
+    | {
+          type: "get-log-data";
+          data: string;
       };
 
 export async function sendMessageToBackground(message: BackgroundMessage) {
-    await browser.runtime.sendMessage(message);
+    return await browser.runtime.sendMessage(message);
 }
 
 export async function backgroundMessageHandler(
@@ -144,6 +148,9 @@ export async function backgroundMessageHandler(
             case "restore-badge": {
                 await restoreBadge(sender);
                 break;
+            }
+            case "get-log-data": {
+                return await getLogData(message.data);
             }
         }
     } catch (e) {

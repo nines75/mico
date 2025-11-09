@@ -1,3 +1,8 @@
+/**
+ * このファイルの関数はbackground以外からは呼び出さない
+ * https://github.com/nines75/mico/issues/40
+ */
+
 import { LogData } from "@/types/storage/log.types.js";
 import Dexie, { type EntityTable } from "dexie";
 import { customMerge } from "./storage.js";

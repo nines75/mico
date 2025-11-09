@@ -6,7 +6,6 @@ import { loadSettings } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
 import { getLogId, isRankingPage, isSearchPage, isWatchPage } from "./util.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
-import { getLogData } from "./db.js";
 
 interface StorageState {
     settings: Settings;
@@ -47,7 +46,12 @@ export const useStorageStore = create<StorageState>()(
             const tabId = tab?.id;
             const logId = await getLogId(tabId);
             const log =
-                logId === undefined ? undefined : await getLogData(logId);
+                logId === undefined
+                    ? undefined
+                    : ((await sendMessageToBackground({
+                          type: "get-log-data",
+                          data: logId,
+                      })) as LogData | undefined);
 
             set({
                 settings,

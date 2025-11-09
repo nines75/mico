@@ -6,6 +6,15 @@ import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import importPlugin from "eslint-plugin-import";
 
+const pathsExceptBackground = [
+    "./src/utils/store.ts",
+    "./src/utils/util.ts",
+    "./src/entrypoints/content",
+    "./src/entrypoints/options",
+    "./src/entrypoints/popup",
+    "./src/entrypoints/quick-edit",
+];
+
 export default defineConfig(
     // 下に行くほど優先される
 
@@ -116,21 +125,11 @@ export default defineConfig(
                 {
                     zones: [
                         {
-                            target: [
-                                "./src/utils/store.ts",
-                                "./src/utils/util.ts",
-                                "./src/entrypoints/content",
-                                "./src/entrypoints/options",
-                                "./src/entrypoints/popup",
-                                "./src/entrypoints/quick-edit",
-                            ],
+                            target: pathsExceptBackground,
                             from: "./src/utils/storage-write.ts",
                         },
                         {
-                            target: [
-                                "./src/utils/util.ts",
-                                "./src/entrypoints/content",
-                            ],
+                            target: pathsExceptBackground,
                             from: "./src/utils/db.ts",
                         },
                     ],
