@@ -36,7 +36,7 @@ describe("util", () => {
     });
 
     it.each([
-        { url: "https://www.nicovideo.jp/ranking", expected: true },
+        { url: "https://www.nicovideo.jp/ranking", expected: true }, // https://github.com/nines75/mico/issues/39
         { url: "https://www.nicovideo.jp/ranking/genre", expected: true },
         {
             url: "https://www.nicovideo.jp/ranking/genre/e9uj2uks",

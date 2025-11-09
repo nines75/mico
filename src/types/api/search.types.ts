@@ -1,7 +1,7 @@
-/**
- * https://www.nicovideo.jp/search
- * https://www.nicovideo.jp/tag
- */
+// -------------------------------------------------------------------------------------------
+// https://www.nicovideo.jp/search
+// https://www.nicovideo.jp/tag
+// -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";

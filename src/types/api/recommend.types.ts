@@ -1,6 +1,6 @@
-/**
- * https://nvapi.nicovideo.jp/v1/recommend
- */
+// -------------------------------------------------------------------------------------------
+// https://nvapi.nicovideo.jp/v1/recommend
+// -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";

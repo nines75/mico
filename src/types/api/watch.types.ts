@@ -1,6 +1,6 @@
-/**
- * https://www.nicovideo.jp/watch/*
- */
+// -------------------------------------------------------------------------------------------
+// https://www.nicovideo.jp/watch
+// -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";

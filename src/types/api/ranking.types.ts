@@ -1,6 +1,6 @@
-/**
- * https://www.nicovideo.jp/ranking/genre
- */
+// -------------------------------------------------------------------------------------------
+// https://www.nicovideo.jp/ranking
+// -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
