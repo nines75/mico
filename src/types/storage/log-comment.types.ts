@@ -21,6 +21,7 @@ export interface CommentCount {
     };
     blocked: {
         easyComment: number;
+        commentAssist: number;
         ngUserId: number;
         ngScore: number;
         ngCommand: number;
@@ -35,6 +36,8 @@ export interface CommentCount {
 }
 
 export interface CommentFiltering {
+    /** Map<comment.body, comment.id[]> */
+    commentAssist: CommonLog;
     /** Map<comment.userId, comment.id[]> */
     ngUserId: CommonLog;
     /** comment.id[] */

@@ -35,6 +35,7 @@ export const defaultSettings: Settings = {
 
     // フィルタリング
     isEasyCommentHidden: false,
+    isCommentAssistFilterEnabled: false,
     isHiddenEasyCommentAdded: true,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
@@ -353,6 +354,10 @@ export const commentFilterSettings = {
                     ],
                 },
                 {
+                    id: "isCommentAssistFilterEnabled",
+                    label: "コメントアシストによって投稿されたコメントを非表示にする",
+                },
+                {
                     id: "isScoreFilterEnabled",
                     label: "NGスコアによるフィルタリングを有効にする",
                     input: {
@@ -618,6 +623,10 @@ export const popupConfig = {
             {
                 id: "ngUserId",
                 name: "NGユーザーID",
+            },
+            {
+                id: "commentAssist",
+                name: "コメントアシスト",
             },
             {
                 id: "ngScore",

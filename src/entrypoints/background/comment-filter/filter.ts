@@ -28,10 +28,12 @@ export abstract class Filter<T> {
 
     traverseThreads(
         threads: Thread[],
-        callback: (comment: NiconicoComment) => boolean,
+        callback: (comment: NiconicoComment, thread: Thread) => boolean,
     ) {
         threads.forEach((thread) => {
-            thread.comments = thread.comments.filter(callback);
+            thread.comments = thread.comments.filter((comment) =>
+                callback(comment, thread),
+            );
         });
     }
 

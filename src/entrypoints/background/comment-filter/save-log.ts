@@ -55,8 +55,13 @@ export function getCount(
     filteredData: FilteredData,
     settings: Settings,
 ): CommentCount {
-    const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
-        filteredData.filters;
+    const {
+        userIdFilter,
+        commentAssistFilter,
+        scoreFilter,
+        commandFilter,
+        wordFilter,
+    } = filteredData.filters;
 
     const rule: CommentCount["rule"] = {
         ngUserId: parseFilter(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
@@ -65,6 +70,7 @@ export function getCount(
     };
     const blocked: CommentCount["blocked"] = {
         easyComment: filteredData.easyCommentCount,
+        commentAssist: commentAssistFilter.countBlocked(),
         ngUserId: userIdFilter.countBlocked(),
         ngScore: scoreFilter.countBlocked(),
         ngCommand: commandFilter.countBlocked(),
@@ -97,8 +103,13 @@ export function getCount(
 }
 
 export function getLog(filteredData: FilteredData): CommentFiltering {
-    const { userIdFilter, scoreFilter, commandFilter, wordFilter } =
-        filteredData.filters;
+    const {
+        userIdFilter,
+        commentAssistFilter,
+        scoreFilter,
+        commandFilter,
+        wordFilter,
+    } = filteredData.filters;
     const comments = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getFilteredComments(),
@@ -108,6 +119,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
     Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
     return {
+        commentAssist: commentAssistFilter.getLog(),
         ngUserId: userIdFilter.getLog(),
         ngScore: scoreFilter.getLog(),
         ngCommand: commandFilter.getLog(),

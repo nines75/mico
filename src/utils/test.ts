@@ -5,7 +5,7 @@ import {
 } from "@/types/storage/log-comment.types.js";
 import { expect } from "vitest";
 
-function createComments(
+export function createComments(
     ...comments: Partial<NiconicoComment>[]
 ): NiconicoComment[] {
     return comments.map((comment) => {
@@ -34,7 +34,16 @@ export const testThreads = [
     {
         fork: "owner",
         commentCount: 2,
-        comments: createComments({}, { id: "1001", no: 2 }),
+        comments: createComments(
+            {
+                commands: [], // 投稿者コメントは184コマンドが付与されない
+            },
+            {
+                id: "1001",
+                no: 2,
+                commands: [],
+            },
+        ),
     },
     {
         fork: "main",
@@ -120,6 +129,7 @@ export const testLog = {
         },
         blocked: {
             easyComment: 2,
+            commentAssist: 0,
             ngUserId: 2,
             ngScore: 1,
             ngCommand: 1,
@@ -133,6 +143,7 @@ export const testLog = {
         invalid: 0,
     },
     filtering: {
+        commentAssist: new Map(),
         ngUserId: new Map([["user-id-owner", ["1000", "1001"]]]),
         ngScore: ["1002"],
         ngCommand: new Map([["big", ["1004"]]]),
@@ -151,7 +162,11 @@ export const testLog = {
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;
 
-export function checkComment(threads: Thread[], ids: string[]) {
+export function checkComment(
+    threads: Thread[],
+    ids: string[],
+    baseThreads?: Thread[],
+) {
     // 実際のコメントIDを抽出
     const actualIds = threads.flatMap((thread) =>
         thread.comments.map((comment) => comment.id),
@@ -159,7 +174,7 @@ export function checkComment(threads: Thread[], ids: string[]) {
 
     // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
     const expectedIds: string[] = [];
-    testThreads.forEach((thread) =>
+    (baseThreads ?? testThreads).forEach((thread) =>
         thread.comments.forEach((comment) => {
             const targetId = comment.id;
             if (!ids.includes(targetId)) {

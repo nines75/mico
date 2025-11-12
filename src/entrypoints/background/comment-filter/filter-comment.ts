@@ -7,10 +7,12 @@ import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
 import { NoToUserId } from "@/types/storage/log-comment.types.js";
 import { sumNumbers } from "@/utils/util.js";
+import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 
 export interface FilteredData {
     filters: {
         userIdFilter: UserIdFilter;
+        commentAssistFilter: CommentAssistFilter;
         scoreFilter: ScoreFilter;
         commandFilter: CommandFilter;
         wordFilter: WordFilter;
@@ -51,12 +53,14 @@ export function filterComment(
 
     // フィルター初期化
     const userIdFilter = new UserIdFilter(settings, videoId);
+    const commentAssistFilter = new CommentAssistFilter(settings);
     const scoreFilter = new ScoreFilter(settings);
     const commandFilter = new CommandFilter(settings, ngUserIds);
     const wordFilter = new WordFilter(settings, ngUserIds);
 
     const filters: FilteredData["filters"] = {
         userIdFilter,
+        commentAssistFilter,
         scoreFilter,
         commandFilter,
         wordFilter,

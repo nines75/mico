@@ -37,8 +37,12 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     const settings = useStorageStore.getState().settings;
 
     // フィルタリングが無効に設定されている場合はレンダリングしない
-    if (id === "easyComment" && !settings.isEasyCommentHidden) return null;
-    if (id === "ngScore" && !settings.isScoreFilterEnabled) return null;
+    if (
+        (id === "easyComment" && !settings.isEasyCommentHidden) ||
+        (id === "commentAssist" && !settings.isCommentAssistFilterEnabled) ||
+        (id === "ngScore" && !settings.isScoreFilterEnabled)
+    )
+        return null;
 
     const blocked = count?.blocked[id];
     if (blocked === undefined || blocked === 0) return null;
@@ -46,7 +50,9 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     return (
         <LogFrame
             rule={
-                id !== "easyComment" && id !== "ngScore"
+                id !== "easyComment" &&
+                id !== "commentAssist" &&
+                id !== "ngScore"
                     ? count?.rule[id]
                     : undefined
             }
@@ -113,6 +119,12 @@ function Log({ id, filtering, settings }: LogProps) {
                 settings,
                 filtering.strictNgUserIds,
             );
+        case "commentAssist":
+            return renderCommentAssistLog(
+                filtering.commentAssist,
+                comments,
+                settings,
+            );
         case "ngScore":
             return renderScoreLog(filtering.ngScore, comments, settings);
         case "ngCommand":
@@ -164,6 +176,34 @@ function renderUserIdLog(
 
     userIdLog.keys().forEach((userId) => {
         renderLog(userId, elements);
+    });
+
+    return elements;
+}
+
+function renderCommentAssistLog(
+    commentAssistLog: CommonLog,
+    comments: CommentData,
+    settings: Settings,
+) {
+    const elements: JSX.Element[] = [];
+
+    commentAssistLog.entries().forEach(([body, ids]) => {
+        elements.push(
+            <div key={body} className="log-line">
+                {formatCommentWithDuplicate(
+                    ids.map((id) => comments.get(id) as NiconicoComment),
+                    body,
+                    {
+                        ...settings,
+                        ...{
+                            isDuplicateVisible: true,
+                            duplicateVisibleCount: 2,
+                        },
+                    },
+                )}
+            </div>,
+        );
     });
 
     return elements;

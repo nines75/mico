@@ -31,6 +31,7 @@ describe(`${filterComment.name}()`, () => {
         const res = filterComment(threads, createSettings({}), [], "sm1");
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
+        expect(res?.filters.commentAssistFilter.getLog()).toEqual(new Map());
         expect(res?.filters.scoreFilter.getLog()).toEqual([]);
         expect(res?.filters.userIdFilter.getLog()).toEqual(
             new Map([["user-id-owner", ["1000", "1001"]]]),
