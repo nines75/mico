@@ -17,7 +17,7 @@ export default function CheckboxSection({
     children,
 }: CheckboxSectionProps) {
     return groups.map(({ header, isChildren, items }) => (
-        <H2 name={header} key={header}>
+        <H2 name={header} key={items[0]?.id}>
             {items.map((props) => (
                 <Checkbox key={props.id} {...props} />
             ))}
