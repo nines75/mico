@@ -16,6 +16,7 @@ import {
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
+import { Line, Comment } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -86,7 +87,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
         const userName = sampleVideo.owner?.name;
 
         elements.push(
-            <div key={userId} className="log-line comment">
+            <Comment key={userId}>
                 {"# "}
                 <span
                     className="clickable"
@@ -95,7 +96,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
                 >
                     {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
                 </span>
-            </div>,
+            </Comment>,
         );
 
         const ids = log.userId.get(userId) ?? [];
@@ -103,13 +104,13 @@ function renderIdLog(log: IdLog, videos: VideoData) {
             const video = videos.get(videoId) as NiconicoVideo;
 
             elements.push(
-                <div key={videoId} className="log-line">
+                <Line key={videoId}>
                     {settings.isTitleRenderedAsLink ? (
                         renderVideoLink(video)
                     ) : (
                         <span>{escapeNewline(video.title)}</span>
                     )}
-                </div>,
+                </Line>,
             );
         });
 
@@ -124,17 +125,13 @@ function renderIdLog(log: IdLog, videos: VideoData) {
 
     // 動画IDによるログを生成
     if (log.videoId.length > 0) {
-        elements.push(
-            <div key="video-id-log" className="log-line comment">
-                {"# 動画ID"}
-            </div>,
-        );
+        elements.push(<Comment key="video-id-log">{"# 動画ID"}</Comment>);
 
         log.videoId.forEach((videoId) => {
             const video = videos.get(videoId) as NiconicoVideo;
 
             elements.push(
-                <div key={videoId} className="log-line">
+                <Line key={videoId}>
                     {settings.isTitleRenderedAsLink ? (
                         renderVideoLink(video)
                     ) : (
@@ -146,7 +143,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
                             {escapeNewline(video.title)}
                         </span>
                     )}
-                </div>,
+                </Line>,
             );
         });
     }
@@ -159,7 +156,7 @@ function renderCommonLog(log: CommonLog, videos: VideoData) {
         const ids = log.get(rule) ?? [];
 
         elements.push(
-            <div key={rule} className="log-line comment">{`# ${rule}`}</div>,
+            <Comment key={rule}>{`# ${rule}`}</Comment>,
             ...renderVideos(ids, videos),
             <br key={`${rule}-br`} />,
         );
@@ -187,7 +184,7 @@ function renderVideos(ids: string[], videos: VideoData) {
         const userId = video.owner?.id;
 
         elements.push(
-            <div key={videoId} className="log-line">
+            <Line key={videoId}>
                 {settings.isTitleRenderedAsLink ? (
                     renderVideoLink(video)
                 ) : userId === undefined ? (
@@ -201,7 +198,7 @@ function renderVideos(ids: string[], videos: VideoData) {
                         {escapedTitle}
                     </span>
                 )}
-            </div>,
+            </Line>,
         );
     });
 

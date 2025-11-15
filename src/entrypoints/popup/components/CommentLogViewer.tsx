@@ -19,6 +19,7 @@ import {
 import { CommonLog } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
+import { Line, Comment } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
@@ -124,7 +125,7 @@ function renderUserIdLog(
 ) {
     const renderLog = (userId: string, elements: JSX.Element[]) => {
         elements.push(
-            <div key={userId} className="log-line comment">
+            <Comment key={userId}>
                 {"# "}
                 {strictNgUserIds !== undefined &&
                     strictNgUserIds.has(userId) && (
@@ -137,7 +138,7 @@ function renderUserIdLog(
                 >
                     {userId}
                 </span>
-            </div>,
+            </Comment>,
         );
 
         const ids = log.get(userId);
@@ -145,9 +146,9 @@ function renderUserIdLog(
             const comment = comments.get(commentId) as NiconicoComment;
 
             elements.push(
-                <div key={commentId} className="log-line">
+                <Line key={commentId}>
                     {formatComment(comment, settings, false)}
-                </div>,
+                </Line>,
             );
         });
 
@@ -171,7 +172,7 @@ function renderCommentAssistLog(
 
     log.forEach((ids, body) => {
         elements.push(
-            <div key={body} className="log-line">
+            <Line key={body}>
                 {formatDuplicateComment(
                     ids.map((id) => comments.get(id) as NiconicoComment),
                     body,
@@ -183,7 +184,7 @@ function renderCommentAssistLog(
                         },
                     },
                 )}
-            </div>,
+            </Line>,
         );
     });
 
@@ -201,7 +202,7 @@ function renderScoreLog(
         const comment = comments.get(commentId) as NiconicoComment;
 
         elements.push(
-            <div key={commentId} className="log-line">
+            <Line key={commentId}>
                 {formatComment(
                     comment,
                     {
@@ -210,7 +211,7 @@ function renderScoreLog(
                     },
                     true,
                 )}
-            </div>,
+            </Line>,
         );
     });
 
@@ -223,21 +224,16 @@ function renderCommandLog(
     settings: Settings,
 ) {
     const renderLog = (command: string, elements: JSX.Element[]) => {
-        elements.push(
-            <div
-                key={command}
-                className="log-line comment"
-            >{`# ${command}`}</div>,
-        );
+        elements.push(<Comment key={command}>{`# ${command}`}</Comment>);
 
         const ids = log.get(command);
         ids?.forEach((commentId) => {
             const comment = comments.get(commentId) as NiconicoComment;
 
             elements.push(
-                <div key={commentId} className="log-line">
+                <Line key={commentId}>
                     {formatComment(comment, settings, true)}
-                </div>,
+                </Line>,
             );
         });
 
@@ -258,20 +254,18 @@ function renderWordLog(
     settings: Settings,
 ) {
     const renderLog = (word: string, elements: JSX.Element[]) => {
-        elements.push(
-            <div key={word} className="log-line comment">{`# ${word}`}</div>,
-        );
+        elements.push(<Comment key={word}>{`# ${word}`}</Comment>);
 
         const map = log.get(word);
         map?.forEach((ids, body) => {
             elements.push(
-                <div key={`${word}-${body}`} className="log-line">
+                <Line key={`${word}-${body}`}>
                     {formatDuplicateComment(
                         ids.map((id) => comments.get(id) as NiconicoComment),
                         body,
                         settings,
                     )}
-                </div>,
+                </Line>,
             );
         });
 
