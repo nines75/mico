@@ -15,6 +15,7 @@ import {
 } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { keyIn } from "ts-extras";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -36,7 +37,11 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
 
     return (
         <LogFrame
-            rule={id !== "paid" && id !== "views" ? count?.rule[id] : undefined}
+            rule={
+                count?.rule !== undefined &&
+                keyIn(count.rule, id) &&
+                count.rule[id]
+            }
             {...{ name, blocked }}
         >
             <div className="log">
@@ -61,18 +66,22 @@ function Log({ id, filtering }: LogProps) {
             return renderIdLog(filtering.ngId, videos);
         case "paid":
         case "views":
-            return renderVideoLog(filtering[id], videos);
+            return renderVideos(filtering[id], videos);
         case "ngUserName":
         case "ngTitle":
             return renderCommonLog(filtering[id], videos);
     }
 }
 
-function renderIdLog(idLog: IdLog, videos: VideoData) {
+// -------------------------------------------------------------------------------------------
+// ログをレンダリングする関数
+// -------------------------------------------------------------------------------------------
+
+function renderIdLog(log: IdLog, videos: VideoData) {
     const settings = useStorageStore.getState().settings;
     const renderUserIdLog = (userId: string, elements: JSX.Element[]) => {
         const sampleVideo = videos.get(
-            idLog.userId.get(userId)?.[0] as string,
+            log.userId.get(userId)?.[0] as string,
         ) as NiconicoVideo;
         const userName = sampleVideo.owner?.name;
 
@@ -89,7 +98,7 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
             </div>,
         );
 
-        const ids = idLog.userId.get(userId) ?? [];
+        const ids = log.userId.get(userId) ?? [];
         ids.forEach((videoId) => {
             const video = videos.get(videoId) as NiconicoVideo;
 
@@ -106,23 +115,22 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
 
         elements.push(<br key={`${userId}-br`} />);
     };
-
     const elements: JSX.Element[] = [];
 
-    // ユーザーIDのによるログを生成
-    idLog.userId.keys().forEach((userId) => {
+    // ユーザーIDによるログを生成
+    log.userId.keys().forEach((userId) => {
         renderUserIdLog(userId, elements);
     });
 
     // 動画IDによるログを生成
-    if (idLog.videoId.length > 0) {
+    if (log.videoId.length > 0) {
         elements.push(
             <div key="video-id-log" className="log-line comment">
                 {"# 動画ID"}
             </div>,
         );
 
-        idLog.videoId.forEach((videoId) => {
+        log.videoId.forEach((videoId) => {
             const video = videos.get(videoId) as NiconicoVideo;
 
             elements.push(
@@ -146,39 +154,33 @@ function renderIdLog(idLog: IdLog, videos: VideoData) {
     return elements;
 }
 
-function renderVideoLog(log: string[], videos: VideoData) {
-    const elements: JSX.Element[] = [];
-    renderCommonVideos(elements, log, videos);
-
-    return elements;
-}
-
-function renderCommonLog(commonLog: CommonLog, videos: VideoData) {
+function renderCommonLog(log: CommonLog, videos: VideoData) {
     const renderLog = (rule: string, elements: JSX.Element[]) => {
+        const ids = log.get(rule) ?? [];
+
         elements.push(
             <div key={rule} className="log-line comment">{`# ${rule}`}</div>,
+            ...renderVideos(ids, videos),
+            <br key={`${rule}-br`} />,
         );
-
-        const ids = commonLog.get(rule) ?? [];
-        renderCommonVideos(elements, ids, videos);
-
-        elements.push(<br key={`${rule}-br`} />);
     };
 
     const elements: JSX.Element[] = [];
-    commonLog.keys().forEach((rule) => {
+    log.keys().forEach((rule) => {
         renderLog(rule, elements);
     });
 
     return elements;
 }
 
-function renderCommonVideos(
-    elements: JSX.Element[],
-    ids: string[],
-    videos: VideoData,
-) {
+// -------------------------------------------------------------------------------------------
+// 重複をまとめる関数
+// -------------------------------------------------------------------------------------------
+
+function renderVideos(ids: string[], videos: VideoData) {
+    const elements: JSX.Element[] = [];
     const settings = useStorageStore.getState().settings;
+
     ids.forEach((videoId) => {
         const video = videos.get(videoId) as NiconicoVideo;
         const escapedTitle = escapeNewline(video.title);
@@ -213,6 +215,10 @@ function renderVideoLink(video: NiconicoVideo) {
         </a>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// コールバック関数
+// -------------------------------------------------------------------------------------------
 
 async function onClickId(id: string, type: "user" | "video") {
     const text = (() => {

@@ -2,7 +2,7 @@ import { InfoContent } from "./Info.js";
 
 interface LogFrameProps {
     name: string;
-    rule: number | undefined;
+    rule: number | false;
     blocked: number;
     children: React.ReactNode;
 }
@@ -12,7 +12,7 @@ export function LogFrame({ name, rule, blocked, children }: LogFrameProps) {
         <section>
             <div className="filtering-type">{name}</div>
             <div>
-                {rule !== undefined && (
+                {rule !== false && (
                     <InfoContent name="ルール数:" value={rule} />
                 )}
                 <InfoContent name="ブロック数:" value={blocked} />

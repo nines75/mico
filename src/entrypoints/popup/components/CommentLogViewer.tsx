@@ -18,6 +18,7 @@ import {
 } from "@/types/storage/log-comment.types.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { keyIn } from "ts-extras";
 
 type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
@@ -50,11 +51,9 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
     return (
         <LogFrame
             rule={
-                id !== "easyComment" &&
-                id !== "commentAssist" &&
-                id !== "ngScore"
-                    ? count?.rule[id]
-                    : undefined
+                count?.rule !== undefined &&
+                keyIn(count.rule, id) &&
+                count.rule[id]
             }
             {...{ name, blocked }}
         >
@@ -64,7 +63,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                         <button
                             title={titles.undoStrict}
                             className="common-button"
-                            onClick={() => undoStrictNgUserIds(filtering)}
+                            onClick={() => undoStrict(filtering)}
                         >
                             undo
                         </button>
@@ -77,27 +76,6 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             )}
         </LogFrame>
     );
-}
-
-async function undoStrictNgUserIds(filtering: CommentFiltering | undefined) {
-    const userIds = filtering?.strictNgUserIds ?? new Set();
-    if (
-        !confirm(
-            messages.ngUserId.undoStrict.replace(
-                "{target}",
-                [...userIds].join("\n"),
-            ),
-        )
-    )
-        return;
-
-    await sendMessageToBackground({
-        type: "remove-ng-user-id",
-        data: {
-            userIds,
-            isRemoveSpecific: false, // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
-        },
-    });
 }
 
 interface LogProps {
@@ -134,8 +112,12 @@ function Log({ id, filtering, settings }: LogProps) {
     }
 }
 
+// -------------------------------------------------------------------------------------------
+// ログをレンダリングする関数
+// -------------------------------------------------------------------------------------------
+
 function renderUserIdLog(
-    userIdLog: CommonLog,
+    log: CommonLog,
     comments: CommentData,
     settings: Settings,
     strictNgUserIds?: Set<string>,
@@ -158,8 +140,8 @@ function renderUserIdLog(
             </div>,
         );
 
-        const ids = userIdLog.get(userId) ?? [];
-        ids.forEach((commentId) => {
+        const ids = log.get(userId);
+        ids?.forEach((commentId) => {
             const comment = comments.get(commentId) as NiconicoComment;
 
             elements.push(
@@ -171,10 +153,9 @@ function renderUserIdLog(
 
         elements.push(<br key={`${userId}-br`} />);
     };
-
     const elements: JSX.Element[] = [];
 
-    userIdLog.keys().forEach((userId) => {
+    log.keys().forEach((userId) => {
         renderLog(userId, elements);
     });
 
@@ -182,16 +163,16 @@ function renderUserIdLog(
 }
 
 function renderCommentAssistLog(
-    commentAssistLog: CommonLog,
+    log: CommonLog,
     comments: CommentData,
     settings: Settings,
 ) {
     const elements: JSX.Element[] = [];
 
-    commentAssistLog.entries().forEach(([body, ids]) => {
+    log.forEach((ids, body) => {
         elements.push(
             <div key={body} className="log-line">
-                {formatCommentWithDuplicate(
+                {formatDuplicateComment(
                     ids.map((id) => comments.get(id) as NiconicoComment),
                     body,
                     {
@@ -210,13 +191,13 @@ function renderCommentAssistLog(
 }
 
 function renderScoreLog(
-    scoreLog: ScoreLog,
+    log: ScoreLog,
     comments: CommentData,
     settings: Settings,
 ) {
     const elements: JSX.Element[] = [];
 
-    scoreLog.forEach((commentId) => {
+    log.forEach((commentId) => {
         const comment = comments.get(commentId) as NiconicoComment;
 
         elements.push(
@@ -237,7 +218,7 @@ function renderScoreLog(
 }
 
 function renderCommandLog(
-    commandLog: CommonLog,
+    log: CommonLog,
     comments: CommentData,
     settings: Settings,
 ) {
@@ -249,8 +230,8 @@ function renderCommandLog(
             >{`# ${command}`}</div>,
         );
 
-        const ids = commandLog.get(command) ?? [];
-        ids.forEach((commentId) => {
+        const ids = log.get(command);
+        ids?.forEach((commentId) => {
             const comment = comments.get(commentId) as NiconicoComment;
 
             elements.push(
@@ -262,10 +243,9 @@ function renderCommandLog(
 
         elements.push(<br key={`${command}-br`} />);
     };
-
     const elements: JSX.Element[] = [];
 
-    commandLog.keys().forEach((command) => {
+    log.keys().forEach((command) => {
         renderLog(command, elements);
     });
 
@@ -273,7 +253,7 @@ function renderCommandLog(
 }
 
 function renderWordLog(
-    wordLog: WordLog,
+    log: WordLog,
     comments: CommentData,
     settings: Settings,
 ) {
@@ -282,13 +262,11 @@ function renderWordLog(
             <div key={word} className="log-line comment">{`# ${word}`}</div>,
         );
 
-        const map = wordLog.get(word) ?? new Map<string, string[]>();
-        map.keys().forEach((body) => {
-            const ids = map.get(body) ?? [];
-
+        const map = log.get(word);
+        map?.forEach((ids, body) => {
             elements.push(
                 <div key={`${word}-${body}`} className="log-line">
-                    {formatCommentWithDuplicate(
+                    {formatDuplicateComment(
                         ids.map((id) => comments.get(id) as NiconicoComment),
                         body,
                         settings,
@@ -299,21 +277,25 @@ function renderWordLog(
 
         elements.push(<br key={`${word}-br`} />);
     };
-
     const elements: JSX.Element[] = [];
 
-    wordLog.keys().forEach((word) => {
+    log.keys().forEach((word) => {
         renderLog(word, elements);
     });
 
     return elements;
 }
 
+// -------------------------------------------------------------------------------------------
+// 行をレンダリングする関数
+// -------------------------------------------------------------------------------------------
+
 function formatComment(
     comment: NiconicoComment,
     settings: Settings,
     isClickable: boolean,
 ) {
+    const elements: JSX.Element[] = [];
     const [body, nicoru, score] = [
         comment.body,
         comment.nicoruCount,
@@ -324,12 +306,10 @@ function formatComment(
         settings.isNicoruVisible && nicoru >= settings.nicoruVisibleCount;
     const isNgScore = settings.isNgScoreVisible && score < 0;
 
-    const elements: JSX.Element[] = [];
-
     if (isNgScore) {
         elements.push(
             <span
-                key={`ng-score`}
+                key="ng-score"
                 className="ng-score"
                 title={titles.ngScore}
             >{`[🚫:${score}]`}</span>,
@@ -338,7 +318,7 @@ function formatComment(
     if (isNicoru) {
         elements.push(
             <span
-                key={`nicoru`}
+                key="nicoru"
                 className="nicoru"
                 title={titles.nicoruCount}
             >{`[👍:${nicoru}]`}</span>,
@@ -346,8 +326,8 @@ function formatComment(
     }
 
     elements.push(
-        <Fragment key={`body`}>
-            {`${elements.length > 0 ? ":" : ""}`}
+        <Fragment key="body">
+            {elements.length > 0 ? ":" : ""}
             <span
                 {...(isClickable
                     ? {
@@ -365,7 +345,7 @@ function formatComment(
     return elements;
 }
 
-function formatCommentWithDuplicate(
+function formatDuplicateComment(
     comments: NiconicoComment[],
     body: string,
     settings: Settings,
@@ -376,7 +356,7 @@ function formatCommentWithDuplicate(
     if (settings.isDuplicateVisible && cnt >= settings.duplicateVisibleCount) {
         elements.push(
             <span
-                key={`cnt`}
+                key="cnt"
                 className="duplicate"
                 title={titles.duplicateComments}
             >{`[${cnt}回]`}</span>,
@@ -384,8 +364,8 @@ function formatCommentWithDuplicate(
     }
 
     elements.push(
-        <Fragment key={`body`}>
-            {`${elements.length > 0 ? ":" : ""}`}
+        <Fragment key="body">
+            {elements.length > 0 ? ":" : ""}
             <span
                 title={titles.addNgUserIdByComment}
                 className="clickable"
@@ -397,6 +377,31 @@ function formatCommentWithDuplicate(
     );
 
     return elements;
+}
+
+// -------------------------------------------------------------------------------------------
+// コールバック関数
+// -------------------------------------------------------------------------------------------
+
+async function undoStrict(filtering: CommentFiltering | undefined) {
+    const userIds = filtering?.strictNgUserIds ?? new Set();
+    if (
+        !confirm(
+            messages.ngUserId.undoStrict.replace(
+                "{target}",
+                [...userIds].join("\n"),
+            ),
+        )
+    )
+        return;
+
+    await sendMessageToBackground({
+        type: "remove-ng-user-id",
+        data: {
+            userIds,
+            isRemoveSpecific: false, // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+        },
+    });
 }
 
 async function onClickUserId(userId: string) {

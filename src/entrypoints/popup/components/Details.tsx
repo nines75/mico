@@ -21,7 +21,7 @@ export default function Details({ id, summary, children }: DetailsProps) {
                 const target = e.target as HTMLDetailsElement;
                 const isOpenCurrent = target.open;
 
-                if (isOpenCurrent === isOpen) return; // onToggleは初期値がtrueの場合も発動するのでここで弾く
+                if (isOpenCurrent === isOpen) return; // onToggleは初期値がtrueの場合も発火するのでここで弾く
 
                 save({ [id]: isOpenCurrent });
             }}
