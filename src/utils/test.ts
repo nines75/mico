@@ -155,7 +155,7 @@ export const testLog = {
 
 export function checkComment(
     threads: Thread[],
-    ids: string[],
+    filteredIds: string[],
     baseThreads?: Thread[],
 ) {
     // 実際のコメントIDを抽出
@@ -168,7 +168,7 @@ export function checkComment(
     (baseThreads ?? testThreads).forEach((thread) =>
         thread.comments.forEach((comment) => {
             const targetId = comment.id;
-            if (!ids.includes(targetId)) {
+            if (!filteredIds.includes(targetId)) {
                 expectedIds.push(targetId);
             }
         }),
