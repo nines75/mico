@@ -230,12 +230,8 @@ big
         });
         commandFilter.sortLog();
 
-        expect(
-            [...commandFilter.getLog().entries()].map(([key, value]) => [
-                key,
-                value,
-            ]) satisfies [string, string[]][],
-        ).toEqual([
+        // 順序を調べるために配列に変換
+        expect([...commandFilter.getLog()]).toEqual([
             ["device:switch", ["1003", "1004"]],
             ["big", ["1002"]],
         ]);

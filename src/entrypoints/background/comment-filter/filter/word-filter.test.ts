@@ -198,14 +198,9 @@ describe(WordFilter.name, () => {
         });
         wordFilter.sortLog();
 
+        // 順序を調べるために配列に変換
         expect(
-            [...wordFilter.getLog().entries()].map(([key, map]) => [
-                key,
-                [...map.entries()].map(([innerKey, array]) => [
-                    innerKey,
-                    array,
-                ]),
-            ]) satisfies [string, [string, string[]][]][],
+            [...wordFilter.getLog()].map(([key, map]) => [key, [...map]]),
         ).toEqual([
             [
                 "コメント",

@@ -113,12 +113,8 @@ user-id-owner
         });
         userIdFilter.sortLog();
 
-        expect(
-            [...userIdFilter.getLog()].map(([key, value]) => [
-                key,
-                value,
-            ]) satisfies [string, string[]][],
-        ).toEqual([
+        // 順序を調べるために配列に変換
+        expect([...userIdFilter.getLog()]).toEqual([
             ["user-id-main-1", ["1002"]],
             ["user-id-owner", ["1000", "1001"]],
         ]);

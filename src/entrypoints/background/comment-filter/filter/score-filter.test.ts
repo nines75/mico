@@ -41,6 +41,16 @@ describe(ScoreFilter.name, () => {
         checkComment(threads, ids);
     });
 
+    it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
+        expect(
+            filtering({
+                score: 0,
+                settings: { isScoreFilterEnabled: false },
+            }).getLog(),
+        ).toEqual([]);
+        checkComment(threads, []);
+    });
+
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         expect(
             filtering({

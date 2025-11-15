@@ -102,16 +102,4 @@ device:Switch`,
             "1006",
         ]);
     });
-
-    it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
-        const res = filterComment(
-            threads,
-            createSettings({ isScoreFilterEnabled: true }),
-            [],
-            "sm1",
-        );
-
-        checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
-        expect(res?.filters.scoreFilter.getLog()).toEqual(["1002"]);
-    });
 });

@@ -40,7 +40,6 @@ export const testThreads = [
             },
             {
                 id: "1001",
-                no: 2,
                 commands: [],
             },
         ),
@@ -51,7 +50,6 @@ export const testThreads = [
         comments: createComments(
             {
                 id: "1002",
-                no: 3,
                 commands: ["big", "184"],
                 userId: "user-id-main-1",
                 score: -1001,
@@ -60,7 +58,6 @@ export const testThreads = [
             },
             {
                 id: "1003",
-                no: 4,
                 commands: ["184", "device:Switch"],
                 userId: "user-id-main-2",
                 score: -1000,
@@ -69,7 +66,6 @@ export const testThreads = [
             },
             {
                 id: "1004",
-                no: 5,
                 commands: ["big", "184", "device:Switch"],
                 userId: "user-id-main-3",
                 score: -999,
@@ -84,13 +80,11 @@ export const testThreads = [
         comments: createComments(
             {
                 id: "1005",
-                no: 6,
                 userId: "user-id-easy",
                 body: "！？",
             },
             {
                 id: "1006",
-                no: 7,
                 userId: "user-id-easy",
                 body: "うぽつ",
             },
@@ -105,14 +99,14 @@ export const testCommentData: CommentData = new Map(
 );
 
 function getComments(ids: string[]) {
-    const comments: [string, NiconicoComment | undefined][] = ids.map((id) => [
+    const comments: [string, NiconicoComment][] = ids.map((id) => [
         id,
         testThreads
             .flatMap((thread) => thread.comments)
-            .find((comment) => comment.id === id),
+            .find((comment) => comment.id === id) as NiconicoComment,
     ]);
     comments.forEach(([_, comment]) => {
-        comment?.commands.forEach(
+        comment.commands.forEach(
             (command, i, commands) => (commands[i] = command.toLowerCase()),
         );
     });
@@ -153,10 +147,7 @@ export const testLog = {
         strictNgUserIds: new Set(),
         noToUserId: new Map(),
         comments: new Map(
-            getComments(["1000", "1001", "1002", "1004", "1003"]) as [
-                string,
-                NiconicoComment,
-            ][],
+            getComments(["1000", "1001", "1002", "1004", "1003"]),
         ),
     },
     processingTime: { filtering: 1, saveLog: 5 },

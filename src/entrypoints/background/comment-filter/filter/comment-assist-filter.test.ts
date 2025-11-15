@@ -22,27 +22,23 @@ export const commentAssistThreads = [
         comments: createComments(
             {
                 id: "1001",
-                no: 2,
                 commands: [],
                 postedAt: "2025-02-26T00:00:00+09:00", // リリース丁度
                 nicoruCount: 30,
             },
             {
                 id: "1002",
-                no: 3,
                 commands: [],
                 userId: "user-id-main-2",
                 postedAt: "2025-02-25T23:59:59+09:00", // リリース直前
             },
             {
                 id: "1003",
-                no: 4,
                 body: "test2",
                 commands: [],
             },
             {
                 id: "1004",
-                no: 5,
                 body: "test2",
                 commands: [],
             },
@@ -108,6 +104,7 @@ describe(CommentAssistFilter.name, () => {
         const commentAssistFilter = filtering({});
         commentAssistFilter.sortLog();
 
+        // 順序を調べるために配列に変換
         expect([...commentAssistFilter.getLog()]).toEqual([
             ["test2", ["1003", "1004"]],
             ["test", ["1001"]],
