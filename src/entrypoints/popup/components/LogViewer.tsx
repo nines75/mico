@@ -1,14 +1,14 @@
 import { JSX } from "react";
 
 interface BlockProps {
-    element: JSX.Element | string;
+    comment: JSX.Element | string;
     children: React.ReactNode;
 }
 
-export function Block({ element, children }: BlockProps) {
+export function Block({ comment, children }: BlockProps) {
     return (
         <>
-            <Comment>{element}</Comment>
+            <Comment>{comment}</Comment>
             {children}
             <br />
         </>

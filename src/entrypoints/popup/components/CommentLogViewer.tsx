@@ -126,7 +126,7 @@ function renderUserIdLog(
         .map((userId) => (
             <Block
                 key={userId}
-                element={
+                comment={
                     <>
                         {"# "}
                         {strictNgUserIds?.has(userId) === true && (
@@ -183,7 +183,7 @@ function renderCommandLog(
     return log
         .keys()
         .map((command) => (
-            <Block key={command} element={`# ${command}`}>
+            <Block key={command} comment={`# ${command}`}>
                 {renderComments(log.get(command), comments, settings, true)}
             </Block>
         ))
@@ -198,7 +198,7 @@ function renderWordLog(
     return log
         .keys()
         .map((word) => (
-            <Block key={word} element={`# ${word}`}>
+            <Block key={word} comment={`# ${word}`}>
                 {renderDuplicateComments(log.get(word), comments, settings)}
             </Block>
         ))

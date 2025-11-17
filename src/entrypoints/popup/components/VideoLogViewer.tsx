@@ -86,7 +86,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
         return (
             <Block
                 key={userId}
-                element={
+                comment={
                     <>
                         {"# "}
                         <span
@@ -118,7 +118,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
             {
                 // 動画IDによるログを生成
                 log.videoId.length > 0 && (
-                    <Block element={"# 動画ID"}>
+                    <Block comment={"# 動画ID"}>
                         {renderVideos(log.videoId, videos, (video) => (
                             <span
                                 title={titles.removeNgVideoId}
@@ -139,7 +139,7 @@ function renderCommonLog(log: CommonLog, videos: VideoData) {
     return log
         .keys()
         .map((rule) => (
-            <Block key={rule} element={`# ${rule}`}>
+            <Block key={rule} comment={`# ${rule}`}>
                 {renderVideos(log.get(rule), videos, getTitleElement)}
             </Block>
         ))
