@@ -4,8 +4,6 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
-import { JSX } from "react";
-import { Fragment } from "react/jsx-runtime";
 import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
@@ -19,7 +17,7 @@ import {
 import { CommonLog } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
-import { Line, Comment } from "./LogViewer.js";
+import { Line, Block } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
@@ -123,44 +121,31 @@ function renderUserIdLog(
     settings: Settings,
     strictNgUserIds?: Set<string>,
 ) {
-    const renderLog = (userId: string, elements: JSX.Element[]) => {
-        elements.push(
-            <Comment key={userId}>
-                {"# "}
-                {strictNgUserIds !== undefined &&
-                    strictNgUserIds.has(userId) && (
-                        <span className="strict-symbol">[!]</span>
-                    )}
-                <span
-                    className="clickable"
-                    title={titles.removeNgUserId}
-                    onClick={() => onClickUserId(userId)}
-                >
-                    {userId}
-                </span>
-            </Comment>,
-        );
-
-        const ids = log.get(userId);
-        ids?.forEach((commentId) => {
-            const comment = comments.get(commentId) as NiconicoComment;
-
-            elements.push(
-                <Line key={commentId}>
-                    {formatComment(comment, settings, false)}
-                </Line>,
-            );
-        });
-
-        elements.push(<br key={`${userId}-br`} />);
-    };
-    const elements: JSX.Element[] = [];
-
-    log.keys().forEach((userId) => {
-        renderLog(userId, elements);
-    });
-
-    return elements;
+    return log
+        .keys()
+        .map((userId) => (
+            <Block
+                key={userId}
+                element={
+                    <>
+                        {"# "}
+                        {strictNgUserIds?.has(userId) === true && (
+                            <span className="strict-symbol">[!]</span>
+                        )}
+                        <span
+                            className="clickable"
+                            title={titles.removeNgUserId}
+                            onClick={() => onClickUserId(userId)}
+                        >
+                            {userId}
+                        </span>
+                    </>
+                }
+            >
+                {renderComments(log.get(userId), comments, settings, false)}
+            </Block>
+        ))
+        .toArray();
 }
 
 function renderCommentAssistLog(
@@ -168,27 +153,13 @@ function renderCommentAssistLog(
     comments: CommentData,
     settings: Settings,
 ) {
-    const elements: JSX.Element[] = [];
-
-    log.forEach((ids, body) => {
-        elements.push(
-            <Line key={body}>
-                {formatDuplicateComment(
-                    ids.map((id) => comments.get(id) as NiconicoComment),
-                    body,
-                    {
-                        ...settings,
-                        ...{
-                            isDuplicateVisible: true,
-                            duplicateVisibleCount: 2,
-                        },
-                    },
-                )}
-            </Line>,
-        );
+    return renderDuplicateComments(log, comments, {
+        ...settings,
+        ...{
+            isDuplicateVisible: true,
+            duplicateVisibleCount: 2,
+        },
     });
-
-    return elements;
 }
 
 function renderScoreLog(
@@ -196,26 +167,12 @@ function renderScoreLog(
     comments: CommentData,
     settings: Settings,
 ) {
-    const elements: JSX.Element[] = [];
-
-    log.forEach((commentId) => {
-        const comment = comments.get(commentId) as NiconicoComment;
-
-        elements.push(
-            <Line key={commentId}>
-                {formatComment(
-                    comment,
-                    {
-                        ...settings,
-                        ...{ isNgScoreVisible: true },
-                    },
-                    true,
-                )}
-            </Line>,
-        );
-    });
-
-    return elements;
+    return renderComments(
+        log,
+        comments,
+        { ...settings, ...{ isNgScoreVisible: true } },
+        true,
+    );
 }
 
 function renderCommandLog(
@@ -223,29 +180,14 @@ function renderCommandLog(
     comments: CommentData,
     settings: Settings,
 ) {
-    const renderLog = (command: string, elements: JSX.Element[]) => {
-        elements.push(<Comment key={command}>{`# ${command}`}</Comment>);
-
-        const ids = log.get(command);
-        ids?.forEach((commentId) => {
-            const comment = comments.get(commentId) as NiconicoComment;
-
-            elements.push(
-                <Line key={commentId}>
-                    {formatComment(comment, settings, true)}
-                </Line>,
-            );
-        });
-
-        elements.push(<br key={`${command}-br`} />);
-    };
-    const elements: JSX.Element[] = [];
-
-    log.keys().forEach((command) => {
-        renderLog(command, elements);
-    });
-
-    return elements;
+    return log
+        .keys()
+        .map((command) => (
+            <Block key={command} element={`# ${command}`}>
+                {renderComments(log.get(command), comments, settings, true)}
+            </Block>
+        ))
+        .toArray();
 }
 
 function renderWordLog(
@@ -253,31 +195,54 @@ function renderWordLog(
     comments: CommentData,
     settings: Settings,
 ) {
-    const renderLog = (word: string, elements: JSX.Element[]) => {
-        elements.push(<Comment key={word}>{`# ${word}`}</Comment>);
+    return log
+        .keys()
+        .map((word) => (
+            <Block key={word} element={`# ${word}`}>
+                {renderDuplicateComments(log.get(word), comments, settings)}
+            </Block>
+        ))
+        .toArray();
+}
 
-        const map = log.get(word);
-        map?.forEach((ids, body) => {
-            elements.push(
-                <Line key={`${word}-${body}`}>
-                    {formatDuplicateComment(
-                        ids.map((id) => comments.get(id) as NiconicoComment),
-                        body,
-                        settings,
-                    )}
-                </Line>,
-            );
-        });
+// -------------------------------------------------------------------------------------------
+// 重複をまとめる関数
+// -------------------------------------------------------------------------------------------
 
-        elements.push(<br key={`${word}-br`} />);
-    };
-    const elements: JSX.Element[] = [];
+function renderComments(
+    log: string[] | undefined,
+    comments: CommentData,
+    settings: Settings,
+    isClickable: boolean,
+) {
+    return log?.map((id) => (
+        <Line key={id}>
+            {formatComment(
+                comments.get(id) as NiconicoComment,
+                settings,
+                isClickable,
+            )}
+        </Line>
+    ));
+}
 
-    log.keys().forEach((word) => {
-        renderLog(word, elements);
-    });
-
-    return elements;
+function renderDuplicateComments(
+    log: CommonLog | undefined,
+    comments: CommentData,
+    settings: Settings,
+) {
+    return log
+        ?.entries()
+        .map(([body, ids]) => (
+            <Line key={body}>
+                {formatDuplicateComment(
+                    ids.map((id) => comments.get(id) as NiconicoComment),
+                    body,
+                    settings,
+                )}
+            </Line>
+        ))
+        .toArray();
 }
 
 // -------------------------------------------------------------------------------------------
@@ -289,54 +254,38 @@ function formatComment(
     settings: Settings,
     isClickable: boolean,
 ) {
-    const elements: JSX.Element[] = [];
-    const [body, nicoru, score] = [
-        comment.body,
-        comment.nicoruCount,
-        comment.score,
-    ];
+    const { body, score, nicoruCount: nicoru } = comment;
+    const escapedBody = escapeNewline(body);
 
+    const isNgScore = settings.isNgScoreVisible && score < 0;
     const isNicoru =
         settings.isNicoruVisible && nicoru >= settings.nicoruVisibleCount;
-    const isNgScore = settings.isNgScoreVisible && score < 0;
 
-    if (isNgScore) {
-        elements.push(
-            <span
-                key="ng-score"
-                className="ng-score"
-                title={titles.ngScore}
-            >{`[🚫:${score}]`}</span>,
-        );
-    }
-    if (isNicoru) {
-        elements.push(
-            <span
-                key="nicoru"
-                className="nicoru"
-                title={titles.nicoruCount}
-            >{`[👍:${nicoru}]`}</span>,
-        );
-    }
-
-    elements.push(
-        <Fragment key="body">
-            {elements.length > 0 ? ":" : ""}
-            <span
-                {...(isClickable
-                    ? {
-                          title: titles.addNgUserIdByComment,
-                          className: "clickable",
-                          onClick: () => onClickComment(comment),
-                      }
-                    : {})}
-            >
-                {escapeNewline(body)}
-            </span>
-        </Fragment>,
+    return (
+        <>
+            {isNgScore && (
+                <span className="ng-score" title={titles.ngScore}>
+                    {`[🚫:${score}]`}
+                </span>
+            )}
+            {isNicoru && (
+                <span className="nicoru" title={titles.nicoruCount}>
+                    {`[👍:${nicoru}]`}
+                </span>
+            )}
+            {isClickable ? (
+                <span
+                    className="clickable"
+                    title={titles.addNgUserIdByComment}
+                    onClick={() => onClickComment(comment)}
+                >
+                    {escapedBody}
+                </span>
+            ) : (
+                escapedBody
+            )}
+        </>
     );
-
-    return elements;
 }
 
 function formatDuplicateComment(
@@ -344,33 +293,26 @@ function formatDuplicateComment(
     body: string,
     settings: Settings,
 ) {
-    const elements: JSX.Element[] = [];
     const cnt = comments.length;
+    const isDuplicate =
+        settings.isDuplicateVisible && cnt >= settings.duplicateVisibleCount;
 
-    if (settings.isDuplicateVisible && cnt >= settings.duplicateVisibleCount) {
-        elements.push(
+    return (
+        <>
+            {isDuplicate && (
+                <span className="duplicate" title={titles.duplicateComments}>
+                    {`[${cnt}回]`}
+                </span>
+            )}
             <span
-                key="cnt"
-                className="duplicate"
-                title={titles.duplicateComments}
-            >{`[${cnt}回]`}</span>,
-        );
-    }
-
-    elements.push(
-        <Fragment key="body">
-            {elements.length > 0 ? ":" : ""}
-            <span
-                title={titles.addNgUserIdByComment}
                 className="clickable"
+                title={titles.addNgUserIdByComment}
                 onClick={() => onClickComment(comments)}
             >
                 {escapeNewline(body)}
             </span>
-        </Fragment>,
+        </>
     );
-
-    return elements;
 }
 
 // -------------------------------------------------------------------------------------------

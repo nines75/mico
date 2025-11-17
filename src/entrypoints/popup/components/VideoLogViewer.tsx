@@ -16,7 +16,7 @@ import {
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
-import { Line, Comment } from "./LogViewer.js";
+import { Line, Block } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -79,70 +79,71 @@ function Log({ id, filtering }: LogProps) {
 // -------------------------------------------------------------------------------------------
 
 function renderIdLog(log: IdLog, videos: VideoData) {
-    const renderUserIdLog = (userId: string, elements: JSX.Element[]) => {
+    const renderUserIdLog = (userId: string) => {
         const videoId = log.userId.get(userId)?.[0] as string;
         const userName = videos.get(videoId)?.owner?.name;
 
-        elements.push(
-            <Comment key={userId}>
-                {"# "}
-                <span
-                    className="clickable"
-                    title={titles.removeNgUserId}
-                    onClick={() => onClickId(userId, "user")}
-                >
-                    {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
-                </span>
-            </Comment>,
-            ...renderVideos(log.userId.get(userId), videos, (video) => (
-                <span>{escapeNewline(video.title)}</span>
-            )),
-            <br key={`${userId}-br`} />,
+        return (
+            <Block
+                key={userId}
+                element={
+                    <>
+                        {"# "}
+                        <span
+                            className="clickable"
+                            title={titles.removeNgUserId}
+                            onClick={() => onClickId(userId, "user")}
+                        >
+                            {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
+                        </span>
+                    </>
+                }
+            >
+                {renderVideos(log.userId.get(userId), videos, (video) => (
+                    <span>{escapeNewline(video.title)}</span>
+                ))}
+            </Block>
         );
     };
-    const elements: JSX.Element[] = [];
 
-    // ユーザーIDによるログを生成
-    log.userId.keys().forEach((userId) => {
-        renderUserIdLog(userId, elements);
-    });
-
-    // 動画IDによるログを生成
-    if (log.videoId.length > 0) {
-        elements.push(
-            <Comment key="video-id-log">{"# 動画ID"}</Comment>,
-            ...renderVideos(log.videoId, videos, (video) => (
-                <span
-                    title={titles.removeNgVideoId}
-                    className="clickable"
-                    onClick={() => onClickId(video.id, "video")}
-                >
-                    {escapeNewline(video.title)}
-                </span>
-            )),
-        );
-    }
-
-    return elements;
+    return (
+        <>
+            {
+                // ユーザーIDによるログを生成
+                log.userId
+                    .keys()
+                    .map((userId) => renderUserIdLog(userId))
+                    .toArray()
+            }
+            {
+                // 動画IDによるログを生成
+                log.videoId.length > 0 && (
+                    <Block element={"# 動画ID"}>
+                        {renderVideos(log.videoId, videos, (video) => (
+                            <span
+                                title={titles.removeNgVideoId}
+                                className="clickable"
+                                onClick={() => onClickId(video.id, "video")}
+                            >
+                                {escapeNewline(video.title)}
+                            </span>
+                        ))}
+                    </Block>
+                )
+            }
+        </>
+    );
 }
 
 function renderCommonLog(log: CommonLog, videos: VideoData) {
-    const renderLog = (rule: string, elements: JSX.Element[]) => {
-        const ids = log.get(rule) ?? [];
-
-        elements.push(
-            <Comment key={rule}>{`# ${rule}`}</Comment>,
-            ...renderVideos(ids, videos, getTitleElement),
-            <br key={`${rule}-br`} />,
-        );
-    };
-
-    const elements: JSX.Element[] = [];
-    log.keys().forEach((rule) => {
-        renderLog(rule, elements);
-    });
-
-    return elements;
+    return log
+        .keys()
+        .map((rule) => (
+            <Block key={rule} element={`# ${rule}`}>
+                {renderVideos(log.get(rule), videos, getTitleElement)}
+            </Block>
+        ))
+        .toArray();
 }
 
 // -------------------------------------------------------------------------------------------
@@ -152,24 +153,21 @@ function renderCommonLog(log: CommonLog, videos: VideoData) {
 function renderVideos(
     ids: string[] | undefined,
     videos: VideoData,
-    getElement: (video: NiconicoVideo) => JSX.Element,
+    getElement: (video: NiconicoVideo) => JSX.Element | string,
 ) {
-    const elements: JSX.Element[] = [];
     const settings = useStorageStore.getState().settings;
 
-    ids?.forEach((videoId) => {
+    return ids?.map((videoId) => {
         const video = videos.get(videoId) as NiconicoVideo;
 
-        elements.push(
+        return (
             <Line key={videoId}>
                 {settings.isTitleRenderedAsLink
                     ? renderVideoLink(video)
                     : getElement(video)}
-            </Line>,
+            </Line>
         );
     });
-
-    return elements;
 }
 
 function renderVideoLink(video: NiconicoVideo) {
@@ -185,7 +183,7 @@ function getTitleElement(video: NiconicoVideo) {
     const escapedTitle = escapeNewline(video.title);
 
     return userId === undefined ? (
-        <>{escapedTitle}</>
+        escapedTitle
     ) : (
         <span
             title={titles.addNgUserIdByVideo}
