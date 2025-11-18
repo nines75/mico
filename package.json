@@ -21,7 +21,7 @@
         "@codemirror/autocomplete": "^6.19.1",
         "@codemirror/commands": "^6.10.0",
         "@codemirror/state": "^6.5.2",
-        "@codemirror/view": "^6.38.6",
+        "@codemirror/view": "^6.38.8",
         "@icons-pack/react-simple-icons": "^13.8.0",
         "@replit/codemirror-vim": "^6.3.0",
         "clsx": "^2.1.1",
@@ -29,7 +29,7 @@
         "delay": "^7.0.0",
         "dexie": "^4.2.1",
         "lucide-react": "^0.553.0",
-        "p-queue": "^9.0.0",
+        "p-queue": "^9.0.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "ts-extras": "^0.16.0",
@@ -40,8 +40,8 @@
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@types/firefox-webext-browser": "^143.0.0",
-        "@types/react": "^19.2.2",
-        "@types/react-dom": "^19.2.2",
+        "@types/react": "^19.2.6",
+        "@types/react-dom": "^19.2.3",
         "@types/webextension-polyfill": "^0.12.4",
         "@wxt-dev/auto-icons": "^1.1.0",
         "@wxt-dev/module-react": "^1.1.5",
@@ -55,7 +55,7 @@
         "prettier": "^3.6.2",
         "rollup-plugin-license": "^3.6.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.3",
+        "typescript-eslint": "^8.47.0",
         "vitest": "^3.2.4",
         "wxt": "^0.20.11"
     }
