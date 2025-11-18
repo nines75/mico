@@ -17,7 +17,7 @@ import {
 import { CommonLog } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
-import { Line, Block } from "./LogViewer.js";
+import { Line, Block, Clickable } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
 
@@ -132,13 +132,12 @@ function renderUserIdLog(
                         {strictNgUserIds?.has(userId) === true && (
                             <span className="strict-symbol">[!]</span>
                         )}
-                        <span
-                            className="clickable"
+                        <Clickable
                             title={titles.removeNgUserId}
                             onClick={() => onClickUserId(userId)}
                         >
                             {userId}
-                        </span>
+                        </Clickable>
                     </>
                 }
             >
@@ -274,13 +273,12 @@ function formatComment(
                 </span>
             )}
             {isClickable ? (
-                <span
-                    className="clickable"
+                <Clickable
                     title={titles.addNgUserIdByComment}
                     onClick={() => onClickComment(comment)}
                 >
                     {escapedBody}
-                </span>
+                </Clickable>
             ) : (
                 escapedBody
             )}
@@ -304,13 +302,12 @@ function formatDuplicateComment(
                     {`[${cnt}回]`}
                 </span>
             )}
-            <span
-                className="clickable"
+            <Clickable
                 title={titles.addNgUserIdByComment}
                 onClick={() => onClickComment(comments)}
             >
                 {escapeNewline(body)}
-            </span>
+            </Clickable>
         </>
     );
 }

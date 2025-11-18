@@ -16,7 +16,7 @@ import {
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
-import { Line, Block } from "./LogViewer.js";
+import { Line, Block, Clickable } from "./LogViewer.js";
 
 type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
 
@@ -89,13 +89,12 @@ function renderIdLog(log: IdLog, videos: VideoData) {
                 comment={
                     <>
                         {"# "}
-                        <span
-                            className="clickable"
+                        <Clickable
                             title={titles.removeNgUserId}
                             onClick={() => onClickId(userId, "user")}
                         >
                             {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
-                        </span>
+                        </Clickable>
                     </>
                 }
             >
@@ -120,13 +119,12 @@ function renderIdLog(log: IdLog, videos: VideoData) {
                 log.videoId.length > 0 && (
                     <Block comment={"# 動画ID"}>
                         {renderVideos(log.videoId, videos, (video) => (
-                            <span
+                            <Clickable
                                 title={titles.removeNgVideoId}
-                                className="clickable"
                                 onClick={() => onClickId(video.id, "video")}
                             >
                                 {escapeNewline(video.title)}
-                            </span>
+                            </Clickable>
                         ))}
                     </Block>
                 )
@@ -185,13 +183,12 @@ function getTitleElement(video: NiconicoVideo) {
     return userId === undefined ? (
         escapedTitle
     ) : (
-        <span
+        <Clickable
             title={titles.addNgUserIdByVideo}
-            className="clickable"
             onClick={() => onClickVideoTitle(userId, video)}
         >
             {escapedTitle}
-        </span>
+        </Clickable>
     );
 }
 
