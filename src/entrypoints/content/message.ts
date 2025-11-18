@@ -1,6 +1,8 @@
 import { ContentScriptContext, createIframeUi } from "#imports";
 import { LogId } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "../background/message.js";
+import { loadSettings } from "@/utils/storage.js";
+import { messages } from "@/utils/config.js";
 
 type ContentMessage =
     | {
@@ -52,7 +54,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     break;
                 }
                 case "quick-edit": {
-                    openQuickEdit(ctx);
+                    await openQuickEdit(ctx);
                     break;
                 }
                 case "mount-user-id": {
@@ -99,12 +101,20 @@ function setPlaybackTime(time: number) {
     }, 10);
 }
 
-function openQuickEdit(ctx: ContentScriptContext) {
+async function openQuickEdit(ctx: ContentScriptContext) {
+    const settings = await loadSettings();
     const id = `${browser.runtime.getManifest().name}-quick-edit`;
     if (document.getElementById(id) !== null) return;
 
     const callback = (e: KeyboardEvent) => {
-        if (e.key === "Escape") ui.remove();
+        if (e.key !== "Escape") return;
+        if (
+            settings.isConfirmCloseQuickEdit &&
+            !confirm(messages.quickEdit.confirmClose)
+        )
+            return;
+
+        ui.remove();
     };
     const ui = createIframeUi(ctx, {
         page: "/quick-edit.html",

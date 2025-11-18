@@ -22,6 +22,9 @@ export interface Settings {
     isHighlightTrailingWhitespace: boolean;
     isVimModeEnabled: boolean;
 
+    // クイック編集
+    isConfirmCloseQuickEdit: boolean;
+
     // 高度な機能
     isAdvancedFeaturesVisible: boolean;
     isImeDisabledByContext: boolean;

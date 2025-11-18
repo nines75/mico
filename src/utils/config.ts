@@ -23,6 +23,9 @@ export const defaultSettings: Settings = {
     isHighlightTrailingWhitespace: true,
     isVimModeEnabled: false,
 
+    // クイック編集
+    isConfirmCloseQuickEdit: false,
+
     // 高度な機能
     isAdvancedFeaturesVisible: false,
     isImeDisabledByContext: false,
@@ -189,7 +192,10 @@ export const messages = {
         notWorking: "このページでは動作しません",
         outdatedLog: "表示されているログは古いものである可能性があります",
     },
-    other: {
+    quickEdit: {
+        confirmClose: "クイック編集を閉じますか？",
+    },
+    notification: {
         permissionRequired: "以下の権限が必要です\n\n{target}",
     },
 } as const;
@@ -302,6 +308,15 @@ export const generalSettings = {
                 {
                     id: "isVimModeEnabled",
                     label: "Vimモードを有効にする",
+                },
+            ],
+        },
+        {
+            header: "クイック編集",
+            items: [
+                {
+                    id: "isConfirmCloseQuickEdit",
+                    label: "閉じる前に確認ダイアログを表示する",
                 },
             ],
         },

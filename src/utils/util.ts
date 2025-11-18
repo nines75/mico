@@ -93,7 +93,10 @@ export async function tryWithPermission(
         await callback();
     } else {
         await sendNotification(
-            messages.other.permissionRequired.replace("{target}", permission),
+            messages.notification.permissionRequired.replace(
+                "{target}",
+                permission,
+            ),
         );
     }
 }
