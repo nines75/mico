@@ -13,6 +13,7 @@ import Details from "./components/Details.js";
 import { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 import { sendMessageToBackground } from "../background/message.js";
+import clsx from "clsx";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -112,7 +113,10 @@ function Main() {
                     {popupConfig.tab.map((filter) => (
                         <button
                             key={filter.id}
-                            className={`common-button${selectedTab === filter.id ? " selected-button" : ""}`}
+                            className={clsx(
+                                "common-button",
+                                selectedTab === filter.id && "selected-button",
+                            )}
                             onClick={() =>
                                 save({ selectedPopupTab: filter.id })
                             }

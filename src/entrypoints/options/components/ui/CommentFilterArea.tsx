@@ -2,6 +2,7 @@ import Editor from "./Editor.js";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
 import { commentFilterSettings } from "@/utils/config.js";
+import clsx from "clsx";
 
 export type CommentFilterId = "ngUserId" | "ngCommand" | "ngWord";
 
@@ -22,7 +23,11 @@ export default function CommentFilterArea() {
                 {commentFilterSettings.filter.map((filter) => (
                     <button
                         key={filter.id}
-                        className={`common-button filter-button${id === filter.id ? " selected-filter-button" : ""}`}
+                        className={clsx(
+                            "common-button",
+                            "filter-button",
+                            id === filter.id && "selected-filter-button",
+                        )}
                         onClick={() =>
                             save({ selectedCommentFilter: filter.id })
                         }

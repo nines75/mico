@@ -2,6 +2,7 @@ import Editor from "./Editor.js";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
 import { videoFilterSettings } from "@/utils/config.js";
+import clsx from "clsx";
 
 export type VideoFilterId = "ngId" | "ngTitle" | "ngUserName";
 
@@ -22,7 +23,11 @@ export default function VideoFilterArea() {
                 {videoFilterSettings.filter.map((filter) => (
                     <button
                         key={filter.id}
-                        className={`common-button filter-button${id === filter.id ? " selected-filter-button" : ""}`}
+                        className={clsx(
+                            "common-button",
+                            "filter-button",
+                            id === filter.id && "selected-filter-button",
+                        )}
                         onClick={() => save({ selectedVideoFilter: filter.id })}
                     >
                         <span>{filter.name}</span>

@@ -5,6 +5,7 @@ import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
 import { quickEditConfig } from "@/utils/config.js";
 import { useShallow } from "zustand/shallow";
 import VideoFilterArea from "../options/components/ui/VideoFilterArea.js";
+import clsx from "clsx";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -48,7 +49,10 @@ function Page() {
                 {quickEditConfig.tab.map((filter) => (
                     <button
                         key={filter.id}
-                        className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
+                        className={clsx(
+                            "tab-button",
+                            selectedTab === filter.id && "selected-tab-button",
+                        )}
                         onClick={() =>
                             save({ selectedQuickEditTab: filter.id })
                         }

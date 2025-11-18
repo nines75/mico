@@ -9,6 +9,7 @@ import ExpandNicoru from "./components/tabs/ExpandNicoru.js";
 import General from "./components/tabs/General.js";
 import Support from "./components/tabs/Support.js";
 import VideoFilter from "./components/tabs/VideoFilter.js";
+import clsx from "clsx";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -63,7 +64,10 @@ function Page() {
                 {settingsConfig.tab.map((filter) => (
                     <button
                         key={filter.id}
-                        className={`tab-button${selectedTab === filter.id ? " selected-tab-button" : ""}`}
+                        className={clsx(
+                            "tab-button",
+                            selectedTab === filter.id && "selected-tab-button",
+                        )}
                         onClick={() => save({ selectedSettingsTab: filter.id })}
                     >
                         <span>{filter.name}</span>
