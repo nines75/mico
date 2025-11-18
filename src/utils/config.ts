@@ -595,7 +595,10 @@ export const supportSettings = {
             items: [
                 { name: "要望/バグ報告", url: urls.issues },
                 { name: "質問", url: urls.discussions },
-                { name: "メール", url: "mailto:zs4vbe5l3@mozmail.com" },
+                {
+                    name: "メール",
+                    url: "mailto:mico.counting258@simplelogin.com",
+                },
             ],
         },
         {
