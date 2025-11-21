@@ -9,8 +9,6 @@ export class ScoreFilter extends Filter<ScoreLog> {
         if (!this.settings.isScoreFilterEnabled) return;
 
         this.traverseThreads(threads, (comment) => {
-            if (this.isIgnoreByNicoru(comment)) return true;
-
             const { id, score } = comment;
 
             if (score <= this.settings.scoreFilterCount) {

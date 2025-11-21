@@ -51,16 +51,6 @@ describe(ScoreFilter.name, () => {
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        expect(
-            filtering({
-                score: -500,
-                settings: { isIgnoreByNicoru: true },
-            }).getLog(),
-        ).toEqual(["1002"]);
-        checkComment(threads, ["1002"]);
-    });
-
     it(`${ScoreFilter.prototype.sortLog.name}()`, () => {
         const scoreFilter = filtering({
             score: 0,

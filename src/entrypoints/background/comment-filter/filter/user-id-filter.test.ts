@@ -87,22 +87,6 @@ user-id-main-1
         checkComment(threads, ["1000", "1001", "1002"]);
     });
 
-    it(`Settings.${"ignoreByNicoruCount" satisfies keyof Settings}`, () => {
-        const filter = `
-user-id-main-1
-user-id-main-2
-user-id-main-3
-`;
-
-        expect(
-            filtering({
-                filter,
-                settings: { isIgnoreByNicoru: true },
-            }).getLog(),
-        ).toEqual(new Map([["user-id-main-1", ["1002"]]]));
-        checkComment(threads, ["1002"]);
-    });
-
     it(`${UserIdFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 user-id-main-1

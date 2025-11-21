@@ -10,8 +10,7 @@ export class CommentAssistFilter extends Filter<CommonLog> {
         if (!this.settings.isCommentAssistFilterEnabled) return;
 
         this.traverseThreads(threads, (comment, thread) => {
-            if (this.isIgnoreByNicoru(comment) || thread.fork === "owner")
-                return true;
+            if (thread.fork === "owner") return true;
 
             const { id, commands, postedAt, body } = comment;
 

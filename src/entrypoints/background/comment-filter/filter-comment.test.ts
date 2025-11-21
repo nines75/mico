@@ -102,4 +102,15 @@ device:Switch`,
             "1006",
         ]);
     });
+
+    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
+        filterComment(
+            threads,
+            createSettings({ isIgnoreByNicoru: true }),
+            [],
+            "sm1",
+        );
+
+        checkComment(threads, ["1000", "1001", "1002"]);
+    });
 });

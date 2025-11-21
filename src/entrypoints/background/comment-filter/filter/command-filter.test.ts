@@ -205,21 +205,6 @@ big
         checkComment(threads, ["1002", "1004"]);
     });
 
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        const filter = `
-big
-device:switch
-`;
-
-        expect(
-            filtering({
-                filter,
-                settings: { isIgnoreByNicoru: true },
-            }).getLog(),
-        ).toEqual(new Map([["big", ["1002"]]]));
-        checkComment(threads, ["1002"]);
-    });
-
     it(`${CommandFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 device:switch

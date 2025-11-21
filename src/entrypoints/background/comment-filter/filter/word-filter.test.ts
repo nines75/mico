@@ -173,21 +173,6 @@ describe(WordFilter.name, () => {
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        const filter = `
-テスト
-コメント
-`;
-
-        expect(
-            filtering({
-                filter,
-                settings: { isIgnoreByNicoru: true },
-            }).getLog(),
-        ).toEqual(new Map([["テスト", new Map([["テスト", ["1002"]]])]]));
-        checkComment(threads, ["1002"]);
-    });
-
     it(`${WordFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 コメント

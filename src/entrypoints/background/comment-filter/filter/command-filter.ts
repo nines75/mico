@@ -44,8 +44,6 @@ export class CommandFilter extends CustomFilter<CommonLog> {
         if (rules.length === 0 && !hasAll) return;
 
         this.traverseThreads(threads, (comment) => {
-            if (this.isIgnoreByNicoru(comment)) return true;
-
             // コマンドを小文字に変換し重複を排除
             comment.commands = [
                 ...new Set(

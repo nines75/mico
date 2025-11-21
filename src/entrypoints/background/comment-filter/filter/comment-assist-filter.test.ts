@@ -24,7 +24,6 @@ export const commentAssistThreads = [
                 id: "1001",
                 commands: [],
                 postedAt: "2025-02-26T00:00:00+09:00", // リリース丁度
-                nicoruCount: 30,
             },
             {
                 id: "1002",
@@ -90,15 +89,6 @@ describe(CommentAssistFilter.name, () => {
             checkComment(threads, ids, commentAssistThreads);
         },
     );
-
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        expect(
-            filtering({
-                settings: { isIgnoreByNicoru: true },
-            }).getLog(),
-        ).toEqual(new Map([["test2", ["1003", "1004"]]]));
-        checkComment(threads, ["1003", "1004"], commentAssistThreads);
-    });
 
     it(`${CommentAssistFilter.prototype.sortLog.name}()`, () => {
         const commentAssistFilter = filtering({});

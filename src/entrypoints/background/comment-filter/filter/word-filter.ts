@@ -29,8 +29,6 @@ export class WordFilter extends CustomFilter<WordLog> {
         if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
-            if (this.isIgnoreByNicoru(comment)) return true;
-
             const { id, body, userId } = comment;
 
             for (const { regex } of rules) {

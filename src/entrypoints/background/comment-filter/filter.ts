@@ -31,17 +31,16 @@ export abstract class Filter<T> {
         callback: (comment: NiconicoComment, thread: Thread) => boolean,
     ) {
         threads.forEach((thread) => {
-            thread.comments = thread.comments.filter((comment) =>
-                callback(comment, thread),
-            );
-        });
-    }
+            thread.comments = thread.comments.filter((comment): boolean => {
+                if (
+                    this.settings.isIgnoreByNicoru &&
+                    comment.nicoruCount >= this.settings.ignoreByNicoruCount
+                )
+                    return true;
 
-    isIgnoreByNicoru(comment: NiconicoComment): boolean {
-        return (
-            this.settings.isIgnoreByNicoru &&
-            comment.nicoruCount >= this.settings.ignoreByNicoruCount
-        );
+                return callback(comment, thread);
+            });
+        });
     }
 
     sortCommonLog(currentLog: CommonLog, keys: Set<string>): CommonLog {

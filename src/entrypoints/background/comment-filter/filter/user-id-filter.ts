@@ -23,8 +23,6 @@ export class UserIdFilter extends Filter<CommonLog> {
         if (this.filter.size === 0) return;
 
         this.traverseThreads(threads, (comment) => {
-            if (this.isIgnoreByNicoru(comment)) return true;
-
             const { id, userId } = comment;
 
             if (this.filter.has(userId)) {
