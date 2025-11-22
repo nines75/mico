@@ -103,6 +103,20 @@ device:Switch`,
         ]);
     });
 
+    it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
+        threads.forEach((thread) =>
+            thread.comments.forEach((comment) => (comment.isMyPost = true)),
+        );
+        filterComment(
+            threads,
+            createSettings({ isMyCommentIgnored: true }),
+            [],
+            "sm1",
+        );
+
+        checkComment(threads, []);
+    });
+
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
         filterComment(
             threads,

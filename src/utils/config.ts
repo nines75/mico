@@ -42,6 +42,7 @@ export const defaultSettings: Settings = {
     isHiddenEasyCommentAdded: true,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
+    isMyCommentIgnored: true,
     isIgnoreByNicoru: false,
     ignoreByNicoruCount: 30,
     selectedCommentFilter: "ngUserId",
@@ -381,6 +382,10 @@ export const commentFilterSettings = {
                         label: "以下の場合にフィルタリング",
                         max: 0,
                     },
+                },
+                {
+                    id: "isMyCommentIgnored",
+                    label: "自分が投稿したコメントをフィルタリングの対象外にする",
                 },
                 {
                     id: "isIgnoreByNicoru",

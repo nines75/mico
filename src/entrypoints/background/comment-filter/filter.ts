@@ -32,6 +32,8 @@ export abstract class Filter<T> {
     ) {
         threads.forEach((thread) => {
             thread.comments = thread.comments.filter((comment): boolean => {
+                if (this.settings.isMyCommentIgnored && comment.isMyPost)
+                    return true;
                 if (
                     this.settings.isIgnoreByNicoru &&
                     comment.nicoruCount >= this.settings.ignoreByNicoruCount

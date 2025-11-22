@@ -41,6 +41,7 @@ export interface Settings {
     isHiddenEasyCommentAdded: boolean;
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
+    isMyCommentIgnored: boolean;
     isIgnoreByNicoru: boolean;
     ignoreByNicoruCount: number;
     selectedCommentFilter: CommentFilterId;
