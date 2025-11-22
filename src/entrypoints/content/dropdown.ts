@@ -6,6 +6,8 @@ interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
     sampleButtonElement: HTMLButtonElement;
     commentNoText: string;
+    body: string;
+    isOwner: boolean;
 }
 
 export async function mountToDropdown(element: Element, settings: Settings) {
@@ -21,7 +23,11 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     if (settings.isUserIdMountedToDropdown) {
         await sendMessageToBackground({
             type: "get-user-id-for-mount",
-            data: Number(commentNo),
+            data: {
+                commentNo: Number(commentNo),
+                body: dropdownContent.body,
+                isOwner: dropdownContent.isOwner,
+            },
         });
     }
 }
@@ -42,17 +48,26 @@ function appendButton(
         button.setAttribute(attribute.name, attribute.value);
     });
 
-    button.addEventListener("click", getButtonCallback(commentNo, specific));
+    button.addEventListener(
+        "click",
+        getButtonCallback(commentNo, specific, dropdownContent),
+    );
 
     dropdownContent.buttonsParentElement.appendChild(button);
 }
 
-function getButtonCallback(commentNo: string, specific: boolean) {
+function getButtonCallback(
+    commentNo: string,
+    specific: boolean,
+    dropdownContent: DropdownContent,
+) {
     return async () => {
         await sendMessageToBackground({
             type: "add-ng-user-id-from-dropdown",
             data: {
                 commentNo: Number(commentNo),
+                body: dropdownContent.body,
+                isOwner: dropdownContent.isOwner,
                 specific,
             },
         });
@@ -60,13 +75,18 @@ function getButtonCallback(commentNo: string, specific: boolean) {
 }
 
 function getDropdownContent(element: Element): DropdownContent | undefined {
+    const bodyElement = element.querySelector(":scope > div > div > div > p");
     const buttonsParentElement = element.querySelector(
         ":scope > div > div:last-of-type",
     );
     const commentNoElement = element.querySelector(
         ":scope > div > div:nth-child(2) > p:last-of-type",
     );
+    const ownerElement = element.querySelector(
+        ":scope > div > div > div > p:nth-child(2) > span:nth-child(2)",
+    );
     if (
+        !(bodyElement instanceof HTMLParagraphElement) ||
         !(buttonsParentElement instanceof HTMLDivElement) ||
         !(commentNoElement instanceof HTMLParagraphElement)
     )
@@ -82,5 +102,7 @@ function getDropdownContent(element: Element): DropdownContent | undefined {
         buttonsParentElement,
         sampleButtonElement,
         commentNoText,
+        body: bodyElement.textContent,
+        isOwner: ownerElement?.textContent === "投稿者",
     };
 }

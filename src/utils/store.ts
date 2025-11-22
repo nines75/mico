@@ -45,6 +45,7 @@ export const useStorageStore = create<StorageState>()(
             const tab = tabs[0];
             const tabId = tab?.id;
             const logId = await getLogId(tabId);
+            const a = performance.now();
             const log =
                 logId === undefined
                     ? undefined
@@ -52,6 +53,7 @@ export const useStorageStore = create<StorageState>()(
                           type: "get-log-data",
                           data: logId,
                       })) as LogData | undefined);
+            console.log("popup", performance.now() - a);
 
             set({
                 settings,

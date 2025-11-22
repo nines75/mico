@@ -5,7 +5,6 @@ import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
 import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
-import { NoToUserId } from "@/types/storage/log-comment.types.js";
 import { sumNumbers } from "@/utils/util.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 
@@ -20,8 +19,8 @@ export interface FilteredData {
     easyCommentCount: number;
     loadedCommentCount: number;
     filteringTime: number;
-    noToUserId: NoToUserId;
     strictNgUserIds: Set<string>;
+    threads: Thread[];
 }
 
 export function filterComment(
@@ -106,16 +105,6 @@ export function filterComment(
     // フィルタリング
     Object.values(filters).forEach((filter) => filter.filtering(threads));
 
-    // -------------------------------------------------------------------------------------------
-    // フィルタリングの後処理
-    // -------------------------------------------------------------------------------------------
-
-    const noToUserId = new Map(
-        threads.flatMap((thread) =>
-            thread.comments.map((comment) => [comment.no, comment.userId]),
-        ),
-    );
-
     const end = performance.now();
 
     return {
@@ -123,7 +112,7 @@ export function filterComment(
         easyCommentCount,
         loadedCommentCount,
         filteringTime: end - start,
-        noToUserId,
         strictNgUserIds,
+        threads,
     };
 }

@@ -145,10 +145,26 @@ export const testLog = {
             ["コメント", new Map([["テストコメント", ["1003"]]])],
         ]),
         strictNgUserIds: new Set(),
-        noToUserId: new Map(),
         comments: new Map(
             getComments(["1000", "1001", "1002", "1004", "1003"]),
         ),
+        threads: [
+            {
+                commentCount: 2,
+                comments: [],
+                fork: "owner",
+            },
+            {
+                commentCount: 3,
+                comments: [],
+                fork: "main",
+            },
+            {
+                commentCount: 2,
+                comments: [],
+                fork: "easy",
+            },
+        ],
     },
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;

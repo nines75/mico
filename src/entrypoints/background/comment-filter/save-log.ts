@@ -125,7 +125,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
         ngCommand: commandFilter.getLog(),
         ngWord: wordFilter.getLog(),
         strictNgUserIds: filteredData.strictNgUserIds,
-        noToUserId: filteredData.noToUserId,
         comments,
+        threads: filteredData.threads,
     };
 }
