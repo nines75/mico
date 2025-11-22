@@ -70,7 +70,7 @@ function getCount(filteredData: FilteredData): VideoCount {
 function getLog(filteredData: FilteredData): VideoFiltering {
     const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
         filteredData.filters;
-    const videos = new Map(
+    const filteredVideos = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getFilteredVideos(),
         ]),
@@ -84,6 +84,6 @@ function getLog(filteredData: FilteredData): VideoFiltering {
         ngId: idFilter.getLog(),
         ngUserName: userNameFilter.getLog(),
         ngTitle: titleFilter.getLog(),
-        videos: videos,
+        filteredVideos,
     };
 }

@@ -4,7 +4,7 @@ import { CommonLog, ProcessingTimeData } from "./log.types.js";
 export type ScoreLog = string[];
 export type WordLog = Map<string, Map<string, string[]>>;
 
-export type CommentData = Map<string, NiconicoComment>;
+export type CommentMap = Map<string, NiconicoComment>;
 
 export interface CommentFilterLog {
     count?: CommentCount;
@@ -47,6 +47,6 @@ export interface CommentFiltering {
     ngWord: WordLog;
 
     strictNgUserIds: Set<string>;
-    comments: CommentData;
+    filteredComments: CommentMap;
     renderedComments: RenderedComment[];
 }

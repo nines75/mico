@@ -110,7 +110,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
         commandFilter,
         wordFilter,
     } = filteredData.filters;
-    const comments = new Map(
+    const filteredComments = new Map(
         Object.values(filteredData.filters).flatMap((filter) => [
             ...filter.getFilteredComments(),
         ]),
@@ -132,7 +132,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
         ngCommand: commandFilter.getLog(),
         ngWord: wordFilter.getLog(),
         strictNgUserIds: filteredData.strictNgUserIds,
-        comments,
+        filteredComments,
         renderedComments,
     };
 }

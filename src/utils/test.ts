@@ -1,6 +1,6 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import {
-    CommentData,
+    CommentMap,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
 import { expect } from "vitest";
@@ -92,7 +92,7 @@ export const testThreads = [
     },
 ] satisfies Thread[];
 
-export const testCommentData: CommentData = new Map(
+export const testComments: CommentMap = new Map(
     testThreads.flatMap((thread) =>
         thread.comments.map((comment) => [comment.id, comment]),
     ),
@@ -145,7 +145,7 @@ export const testLog = {
             ["コメント", new Map([["テストコメント", ["1003"]]])],
         ]),
         strictNgUserIds: new Set(),
-        comments: new Map(
+        filteredComments: new Map(
             getComments(["1000", "1001", "1002", "1004", "1003"]),
         ),
         renderedComments: [],

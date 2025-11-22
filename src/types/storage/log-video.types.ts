@@ -12,7 +12,7 @@ export interface IdLog {
     videoId: string[];
 }
 
-export type VideoData = Map<string, NiconicoVideo>;
+export type VideoMap = Map<string, NiconicoVideo>;
 
 export interface VideoFilterLog {
     count?: VideoCount;
@@ -47,5 +47,5 @@ export interface VideoFiltering {
     /** Map<rule, videoId[]> */
     ngTitle: CommonLog;
 
-    videos: VideoData;
+    filteredVideos: VideoMap;
 }

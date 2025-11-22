@@ -1,13 +1,13 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
-import { VideoData } from "@/types/storage/log-video.types.js";
+import { VideoMap } from "@/types/storage/log-video.types.js";
 import { parseFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export abstract class Filter<T> {
     protected invalidCount = 0;
-    protected filteredVideos: VideoData = new Map();
+    protected filteredVideos: VideoMap = new Map();
     protected settings: Settings;
     protected abstract log: T;
 
@@ -118,7 +118,7 @@ export abstract class CommonFilter extends Filter<CommonLog> {
     }
 }
 
-export function sortVideoId(ids: string[], videos: VideoData): string[] {
+export function sortVideoId(ids: string[], videos: VideoMap): string[] {
     const idsCopy = [...ids];
 
     idsCopy.sort((idA, idB) => {

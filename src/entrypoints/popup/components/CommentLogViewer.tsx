@@ -8,7 +8,7 @@ import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import {
-    CommentData,
+    CommentMap,
     ScoreLog,
     WordLog,
     CommentCount,
@@ -86,7 +86,7 @@ interface LogProps {
 function Log({ id, filtering, settings }: LogProps) {
     if (filtering === undefined) return null;
 
-    const comments = filtering.comments;
+    const comments = filtering.filteredComments;
 
     switch (id) {
         case "ngUserId":
@@ -117,7 +117,7 @@ function Log({ id, filtering, settings }: LogProps) {
 
 function renderUserIdLog(
     log: CommonLog,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
     strictNgUserIds?: Set<string>,
 ) {
@@ -149,7 +149,7 @@ function renderUserIdLog(
 
 function renderCommentAssistLog(
     log: CommonLog,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
 ) {
     return renderDuplicateComments(log, comments, {
@@ -163,7 +163,7 @@ function renderCommentAssistLog(
 
 function renderScoreLog(
     log: ScoreLog,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
 ) {
     return renderComments(
@@ -176,7 +176,7 @@ function renderScoreLog(
 
 function renderCommandLog(
     log: CommonLog,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
 ) {
     return log
@@ -189,11 +189,7 @@ function renderCommandLog(
         .toArray();
 }
 
-function renderWordLog(
-    log: WordLog,
-    comments: CommentData,
-    settings: Settings,
-) {
+function renderWordLog(log: WordLog, comments: CommentMap, settings: Settings) {
     return log
         .keys()
         .map((word) => (
@@ -210,7 +206,7 @@ function renderWordLog(
 
 function renderComments(
     log: string[] | undefined,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
     isClickable: boolean,
 ) {
@@ -227,7 +223,7 @@ function renderComments(
 
 function renderDuplicateComments(
     log: CommonLog | undefined,
-    comments: CommentData,
+    comments: CommentMap,
     settings: Settings,
 ) {
     return log

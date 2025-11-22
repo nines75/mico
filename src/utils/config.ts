@@ -198,7 +198,7 @@ export const messages = {
     quickEdit: {
         confirmClose: "クイック編集を閉じますか？",
     },
-    notification: {
+    other: {
         permissionRequired: "以下の権限が必要です\n\n{target}",
     },
 } as const;

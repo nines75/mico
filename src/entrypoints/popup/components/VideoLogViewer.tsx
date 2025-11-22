@@ -11,7 +11,7 @@ import {
     VideoCount,
     VideoFiltering,
     IdLog,
-    VideoData,
+    VideoMap,
 } from "@/types/storage/log-video.types.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
@@ -60,7 +60,7 @@ interface LogProps {
 function Log({ id, filtering }: LogProps) {
     if (filtering === undefined) return null;
 
-    const videos = filtering.videos;
+    const videos = filtering.filteredVideos;
 
     switch (id) {
         case "ngId":
@@ -78,7 +78,7 @@ function Log({ id, filtering }: LogProps) {
 // ログをレンダリングする関数
 // -------------------------------------------------------------------------------------------
 
-function renderIdLog(log: IdLog, videos: VideoData) {
+function renderIdLog(log: IdLog, videos: VideoMap) {
     const renderUserIdLog = (userId: string) => {
         const videoId = log.userId.get(userId)?.[0] as string;
         const userName = videos.get(videoId)?.owner?.name;
@@ -133,7 +133,7 @@ function renderIdLog(log: IdLog, videos: VideoData) {
     );
 }
 
-function renderCommonLog(log: CommonLog, videos: VideoData) {
+function renderCommonLog(log: CommonLog, videos: VideoMap) {
     return log
         .keys()
         .map((rule) => (
@@ -150,7 +150,7 @@ function renderCommonLog(log: CommonLog, videos: VideoData) {
 
 function renderVideos(
     ids: string[] | undefined,
-    videos: VideoData,
+    videos: VideoMap,
     getElement: (video: NiconicoVideo) => JSX.Element | string,
 ) {
     const settings = useStorageStore.getState().settings;
