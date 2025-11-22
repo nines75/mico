@@ -148,23 +148,7 @@ export const testLog = {
         comments: new Map(
             getComments(["1000", "1001", "1002", "1004", "1003"]),
         ),
-        threads: [
-            {
-                commentCount: 2,
-                comments: [],
-                fork: "owner",
-            },
-            {
-                commentCount: 3,
-                comments: [],
-                fork: "main",
-            },
-            {
-                commentCount: 2,
-                comments: [],
-                fork: "easy",
-            },
-        ],
+        renderedComments: [],
     },
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;

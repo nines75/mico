@@ -1,4 +1,4 @@
-import { NiconicoComment, Thread } from "../api/comment.types.js";
+import { NiconicoComment, RenderedComment } from "../api/comment.types.js";
 import { CommonLog, ProcessingTimeData } from "./log.types.js";
 
 export type ScoreLog = string[];
@@ -48,5 +48,5 @@ export interface CommentFiltering {
 
     strictNgUserIds: Set<string>;
     comments: CommentData;
-    threads: Thread[];
+    renderedComments: RenderedComment[];
 }

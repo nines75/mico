@@ -31,9 +31,7 @@ db.version(1).stores({
 });
 
 export async function getLogData(id: string) {
-    const a = performance.now();
     const res = await db.log.get(id);
-    console.log("get", performance.now() - a);
 
     return res?.log;
 }

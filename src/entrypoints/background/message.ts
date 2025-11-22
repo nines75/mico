@@ -23,7 +23,7 @@ import {
 import { sendMessageToContent } from "../content/message.js";
 import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
 import { TabData } from "@/types/storage/tab.types.js";
-import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+import { RenderedComment } from "@/types/api/comment.types.js";
 import { LogData } from "@/types/storage/log.types.js";
 
 type BackgroundMessage =
@@ -233,38 +233,34 @@ function convertNoToUserId(
         isOwner: boolean;
     },
 ) {
-    const comments: [NiconicoComment, Thread["fork"]][] = [];
-    log.commentFilterLog?.filtering?.threads.forEach((thread) =>
-        thread.comments.forEach((comment) => {
-            if (comment.no === data.commentNo)
-                comments.push([comment, thread.fork]);
-        }),
+    const comments = log.commentFilterLog?.filtering?.renderedComments.filter(
+        (comment) => comment.no === data.commentNo,
     );
-    if (comments.length === 0) return;
+    if (comments === undefined || comments.length === 0) return;
 
     // コメント番号の重複なし
     if (comments.length === 1) {
-        const comment = comments[0]?.[0] as NiconicoComment;
+        const comment = comments[0] as RenderedComment;
 
         return comment.userId;
     }
 
     // コメント番号の重複あり
     if (data.isOwner) {
-        const comment = comments.find(
-            ([, fork]) => fork === "owner",
-        )?.[0] as NiconicoComment;
+        const target = comments.find(
+            (comment) => comment.fork === "owner",
+        ) as RenderedComment;
 
-        return comment.userId;
+        return target.userId;
     } else {
         const filteredComments = comments.filter(
-            ([comment]) => comment.body === data.body,
+            (comment) => comment.body === data.body,
         );
 
         // コメントが特定できない場合
         if (filteredComments.length !== 1) return;
 
-        const comment = filteredComments[0]?.[0] as NiconicoComment;
+        const comment = filteredComments[0] as RenderedComment;
         return comment.userId;
     }
 }
