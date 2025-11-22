@@ -155,7 +155,7 @@ export const buttons = {
 
 export const messages = {
     ngId: {
-        additionSuccess: `以下のIDをNG登録しました\n\n{target}`,
+        additionSuccess: "以下のIDをNG登録しました\n\n{target}",
         extractionFailed: "IDの抽出に失敗しました",
     },
     ngUserId: {
@@ -164,7 +164,7 @@ export const messages = {
         additionFailed: "ユーザーのNG登録に失敗しました",
         notifyAddition: "{target}件のユーザーIDをNG登録しました",
         confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n{target}",
-        confirmAdditionByVideo: "この動画を投稿したユーザーをNG登録しますか？",
+        getInfoFailed: "ユーザー情報の取得に失敗しました",
 
         // 削除
         confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n{target}",
@@ -176,8 +176,9 @@ export const messages = {
     },
     ngVideoId: {
         additionFailed: "動画のNG登録に失敗しました",
-        confirmAddition: "この動画をNG登録しますか？",
+        confirmAddition: "以下の動画IDをNG登録しますか？\n\n{target}",
         confirmRemoval: "以下のNG動画IDを削除しますか？\n\n{target}",
+        getInfoFailed: "動画情報の取得に失敗しました",
     },
     settings: {
         neverReset: "設定が一度も変更されていません",
