@@ -37,3 +37,10 @@ export const commentApiSchema = z.looseObject({
     }),
 });
 export type CommentApi = z.infer<typeof commentApiSchema>;
+
+export interface RenderedComment {
+    body: string;
+    userId: string;
+    no: number;
+    fork: Thread["fork"];
+}

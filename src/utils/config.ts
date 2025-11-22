@@ -171,6 +171,7 @@ export const messages = {
         undoStrict:
             "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
         alreadyAdded: "このユーザーIDは既にNG登録されています",
+        cannotGetUserId: "このコメントのユーザーIDは取得できません",
     },
     ngVideoId: {
         additionFailed: "動画のNG登録に失敗しました",

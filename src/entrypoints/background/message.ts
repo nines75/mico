@@ -23,16 +23,24 @@ import {
 import { sendMessageToContent } from "../content/message.js";
 import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
 import { TabData } from "@/types/storage/tab.types.js";
+import { RenderedComment } from "@/types/api/comment.types.js";
+import { LogData } from "@/types/storage/log.types.js";
 
 type BackgroundMessage =
     | {
           type: "get-user-id-for-mount";
-          data: number;
+          data: {
+              commentNo: number;
+              body: string;
+              isOwner: boolean;
+          };
       }
     | {
           type: "add-ng-user-id-from-dropdown";
           data: {
               commentNo: number;
+              body: string;
+              isOwner: boolean;
               specific: boolean;
           };
       }
@@ -159,21 +167,21 @@ export async function backgroundMessageHandler(
 }
 
 async function getUserIdForMount(
-    commentNo: number,
+    data: Extract<BackgroundMessage, { type: "get-user-id-for-mount" }>["data"],
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
 
-    const logData = await getLogData(logId);
-    const userId =
-        logData?.commentFilterLog?.filtering?.noToUserId.get(commentNo);
-    if (userId === undefined) return;
+    const log = await getLogData(logId);
+    if (log === undefined) return;
+
+    const userId = convertNoToUserId(log, data);
 
     await sendMessageToContent(tabId, {
         type: "mount-user-id",
-        data: userId,
+        data: userId ?? messages.ngUserId.cannotGetUserId,
     });
 }
 
@@ -189,10 +197,10 @@ async function addNgUserIdFromDropdown(
     if (tabId === undefined || logId === undefined) return;
 
     const log = await getLogData(logId);
-    const videoId = log?.tab?.videoId;
-    const userId = log?.commentFilterLog?.filtering?.noToUserId.get(
-        data.commentNo,
-    );
+    if (log === undefined) return;
+
+    const videoId = log.tab?.videoId;
+    const userId = convertNoToUserId(log, data);
     if (videoId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
@@ -214,6 +222,47 @@ async function addNgUserIdFromDropdown(
     }
 
     await Promise.all(tasks);
+}
+
+// https://github.com/nines75/mico/issues/46
+function convertNoToUserId(
+    log: LogData,
+    data: {
+        commentNo: number;
+        body: string;
+        isOwner: boolean;
+    },
+) {
+    const comments = log.commentFilterLog?.filtering?.renderedComments.filter(
+        (comment) => comment.no === data.commentNo,
+    );
+    if (comments === undefined || comments.length === 0) return;
+
+    // コメント番号の重複なし
+    if (comments.length === 1) {
+        const comment = comments[0] as RenderedComment;
+
+        return comment.userId;
+    }
+
+    // コメント番号の重複あり
+    if (data.isOwner) {
+        const target = comments.find(
+            (comment) => comment.fork === "owner",
+        ) as RenderedComment;
+
+        return target.userId;
+    } else {
+        const filteredComments = comments.filter(
+            (comment) => comment.body === data.body,
+        );
+
+        // コメントが特定できない場合
+        if (filteredComments.length !== 1) return;
+
+        const comment = filteredComments[0] as RenderedComment;
+        return comment.userId;
+    }
 }
 
 async function filterOldSearch(

@@ -145,10 +145,10 @@ export const testLog = {
             ["コメント", new Map([["テストコメント", ["1003"]]])],
         ]),
         strictNgUserIds: new Set(),
-        noToUserId: new Map(),
         comments: new Map(
             getComments(["1000", "1001", "1002", "1004", "1003"]),
         ),
+        renderedComments: [],
     },
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;

@@ -115,6 +115,13 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
             ...filter.getFilteredComments(),
         ]),
     );
+    const renderedComments = filteredData.threads.flatMap((thread) =>
+        thread.comments.map((comment) => {
+            const { body, userId, no } = comment;
+
+            return { body, userId, no, fork: thread.fork };
+        }),
+    );
 
     Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
@@ -125,7 +132,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
         ngCommand: commandFilter.getLog(),
         ngWord: wordFilter.getLog(),
         strictNgUserIds: filteredData.strictNgUserIds,
-        noToUserId: filteredData.noToUserId,
         comments,
+        renderedComments,
     };
 }
