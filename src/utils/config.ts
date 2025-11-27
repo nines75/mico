@@ -234,26 +234,6 @@ export const urls = {
     discussions: "https://github.com/nines75/mico/discussions",
 } as const;
 
-export const pattern = {
-    topPageUrl: "https://www.nicovideo.jp/",
-    topPageUrlGlob: "https://www.nicovideo.jp/*",
-    watchPageUrl: "https://www.nicovideo.jp/watch/",
-    watchPageUrlGlob: "https://www.nicovideo.jp/watch/*",
-    rankingPageUrl: "https://www.nicovideo.jp/ranking",
-    customRankingPageUrl: "https://www.nicovideo.jp/ranking/custom",
-    searchPageUrl: "https://www.nicovideo.jp/search/",
-    tagSearchPageUrl: "https://www.nicovideo.jp/tag/",
-    userPageUrlGlob: "https://www.nicovideo.jp/user/*",
-    channelPageUrlGlob: "https://ch.nicovideo.jp/channel/*",
-    regex: {
-        checkRawUserId: /^(?:ch)?\d+$/,
-        checkVideoId: /^(?:sm|so|nl|nm)\d+$/,
-        extractUserId: /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/,
-        extractId:
-            /^https:\/\/(?:www\.nicovideo\.jp\/user|www\.nicovideo\.jp\/watch|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
-    },
-} as const;
-
 export const settingsConfig = {
     tab: [
         {

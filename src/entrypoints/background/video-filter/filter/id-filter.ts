@@ -1,6 +1,5 @@
 import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern } from "@/utils/config.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
 import { parseFilter } from "../../filter.js";
@@ -100,9 +99,9 @@ export class IdFilter extends Filter<IdLog> {
         rules
             .map((rule) => rule.rule)
             .forEach((ruleStr) => {
-                if (pattern.regex.checkRawUserId.test(ruleStr)) {
+                if (/^(?:ch)?\d+$/.test(ruleStr)) {
                     userIds.add(ruleStr);
-                } else if (pattern.regex.checkVideoId.test(ruleStr)) {
+                } else if (/^(?:sm|so|nl|nm)\d+$/.test(ruleStr)) {
                     videoIds.add(ruleStr);
                 } else {
                     this.invalidCount++;

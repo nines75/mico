@@ -2,7 +2,6 @@ import { isNgVideo } from "../video-filter/filter-video.js";
 import { loadSettings } from "@/utils/storage.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { pattern } from "@/utils/config.js";
 import { WatchApi, watchApiSchema } from "@/types/api/watch.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { setLog, setTabData } from "@/utils/db.js";
@@ -88,7 +87,7 @@ function watchApiFilter(
         response.channel?.id ?? // チャンネル
         // ユーザーが退会済み
         metadata.jsonLds[0]?.author?.url.match(
-            pattern.regex.extractUserId, // 誤った値が抽出されないように完全なURLでチェックする
+            /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
         )?.[1];
     const userName =
         response.owner?.nickname ??

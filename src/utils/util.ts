@@ -1,28 +1,28 @@
 import { Browser } from "#imports";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
 import { CommonLog, LogId } from "../types/storage/log.types.js";
-import { messages, pattern } from "./config.js";
+import { messages } from "./config.js";
 import { z } from "./zod.js";
 import delay from "delay";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;
 
-    return url.startsWith(pattern.topPageUrl);
+    return url.startsWith("https://www.nicovideo.jp/");
 }
 
 export function isWatchPage(url: string | undefined) {
     if (url === undefined) return false;
 
-    return url.startsWith(pattern.watchPageUrl);
+    return url.startsWith("https://www.nicovideo.jp/watch/");
 }
 
 export function isRankingPage(url: string | undefined) {
     if (url === undefined) return false;
 
     return (
-        url.startsWith(pattern.rankingPageUrl) &&
-        !url.startsWith(pattern.customRankingPageUrl)
+        url.startsWith("https://www.nicovideo.jp/ranking") &&
+        !url.startsWith("https://www.nicovideo.jp/ranking/custom")
     );
 }
 
@@ -30,8 +30,8 @@ export function isSearchPage(url: string | undefined) {
     if (url === undefined) return false;
 
     return (
-        url.startsWith(pattern.searchPageUrl) ||
-        url.startsWith(pattern.tagSearchPageUrl)
+        url.startsWith("https://www.nicovideo.jp/search/") ||
+        url.startsWith("https://www.nicovideo.jp/tag/")
     );
 }
 

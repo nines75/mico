@@ -2,7 +2,6 @@ import { mountToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
 import { createContentMessageHandler } from "./message.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { pattern } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
@@ -14,7 +13,7 @@ export interface customObserver extends MutationObserver {
 }
 
 export default defineContentScript({
-    matches: [pattern.topPageUrlGlob],
+    matches: ["https://www.nicovideo.jp/*"],
 
     async main(ctx) {
         const observer: customObserver = new MutationObserver(observerCallback);

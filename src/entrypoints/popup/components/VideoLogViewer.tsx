@@ -1,5 +1,5 @@
 import { CommonLog } from "@/types/storage/log.types.js";
-import { messages, pattern, titles } from "@/utils/config.js";
+import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
 import { JSX } from "react";
@@ -170,7 +170,7 @@ function renderVideos(
 
 function renderVideoLink(video: NiconicoVideo) {
     return (
-        <a href={`${pattern.watchPageUrl}${video.id}`}>
+        <a href={`https://www.nicovideo.jp/watch/${video.id}`}>
             {escapeNewline(video.title)}
         </a>
     );

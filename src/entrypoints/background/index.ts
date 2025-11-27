@@ -9,7 +9,6 @@ import {
 } from "@/utils/util.js";
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
-import { pattern } from "@/utils/config.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { watchRequest } from "./request/request-watch.js";
@@ -136,11 +135,11 @@ export default defineBackground(() => {
         id: "add-ng",
         title: "NG登録",
         contexts: ["link"],
-        documentUrlPatterns: [pattern.topPageUrlGlob],
+        documentUrlPatterns: ["https://www.nicovideo.jp/*"],
         targetUrlPatterns: [
-            pattern.watchPageUrlGlob,
-            pattern.userPageUrlGlob,
-            pattern.channelPageUrlGlob,
+            "https://www.nicovideo.jp/watch/*",
+            "https://www.nicovideo.jp/user/*",
+            "https://ch.nicovideo.jp/channel/*",
         ],
     });
 

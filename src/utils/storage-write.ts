@@ -14,7 +14,7 @@ import {
 } from "./storage.js";
 import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
-import { pattern, messages } from "./config.js";
+import { messages } from "./config.js";
 import { sendNotification } from "./util.js";
 import { clearDb } from "./db.js";
 
@@ -132,7 +132,9 @@ export async function removeNgId(id: string) {
 
 export async function addNgIdFromUrl(url: string | undefined) {
     const settings = await loadSettings();
-    const id = url?.match(pattern.regex.extractId)?.[1];
+    const id = url?.match(
+        /^https:\/\/(?:www\.nicovideo\.jp\/user|www\.nicovideo\.jp\/watch|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
+    )?.[1];
 
     if (id === undefined) {
         await sendNotification(messages.ngId.extractionFailed);
