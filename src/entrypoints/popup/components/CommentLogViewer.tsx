@@ -68,17 +68,15 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                         </button>
                     </div>
                 )}
-            {id !== "easyComment" && (
-                <div className="log">
-                    <Log {...{ id, filtering, settings }} />
-                </div>
-            )}
+            <div className="log">
+                <Log {...{ id, filtering, settings }} />
+            </div>
         </LogFrame>
     );
 }
 
 interface LogProps {
-    id: Exclude<LogId, "easyComment">;
+    id: LogId;
     filtering: CommentFiltering | undefined;
     settings: Settings;
 }
@@ -96,8 +94,14 @@ function Log({ id, filtering, settings }: LogProps) {
                 settings,
                 filtering.strictNgUserIds,
             );
+        case "easyComment":
+            return renderDuplicateLog(
+                filtering.easyComment,
+                comments,
+                settings,
+            );
         case "commentAssist":
-            return renderCommentAssistLog(
+            return renderDuplicateLog(
                 filtering.commentAssist,
                 comments,
                 settings,
@@ -147,20 +151,6 @@ function renderUserIdLog(
         .toArray();
 }
 
-function renderCommentAssistLog(
-    log: CommonLog,
-    comments: CommentMap,
-    settings: Settings,
-) {
-    return renderDuplicateComments(log, comments, {
-        ...settings,
-        ...{
-            isDuplicateVisible: true,
-            duplicateVisibleCount: 2,
-        },
-    });
-}
-
 function renderScoreLog(
     log: ScoreLog,
     comments: CommentMap,
@@ -198,6 +188,20 @@ function renderWordLog(log: WordLog, comments: CommentMap, settings: Settings) {
             </Block>
         ))
         .toArray();
+}
+
+function renderDuplicateLog(
+    log: CommonLog,
+    comments: CommentMap,
+    settings: Settings,
+) {
+    return renderDuplicateComments(log, comments, {
+        ...settings,
+        ...{
+            isDuplicateVisible: true,
+            duplicateVisibleCount: 2,
+        },
+    });
 }
 
 // -------------------------------------------------------------------------------------------

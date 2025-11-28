@@ -3,22 +3,16 @@ import { Filter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 
-export class CommentAssistFilter extends Filter<CommonLog> {
+export class EasyCommentFilter extends Filter<CommonLog> {
     protected log: CommonLog = new Map();
 
     override filtering(threads: Thread[]): void {
-        if (!this.settings.isCommentAssistFilterEnabled) return;
+        if (!this.settings.isEasyCommentHidden) return;
 
         this.traverseThreads(threads, (comment, thread) => {
-            if (thread.fork === "owner") return true;
+            const { id, body } = comment;
 
-            const { id, commands, postedAt, body } = comment;
-
-            const releaseDate = new Date("2025-02-26T00:00:00+09:00"); // https://blog.nicovideo.jp/niconews/243601.html
-            const date = new Date(postedAt);
-            if (Number.isNaN(date.getTime())) return true; // 有効なDateであるか確認
-
-            if (commands.length === 0 && date >= releaseDate) {
+            if (thread.fork === "easy") {
                 pushCommonLog(this.log, body, id);
                 this.filteredComments.set(id, comment);
 

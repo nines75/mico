@@ -39,7 +39,6 @@ export const defaultSettings: Settings = {
     // フィルタリング
     isEasyCommentHidden: false,
     isCommentAssistFilterEnabled: false,
-    isHiddenEasyCommentAdded: true,
     isScoreFilterEnabled: false,
     scoreFilterCount: -4800,
     isMyCommentIgnored: true,
@@ -344,12 +343,6 @@ export const commentFilterSettings = {
                 {
                     id: "isEasyCommentHidden",
                     label: "かんたんコメントを非表示にする",
-                    childrenProps: [
-                        {
-                            id: "isHiddenEasyCommentAdded",
-                            label: "非表示にした数をバッジに加算する",
-                        },
-                    ],
                 },
                 {
                     id: "isCommentAssistFilterEnabled",
@@ -371,7 +364,6 @@ export const commentFilterSettings = {
                 {
                     id: "isIgnoreByNicoru",
                     label: "ニコるの数に応じてフィルタリングの対象外にする",
-                    details: "かんたんコメントの非表示には影響しません。",
                     input: {
                         id: "ignoreByNicoruCount",
                         label: "回以上ニコられていた場合に除外",
@@ -622,12 +614,12 @@ export const popupConfig = {
     commentFilter: {
         log: [
             {
-                id: "easyComment",
-                name: "かんたんコメント",
-            },
-            {
                 id: "ngUserId",
                 name: "NGユーザーID",
+            },
+            {
+                id: "easyComment",
+                name: "かんたんコメント",
             },
             {
                 id: "commentAssist",

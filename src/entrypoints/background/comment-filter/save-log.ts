@@ -27,13 +27,7 @@ export async function saveLog(
 
     await Promise.all([
         setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
-        changeBadgeState(
-            settings.isHiddenEasyCommentAdded
-                ? count.totalBlocked
-                : count.totalBlocked - count.blocked.easyComment,
-            colors.commentBadge,
-            tabId,
-        ),
+        changeBadgeState(count.totalBlocked, colors.commentBadge, tabId),
     ]);
 
     const end = performance.now();
@@ -57,6 +51,7 @@ export function getCount(
 ): CommentCount {
     const {
         userIdFilter,
+        easyCommentFilter,
         commentAssistFilter,
         scoreFilter,
         commandFilter,
@@ -69,7 +64,7 @@ export function getCount(
         ngWord: wordFilter.countRules(),
     };
     const blocked: CommentCount["blocked"] = {
-        easyComment: filteredData.easyCommentCount,
+        easyComment: easyCommentFilter.countBlocked(),
         commentAssist: commentAssistFilter.countBlocked(),
         ngUserId: userIdFilter.countBlocked(),
         ngScore: scoreFilter.countBlocked(),
@@ -105,6 +100,7 @@ export function getCount(
 export function getLog(filteredData: FilteredData): CommentFiltering {
     const {
         userIdFilter,
+        easyCommentFilter,
         commentAssistFilter,
         scoreFilter,
         commandFilter,
@@ -126,6 +122,7 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
     Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
 
     return {
+        easyComment: easyCommentFilter.getLog(),
         commentAssist: commentAssistFilter.getLog(),
         ngUserId: userIdFilter.getLog(),
         ngScore: scoreFilter.getLog(),

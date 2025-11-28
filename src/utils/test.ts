@@ -137,6 +137,10 @@ export const testLog = {
         invalid: 0,
     },
     filtering: {
+        easyComment: new Map([
+            ["！？", ["1005"]],
+            ["うぽつ", ["1006"]],
+        ]),
         commentAssist: new Map(),
         ngUserId: new Map([["user-id-owner", ["1000", "1001"]]]),
         ngScore: ["1002"],
@@ -146,7 +150,20 @@ export const testLog = {
         ]),
         strictNgUserIds: new Set(),
         filteredComments: new Map(
-            getComments(["1000", "1001", "1002", "1004", "1003"]),
+            getComments([
+                // NGユーザーID
+                "1000",
+                "1001",
+                // かんたんコメント
+                "1005",
+                "1006",
+                // NGスコア
+                "1002",
+                // NGコマンド
+                "1004",
+                // NGワード
+                "1003",
+            ]),
         ),
         renderedComments: [],
     },

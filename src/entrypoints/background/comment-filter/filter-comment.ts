@@ -5,18 +5,18 @@ import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
 import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
-import { sumNumbers } from "@/utils/util.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
+import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
 
 export interface FilteredData {
     filters: {
         userIdFilter: UserIdFilter;
+        easyCommentFilter: EasyCommentFilter;
         commentAssistFilter: CommentAssistFilter;
         scoreFilter: ScoreFilter;
         commandFilter: CommandFilter;
         wordFilter: WordFilter;
     };
-    easyCommentCount: number;
     loadedCommentCount: number;
     filteringTime: number;
     strictNgUserIds: Set<string>;
@@ -52,6 +52,7 @@ export function filterComment(
 
     // フィルター初期化
     const userIdFilter = new UserIdFilter(settings, videoId);
+    const easyCommentFilter = new EasyCommentFilter(settings);
     const commentAssistFilter = new CommentAssistFilter(settings);
     const scoreFilter = new ScoreFilter(settings);
     const commandFilter = new CommandFilter(settings, ngUserIds);
@@ -59,6 +60,7 @@ export function filterComment(
 
     const filters: FilteredData["filters"] = {
         userIdFilter,
+        easyCommentFilter,
         commentAssistFilter,
         scoreFilter,
         commandFilter,
@@ -74,20 +76,6 @@ export function filterComment(
     // -------------------------------------------------------------------------------------------
     // フィルタリング
     // -------------------------------------------------------------------------------------------
-
-    // かんたんコメントを非表示
-    const easyCommentCount = sumNumbers(
-        threads.map((thread) => {
-            if (settings.isEasyCommentHidden && thread.fork === "easy") {
-                const count = thread.comments.length;
-                thread.comments = [];
-
-                return count;
-            }
-
-            return 0;
-        }),
-    );
 
     // strictルールのみでフィルタリング
     Object.values(customFilters).forEach((filter) =>
@@ -109,7 +97,6 @@ export function filterComment(
 
     return {
         filters,
-        easyCommentCount,
         loadedCommentCount,
         filteringTime: end - start,
         strictNgUserIds,

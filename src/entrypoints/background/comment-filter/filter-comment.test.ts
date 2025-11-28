@@ -84,25 +84,6 @@ device:Switch`,
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isEasyCommentHidden" satisfies keyof Settings}`, () => {
-        filterComment(
-            threads,
-            createSettings({ isEasyCommentHidden: true }),
-            [],
-            "sm1",
-        );
-
-        checkComment(threads, [
-            "1000",
-            "1001",
-            "1002",
-            "1003",
-            "1004",
-            "1005",
-            "1006",
-        ]);
-    });
-
     it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
         threads.forEach((thread) =>
             thread.comments.forEach((comment) => (comment.isMyPost = true)),

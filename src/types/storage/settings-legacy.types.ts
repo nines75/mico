@@ -121,7 +121,6 @@ const keyMapToV2 = [
     ["isAdvancedFeatureVisible", "isAdvancedFeaturesVisible"],
     ["isDisableImeByContext", "isImeDisabledByContext"],
     ["isHideEasyComment", "isEasyCommentHidden"],
-    ["isAddEasyCommentCount", "isHiddenEasyCommentAdded"],
     ["IgnoreByNicoruCount", "ignoreByNicoruCount"],
     ["isShowNgScoreInLog", "isNgScoreVisible"],
     ["isShowNicoruInLog", "isNicoruVisible"],

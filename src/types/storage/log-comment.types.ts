@@ -36,6 +36,8 @@ export interface CommentCount {
 
 export interface CommentFiltering {
     /** Map<comment.body, comment.id[]> */
+    easyComment: CommonLog;
+    /** Map<comment.body, comment.id[]> */
     commentAssist: CommonLog;
     /** Map<comment.userId, comment.id[]> */
     ngUserId: CommonLog;

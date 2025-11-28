@@ -38,7 +38,6 @@ export interface Settings {
     // フィルタリング
     isEasyCommentHidden: boolean;
     isCommentAssistFilterEnabled: boolean;
-    isHiddenEasyCommentAdded: boolean;
     isScoreFilterEnabled: boolean;
     scoreFilterCount: number;
     isMyCommentIgnored: boolean;
