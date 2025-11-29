@@ -1,8 +1,16 @@
-import { VideoFiltering, VideoCount } from "@/types/storage/log-video.types.js";
+import {
+    VideoFiltering,
+    VideoCount,
+    RuleCount,
+    BlockedCount,
+    LogFilters,
+} from "@/types/storage/log-video.types.js";
 import { FilteredData } from "./filter-video.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
+import { getCountableFilters } from "./filter.js";
+import { objectEntries } from "ts-extras";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -38,21 +46,23 @@ export async function saveLog(
 }
 
 function getCount(filteredData: FilteredData): VideoCount {
-    const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
-        filteredData.filters;
+    const filters = filteredData.filters;
+    const countableFilters = getCountableFilters(filters);
 
-    const rule: VideoCount["rule"] = {
-        ngId: idFilter.countRules(),
-        ngUserName: userNameFilter.countRules(),
-        ngTitle: titleFilter.countRules(),
-    };
-    const blocked: VideoCount["blocked"] = {
-        paid: paidFilter.countBlocked(),
-        views: viewsFilter.countBlocked(),
-        ngId: idFilter.countBlocked(),
-        ngUserName: userNameFilter.countBlocked(),
-        ngTitle: titleFilter.countBlocked(),
-    };
+    const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
+        (obj, [key, filter]) => {
+            obj[key] = filter.countRules();
+            return obj;
+        },
+        {},
+    ) as RuleCount;
+    const blocked = objectEntries(filters).reduce<Partial<BlockedCount>>(
+        (obj, [key, filter]) => {
+            obj[key] = filter.countBlocked();
+            return obj;
+        },
+        {},
+    ) as BlockedCount;
 
     return {
         rule,
@@ -60,30 +70,28 @@ function getCount(filteredData: FilteredData): VideoCount {
         totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedVideoCount,
         invalid: sumNumbers(
-            Object.values(filteredData.filters).map((filter) =>
-                filter.getInvalidCount(),
-            ),
+            Object.values(filters).map((filter) => filter.getInvalidCount()),
         ),
     };
 }
 
 function getLog(filteredData: FilteredData): VideoFiltering {
-    const { paidFilter, viewsFilter, idFilter, userNameFilter, titleFilter } =
-        filteredData.filters;
+    const filters = filteredData.filters;
     const filteredVideos = new Map(
-        Object.values(filteredData.filters).flatMap((filter) => [
+        Object.values(filters).flatMap((filter) => [
             ...filter.getFilteredVideos(),
         ]),
     );
 
-    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
+    Object.values(filters).forEach((filter) => filter.sortLog());
+
+    // ソート後にログを取得
+    const logFilters = Object.fromEntries(
+        Object.entries(filters).map(([key, filter]) => [key, filter.getLog()]),
+    ) as LogFilters;
 
     return {
-        paid: paidFilter.getLog(),
-        views: viewsFilter.getLog(),
-        ngId: idFilter.getLog(),
-        ngUserName: userNameFilter.getLog(),
-        ngTitle: titleFilter.getLog(),
+        filters: logFilters,
         filteredVideos,
     };
 }

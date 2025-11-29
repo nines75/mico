@@ -614,27 +614,27 @@ export const popupConfig = {
     commentFilter: {
         log: [
             {
-                id: "ngUserId",
+                id: "userIdFilter",
                 name: "NGユーザーID",
             },
             {
-                id: "easyComment",
+                id: "easyCommentFilter",
                 name: "かんたんコメント",
             },
             {
-                id: "commentAssist",
+                id: "commentAssistFilter",
                 name: "コメントアシスト",
             },
             {
-                id: "ngScore",
+                id: "scoreFilter",
                 name: "NGスコア",
             },
             {
-                id: "ngCommand",
+                id: "commandFilter",
                 name: "NGコマンド",
             },
             {
-                id: "ngWord",
+                id: "wordFilter",
                 name: "NGワード",
             },
         ],
@@ -642,23 +642,23 @@ export const popupConfig = {
     videoFilter: {
         log: [
             {
-                id: "ngId",
+                id: "idFilter",
                 name: "NGユーザーID/動画ID",
             },
             {
-                id: "paid",
+                id: "paidFilter",
                 name: "有料動画",
             },
             {
-                id: "views",
+                id: "viewsFilter",
                 name: "再生回数",
             },
             {
-                id: "ngUserName",
+                id: "userNameFilter",
                 name: "NGユーザー名",
             },
             {
-                id: "ngTitle",
+                id: "titleFilter",
                 name: "NGタイトル",
             },
         ],

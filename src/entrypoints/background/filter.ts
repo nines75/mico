@@ -118,3 +118,7 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
 
     return rules;
 }
+
+export interface CountableFilter {
+    countRules(): number;
+}

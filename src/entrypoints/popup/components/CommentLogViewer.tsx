@@ -4,22 +4,21 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
-import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import {
     CommentMap,
     ScoreLog,
     WordLog,
-    CommentCount,
     CommentFiltering,
 } from "@/types/storage/log-comment.types.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer.js";
+import { Filters } from "@/entrypoints/background/comment-filter/filter-comment.js";
 
-type LogId = keyof ConditionalPick<CommentCount["blocked"], number>;
+type LogId = keyof Filters;
 
 export interface CommentLogViewerProps {
     id: LogId;
@@ -38,9 +37,10 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
 
     // フィルタリングが無効に設定されている場合はレンダリングしない
     if (
-        (id === "easyComment" && !settings.isEasyCommentHidden) ||
-        (id === "commentAssist" && !settings.isCommentAssistFilterEnabled) ||
-        (id === "ngScore" && !settings.isScoreFilterEnabled)
+        (id === "easyCommentFilter" && !settings.isEasyCommentHidden) ||
+        (id === "commentAssistFilter" &&
+            !settings.isCommentAssistFilterEnabled) ||
+        (id === "scoreFilter" && !settings.isScoreFilterEnabled)
     )
         return null;
 
@@ -56,7 +56,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             }
             {...{ name, blocked }}
         >
-            {id === "ngUserId" &&
+            {id === "userIdFilter" &&
                 (filtering?.strictNgUserIds.size ?? 0) > 0 && (
                     <div>
                         <button
@@ -87,31 +87,43 @@ function Log({ id, filtering, settings }: LogProps) {
     const comments = filtering.filteredComments;
 
     switch (id) {
-        case "ngUserId":
+        case "userIdFilter":
             return renderUserIdLog(
-                filtering.ngUserId,
+                filtering.filters.userIdFilter,
                 comments,
                 settings,
                 filtering.strictNgUserIds,
             );
-        case "easyComment":
+        case "easyCommentFilter":
             return renderDuplicateLog(
-                filtering.easyComment,
+                filtering.filters.easyCommentFilter,
                 comments,
                 settings,
             );
-        case "commentAssist":
+        case "commentAssistFilter":
             return renderDuplicateLog(
-                filtering.commentAssist,
+                filtering.filters.commentAssistFilter,
                 comments,
                 settings,
             );
-        case "ngScore":
-            return renderScoreLog(filtering.ngScore, comments, settings);
-        case "ngCommand":
-            return renderCommandLog(filtering.ngCommand, comments, settings);
-        case "ngWord":
-            return renderWordLog(filtering.ngWord, comments, settings);
+        case "scoreFilter":
+            return renderScoreLog(
+                filtering.filters.scoreFilter,
+                comments,
+                settings,
+            );
+        case "commandFilter":
+            return renderCommandLog(
+                filtering.filters.commandFilter,
+                comments,
+                settings,
+            );
+        case "wordFilter":
+            return renderWordLog(
+                filtering.filters.wordFilter,
+                comments,
+                settings,
+            );
     }
 }
 

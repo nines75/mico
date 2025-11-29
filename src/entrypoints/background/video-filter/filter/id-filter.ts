@@ -2,7 +2,7 @@ import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
-import { parseFilter } from "../../filter.js";
+import { CountableFilter, parseFilter } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 interface NgIds {
@@ -10,7 +10,7 @@ interface NgIds {
     videoIds: Set<string>;
 }
 
-export class IdFilter extends Filter<IdLog> {
+export class IdFilter extends Filter<IdLog> implements CountableFilter {
     private filter: NgIds;
     protected override log: IdLog = {
         userId: new Map(),

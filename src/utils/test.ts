@@ -117,17 +117,17 @@ function getComments(ids: string[]) {
 export const testLog = {
     count: {
         rule: {
-            ngUserId: 1,
-            ngCommand: 1,
-            ngWord: 1,
+            userIdFilter: 1,
+            commandFilter: 1,
+            wordFilter: 1,
         },
         blocked: {
-            easyComment: 2,
-            commentAssist: 0,
-            ngUserId: 2,
-            ngScore: 1,
-            ngCommand: 1,
-            ngWord: 1,
+            userIdFilter: 2,
+            easyCommentFilter: 2,
+            commentAssistFilter: 0,
+            scoreFilter: 1,
+            commandFilter: 1,
+            wordFilter: 1,
         },
         totalBlocked: 7,
         loaded: 7,
@@ -137,17 +137,19 @@ export const testLog = {
         invalid: 0,
     },
     filtering: {
-        easyComment: new Map([
-            ["！？", ["1005"]],
-            ["うぽつ", ["1006"]],
-        ]),
-        commentAssist: new Map(),
-        ngUserId: new Map([["user-id-owner", ["1000", "1001"]]]),
-        ngScore: ["1002"],
-        ngCommand: new Map([["big", ["1004"]]]),
-        ngWord: new Map([
-            ["コメント", new Map([["テストコメント", ["1003"]]])],
-        ]),
+        filters: {
+            userIdFilter: new Map([["user-id-owner", ["1000", "1001"]]]),
+            easyCommentFilter: new Map([
+                ["！？", ["1005"]],
+                ["うぽつ", ["1006"]],
+            ]),
+            commentAssistFilter: new Map(),
+            scoreFilter: ["1002"],
+            commandFilter: new Map([["big", ["1004"]]]),
+            wordFilter: new Map([
+                ["コメント", new Map([["テストコメント", ["1003"]]])],
+            ]),
+        },
         strictNgUserIds: new Set(),
         filteredComments: new Map(
             getComments([

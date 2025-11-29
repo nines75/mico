@@ -3,12 +3,10 @@ import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { escapeNewline } from "@/utils/util.js";
 import { JSX } from "react";
-import { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import { formatNgId } from "@/entrypoints/background/video-filter/filter/id-filter.js";
 import {
-    VideoCount,
     VideoFiltering,
     IdLog,
     VideoMap,
@@ -17,8 +15,9 @@ import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer.js";
+import { Filters } from "@/entrypoints/background/video-filter/filter-video.js";
 
-type LogId = keyof ConditionalPick<VideoCount["blocked"], number>;
+type LogId = keyof Filters;
 
 export interface VideoLogViewerProps {
     id: LogId;
@@ -63,14 +62,14 @@ function Log({ id, filtering }: LogProps) {
     const videos = filtering.filteredVideos;
 
     switch (id) {
-        case "ngId":
-            return renderIdLog(filtering.ngId, videos);
-        case "paid":
-        case "views":
-            return renderVideos(filtering[id], videos, getTitleElement);
-        case "ngUserName":
-        case "ngTitle":
-            return renderCommonLog(filtering[id], videos);
+        case "idFilter":
+            return renderIdLog(filtering.filters.idFilter, videos);
+        case "paidFilter":
+        case "viewsFilter":
+            return renderVideos(filtering.filters[id], videos, getTitleElement);
+        case "userNameFilter":
+        case "titleFilter":
+            return renderCommonLog(filtering.filters[id], videos);
     }
 }
 

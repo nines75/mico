@@ -1,9 +1,7 @@
 import { NiconicoVideo } from "../api/niconico-video.types.js";
 import { ProcessingTimeData, CommonLog } from "./log.types.js";
 
-/** videoId[] */
 export type PaidLog = string[];
-/** videoId[] */
 export type ViewsLog = string[];
 export interface IdLog {
     /** Map<userId, videoId[]> */
@@ -11,6 +9,10 @@ export interface IdLog {
     /** videoId[] */
     videoId: string[];
 }
+
+export type RuleCount = VideoCount["rule"];
+export type BlockedCount = VideoCount["blocked"];
+export type LogFilters = VideoFiltering["filters"];
 
 export type VideoMap = Map<string, NiconicoVideo>;
 
@@ -22,16 +24,16 @@ export interface VideoFilterLog {
 
 export interface VideoCount {
     rule: {
-        ngId: number;
-        ngUserName: number;
-        ngTitle: number;
+        idFilter: number;
+        userNameFilter: number;
+        titleFilter: number;
     };
     blocked: {
-        paid: number;
-        views: number;
-        ngId: number;
-        ngUserName: number;
-        ngTitle: number;
+        idFilter: number;
+        paidFilter: number;
+        viewsFilter: number;
+        userNameFilter: number;
+        titleFilter: number;
     };
     totalBlocked: number;
     loaded: number;
@@ -39,13 +41,16 @@ export interface VideoCount {
 }
 
 export interface VideoFiltering {
-    paid: PaidLog;
-    views: ViewsLog;
-    ngId: IdLog;
-    /** Map<rule, videoId[]> */
-    ngUserName: CommonLog;
-    /** Map<rule, videoId[]> */
-    ngTitle: CommonLog;
-
+    filters: {
+        idFilter: IdLog;
+        /** videoId[] */
+        paidFilter: PaidLog;
+        /** videoId[] */
+        viewsFilter: ViewsLog;
+        /** Map<rule, videoId[]> */
+        userNameFilter: CommonLog;
+        /** Map<rule, videoId[]> */
+        titleFilter: CommonLog;
+    };
     filteredVideos: VideoMap;
 }

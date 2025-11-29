@@ -6,6 +6,8 @@ import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { PaidFilter } from "./filter/paid-filter.js";
 import { ViewsFilter } from "./filter/views-filter.js";
 
+export type Filters = FilteredData["filters"];
+
 export interface FilteredData {
     filters: {
         idFilter: IdFilter;
@@ -34,7 +36,7 @@ export function filterVideo(
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
-    const filters: FilteredData["filters"] = {
+    const filters: Filters = {
         idFilter,
         paidFilter,
         viewsFilter,
@@ -73,7 +75,7 @@ export function isNgVideo(video: NiconicoVideo, settings: Settings): boolean {
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
-    const filters: FilteredData["filters"] = {
+    const filters: Filters = {
         idFilter,
         paidFilter,
         viewsFilter,

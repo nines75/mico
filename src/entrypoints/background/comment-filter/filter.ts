@@ -1,9 +1,9 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
-import { FilteredData } from "./filter-comment.js";
+import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule } from "../filter.js";
+import { CustomRuleData, CustomRule, CountableFilter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class Filter<T> {
@@ -83,7 +83,10 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class CustomFilter<T> extends Filter<T> {
+export abstract class CustomFilter<T>
+    extends Filter<T>
+    implements CountableFilter
+{
     private includeCount = 0;
     private excludeCount = 0;
     protected invalidCount = 0;
@@ -140,14 +143,19 @@ export abstract class CustomFilter<T> extends Filter<T> {
     }
 }
 
-type CustomFilterType = ConditionalPick<
-    FilteredData["filters"],
-    CustomFilter<unknown>
->;
+export function getCountableFilters(
+    filters: Filters,
+): ConditionalPick<Filters, CountableFilter> {
+    return {
+        userIdFilter: filters.userIdFilter,
+        commandFilter: filters.commandFilter,
+        wordFilter: filters.wordFilter,
+    };
+}
 
 export function getCustomFilters(
-    filters: FilteredData["filters"],
-): CustomFilterType {
+    filters: Filters,
+): ConditionalPick<Filters, CustomFilter<unknown>> {
     return {
         commandFilter: filters.commandFilter,
         wordFilter: filters.wordFilter,

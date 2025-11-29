@@ -1,15 +1,22 @@
 import { FilteredData } from "./filter-comment.js";
 import { loadSettings } from "@/utils/storage.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
-import { getCustomFilters } from "./filter.js";
-import { Settings } from "@/types/storage/settings.types.js";
 import {
+    CustomFilter,
+    getCountableFilters,
+    getCustomFilters,
+} from "./filter.js";
+import {
+    BlockedCount,
     CommentCount,
     CommentFiltering,
+    LogFilters,
+    RuleCount,
 } from "@/types/storage/log-comment.types.js";
 import { colors } from "@/utils/config.js";
-import { parseFilter } from "../filter.js";
 import { setLog } from "@/utils/db.js";
+import { objectEntries } from "ts-extras";
+import { ConditionalKeys } from "type-fest";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -22,7 +29,7 @@ export async function saveLog(
     const settings = await loadSettings();
     filteredData.filters.userIdFilter.setSettings(settings);
 
-    const count = getCount(filteredData, settings);
+    const count = getCount(filteredData);
     const filtering = getLog(filteredData);
 
     await Promise.all([
@@ -45,69 +52,50 @@ export async function saveLog(
     );
 }
 
-export function getCount(
-    filteredData: FilteredData,
-    settings: Settings,
-): CommentCount {
-    const {
-        userIdFilter,
-        easyCommentFilter,
-        commentAssistFilter,
-        scoreFilter,
-        commandFilter,
-        wordFilter,
-    } = filteredData.filters;
+export function getCount(filteredData: FilteredData): CommentCount {
+    const filters = filteredData.filters;
+    const countableFilters = getCountableFilters(filters);
+    const customFilters = getCustomFilters(filters);
 
-    const rule: CommentCount["rule"] = {
-        ngUserId: parseFilter(settings.ngUserId).length, // strictルールによる追加分を含めるために設定から取得
-        ngCommand: commandFilter.countRules(),
-        ngWord: wordFilter.countRules(),
+    const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
+        (obj, [key, filter]) => {
+            obj[key] = filter.countRules();
+            return obj;
+        },
+        {},
+    ) as RuleCount;
+    const blocked = objectEntries(filters).reduce<Partial<BlockedCount>>(
+        (obj, [key, filter]) => {
+            obj[key] = filter.countBlocked();
+            return obj;
+        },
+        {},
+    ) as BlockedCount;
+
+    const calc = (
+        key: ConditionalKeys<CustomFilter<unknown>, () => number>,
+    ) => {
+        return sumNumbers(
+            Object.values(customFilters).map((filter) => filter[key]()),
+        );
     };
-    const blocked: CommentCount["blocked"] = {
-        easyComment: easyCommentFilter.countBlocked(),
-        commentAssist: commentAssistFilter.countBlocked(),
-        ngUserId: userIdFilter.countBlocked(),
-        ngScore: scoreFilter.countBlocked(),
-        ngCommand: commandFilter.countBlocked(),
-        ngWord: wordFilter.countBlocked(),
-    };
-    const customFilters = getCustomFilters(filteredData.filters);
 
     return {
         rule,
         blocked,
         totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedCommentCount,
-        include: sumNumbers(
-            Object.values(customFilters).map((filter) =>
-                filter.getIncludeCount(),
-            ),
-        ),
-        exclude: sumNumbers(
-            Object.values(customFilters).map((filter) =>
-                filter.getExcludeCount(),
-            ),
-        ),
-        disable: commandFilter.getDisableCount(),
-        invalid: sumNumbers(
-            Object.values(customFilters).map((filter) =>
-                filter.getInvalidCount(),
-            ),
-        ),
+        include: calc("getIncludeCount"),
+        exclude: calc("getExcludeCount"),
+        invalid: calc("getInvalidCount"),
+        disable: filters.commandFilter.getDisableCount(),
     };
 }
 
 export function getLog(filteredData: FilteredData): CommentFiltering {
-    const {
-        userIdFilter,
-        easyCommentFilter,
-        commentAssistFilter,
-        scoreFilter,
-        commandFilter,
-        wordFilter,
-    } = filteredData.filters;
+    const filters = filteredData.filters;
     const filteredComments = new Map(
-        Object.values(filteredData.filters).flatMap((filter) => [
+        Object.values(filters).flatMap((filter) => [
             ...filter.getFilteredComments(),
         ]),
     );
@@ -119,16 +107,16 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
         }),
     );
 
-    Object.values(filteredData.filters).forEach((filter) => filter.sortLog());
+    Object.values(filters).forEach((filter) => filter.sortLog());
+
+    // ソート後にログを取得
+    const logFilters = Object.fromEntries(
+        Object.entries(filters).map(([key, filter]) => [key, filter.getLog()]),
+    ) as LogFilters;
 
     return {
-        easyComment: easyCommentFilter.getLog(),
-        commentAssist: commentAssistFilter.getLog(),
-        ngUserId: userIdFilter.getLog(),
-        ngScore: scoreFilter.getLog(),
-        ngCommand: commandFilter.getLog(),
-        ngWord: wordFilter.getLog(),
         strictNgUserIds: filteredData.strictNgUserIds,
+        filters: logFilters,
         filteredComments,
         renderedComments,
     };

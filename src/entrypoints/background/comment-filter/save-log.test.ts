@@ -39,7 +39,7 @@ describe(`${saveLog.name}()`, () => {
         ) as FilteredData;
 
         // 処理時間のログは不定なのでそれ以外を確認
-        expect(getCount(filteredData, settings)).toEqual(testLog.count);
+        expect(getCount(filteredData)).toEqual(testLog.count);
         expect(getLog(filteredData)).toEqual(testLog.filtering);
     });
 });

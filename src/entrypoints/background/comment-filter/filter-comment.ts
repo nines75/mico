@@ -8,6 +8,8 @@ import { CommandFilter } from "./filter/command-filter.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
 
+export type Filters = FilteredData["filters"];
+
 export interface FilteredData {
     filters: {
         userIdFilter: UserIdFilter;
@@ -58,7 +60,7 @@ export function filterComment(
     const commandFilter = new CommandFilter(settings, ngUserIds);
     const wordFilter = new WordFilter(settings, ngUserIds);
 
-    const filters: FilteredData["filters"] = {
+    const filters: Filters = {
         userIdFilter,
         easyCommentFilter,
         commentAssistFilter,

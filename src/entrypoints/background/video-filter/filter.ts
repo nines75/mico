@@ -2,8 +2,10 @@ import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
-import { parseFilter } from "../filter.js";
+import { CountableFilter, parseFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { Filters } from "./filter-video.js";
+import { ConditionalPick } from "type-fest";
 
 export abstract class Filter<T> {
     protected invalidCount = 0;
@@ -31,7 +33,10 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class CommonFilter extends Filter<CommonLog> {
+export abstract class CommonFilter
+    extends Filter<CommonLog>
+    implements CountableFilter
+{
     protected abstract filter: RegExp[];
     protected abstract rawFilter: string;
     protected override log: CommonLog = new Map();
@@ -116,6 +121,16 @@ export abstract class CommonFilter extends Filter<CommonLog> {
     countRules(): number {
         return this.filter.length;
     }
+}
+
+export function getCountableFilters(
+    filters: Filters,
+): ConditionalPick<Filters, CountableFilter> {
+    return {
+        idFilter: filters.idFilter,
+        userNameFilter: filters.userNameFilter,
+        titleFilter: filters.titleFilter,
+    };
 }
 
 export function sortVideoId(ids: string[], videos: VideoMap): string[] {

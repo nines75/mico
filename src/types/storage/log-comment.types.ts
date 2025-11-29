@@ -6,6 +6,10 @@ export type WordLog = Map<string, Map<string, string[]>>;
 
 export type CommentMap = Map<string, NiconicoComment>;
 
+export type RuleCount = CommentCount["rule"];
+export type BlockedCount = CommentCount["blocked"];
+export type LogFilters = CommentFiltering["filters"];
+
 export interface CommentFilterLog {
     count?: CommentCount;
     filtering?: CommentFiltering;
@@ -14,17 +18,17 @@ export interface CommentFilterLog {
 
 export interface CommentCount {
     rule: {
-        ngUserId: number;
-        ngCommand: number;
-        ngWord: number;
+        userIdFilter: number;
+        commandFilter: number;
+        wordFilter: number;
     };
     blocked: {
-        easyComment: number;
-        commentAssist: number;
-        ngUserId: number;
-        ngScore: number;
-        ngCommand: number;
-        ngWord: number;
+        userIdFilter: number;
+        easyCommentFilter: number;
+        commentAssistFilter: number;
+        scoreFilter: number;
+        commandFilter: number;
+        wordFilter: number;
     };
     totalBlocked: number;
     loaded: number;
@@ -35,19 +39,20 @@ export interface CommentCount {
 }
 
 export interface CommentFiltering {
-    /** Map<comment.body, comment.id[]> */
-    easyComment: CommonLog;
-    /** Map<comment.body, comment.id[]> */
-    commentAssist: CommonLog;
-    /** Map<comment.userId, comment.id[]> */
-    ngUserId: CommonLog;
-    /** comment.id[] */
-    ngScore: ScoreLog;
-    /** Map<rule, comment.id[]> */
-    ngCommand: CommonLog;
-    /** Map<rule, Map<comment.body, comment.id[]>> */
-    ngWord: WordLog;
-
+    filters: {
+        /** Map<comment.userId, comment.id[]> */
+        userIdFilter: CommonLog;
+        /** Map<comment.body, comment.id[]> */
+        easyCommentFilter: CommonLog;
+        /** Map<comment.body, comment.id[]> */
+        commentAssistFilter: CommonLog;
+        /** comment.id[] */
+        scoreFilter: ScoreLog;
+        /** Map<rule, comment.id[]> */
+        commandFilter: CommonLog;
+        /** Map<rule, Map<comment.body, comment.id[]>> */
+        wordFilter: WordLog;
+    };
     strictNgUserIds: Set<string>;
     filteredComments: CommentMap;
     renderedComments: RenderedComment[];

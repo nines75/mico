@@ -3,9 +3,9 @@ import { Thread } from "@/types/api/comment.types.js";
 import { Filter } from "../filter.js";
 import { countCommonLog, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { Rule, parseFilter } from "../../filter.js";
+import { CountableFilter, Rule, parseFilter } from "../../filter.js";
 
-export class UserIdFilter extends Filter<CommonLog> {
+export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
     private filter = new Set<string>();
     protected log: CommonLog = new Map();
 
@@ -49,6 +49,10 @@ export class UserIdFilter extends Filter<CommonLog> {
 
     updateFilter(userIds: Set<string>) {
         userIds.forEach((id) => this.filter.add(id));
+    }
+
+    countRules(): number {
+        return this.filter.size;
     }
 }
 
