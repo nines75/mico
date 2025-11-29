@@ -3,6 +3,7 @@ import { loadSettings } from "@/utils/storage.js";
 import {
     changeBadgeState,
     createLogId,
+    escapeNewline,
     getLogId,
     sendNotification,
     tryMountLogId,
@@ -25,24 +26,24 @@ import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
 import { TabData } from "@/types/storage/tab.types.js";
 import { RenderedComment } from "@/types/api/comment.types.js";
 import { LogData } from "@/types/storage/log.types.js";
+import { DropdownComment } from "../content/dropdown.js";
+
+type ExtractData<
+    T extends Extract<BackgroundMessage, { data: unknown }>["type"],
+> = Extract<BackgroundMessage, { type: T }>["data"];
 
 type BackgroundMessage =
     | {
           type: "get-user-id-for-mount";
-          data: {
-              commentNo: number;
-              body: string;
-              isOwner: boolean;
-          };
+          data: DropdownComment;
       }
     | {
           type: "add-ng-user-id-from-dropdown";
-          data: {
-              commentNo: number;
-              body: string;
-              isOwner: boolean;
-              specific: boolean;
-          };
+          data: DropdownComment & { specific: boolean };
+      }
+    | {
+          type: "get-comments-from-dropdown";
+          data: DropdownComment;
       }
     | {
           type: "filter-old-search";
@@ -110,6 +111,9 @@ export async function backgroundMessageHandler(
                 await addNgUserIdFromDropdown(message.data, sender);
                 break;
             }
+            case "get-comments-from-dropdown": {
+                return await getCommentsFromDropdown(message.data, sender);
+            }
             case "filter-old-search": {
                 await filterOldSearch(message.data, sender);
                 break;
@@ -167,7 +171,7 @@ export async function backgroundMessageHandler(
 }
 
 async function getUserIdForMount(
-    data: Extract<BackgroundMessage, { type: "get-user-id-for-mount" }>["data"],
+    data: ExtractData<"get-user-id-for-mount">,
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
@@ -186,10 +190,7 @@ async function getUserIdForMount(
 }
 
 async function addNgUserIdFromDropdown(
-    data: Extract<
-        BackgroundMessage,
-        { type: "add-ng-user-id-from-dropdown" }
-    >["data"],
+    data: ExtractData<"add-ng-user-id-from-dropdown">,
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
@@ -222,6 +223,27 @@ async function addNgUserIdFromDropdown(
     }
 
     await Promise.all(tasks);
+}
+
+async function getCommentsFromDropdown(
+    data: ExtractData<"get-comments-from-dropdown">,
+    sender: browser.runtime.MessageSender,
+) {
+    const tabId = sender.tab?.id;
+    const logId = await getLogId(tabId);
+    if (tabId === undefined || logId === undefined) return;
+
+    const log = await getLogData(logId);
+    if (log === undefined) return;
+
+    const userId = convertNoToUserId(log, data);
+    if (userId === undefined) return;
+
+    return log.commentFilterLog?.filtering?.renderedComments
+        .filter((comment) => comment.userId === userId)
+        .map((comment) => escapeNewline(comment.body))
+        .sort((a, b) => a.localeCompare(b))
+        .join("\n");
 }
 
 // https://github.com/nines75/mico/issues/46

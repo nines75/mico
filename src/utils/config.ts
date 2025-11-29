@@ -148,8 +148,9 @@ export const defaultSettings: Settings = {
 } as const;
 
 export const buttons = {
-    AddNgUserId: "ユーザーをNG登録({target})",
-    AddSpecificNgUserId: "この動画だけユーザーをNG登録({target})",
+    addNgUserId: "ユーザーをNG登録({target})",
+    addSpecificNgUserId: "この動画だけユーザーをNG登録({target})",
+    showComments: "ユーザーが投稿したコメント({target})",
 } as const;
 
 export const messages = {

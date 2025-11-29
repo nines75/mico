@@ -10,6 +10,12 @@ interface DropdownContent {
     isOwner: boolean;
 }
 
+export interface DropdownComment {
+    commentNo: number;
+    body: string;
+    isOwner: boolean;
+}
+
 export async function mountToDropdown(element: Element, settings: Settings) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
@@ -17,29 +23,47 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     const commentNo = dropdownContent.commentNoText.match(/(\d+)$/)?.[1];
     if (commentNo === undefined) return;
 
-    appendButton(dropdownContent, commentNo, buttons.AddNgUserId, false);
-    appendButton(dropdownContent, commentNo, buttons.AddSpecificNgUserId, true);
+    const dropdownComment: DropdownComment = {
+        commentNo: Number(commentNo),
+        body: dropdownContent.body,
+        isOwner: dropdownContent.isOwner,
+    };
+
+    appendButton(
+        dropdownContent,
+        buttons.addNgUserId,
+        getNgButtonCallback(dropdownComment, false),
+    );
+    appendButton(
+        dropdownContent,
+        buttons.addSpecificNgUserId,
+        getNgButtonCallback(dropdownComment, true),
+    );
+    appendButton(dropdownContent, buttons.showComments, async () => {
+        const comments = (await sendMessageToBackground({
+            type: "get-comments-from-dropdown",
+            data: dropdownComment,
+        })) as string | undefined;
+
+        alert(comments);
+    });
 
     if (settings.isUserIdMountedToDropdown) {
         await sendMessageToBackground({
             type: "get-user-id-for-mount",
-            data: {
-                commentNo: Number(commentNo),
-                body: dropdownContent.body,
-                isOwner: dropdownContent.isOwner,
-            },
+            data: dropdownComment,
         });
     }
 }
 
 function appendButton(
     dropdownContent: DropdownContent,
-    commentNo: string,
     textContent: string,
-    specific: boolean,
+    callback: () => void,
 ) {
     const button = document.createElement("button");
 
+    button.addEventListener("click", callback);
     button.textContent = textContent.replace(
         "{target}",
         browser.runtime.getManifest().name,
@@ -48,26 +72,18 @@ function appendButton(
         button.setAttribute(attribute.name, attribute.value);
     });
 
-    button.addEventListener(
-        "click",
-        getButtonCallback(commentNo, specific, dropdownContent),
-    );
-
     dropdownContent.buttonsParentElement.appendChild(button);
 }
 
-function getButtonCallback(
-    commentNo: string,
+function getNgButtonCallback(
+    dropdownComment: DropdownComment,
     specific: boolean,
-    dropdownContent: DropdownContent,
 ) {
     return async () => {
         await sendMessageToBackground({
             type: "add-ng-user-id-from-dropdown",
             data: {
-                commentNo: Number(commentNo),
-                body: dropdownContent.body,
-                isOwner: dropdownContent.isOwner,
+                ...dropdownComment,
                 specific,
             },
         });
