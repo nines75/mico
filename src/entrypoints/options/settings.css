@@ -25,23 +25,21 @@ h2 {
     .setting {
         margin: 12px;
         > label,
-        summary,
         .color-picker {
             font-weight: bold;
         }
         .setting-details {
             color: var(--dim-white);
             font-size: 12px;
-            font-weight: normal;
             margin-left: 25px;
             padding: 4px;
         }
+        .checkbox-input {
+            margin-left: 20px;
+            font-size: 13px;
+            font-weight: normal;
+        }
     }
-}
-.checkbox-input {
-    margin-left: 20px;
-    font-size: 13px;
-    font-weight: normal;
 }
 .color-picker {
     display: flex;
@@ -72,7 +70,6 @@ h2 {
     }
     label {
         font-size: 13px;
-        font-weight: bold;
     }
 }
 .link {
