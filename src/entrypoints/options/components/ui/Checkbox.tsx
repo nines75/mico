@@ -46,10 +46,10 @@ export default function Checkbox({
             {input !== undefined && <CheckboxInput {...input} />}
             {details !== undefined && (
                 <div className="setting-details">
-                    {details.split("\n").map((line, index) => (
+                    {details.split("\n").map((line, index, array) => (
                         <Fragment key={index}>
                             {line}
-                            <br />
+                            {index !== array.length - 1 && <br />}
                         </Fragment>
                     ))}
                 </div>
