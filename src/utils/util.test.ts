@@ -8,6 +8,7 @@ import {
     isSearchPage,
     isWatchPage,
     pushCommonLog,
+    replace,
     sumNumbers,
 } from "./util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
@@ -111,4 +112,26 @@ describe("util", () => {
             expect(sumNumbers(numbers)).toEqual(expected);
         },
     );
+
+    it.each([
+        {
+            name: "単数",
+            text: "$1",
+            placeholders: ["test"],
+            expected: "test",
+        },
+        {
+            name: "複数",
+            text: "$1 $2",
+            placeholders: ["test", "string"],
+            expected: "test string",
+        },
+    ] satisfies {
+        name: string;
+        text: string;
+        placeholders: string[];
+        expected: string;
+    }[])(`${replace.name}($name)`, ({ text, placeholders, expected }) => {
+        expect(replace(text, placeholders)).toEqual(expected);
+    });
 });

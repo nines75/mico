@@ -1,6 +1,7 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { buttons, messages } from "@/utils/config.js";
 import { sendMessageToBackground } from "../background/message.js";
+import { replace } from "@/utils/util.js";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
@@ -71,10 +72,9 @@ function appendButton(
     const button = document.createElement("button");
 
     button.addEventListener("click", callback);
-    button.textContent = textContent.replace(
-        "{target}",
+    button.textContent = replace(textContent, [
         browser.runtime.getManifest().name,
-    );
+    ]);
     [...dropdownContent.sampleButtonElement.attributes].forEach((attribute) => {
         button.setAttribute(attribute.name, attribute.value);
     });

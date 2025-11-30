@@ -148,36 +148,36 @@ export const defaultSettings: Settings = {
 } as const;
 
 export const buttons = {
-    addNgUserId: "ユーザーをNG登録({target})",
-    addSpecificNgUserId: "この動画だけユーザーをNG登録({target})",
-    showComments: "ユーザーが投稿したコメント({target})",
+    addNgUserId: "ユーザーをNG登録($1)",
+    addSpecificNgUserId: "この動画だけユーザーをNG登録($1)",
+    showComments: "ユーザーが投稿したコメント($1)",
 } as const;
 
 export const messages = {
     ngId: {
-        additionSuccess: "以下のIDをNG登録しました\n\n{target}",
+        additionSuccess: "以下のIDをNG登録しました\n\n$1",
         extractionFailed: "IDの抽出に失敗しました",
     },
     ngUserId: {
         // 追加
         additionSuccess: "ユーザーのNG登録に成功しました",
         additionFailed: "ユーザーのNG登録に失敗しました",
-        notifyAddition: "{target}件のユーザーIDをNG登録しました",
-        confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n{target}",
+        notifyAddition: "$1件のユーザーIDをNG登録しました",
+        confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n$1",
         getInfoFailed: "ユーザー情報の取得に失敗しました",
 
         // 削除
-        confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n{target}",
+        confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n$1",
 
         undoStrict:
-            "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n{target}",
+            "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n$1",
         alreadyAdded: "このユーザーIDは既にNG登録されています",
         cannotGetUserId: "このコメントのユーザーIDは取得できません",
     },
     ngVideoId: {
         additionFailed: "動画のNG登録に失敗しました",
-        confirmAddition: "以下の動画IDをNG登録しますか？\n\n{target}",
-        confirmRemoval: "以下のNG動画IDを削除しますか？\n\n{target}",
+        confirmAddition: "以下の動画IDをNG登録しますか？\n\n$1",
+        confirmRemoval: "以下のNG動画IDを削除しますか？\n\n$1",
         getInfoFailed: "動画情報の取得に失敗しました",
     },
     settings: {
@@ -199,7 +199,7 @@ export const messages = {
         confirmClose: "クイック編集を閉じますか？",
     },
     other: {
-        permissionRequired: "以下の権限が必要です\n\n{target}",
+        permissionRequired: "以下の権限が必要です\n\n$1",
         getCommentFailed: "コメントの取得に失敗しました",
     },
 } as const;

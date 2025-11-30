@@ -2,7 +2,12 @@ import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
 import { messages } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
-import { isWatchPage, safeParseJson, sendNotification } from "@/utils/util.js";
+import {
+    isWatchPage,
+    replace,
+    safeParseJson,
+    sendNotification,
+} from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
@@ -62,10 +67,9 @@ export default function commentRequest(
         if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
             tasks.push(
                 sendNotification(
-                    messages.ngUserId.notifyAddition.replace(
-                        "{target}",
+                    replace(messages.ngUserId.notifyAddition, [
                         strictNgUserIds.size.toString(),
-                    ),
+                    ]),
                 ),
             );
         }

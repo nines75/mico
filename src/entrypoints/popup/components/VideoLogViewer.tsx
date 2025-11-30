@@ -1,7 +1,7 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import { escapeNewline } from "@/utils/util.js";
+import { escapeNewline, replace } from "@/utils/util.js";
 import { JSX } from "react";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
@@ -204,7 +204,7 @@ async function onClickId(id: string, type: "user" | "video") {
                 return messages.ngVideoId.confirmRemoval;
         }
     })();
-    if (!confirm(text.replace("{target}", id))) return;
+    if (!confirm(replace(text, [id]))) return;
 
     await sendMessageToBackground({
         type: "remove-ng-id",
@@ -213,8 +213,7 @@ async function onClickId(id: string, type: "user" | "video") {
 }
 
 async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
-    if (!confirm(messages.ngUserId.confirmAddition.replace("{target}", userId)))
-        return;
+    if (!confirm(replace(messages.ngUserId.confirmAddition, [userId]))) return;
 
     const settings = useStorageStore.getState().settings;
     const userName = video.owner?.name ?? undefined;

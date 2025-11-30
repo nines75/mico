@@ -3,7 +3,7 @@ import { NiconicoComment } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import { escapeNewline } from "@/utils/util.js";
+import { escapeNewline, replace } from "@/utils/util.js";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import {
@@ -332,10 +332,7 @@ async function undoStrict(filtering: CommentFiltering | undefined) {
     const userIds = filtering?.strictNgUserIds ?? new Set();
     if (
         !confirm(
-            messages.ngUserId.undoStrict.replace(
-                "{target}",
-                [...userIds].join("\n"),
-            ),
+            replace(messages.ngUserId.undoStrict, [[...userIds].join("\n")]),
         )
     )
         return;
@@ -350,8 +347,7 @@ async function undoStrict(filtering: CommentFiltering | undefined) {
 }
 
 async function onClickUserId(userId: string) {
-    if (!confirm(messages.ngUserId.confirmRemoval.replace("{target}", userId)))
-        return;
+    if (!confirm(replace(messages.ngUserId.confirmRemoval, [userId]))) return;
 
     await sendMessageToBackground({
         type: "remove-ng-user-id",
@@ -379,10 +375,9 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
 
     if (
         !confirm(
-            messages.ngUserId.confirmAddition.replace(
-                "{target}",
+            replace(messages.ngUserId.confirmAddition, [
                 [...targetUserIds].join("\n"),
-            ),
+            ]),
         )
     )
         return;

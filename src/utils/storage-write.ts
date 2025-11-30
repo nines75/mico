@@ -15,7 +15,7 @@ import {
 import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
 import { messages } from "./config.js";
-import { sendNotification } from "./util.js";
+import { replace, sendNotification } from "./util.js";
 import { clearDb } from "./db.js";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
@@ -144,8 +144,6 @@ export async function addNgIdFromUrl(url: string | undefined) {
     await addNgId(id);
 
     if (settings.isNotifyAddNgId) {
-        await sendNotification(
-            messages.ngId.additionSuccess.replace("{target}", id),
-        );
+        await sendNotification(replace(messages.ngId.additionSuccess, [id]));
     }
 }

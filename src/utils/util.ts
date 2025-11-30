@@ -93,7 +93,7 @@ export async function tryWithPermission(
         await callback();
     } else {
         await sendNotification(
-            messages.other.permissionRequired.replace("{target}", permission),
+            replace(messages.other.permissionRequired, [permission]),
         );
     }
 }
@@ -152,4 +152,11 @@ export async function getLogId(
 
 export function sumNumbers(numbers: number[]) {
     return numbers.reduce((sum, num) => sum + num, 0);
+}
+
+export function replace(text: string, placeholders: string[]) {
+    return placeholders.reduce(
+        (prev, current, index) => prev.replace(`$${index + 1}`, current),
+        text,
+    );
 }

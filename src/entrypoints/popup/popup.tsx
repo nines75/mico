@@ -14,6 +14,7 @@ import { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 import { sendMessageToBackground } from "../background/message.js";
 import clsx from "clsx";
+import { replace } from "@/utils/util.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -161,10 +162,9 @@ async function onClickNgVideoButton() {
     }
     if (
         !confirm(
-            messages.ngVideoId.confirmAddition.replace(
-                "{target}",
+            replace(messages.ngVideoId.confirmAddition, [
                 `${videoId} (${title})`,
-            ),
+            ]),
         )
     )
         return;
@@ -187,10 +187,9 @@ async function onClickNgUserButton() {
     }
     if (
         !confirm(
-            messages.ngUserId.confirmAddition.replace(
-                "{target}",
+            replace(messages.ngUserId.confirmAddition, [
                 `${userId} (${userName})`,
-            ),
+            ]),
         )
     )
         return;
