@@ -1,5 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { buttons } from "@/utils/config.js";
+import { buttons, messages } from "@/utils/config.js";
 import { sendMessageToBackground } from "../background/message.js";
 
 interface DropdownContent {
@@ -44,6 +44,13 @@ export async function mountToDropdown(element: Element, settings: Settings) {
             type: "get-comments-from-dropdown",
             data: dropdownComment,
         })) as string | undefined;
+        if (comments === undefined) {
+            await sendMessageToBackground({
+                type: "send-notification",
+                data: messages.other.getCommentFailed,
+            });
+            return;
+        }
 
         alert(comments);
     });

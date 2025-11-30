@@ -200,6 +200,7 @@ export const messages = {
     },
     other: {
         permissionRequired: "以下の権限が必要です\n\n{target}",
+        getCommentFailed: "コメントの取得に失敗しました",
     },
 } as const;
 

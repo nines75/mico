@@ -88,6 +88,10 @@ type BackgroundMessage =
     | {
           type: "get-log-data";
           data: string;
+      }
+    | {
+          type: "send-notification";
+          data: string;
       };
 
 export async function sendMessageToBackground(message: BackgroundMessage) {
@@ -163,6 +167,10 @@ export async function backgroundMessageHandler(
             }
             case "get-log-data": {
                 return await getLogData(message.data);
+            }
+            case "send-notification": {
+                await sendNotification(message.data);
+                break;
             }
         }
     } catch (e) {
