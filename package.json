@@ -18,7 +18,7 @@
         "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'"
     },
     "dependencies": {
-        "@codemirror/autocomplete": "^6.19.1",
+        "@codemirror/autocomplete": "^6.20.0",
         "@codemirror/commands": "^6.10.0",
         "@codemirror/state": "^6.5.2",
         "@codemirror/view": "^6.38.8",
@@ -34,13 +34,13 @@
         "react-dom": "^19.2.0",
         "ts-extras": "^0.16.0",
         "type-fest": "^5.2.0",
-        "zod": "^4.1.12",
-        "zustand": "^5.0.8"
+        "zod": "^4.1.13",
+        "zustand": "^5.0.9"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@types/firefox-webext-browser": "^143.0.0",
-        "@types/react": "^19.2.6",
+        "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@types/webextension-polyfill": "^0.12.4",
         "@wxt-dev/auto-icons": "^1.1.0",
@@ -52,10 +52,10 @@
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
-        "prettier": "^3.6.2",
+        "prettier": "^3.7.3",
         "rollup-plugin-license": "^3.6.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.47.0",
+        "typescript-eslint": "^8.48.0",
         "vitest": "^3.2.4",
         "wxt": "^0.20.11"
     }
