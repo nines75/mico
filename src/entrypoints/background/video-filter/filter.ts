@@ -1,6 +1,6 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
 import { CountableFilter, parseFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -8,6 +8,7 @@ import { Filters } from "./filter-video.js";
 import { ConditionalPick } from "type-fest";
 
 export abstract class Filter<T> {
+    protected blockedCount = 0;
     protected invalidCount = 0;
     protected filteredVideos: VideoMap = new Map();
     protected settings: Settings;
@@ -19,9 +20,11 @@ export abstract class Filter<T> {
 
     abstract filtering(data: { videos: NiconicoVideo[] }): void;
     abstract isNgVideo(video: NiconicoVideo): boolean;
-    abstract countBlocked(): number;
     abstract sortLog(): void;
 
+    getBlockedCount(): number {
+        return this.blockedCount;
+    }
     getInvalidCount(): number {
         return this.invalidCount;
     }
@@ -55,6 +58,7 @@ export abstract class CommonFilter
                 if (regex.test(target)) {
                     pushCommonLog(this.log, regexStr, videoId);
                     this.filteredVideos.set(videoId, video);
+                    this.blockedCount++;
 
                     return false;
                 }
@@ -75,10 +79,6 @@ export abstract class CommonFilter
         }
 
         return false;
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     override sortLog(): void {

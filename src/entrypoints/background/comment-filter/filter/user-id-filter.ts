@@ -1,7 +1,7 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { Filter } from "../filter.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { CountableFilter, Rule, parseFilter } from "../../filter.js";
 
@@ -28,16 +28,13 @@ export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
             if (this.filter.has(userId)) {
                 pushCommonLog(this.log, userId, id);
                 this.filteredComments.set(id, comment);
+                this.blockedCount++;
 
                 return false;
             }
 
             return true;
         });
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     override sortLog(): void {

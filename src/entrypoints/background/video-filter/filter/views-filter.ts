@@ -23,6 +23,7 @@ export class ViewsFilter extends Filter<ViewsLog> {
             if (views <= this.settings.viewsFilterCount) {
                 this.log.push(video.id);
                 this.filteredVideos.set(video.id, video);
+                this.blockedCount++;
 
                 return false;
             }
@@ -39,10 +40,6 @@ export class ViewsFilter extends Filter<ViewsLog> {
         if (views === undefined) return false;
 
         return views <= this.settings.viewsFilterCount;
-    }
-
-    override countBlocked(): number {
-        return this.log.length;
     }
 
     override sortLog(): void {

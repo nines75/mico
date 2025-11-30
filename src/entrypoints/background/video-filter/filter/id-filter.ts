@@ -1,6 +1,6 @@
 import { Filter, sortVideoId } from "../filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 import { IdLog } from "@/types/storage/log-video.types.js";
 import { CountableFilter, parseFilter } from "../../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
@@ -32,6 +32,7 @@ export class IdFilter extends Filter<IdLog> implements CountableFilter {
             if (userId !== undefined && this.filter.userIds.has(userId)) {
                 pushCommonLog(this.log.userId, userId, videoId);
                 this.filteredVideos.set(videoId, video);
+                this.blockedCount++;
 
                 return false;
             }
@@ -40,6 +41,7 @@ export class IdFilter extends Filter<IdLog> implements CountableFilter {
             if (this.filter.videoIds.has(videoId)) {
                 this.log.videoId.push(videoId);
                 this.filteredVideos.set(videoId, video);
+                this.blockedCount++;
 
                 return false;
             }
@@ -60,10 +62,6 @@ export class IdFilter extends Filter<IdLog> implements CountableFilter {
         }
 
         return false;
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log.userId) + this.log.videoId.length;
     }
 
     override sortLog(): void {

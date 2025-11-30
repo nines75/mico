@@ -1,7 +1,6 @@
 import { fakeBrowser } from "#imports";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-    countCommonLog,
     escapeNewline,
     isNiconicoPage,
     isRankingPage,
@@ -64,15 +63,6 @@ describe("util", () => {
 
     it(`${escapeNewline.name}()`, () => {
         expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
-    });
-
-    it(`${countCommonLog.name}()`, () => {
-        const log = new Map([
-            ["a", ["1", "2"]],
-            ["b", ["3"]],
-        ]) satisfies CommonLog;
-
-        expect(countCommonLog(log)).toEqual(3);
     });
 
     it.each([

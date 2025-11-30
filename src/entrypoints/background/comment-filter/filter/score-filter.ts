@@ -14,16 +14,13 @@ export class ScoreFilter extends Filter<ScoreLog> {
             if (score <= this.settings.scoreFilterCount) {
                 this.log.push(id);
                 this.filteredComments.set(id, comment);
+                this.blockedCount++;
 
                 return false;
             }
 
             return true;
         });
-    }
-
-    override countBlocked(): number {
-        return this.log.length;
     }
 
     override sortLog(): void {

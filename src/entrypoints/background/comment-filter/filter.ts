@@ -7,6 +7,7 @@ import { CustomRuleData, CustomRule, CountableFilter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class Filter<T> {
+    protected blockedCount = 0;
     protected filteredComments: CommentMap = new Map();
     protected settings: Settings;
     protected abstract log: T;
@@ -16,9 +17,11 @@ export abstract class Filter<T> {
     }
 
     abstract filtering(threads: Thread[], isStrictOnly: boolean): void;
-    abstract countBlocked(): number;
     abstract sortLog(): void;
 
+    getBlockedCount(): number {
+        return this.blockedCount;
+    }
     getFilteredComments() {
         return this.filteredComments;
     }

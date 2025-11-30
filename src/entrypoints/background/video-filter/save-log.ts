@@ -58,7 +58,7 @@ function getCount(filteredData: FilteredData): VideoCount {
     ) as RuleCount;
     const blocked = objectEntries(filters).reduce<Partial<BlockedCount>>(
         (obj, [key, filter]) => {
-            obj[key] = filter.countBlocked();
+            obj[key] = filter.getBlockedCount();
             return obj;
         },
         {},

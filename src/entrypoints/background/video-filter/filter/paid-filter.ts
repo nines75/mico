@@ -12,6 +12,7 @@ export class PaidFilter extends Filter<PaidLog> {
             if (video.isPaymentRequired) {
                 this.log.push(video.id);
                 this.filteredVideos.set(video.id, video);
+                this.blockedCount++;
 
                 return false;
             }
@@ -24,10 +25,6 @@ export class PaidFilter extends Filter<PaidLog> {
         if (!this.settings.isPaidVideoHidden) return false;
 
         return video.isPaymentRequired;
-    }
-
-    override countBlocked(): number {
-        return this.log.length;
     }
 
     override sortLog(): void {

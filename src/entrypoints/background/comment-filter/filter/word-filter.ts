@@ -1,7 +1,7 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter, sortCommentId } from "../filter.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
 import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
 
@@ -52,18 +52,13 @@ export class WordFilter extends CustomFilter<WordLog> {
                 }
 
                 this.filteredComments.set(id, comment);
+                this.blockedCount++;
 
                 return false;
             }
 
             return true;
         });
-    }
-
-    override countBlocked(): number {
-        return this.log
-            .values()
-            .reduce((sum, map) => sum + countCommonLog(map), 0);
     }
 
     override sortLog(): void {

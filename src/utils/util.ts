@@ -68,10 +68,6 @@ export async function sendNotification(message: string) {
     });
 }
 
-export function countCommonLog(log: CommonLog) {
-    return log.values().reduce((sum, array) => sum + array.length, 0);
-}
-
 export function pushCommonLog(log: CommonLog, key: string, value: string) {
     const array = log.get(key);
     if (array !== undefined) {

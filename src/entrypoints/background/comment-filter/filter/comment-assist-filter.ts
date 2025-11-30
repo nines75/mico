@@ -1,7 +1,7 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Filter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 
 export class CommentAssistFilter extends Filter<CommonLog> {
     protected log: CommonLog = new Map();
@@ -21,16 +21,13 @@ export class CommentAssistFilter extends Filter<CommonLog> {
             if (commands.length === 0 && date >= releaseDate) {
                 pushCommonLog(this.log, body, id);
                 this.filteredComments.set(id, comment);
+                this.blockedCount++;
 
                 return false;
             }
 
             return true;
         });
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     override sortLog(): void {

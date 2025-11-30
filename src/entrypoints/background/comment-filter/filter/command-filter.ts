@@ -1,7 +1,7 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter } from "../filter.js";
-import { countCommonLog, pushCommonLog } from "@/utils/util.js";
+import { pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
 
@@ -82,6 +82,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
                     pushCommonLog(this.log, rule, id);
                     this.filteredComments.set(id, comment);
+                    this.blockedCount++;
 
                     return false;
                 }
@@ -95,10 +96,6 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
             return true;
         });
-    }
-
-    override countBlocked(): number {
-        return countCommonLog(this.log);
     }
 
     override sortLog(): void {
