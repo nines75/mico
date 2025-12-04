@@ -129,7 +129,9 @@ export default defineBackground(() => {
     browser.runtime.onMessage.addListener(backgroundMessageHandler);
 
     // ブラウザの起動時に実行する処理
-    browser.runtime.onStartup.addListener(async () => await clearDb());
+    browser.runtime.onStartup.addListener(async () => {
+        await clearDb();
+    });
 
     browser.contextMenus.create({
         id: "add-ng",

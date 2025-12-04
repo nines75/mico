@@ -37,9 +37,24 @@ export default function General() {
             <H2 name="バックアップ">
                 {(
                     [
-                        ["インポート", () => clickInput()],
-                        ["エクスポート", () => exportBackup()],
-                        ["リセット", () => reset()],
+                        [
+                            "インポート",
+                            () => {
+                                clickInput();
+                            },
+                        ],
+                        [
+                            "エクスポート",
+                            async () => {
+                                await exportBackup();
+                            },
+                        ],
+                        [
+                            "リセット",
+                            async () => {
+                                await reset();
+                            },
+                        ],
                     ] as const
                 ).map(([text, callback]) => (
                     <button
@@ -55,7 +70,9 @@ export default function General() {
                     accept=".json"
                     style={{ display: "none" }}
                     ref={input}
-                    onChange={(e) => importBackup(e, saveSettings)}
+                    onChange={(e) => {
+                        importBackup(e, saveSettings);
+                    }}
                 />
             </H2>
         </div>

@@ -80,9 +80,9 @@ export function filterComment(
     // -------------------------------------------------------------------------------------------
 
     // strictルールのみでフィルタリング
-    Object.values(customFilters).forEach((filter) =>
-        filter.filtering(threads, true),
-    );
+    Object.values(customFilters).forEach((filter) => {
+        filter.filtering(threads, true);
+    });
 
     // strictルールによって追加されたユーザーIDを反映
     const strictNgUserIds = new Set(
@@ -93,7 +93,9 @@ export function filterComment(
     userIdFilter.updateFilter(strictNgUserIds);
 
     // フィルタリング
-    Object.values(filters).forEach((filter) => filter.filtering(threads));
+    Object.values(filters).forEach((filter) => {
+        filter.filtering(threads);
+    });
 
     const end = performance.now();
 

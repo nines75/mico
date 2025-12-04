@@ -27,7 +27,9 @@ export default function CheckboxInput({
                 type="number"
                 size={5}
                 value={input}
-                onChange={(e) => save({ [id]: Number(e.target.value) })}
+                onChange={(e) => {
+                    save({ [id]: Number(e.target.value) });
+                }}
             />
             {label}
         </label>

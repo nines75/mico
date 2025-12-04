@@ -184,14 +184,14 @@ export function checkComment(
 
     // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
     const expectedIds: string[] = [];
-    (baseThreads ?? testThreads).forEach((thread) =>
+    (baseThreads ?? testThreads).forEach((thread) => {
         thread.comments.forEach((comment) => {
             const targetId = comment.id;
             if (!filteredIds.includes(targetId)) {
                 expectedIds.push(targetId);
             }
-        }),
-    );
+        });
+    });
 
     expect(actualIds.sort()).toEqual(expectedIds.sort());
 }

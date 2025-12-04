@@ -77,7 +77,9 @@ export default function ExpandNicoru() {
                                 value={input}
                                 min={0}
                                 placeholder="追加したい基準値を入力"
-                                onChange={(e) => setInput(e.target.value)}
+                                onChange={(e) => {
+                                    setInput(e.target.value);
+                                }}
                             />
                             以上
                         </label>

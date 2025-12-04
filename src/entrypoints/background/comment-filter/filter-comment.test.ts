@@ -85,9 +85,9 @@ device:Switch`,
     });
 
     it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
-        threads.forEach((thread) =>
-            thread.comments.forEach((comment) => (comment.isMyPost = true)),
-        );
+        threads.forEach((thread) => {
+            thread.comments.forEach((comment) => (comment.isMyPost = true));
+        });
         filterComment(
             threads,
             createSettings({ isMyCommentIgnored: true }),

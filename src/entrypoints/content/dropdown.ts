@@ -21,7 +21,7 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
-    const commentNo = dropdownContent.commentNoText.match(/(\d+)$/)?.[1];
+    const commentNo = /(\d+)$/.exec(dropdownContent.commentNoText)?.[1];
     if (commentNo === undefined) return;
 
     const dropdownComment: DropdownComment = {

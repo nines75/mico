@@ -148,8 +148,8 @@ export function migrationSettingsToV2(v1: Partial<SettingsV1>) {
     });
 
     if (v1.nicoruColors !== undefined) {
-        v2["nicoruColors"] = {};
-        const nicoruColors = v2["nicoruColors"] as Record<string, NicoruColor>;
+        v2.nicoruColors = {};
+        const nicoruColors = v2.nicoruColors as Record<string, NicoruColor>;
 
         Object.entries(v1.nicoruColors).forEach(([count, color]) => {
             const isGradate = color.isGradate;

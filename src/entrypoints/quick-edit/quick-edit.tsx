@@ -53,9 +53,9 @@ function Page() {
                             "tab-button",
                             selectedTab === filter.id && "selected-tab-button",
                         )}
-                        onClick={() =>
-                            save({ selectedQuickEditTab: filter.id })
-                        }
+                        onClick={() => {
+                            save({ selectedQuickEditTab: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>

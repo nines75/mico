@@ -118,9 +118,9 @@ function Main() {
                                 "common-button",
                                 selectedTab === filter.id && "selected-button",
                             )}
-                            onClick={() =>
-                                save({ selectedPopupTab: filter.id })
-                            }
+                            onClick={() => {
+                                save({ selectedPopupTab: filter.id });
+                            }}
                         >
                             <span>{filter.name}</span>
                         </button>

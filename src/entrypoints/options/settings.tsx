@@ -68,7 +68,9 @@ function Page() {
                             "tab-button",
                             selectedTab === filter.id && "selected-tab-button",
                         )}
-                        onClick={() => save({ selectedSettingsTab: filter.id })}
+                        onClick={() => {
+                            save({ selectedSettingsTab: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>
