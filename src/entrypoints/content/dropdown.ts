@@ -1,7 +1,7 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { buttons, messages } from "@/utils/config.js";
 import { sendMessageToBackground } from "../background/message.js";
-import { replace } from "@/utils/util.js";
+import { catchAsync, replace } from "@/utils/util.js";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;
@@ -21,7 +21,7 @@ export async function mountToDropdown(element: Element, settings: Settings) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
-    const commentNo = dropdownContent.commentNoText.match(/(\d+)$/)?.[1];
+    const commentNo = /(\d+)$/.exec(dropdownContent.commentNoText)?.[1];
     if (commentNo === undefined) return;
 
     const dropdownComment: DropdownComment = {
@@ -40,21 +40,25 @@ export async function mountToDropdown(element: Element, settings: Settings) {
         buttons.addSpecificNgUserId,
         getNgButtonCallback(dropdownComment, true),
     );
-    appendButton(dropdownContent, buttons.showComments, async () => {
-        const comments = (await sendMessageToBackground({
-            type: "get-comments-from-dropdown",
-            data: dropdownComment,
-        })) as string | undefined;
-        if (comments === undefined) {
-            await sendMessageToBackground({
-                type: "send-notification",
-                data: messages.other.getCommentFailed,
-            });
-            return;
-        }
+    appendButton(
+        dropdownContent,
+        buttons.showComments,
+        catchAsync(async () => {
+            const comments = (await sendMessageToBackground({
+                type: "get-comments-from-dropdown",
+                data: dropdownComment,
+            })) as string | undefined;
+            if (comments === undefined) {
+                await sendMessageToBackground({
+                    type: "send-notification",
+                    data: messages.other.getCommentFailed,
+                });
+                return;
+            }
 
-        alert(comments);
-    });
+            alert(comments);
+        }),
+    );
 
     if (settings.isUserIdMountedToDropdown) {
         await sendMessageToBackground({
@@ -86,7 +90,7 @@ function getNgButtonCallback(
     dropdownComment: DropdownComment,
     specific: boolean,
 ) {
-    return async () => {
+    return catchAsync(async () => {
         await sendMessageToBackground({
             type: "add-ng-user-id-from-dropdown",
             data: {
@@ -94,7 +98,7 @@ function getNgButtonCallback(
                 specific,
             },
         });
-    };
+    });
 }
 
 function getDropdownContent(element: Element): DropdownContent | undefined {

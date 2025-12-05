@@ -28,7 +28,9 @@ export default function VideoFilterArea() {
                             "filter-button",
                             id === filter.id && "selected-filter-button",
                         )}
-                        onClick={() => save({ selectedVideoFilter: filter.id })}
+                        onClick={() => {
+                            save({ selectedVideoFilter: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>
@@ -38,7 +40,9 @@ export default function VideoFilterArea() {
                 key={id}
                 {...{ id }}
                 value={text}
-                onChange={(str) => save({ [id]: str })}
+                onChange={(str) => {
+                    save({ [id]: str });
+                }}
             />
         </div>
     );

@@ -4,7 +4,7 @@ import Count from "./components/Count.js";
 import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
 import { popupConfig, messages, urls, titles } from "@/utils/config.js";
-import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
@@ -14,7 +14,7 @@ import { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 import { sendMessageToBackground } from "../background/message.js";
 import clsx from "clsx";
-import { replace } from "@/utils/util.js";
+import { catchAsync, replace } from "@/utils/util.js";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
@@ -26,9 +26,7 @@ function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        (async () => {
-            await useStorageStore.getState().loadPopupPageData();
-        })();
+        useStorageStore.getState().loadPopupPageData();
     }, []);
 
     if (isLoading) return null;
@@ -41,10 +39,10 @@ function Page() {
     const version = `v${browser.runtime.getManifest().version}`;
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(syncStorageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
         };
     }, []);
 
@@ -95,14 +93,14 @@ function Main() {
                         <button
                             className="ng-button"
                             title={titles.addNgVideo}
-                            onClick={() => onClickNgVideoButton()}
+                            onClick={catchAsync(onClickNgVideoButton)}
                         >
                             <ScreenShareOff size={28} />
                         </button>
                         <button
                             className="ng-button"
                             title={titles.addNgUserIdByVideo}
-                            onClick={() => onClickNgUserButton()}
+                            onClick={catchAsync(onClickNgUserButton)}
                         >
                             <UserX size={28} />
                         </button>
@@ -118,9 +116,9 @@ function Main() {
                                 "common-button",
                                 selectedTab === filter.id && "selected-button",
                             )}
-                            onClick={() =>
-                                save({ selectedPopupTab: filter.id })
-                            }
+                            onClick={() => {
+                                save({ selectedPopupTab: filter.id });
+                            }}
                         >
                             <span>{filter.name}</span>
                         </button>

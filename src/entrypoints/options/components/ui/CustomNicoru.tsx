@@ -23,21 +23,27 @@ export default function CustomNicoru({ id }: CustomNicoruProps) {
 
     return (
         <div className="color-picker">
-            <button onClick={() => removeNicoruCount(id)}>✕</button>
+            <button
+                onClick={() => {
+                    removeNicoruCount(id);
+                }}
+            >
+                ✕
+            </button>
             <span>{id}+</span>
             <label>
                 <input
                     type="checkbox"
                     checked={isGradient}
-                    onChange={(e) =>
+                    onChange={(e) => {
                         save({
                             nicoruColors: {
                                 [id]: {
                                     isGradient: e.target.checked,
                                 },
                             },
-                        })
-                    }
+                        });
+                    }}
                 />
                 グラデーション
             </label>

@@ -101,7 +101,7 @@ export function safeParseJson<T>(
     try {
         if (text === null || text === undefined) return;
 
-        const data = JSON.parse(text);
+        const data = JSON.parse(text) as string;
         const result = schema.safeParse(data);
 
         return result.success ? result.data : undefined;
@@ -140,7 +140,7 @@ export async function getLogId(
             file: "/get-log-id.js",
         });
 
-        return res[0];
+        return res[0] as string | undefined;
     } catch {
         return;
     }
@@ -155,4 +155,12 @@ export function replace(text: string, placeholders: string[]) {
         (prev, current, index) => prev.replace(`$${index + 1}`, current),
         text,
     );
+}
+
+export function catchAsync<T extends unknown[]>(
+    fn: (...args: T) => Promise<void>,
+) {
+    return (...args: T): void => {
+        fn(...args).catch(console.error);
+    };
 }

@@ -68,7 +68,7 @@ describe("util", () => {
     it.each([
         {
             name: "存在しないキー",
-            log: new Map(),
+            log: new Map<string, string[]>(),
             expected: new Map([["a", ["1"]]]),
         },
         {

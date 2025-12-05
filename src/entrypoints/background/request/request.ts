@@ -1,5 +1,5 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { safeParseJson } from "@/utils/util.js";
+import { catchAsync, safeParseJson } from "@/utils/util.js";
 import { z } from "@/utils/zod.js";
 
 export function filterResponse(
@@ -22,13 +22,13 @@ export function filterResponse(
         buf += decoder.decode(event.data, { stream: true });
     };
 
-    filter.onstop = async () => {
+    filter.onstop = catchAsync(async () => {
         const isCancel = await callback(filter, encoder, buf);
         if (isCancel) {
             filter.write(encoder.encode(buf));
             filter.disconnect();
         }
-    };
+    });
 }
 
 export function spaFilter<T, U>(

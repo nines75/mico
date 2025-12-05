@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
 import { quickEditConfig } from "@/utils/config.js";
 import { useShallow } from "zustand/shallow";
@@ -17,9 +17,7 @@ function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        (async () => {
-            await useStorageStore.getState().loadSettingsPageData();
-        })();
+        useStorageStore.getState().loadSettingsPageData();
     }, []);
 
     if (isLoading) return null;
@@ -36,10 +34,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(syncStorageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
         };
     }, []);
 
@@ -53,9 +51,9 @@ function Page() {
                             "tab-button",
                             selectedTab === filter.id && "selected-tab-button",
                         )}
-                        onClick={() =>
-                            save({ selectedQuickEditTab: filter.id })
-                        }
+                        onClick={() => {
+                            save({ selectedQuickEditTab: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>

@@ -20,8 +20,8 @@ export default defineConfig(
 
     // https://typescript-eslint.io/getting-started
     js.configs.recommended,
-    ts.configs.strict,
-    ts.configs.stylistic,
+    ts.configs.strictTypeChecked,
+    ts.configs.stylisticTypeChecked,
 
     // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
     reactHooks.configs.flat.recommended,
@@ -54,26 +54,53 @@ export default defineConfig(
         },
         rules: {
             // -------------------------------------------------------------------------------------------
-            // 既に有効化されているルール
+            // warnに変更
             // -------------------------------------------------------------------------------------------
 
             "no-empty": "warn",
             "@typescript-eslint/no-empty-function": "warn",
             "@typescript-eslint/no-empty-object-type": "warn",
+            "@typescript-eslint/require-await": "warn", // awaitを使用していないasync関数を検出
+            "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
+
+            // -------------------------------------------------------------------------------------------
+            // オプション設定
+            // -------------------------------------------------------------------------------------------
+
             "@typescript-eslint/no-unused-vars": [
                 "warn",
-                { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                },
             ],
+            // テンプレートリテラルでstringとnumber以外の埋め込みを禁止
+            "@typescript-eslint/restrict-template-expressions": [
+                "error",
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNullish: false,
+                    allowRegExp: false,
+                },
+            ],
+
+            // -------------------------------------------------------------------------------------------
+            // 無効化
+            // -------------------------------------------------------------------------------------------
+
+            "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
             "react/prop-types": "off", // TypeScriptでは不要
 
             // -------------------------------------------------------------------------------------------
-            // 新たに有効化するルール
+            // 有効化
             // -------------------------------------------------------------------------------------------
 
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
-            "no-implicit-coercion": "error", // 暗黙的な型強制を検出
-            // booleanへの型強制を検出
+            "no-implicit-coercion": "error", // 暗黙的な型強制を禁止
+            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅しているかチェック
+            // booleanへの型強制を禁止
             "@typescript-eslint/strict-boolean-expressions": [
                 "error",
                 {
@@ -82,42 +109,11 @@ export default defineConfig(
                     allowNullableObject: false,
                 },
             ],
-            // +演算子を使用して異なる型同士を結合するのを禁止
-            "@typescript-eslint/restrict-plus-operands": [
-                "error",
-                {
-                    skipCompoundAssignments: true,
-                    allowBoolean: false,
-                    allowNullish: false,
-                    allowNumberAndString: false,
-                    allowRegExp: false,
-                    allowAny: false,
-                },
-            ],
             // string以外の配列に対してのsort()の使用を禁止
             "@typescript-eslint/require-array-sort-compare": [
                 "error",
                 {
                     ignoreStringArrays: true,
-                },
-            ],
-            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅できているかチェックする
-            "@typescript-eslint/require-await": "warn", // awaitを使用していないasync関数を検出
-            "@typescript-eslint/await-thenable": "error", // 不要なawaitを検出
-            // awaitを使用していないPromiseを検出
-            "@typescript-eslint/no-floating-promises": [
-                "error",
-                {
-                    ignoreIIFE: true,
-                },
-            ],
-            "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
-            // テンプレートリテラルで特定の型を禁止
-            "@typescript-eslint/restrict-template-expressions": [
-                "error",
-                {
-                    allowAny: false,
-                    allowNullish: false,
                 },
             ],
             "import/no-restricted-paths": [
@@ -138,6 +134,6 @@ export default defineConfig(
         },
     },
 
-    // eslintとprettierの整合性を取る
+    // Prettierと競合する可能性のあるルールを無効化
     prettier,
 );

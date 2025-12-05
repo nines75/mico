@@ -28,7 +28,7 @@ export function parseFilter(filter: string) {
         .map((str, index): Rule => {
             return {
                 // どんな文字列に対しても必ずマッチする
-                rule: str.match(/^(.*?)(?:\s*(?<!\\)#.*)?$/)?.[1] as string,
+                rule: /^(.*?)(?:\s*(?<!\\)#.*)?$/.exec(str)?.[1] as string,
                 index,
             };
         })
@@ -104,7 +104,7 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
             }
         });
 
-        const escapedRule = rule.match(/^@escape\((.+)\)/)?.[1];
+        const escapedRule = /^@escape\((.+)\)/.exec(rule)?.[1];
         const hasStrictSymbol = rule.startsWith("!");
 
         rules.push({

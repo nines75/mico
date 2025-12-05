@@ -28,9 +28,9 @@ export default function CommentFilterArea() {
                             "filter-button",
                             id === filter.id && "selected-filter-button",
                         )}
-                        onClick={() =>
-                            save({ selectedCommentFilter: filter.id })
-                        }
+                        onClick={() => {
+                            save({ selectedCommentFilter: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>
@@ -40,7 +40,9 @@ export default function CommentFilterArea() {
                 key={id} // idが変わった際に再マウントさせるために必要
                 {...{ id }}
                 value={text}
-                onChange={(str) => save({ [id]: str })}
+                onChange={(str) => {
+                    save({ [id]: str });
+                }}
             />
         </div>
     );

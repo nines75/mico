@@ -83,7 +83,9 @@ function getLog(filteredData: FilteredData): VideoFiltering {
         ]),
     );
 
-    Object.values(filters).forEach((filter) => filter.sortLog());
+    Object.values(filters).forEach((filter) => {
+        filter.sortLog();
+    });
 
     // ソート後にログを取得
     const logFilters = Object.fromEntries(

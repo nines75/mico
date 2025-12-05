@@ -46,7 +46,9 @@ export function filterVideo(
 
     // フィルタリングの重複を避けるためにオブジェクトを作って渡す
     const data = { videos };
-    Object.values(filters).forEach((filter) => filter.filtering(data));
+    Object.values(filters).forEach((filter) => {
+        filter.filtering(data);
+    });
 
     const filteredIds = new Set(
         Object.values(filters).flatMap((filter) => [

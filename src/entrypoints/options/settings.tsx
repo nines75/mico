@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import { settingsConfig, urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
@@ -21,9 +21,7 @@ function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        (async () => {
-            await useStorageStore.getState().loadSettingsPageData();
-        })();
+        useStorageStore.getState().loadSettingsPageData();
     }, []);
 
     if (isLoading) return null;
@@ -40,10 +38,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(syncStorageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
         };
     }, []);
 
@@ -68,7 +66,9 @@ function Page() {
                             "tab-button",
                             selectedTab === filter.id && "selected-tab-button",
                         )}
-                        onClick={() => save({ selectedSettingsTab: filter.id })}
+                        onClick={() => {
+                            save({ selectedSettingsTab: filter.id });
+                        }}
                     >
                         <span>{filter.name}</span>
                     </button>
