@@ -4,7 +4,13 @@ import { Settings } from "../types/storage/settings.types.js";
 import { defaultSettings } from "./config.js";
 import { loadSettings } from "./storage.js";
 import { LogData } from "../types/storage/log.types.js";
-import { getLogId, isRankingPage, isSearchPage, isWatchPage } from "./util.js";
+import {
+    catchAsync,
+    getLogId,
+    isRankingPage,
+    isSearchPage,
+    isWatchPage,
+} from "./util.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 
 interface StorageState {
@@ -63,12 +69,12 @@ export const useStorageStore = create<StorageState>()(
                 isLoading: false,
             });
         },
-        saveSettings: async (settings) => {
+        saveSettings: catchAsync(async (settings) => {
             await sendMessageToBackground({
                 type: "set-settings",
                 data: settings,
             });
-        },
+        }),
     })),
 );
 
@@ -86,3 +92,5 @@ export async function storageChangeHandler(
         }
     }
 }
+
+export const syncStorageChangeHandler = catchAsync(storageChangeHandler);

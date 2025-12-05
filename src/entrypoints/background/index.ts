@@ -3,6 +3,7 @@ import commentRequest from "./request/request-comment.js";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/request-recommend.js";
 import {
+    catchAsync,
     isNiconicoPage,
     isWatchPage,
     tryWithPermission,
@@ -84,54 +85,58 @@ export default defineBackground(() => {
     );
 
     // ショートカットキーが押された際の処理
-    browser.commands.onCommand.addListener(async (command) => {
-        if (command === "quick-edit" || command === "reload") {
-            const tabs = await browser.tabs.query({
-                active: true,
-                currentWindow: true,
-            });
-            const tab = tabs[0];
-            const tabId = tab?.id;
-            const url = tab?.url;
-            if (tabId === undefined) return;
+    browser.commands.onCommand.addListener(
+        catchAsync(async (command) => {
+            if (command === "quick-edit" || command === "reload") {
+                const tabs = await browser.tabs.query({
+                    active: true,
+                    currentWindow: true,
+                });
+                const tab = tabs[0];
+                const tabId = tab?.id;
+                const url = tab?.url;
+                if (tabId === undefined) return;
 
-            switch (command) {
-                case "quick-edit": {
-                    if (!isNiconicoPage(url)) return;
+                switch (command) {
+                    case "quick-edit": {
+                        if (!isNiconicoPage(url)) return;
 
-                    break;
+                        break;
+                    }
+                    case "reload": {
+                        if (!isWatchPage(url)) return;
+
+                        break;
+                    }
                 }
-                case "reload": {
-                    if (!isWatchPage(url)) return;
 
-                    break;
-                }
+                await sendMessageToContent(tabId, { type: command });
             }
 
-            await sendMessageToContent(tabId, { type: command });
-        }
+            if (command === "open-settings") {
+                await browser.tabs.create({
+                    url: browser.runtime.getURL("/options.html"),
+                });
+            }
 
-        if (command === "open-settings") {
-            await browser.tabs.create({
-                url: browser.runtime.getURL("/options.html"),
-            });
-        }
-
-        if (command === "add-ng-from-clipboard") {
-            await tryWithPermission("clipboardRead", async () => {
-                const text = await navigator.clipboard.readText();
-                await addNgIdFromUrl(text);
-            });
-        }
-    });
+            if (command === "add-ng-from-clipboard") {
+                await tryWithPermission("clipboardRead", async () => {
+                    const text = await navigator.clipboard.readText();
+                    await addNgIdFromUrl(text);
+                });
+            }
+        }),
+    );
 
     // コンテンツスクリプトからメッセージを受け取った際のコールバック関数を設定
     browser.runtime.onMessage.addListener(backgroundMessageHandler);
 
     // ブラウザの起動時に実行する処理
-    browser.runtime.onStartup.addListener(async () => {
-        await clearDb();
-    });
+    browser.runtime.onStartup.addListener(
+        catchAsync(async () => {
+            await clearDb();
+        }),
+    );
 
     browser.contextMenus.create({
         id: "add-ng",
@@ -145,25 +150,29 @@ export default defineBackground(() => {
         ],
     });
 
-    browser.contextMenus.onClicked.addListener(async (data) => {
-        if (data.menuItemId === "add-ng") {
-            await addNgIdFromUrl(data.linkUrl);
-        }
-    });
+    browser.contextMenus.onClicked.addListener(
+        catchAsync(async (data) => {
+            if (data.menuItemId === "add-ng") {
+                await addNgIdFromUrl(data.linkUrl);
+            }
+        }),
+    );
 
     // TODO: しばらくしたらgetAllData/removeDataも含めて消す
-    browser.runtime.onInstalled.addListener(async (details) => {
-        if (details.reason !== "update") return;
+    browser.runtime.onInstalled.addListener(
+        catchAsync(async (details) => {
+            if (details.reason !== "update") return;
 
-        const data = await getAllData();
+            const data = await getAllData();
 
-        const keys: string[] = [];
-        for (const key of Object.keys(data)) {
-            if (key.startsWith("log-")) {
-                keys.push(key);
+            const keys: string[] = [];
+            for (const key of Object.keys(data)) {
+                if (key.startsWith("log-")) {
+                    keys.push(key);
+                }
             }
-        }
 
-        await removeData(keys);
-    });
+            await removeData(keys);
+        }),
+    );
 });

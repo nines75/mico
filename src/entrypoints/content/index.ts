@@ -4,7 +4,12 @@ import { createContentMessageHandler } from "./message.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
-import { isRankingPage, isSearchPage, isWatchPage } from "@/utils/util.js";
+import {
+    catchAsync,
+    isRankingPage,
+    isSearchPage,
+    isWatchPage,
+} from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
 import { sendMessageToBackground } from "../background/message.js";
 
@@ -16,7 +21,9 @@ export default defineContentScript({
     matches: ["https://www.nicovideo.jp/*"],
 
     async main(ctx) {
-        const observer: customObserver = new MutationObserver(observerCallback);
+        const observer: customObserver = new MutationObserver(
+            catchAsync(observerCallback),
+        );
         const settings = await loadSettings();
         observer.settings = settings;
 
@@ -29,14 +36,17 @@ export default defineContentScript({
 
         // ブラウザの進む/戻るで消えたバッジを復元
         if (isRankingPage(location.href) || isSearchPage(location.href)) {
-            window.addEventListener("pageshow", async (e) => {
-                // キャッシュによる発火か判定
-                if (!e.persisted) return;
+            window.addEventListener(
+                "pageshow",
+                catchAsync(async (e) => {
+                    // キャッシュによる発火か判定
+                    if (!e.persisted) return;
 
-                await sendMessageToBackground({
-                    type: "restore-badge",
-                });
-            });
+                    await sendMessageToBackground({
+                        type: "restore-badge",
+                    });
+                }),
+            );
         }
 
         if (isSearchPage(location.href)) {

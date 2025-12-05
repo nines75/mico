@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import { settingsConfig, urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
@@ -40,10 +40,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(syncStorageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
         };
     }, []);
 

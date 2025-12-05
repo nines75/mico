@@ -156,3 +156,11 @@ export function replace(text: string, placeholders: string[]) {
         text,
     );
 }
+
+export function catchAsync<T extends unknown[]>(
+    fn: (...args: T) => Promise<void>,
+) {
+    return (...args: T): void => {
+        fn(...args).catch(console.error);
+    };
+}

@@ -1,7 +1,7 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import { escapeNewline, replace } from "@/utils/util.js";
+import { catchAsync, escapeNewline, replace } from "@/utils/util.js";
 import { JSX } from "react";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
@@ -90,7 +90,9 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
                         {"# "}
                         <Clickable
                             title={titles.removeNgUserId}
-                            onClick={() => onClickId(userId, "user")}
+                            onClick={catchAsync(() =>
+                                onClickId(userId, "user"),
+                            )}
                         >
                             {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
                         </Clickable>
@@ -120,7 +122,9 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
                         {renderVideos(log.videoId, videos, (video) => (
                             <Clickable
                                 title={titles.removeNgVideoId}
-                                onClick={() => onClickId(video.id, "video")}
+                                onClick={catchAsync(() =>
+                                    onClickId(video.id, "video"),
+                                )}
                             >
                                 {escapeNewline(video.title)}
                             </Clickable>
@@ -184,7 +188,7 @@ function getTitleElement(video: NiconicoVideo) {
     ) : (
         <Clickable
             title={titles.addNgUserIdByVideo}
-            onClick={() => onClickVideoTitle(userId, video)}
+            onClick={catchAsync(() => onClickVideoTitle(userId, video))}
         >
             {escapedTitle}
         </Clickable>

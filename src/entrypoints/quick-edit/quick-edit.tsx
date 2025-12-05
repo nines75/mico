@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { useStorageStore, storageChangeHandler } from "@/utils/store.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
 import { quickEditConfig } from "@/utils/config.js";
 import { useShallow } from "zustand/shallow";
@@ -36,10 +36,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(syncStorageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
         };
     }, []);
 

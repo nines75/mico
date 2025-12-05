@@ -38,6 +38,7 @@ import { getCM, vim } from "@replit/codemirror-vim";
 import { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { catchAsync } from "@/utils/util.js";
 
 const generalHighlights = createHighlights([
     { regex: /(?<!\\)#.*/g, style: "color: gray" },
@@ -215,9 +216,12 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             });
 
             // エディタにフォーカスした時
-            view.current.contentDOM.addEventListener("focus", async () => {
-                await sendMessageToBackground({ type: "disable-ime" });
-            });
+            view.current.contentDOM.addEventListener(
+                "focus",
+                catchAsync(async () => {
+                    await sendMessageToBackground({ type: "disable-ime" });
+                }),
+            );
         }
 
         // クリーンアップ処理

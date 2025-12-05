@@ -12,6 +12,7 @@ import { ValueOf } from "type-fest";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
 import CheckboxSection from "../ui/CheckboxSection.js";
+import { catchAsync } from "@/utils/util.js";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
@@ -37,24 +38,9 @@ export default function General() {
             <H2 name="バックアップ">
                 {(
                     [
-                        [
-                            "インポート",
-                            () => {
-                                clickInput();
-                            },
-                        ],
-                        [
-                            "エクスポート",
-                            async () => {
-                                await exportBackup();
-                            },
-                        ],
-                        [
-                            "リセット",
-                            async () => {
-                                await reset();
-                            },
-                        ],
+                        ["インポート", clickInput],
+                        ["エクスポート", catchAsync(exportBackup)],
+                        ["リセット", catchAsync(reset)],
                     ] as const
                 ).map(([text, callback]) => (
                     <button

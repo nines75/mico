@@ -3,7 +3,7 @@ import { NiconicoComment } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
-import { escapeNewline, replace } from "@/utils/util.js";
+import { catchAsync, escapeNewline, replace } from "@/utils/util.js";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
 import {
@@ -62,7 +62,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                         <button
                             title={titles.undoStrict}
                             className="common-button"
-                            onClick={() => undoStrict(filtering)}
+                            onClick={catchAsync(() => undoStrict(filtering))}
                         >
                             undo
                         </button>
@@ -150,7 +150,7 @@ function renderUserIdLog(
                         )}
                         <Clickable
                             title={titles.removeNgUserId}
-                            onClick={() => onClickUserId(userId)}
+                            onClick={catchAsync(() => onClickUserId(userId))}
                         >
                             {userId}
                         </Clickable>
@@ -287,7 +287,7 @@ function formatComment(
             {isClickable ? (
                 <Clickable
                     title={titles.addNgUserIdByComment}
-                    onClick={() => onClickComment(comment)}
+                    onClick={catchAsync(() => onClickComment(comment))}
                 >
                     {escapedBody}
                 </Clickable>
@@ -316,7 +316,7 @@ function formatDuplicateComment(
             )}
             <Clickable
                 title={titles.addNgUserIdByComment}
-                onClick={() => onClickComment(comments)}
+                onClick={catchAsync(() => onClickComment(comments))}
             >
                 {escapeNewline(body)}
             </Clickable>
