@@ -54,7 +54,7 @@ export default defineConfig(
         },
         rules: {
             // -------------------------------------------------------------------------------------------
-            // 既に有効化されているルール
+            // warnに変更
             // -------------------------------------------------------------------------------------------
 
             "no-empty": "warn",
@@ -62,34 +62,44 @@ export default defineConfig(
             "@typescript-eslint/no-empty-object-type": "warn",
             "@typescript-eslint/require-await": "warn", // awaitを使用していないasync関数を検出
             "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
+
+            // -------------------------------------------------------------------------------------------
+            // オプション設定
+            // -------------------------------------------------------------------------------------------
+
             "@typescript-eslint/no-unused-vars": [
                 "warn",
-                { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                },
             ],
-            // awaitを使用していないPromiseを検出
-            // "@typescript-eslint/no-floating-promises": [
-            //     "error",
-            //     {
-            //         ignoreIIFE: true,
-            //     },
-            // ],
-            // テンプレートリテラルで特定の型を禁止
-            // "@typescript-eslint/restrict-template-expressions": [
-            //     "error",
-            //     {
-            //         allowNumber: true,
-            //     },
-            // ],
+            // テンプレートリテラルでstringとnumber以外の埋め込みを禁止
+            "@typescript-eslint/restrict-template-expressions": [
+                "error",
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNullish: false,
+                    allowRegExp: false,
+                },
+            ],
+
+            // -------------------------------------------------------------------------------------------
+            // 無効化
+            // -------------------------------------------------------------------------------------------
+
             "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
             "react/prop-types": "off", // TypeScriptでは不要
 
             // -------------------------------------------------------------------------------------------
-            // 新たに有効化するルール
+            // 有効化
             // -------------------------------------------------------------------------------------------
 
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
             "no-implicit-coercion": "error", // 暗黙的な型強制を検出
+            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅できているかチェックする
             // booleanへの型強制を検出
             "@typescript-eslint/strict-boolean-expressions": [
                 "error",
@@ -106,7 +116,6 @@ export default defineConfig(
                     ignoreStringArrays: true,
                 },
             ],
-            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅できているかチェックする
             "import/no-restricted-paths": [
                 "error",
                 {
