@@ -98,9 +98,9 @@ export default defineConfig(
 
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
-            "no-implicit-coercion": "error", // 暗黙的な型強制を検出
-            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅できているかチェックする
-            // booleanへの型強制を検出
+            "no-implicit-coercion": "error", // 暗黙的な型強制を禁止
+            "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅しているかチェック
+            // booleanへの型強制を禁止
             "@typescript-eslint/strict-boolean-expressions": [
                 "error",
                 {
@@ -134,6 +134,6 @@ export default defineConfig(
         },
     },
 
-    // eslintとprettierの整合性を取る
+    // Prettierと競合する可能性のあるルールを無効化
     prettier,
 );
