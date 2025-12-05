@@ -94,7 +94,9 @@ type BackgroundMessage =
           data: string;
       };
 
-export async function sendMessageToBackground(message: BackgroundMessage) {
+export async function sendMessageToBackground(
+    message: BackgroundMessage,
+): Promise<unknown> {
     return await browser.runtime.sendMessage(message);
 }
 

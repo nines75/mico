@@ -21,8 +21,8 @@ interface StorageState {
     isWatchPage: boolean;
     isRankingPage: boolean;
     isSearchPage: boolean;
-    loadSettingsPageData: () => Promise<void>;
-    loadPopupPageData: () => Promise<void>;
+    loadSettingsPageData: () => void;
+    loadPopupPageData: () => void;
     saveSettings: (settings: Partial<Settings>) => void;
 }
 
@@ -35,12 +35,12 @@ export const useStorageStore = create<StorageState>()(
         isWatchPage: false,
         isRankingPage: false,
         isSearchPage: false,
-        loadSettingsPageData: async () => {
+        loadSettingsPageData: catchAsync(async () => {
             const settings = await loadSettings();
 
             set({ settings, isLoading: false });
-        },
-        loadPopupPageData: async () => {
+        }),
+        loadPopupPageData: catchAsync(async () => {
             const [settings, tabs] = await Promise.all([
                 loadSettings(),
                 browser.tabs.query({
@@ -68,7 +68,7 @@ export const useStorageStore = create<StorageState>()(
                 tabId,
                 isLoading: false,
             });
-        },
+        }),
         saveSettings: catchAsync(async (settings) => {
             await sendMessageToBackground({
                 type: "set-settings",
@@ -87,7 +87,9 @@ export async function storageChangeHandler(
     for (const [key, value] of Object.entries(changes)) {
         if (key === "settings") {
             useStorageStore.setState({
-                settings: await loadSettings(value.newValue),
+                settings: await loadSettings(
+                    value.newValue as Partial<Settings>,
+                ),
             });
         }
     }

@@ -93,7 +93,7 @@ async function watchPageObserver(element: Element, settings: Settings) {
     // コメント(最上位要素の一つ下)
     {
         const parent = element.parentElement;
-        if (parent !== null && parent.hasAttribute("data-index")) {
+        if (parent?.hasAttribute("data-index") === true) {
             if (!settings.isExpandNicoruEnabled) return;
 
             renderComment(parent, settings);

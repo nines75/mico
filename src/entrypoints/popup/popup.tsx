@@ -26,9 +26,7 @@ function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        (async () => {
-            await useStorageStore.getState().loadPopupPageData();
-        })();
+        useStorageStore.getState().loadPopupPageData();
     }, []);
 
     if (isLoading) return null;

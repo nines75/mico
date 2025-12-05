@@ -17,9 +17,7 @@ function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        (async () => {
-            await useStorageStore.getState().loadSettingsPageData();
-        })();
+        useStorageStore.getState().loadSettingsPageData();
     }, []);
 
     if (isLoading) return null;
