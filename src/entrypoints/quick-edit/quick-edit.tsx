@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { createRoot } from "react-dom/client";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
 import { quickEditConfig } from "@/utils/config.js";
@@ -7,13 +6,7 @@ import { useShallow } from "zustand/shallow";
 import VideoFilterArea from "../options/components/ui/VideoFilterArea.js";
 import clsx from "clsx";
 
-const dom = document.querySelector("#root");
-if (dom !== null) {
-    const root = createRoot(dom);
-    root.render(<Init />);
-}
-
-function Init() {
+export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { createRoot } from "react-dom/client";
 import Count from "./components/Count.js";
 import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
@@ -16,13 +15,7 @@ import { sendMessageToBackground } from "../background/message.js";
 import clsx from "clsx";
 import { catchAsync, replace } from "@/utils/util.js";
 
-const dom = document.querySelector("#root");
-if (dom !== null) {
-    const root = createRoot(dom);
-    root.render(<Init />);
-}
-
-function Init() {
+export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {

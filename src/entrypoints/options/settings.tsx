@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { createRoot } from "react-dom/client";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import { settingsConfig, urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
@@ -11,13 +10,7 @@ import Support from "./components/tabs/Support.js";
 import VideoFilter from "./components/tabs/VideoFilter.js";
 import clsx from "clsx";
 
-const dom = document.querySelector("#root");
-if (dom !== null) {
-    const root = createRoot(dom);
-    root.render(<Init />);
-}
-
-function Init() {
+export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
