@@ -104,7 +104,7 @@ async function watchPageObserver(element: Element, settings: Settings) {
     // ドロップダウン
     {
         if (element.className === "z_dropdown") {
-            await mountToDropdown(element, settings);
+            await mountToDropdown(element);
 
             return;
         }

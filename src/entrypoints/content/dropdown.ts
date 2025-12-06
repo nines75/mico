@@ -1,4 +1,3 @@
-import { Settings } from "@/types/storage/settings.types.js";
 import { buttons, messages } from "@/utils/config.js";
 import { sendMessageToBackground } from "../background/message.js";
 import { catchAsync, replace } from "@/utils/util.js";
@@ -17,7 +16,7 @@ export interface DropdownComment {
     isOwner: boolean;
 }
 
-export async function mountToDropdown(element: Element, settings: Settings) {
+export async function mountToDropdown(element: Element) {
     const dropdownContent = getDropdownContent(element);
     if (dropdownContent === undefined) return;
 
@@ -60,12 +59,10 @@ export async function mountToDropdown(element: Element, settings: Settings) {
         }),
     );
 
-    if (settings.isUserIdMountedToDropdown) {
-        await sendMessageToBackground({
-            type: "get-user-id-for-mount",
-            data: dropdownComment,
-        });
-    }
+    await sendMessageToBackground({
+        type: "mount-to-dropdown",
+        data: dropdownComment,
+    });
 }
 
 function appendButton(

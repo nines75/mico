@@ -16,8 +16,8 @@ type ContentMessage =
           type: "quick-edit";
       }
     | {
-          type: "mount-user-id";
-          data: string;
+          type: "mount-to-dropdown";
+          data: string[];
       }
     | {
           type: "remove-old-search";
@@ -57,8 +57,8 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     await openQuickEdit(ctx);
                     break;
                 }
-                case "mount-user-id": {
-                    mountUserId(message.data);
+                case "mount-to-dropdown": {
+                    mountToDropdown(message.data);
                     break;
                 }
                 case "remove-old-search": {
@@ -167,20 +167,23 @@ async function openQuickEdit(ctx: ContentScriptContext) {
     document.addEventListener("keydown", callback);
 }
 
-function mountUserId(userId: string) {
-    const dropdown = document.querySelector(".z_dropdown > div > div > div");
-    if (dropdown === null) return;
+function mountToDropdown(texts: string[]) {
+    const parent = document.querySelector(".z_dropdown > div");
+    if (parent === null) return;
 
-    const sampleElement = dropdown.querySelector(":scope > p:last-of-type");
-    if (sampleElement === null) return;
+    const sample = parent.querySelector(":scope > div:nth-child(2)");
+    const buttons = parent.querySelector(":scope > div:last-of-type");
+    if (sample === null || buttons === null) return;
 
-    const p = document.createElement("p");
-    p.textContent = `${userId} (${browser.runtime.getManifest().name})`;
-    [...sampleElement.attributes].forEach((attribute) => {
-        p.setAttribute(attribute.name, attribute.value);
+    texts.forEach((text) => {
+        const div = document.createElement("div");
+        div.textContent = `${text} (${browser.runtime.getManifest().name})`;
+        [...sample.attributes].forEach((attribute) => {
+            div.setAttribute(attribute.name, attribute.value);
+        });
+
+        buttons.before(div);
     });
-
-    dropdown.appendChild(p);
 }
 
 export function removeOldSearch(ids: Set<string>) {

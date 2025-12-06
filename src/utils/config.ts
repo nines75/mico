@@ -60,9 +60,10 @@ export const defaultSettings: Settings = {
     isNotifyAddNgUserId: true,
     isNotifyAutoAddNgUserId: true,
 
-    // その他
+    // ドロップダウン
     isAutoReload: false,
     isUserIdMountedToDropdown: false,
+    isNgScoreMountedToDropdown: false,
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
@@ -415,17 +416,21 @@ export const commentFilterSettings = {
             ],
         },
         {
-            header: "その他",
+            header: "ドロップダウン",
             items: [
+                {
+                    id: "isUserIdMountedToDropdown",
+                    label: "ユーザーIDを表示する",
+                },
+                {
+                    id: "isNgScoreMountedToDropdown",
+                    label: "NGスコアを表示する",
+                },
                 {
                     id: "isAutoReload",
                     label: "自動リロードを有効にする",
                     details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
                     読み込み後、リロードする前の再生時間が自動で再設定されます。`,
-                },
-                {
-                    id: "isUserIdMountedToDropdown",
-                    label: "ドロップダウンにユーザーIDを表示する",
                 },
             ],
         },

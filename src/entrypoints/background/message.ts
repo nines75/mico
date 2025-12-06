@@ -24,7 +24,6 @@ import {
 import { sendMessageToContent } from "../content/message.js";
 import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
 import { TabData } from "@/types/storage/tab.types.js";
-import { RenderedComment } from "@/types/api/comment.types.js";
 import { LogData } from "@/types/storage/log.types.js";
 import { DropdownComment } from "../content/dropdown.js";
 
@@ -34,7 +33,7 @@ type ExtractData<
 
 type BackgroundMessage =
     | {
-          type: "get-user-id-for-mount";
+          type: "mount-to-dropdown";
           data: DropdownComment;
       }
     | {
@@ -109,8 +108,8 @@ export async function backgroundMessageHandler(
         if (sender.id !== browser.runtime.id) return;
 
         switch (message.type) {
-            case "get-user-id-for-mount": {
-                await getUserIdForMount(message.data, sender);
+            case "mount-to-dropdown": {
+                await mountToDropdown(message.data, sender);
                 break;
             }
             case "add-ng-user-id-from-dropdown": {
@@ -180,8 +179,8 @@ export async function backgroundMessageHandler(
     }
 }
 
-async function getUserIdForMount(
-    data: ExtractData<"get-user-id-for-mount">,
+async function mountToDropdown(
+    data: ExtractData<"mount-to-dropdown">,
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
@@ -191,12 +190,26 @@ async function getUserIdForMount(
     const log = await getLogData(logId);
     if (log === undefined) return;
 
-    const userId = convertNoToUserId(log, data);
+    const settings = await loadSettings();
+    const comment = convertNoToComment(log, data);
+    const score = comment?.score;
 
-    await sendMessageToContent(tabId, {
-        type: "mount-user-id",
-        data: userId ?? messages.ngUserId.cannotGetUserId,
-    });
+    const texts: string[] = [];
+    if (settings.isUserIdMountedToDropdown) {
+        texts.push(
+            `ユーザーID：${comment?.userId ?? messages.ngUserId.cannotGetUserId}`,
+        );
+    }
+    if (settings.isNgScoreMountedToDropdown && score !== undefined) {
+        texts.push(`NGスコア：${score}`);
+    }
+
+    if (texts.length > 0) {
+        await sendMessageToContent(tabId, {
+            type: "mount-to-dropdown",
+            data: texts,
+        });
+    }
 }
 
 async function addNgUserIdFromDropdown(
@@ -211,7 +224,7 @@ async function addNgUserIdFromDropdown(
     if (log === undefined) return;
 
     const videoId = log.tab?.videoId;
-    const userId = convertNoToUserId(log, data);
+    const userId = convertNoToComment(log, data)?.userId;
     if (videoId === undefined || userId === undefined) {
         await sendNotification(messages.ngUserId.additionFailed);
         return;
@@ -246,7 +259,7 @@ async function getCommentsFromDropdown(
     const log = await getLogData(logId);
     if (log === undefined) return;
 
-    const userId = convertNoToUserId(log, data);
+    const userId = convertNoToComment(log, data)?.userId;
     if (userId === undefined) return;
 
     return log.commentFilterLog?.filtering?.renderedComments
@@ -257,7 +270,7 @@ async function getCommentsFromDropdown(
 }
 
 // https://github.com/nines75/mico/issues/46
-function convertNoToUserId(
+function convertNoToComment(
     log: LogData,
     data: {
         commentNo: number;
@@ -271,19 +284,11 @@ function convertNoToUserId(
     if (comments === undefined || comments.length === 0) return;
 
     // コメント番号の重複なし
-    if (comments.length === 1) {
-        const comment = comments[0] as RenderedComment;
-
-        return comment.userId;
-    }
+    if (comments.length === 1) return comments[0];
 
     // コメント番号の重複あり
     if (data.isOwner) {
-        const target = comments.find(
-            (comment) => comment.fork === "owner",
-        ) as RenderedComment;
-
-        return target.userId;
+        return comments.find((comment) => comment.fork === "owner");
     } else {
         const filteredComments = comments.filter(
             (comment) => comment.body === data.body,
@@ -292,8 +297,7 @@ function convertNoToUserId(
         // コメントが特定できない場合
         if (filteredComments.length !== 1) return;
 
-        const comment = filteredComments[0] as RenderedComment;
-        return comment.userId;
+        return filteredComments[0];
     }
 }
 

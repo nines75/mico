@@ -101,9 +101,9 @@ export function getLog(filteredData: FilteredData): CommentFiltering {
     );
     const renderedComments = filteredData.threads.flatMap((thread) =>
         thread.comments.map((comment) => {
-            const { body, userId, no } = comment;
+            const { body, userId, no, score } = comment;
 
-            return { body, userId, no, fork: thread.fork };
+            return { body, userId, no, score, fork: thread.fork };
         }),
     );
 

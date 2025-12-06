@@ -42,5 +42,6 @@ export interface RenderedComment {
     body: string;
     userId: string;
     no: number;
+    score: number;
     fork: Thread["fork"];
 }

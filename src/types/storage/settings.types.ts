@@ -59,9 +59,10 @@ export interface Settings {
     isNotifyAddNgUserId: boolean;
     isNotifyAutoAddNgUserId: boolean;
 
-    // その他
+    // ドロップダウン
     isAutoReload: boolean;
     isUserIdMountedToDropdown: boolean;
+    isNgScoreMountedToDropdown: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
