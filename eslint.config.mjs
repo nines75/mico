@@ -9,10 +9,7 @@ import importPlugin from "eslint-plugin-import";
 const pathsExceptBackground = [
     "./src/utils/store.ts",
     "./src/utils/util.ts",
-    "./src/entrypoints/content",
-    "./src/entrypoints/options",
-    "./src/entrypoints/popup",
-    "./src/entrypoints/quick-edit",
+    "./src/entrypoints/!(background)/**/*",
 ];
 
 export default defineConfig(
