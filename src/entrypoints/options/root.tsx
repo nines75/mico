@@ -4,9 +4,14 @@
 
 import { createRoot } from "react-dom/client";
 import { Init } from "./settings.js";
+import { StrictMode } from "react";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
     const root = createRoot(dom);
-    root.render(<Init />);
+    root.render(
+        <StrictMode>
+            <Init />
+        </StrictMode>,
+    );
 }
