@@ -12,7 +12,7 @@ import {
     storageArea,
     loadSettings,
 } from "./storage.js";
-import { getNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
+import { createUserIdFilter } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
 import { messages } from "./config.js";
 import { replace, sendNotification } from "./util.js";
@@ -79,7 +79,7 @@ export async function removeNgUserId(
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            getNgUserId(settings, isRemoveSpecific ? undefined : "")
+            createUserIdFilter(settings, isRemoveSpecific ? undefined : "")
                 .filter((data) => userIds.has(data.rule))
                 .map((data) => data.index),
         );

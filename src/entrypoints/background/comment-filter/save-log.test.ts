@@ -5,7 +5,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { filterComment, FilteredData } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
 import { fakeBrowser } from "#imports";
-import { getCount, getLog, saveLog } from "./save-log.js";
+import { createCount, createFiltering, saveLog } from "./save-log.js";
 import * as util from "@/utils/util.js";
 
 beforeAll(() => {
@@ -39,7 +39,7 @@ describe(`${saveLog.name}()`, () => {
         ) as FilteredData;
 
         // 処理時間のログは不定なのでそれ以外を確認
-        expect(getCount(filteredData)).toEqual(testLog.count);
-        expect(getLog(filteredData)).toEqual(testLog.filtering);
+        expect(createCount(filteredData)).toEqual(testLog.count);
+        expect(createFiltering(filteredData)).toEqual(testLog.filtering);
     });
 });

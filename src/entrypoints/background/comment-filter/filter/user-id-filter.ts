@@ -53,7 +53,7 @@ export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
     }
 }
 
-export function getNgUserId(settings: Settings, videoId?: string) {
+export function createUserIdFilter(settings: Settings, videoId?: string) {
     const res: Rule[] = [];
 
     parseFilter(settings.ngUserId).forEach((data) => {
@@ -73,5 +73,7 @@ export function getNgUserId(settings: Settings, videoId?: string) {
 }
 
 export function getNgUserIdSet(settings: Settings, videoId?: string) {
-    return new Set(getNgUserId(settings, videoId).map((data) => data.rule));
+    return new Set(
+        createUserIdFilter(settings, videoId).map((data) => data.rule),
+    );
 }

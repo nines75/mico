@@ -20,8 +20,8 @@ export async function saveLog(
 ) {
     const start = performance.now();
 
-    const count = getCount(filteredData);
-    const filtering = getLog(filteredData);
+    const count = createCount(filteredData);
+    const filtering = createFiltering(filteredData);
 
     await Promise.all([
         setLog({ videoFilterLog: { count, filtering } }, logId, tabId),
@@ -45,7 +45,7 @@ export async function saveLog(
     );
 }
 
-function getCount(filteredData: FilteredData): VideoCount {
+function createCount(filteredData: FilteredData): VideoCount {
     const filters = filteredData.filters;
     const countableFilters = getCountableFilters(filters);
 
@@ -75,7 +75,7 @@ function getCount(filteredData: FilteredData): VideoCount {
     };
 }
 
-function getLog(filteredData: FilteredData): VideoFiltering {
+function createFiltering(filteredData: FilteredData): VideoFiltering {
     const filters = filteredData.filters;
     const filteredVideos = new Map(
         Object.values(filters).flatMap((filter) => [

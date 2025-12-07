@@ -4,6 +4,9 @@ import { sendMessageToBackground } from "../background/message.js";
 import { loadSettings } from "@/utils/storage.js";
 import { messages } from "@/utils/config.js";
 
+type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
+    Extract<ContentMessage, { type: T }>["data"];
+
 type ContentMessage =
     | {
           type: "reload";
@@ -90,7 +93,7 @@ async function reload() {
     location.reload();
 }
 
-function setPlaybackTime(time: number) {
+function setPlaybackTime(time: ExtractData<"set-playback-time">) {
     const id = setInterval(() => {
         const video = document.querySelector("video");
         if (video !== null) {
@@ -167,7 +170,7 @@ async function openQuickEdit(ctx: ContentScriptContext) {
     document.addEventListener("keydown", callback);
 }
 
-function mountToDropdown(texts: string[]) {
+function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
     const parent = document.querySelector(".z_dropdown > div");
     if (parent === null) return;
 
@@ -186,7 +189,7 @@ function mountToDropdown(texts: string[]) {
     });
 }
 
-export function removeOldSearch(ids: Set<string>) {
+export function removeOldSearch(ids: ExtractData<"remove-old-search">) {
     const elements = document.querySelectorAll("li[data-video-id]");
     elements.forEach((element) => {
         const videoId = element.getAttribute("data-video-id");
@@ -198,7 +201,7 @@ export function removeOldSearch(ids: Set<string>) {
     });
 }
 
-function mountLogId(logId: LogId) {
+function mountLogId(logId: ExtractData<"mount-log-id">) {
     const id = `${browser.runtime.getManifest().name}-log-id`;
     const current = document.getElementById(id);
 

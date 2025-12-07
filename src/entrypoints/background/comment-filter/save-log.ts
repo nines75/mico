@@ -29,8 +29,8 @@ export async function saveLog(
     const settings = await loadSettings();
     filteredData.filters.userIdFilter.setSettings(settings);
 
-    const count = getCount(filteredData);
-    const filtering = getLog(filteredData);
+    const count = createCount(filteredData);
+    const filtering = createFiltering(filteredData);
 
     await Promise.all([
         setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
@@ -52,7 +52,7 @@ export async function saveLog(
     );
 }
 
-export function getCount(filteredData: FilteredData): CommentCount {
+export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
     const countableFilters = getCountableFilters(filters);
     const customFilters = getCustomFilters(filters);
@@ -92,7 +92,7 @@ export function getCount(filteredData: FilteredData): CommentCount {
     };
 }
 
-export function getLog(filteredData: FilteredData): CommentFiltering {
+export function createFiltering(filteredData: FilteredData): CommentFiltering {
     const filters = filteredData.filters;
     const filteredComments = new Map(
         Object.values(filters).flatMap((filter) => [

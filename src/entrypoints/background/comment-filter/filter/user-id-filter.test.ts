@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
 import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { getNgUserId, UserIdFilter } from "./user-id-filter.js";
+import { createUserIdFilter, UserIdFilter } from "./user-id-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { Rule } from "../../filter.js";
 
@@ -105,7 +105,7 @@ user-id-owner
     });
 });
 
-describe(getNgUserId.name, () => {
+describe(createUserIdFilter.name, () => {
     it.each([
         {
             name: "すべてのルール",
@@ -142,6 +142,6 @@ sm2@user3
 `,
         };
 
-        expect(getNgUserId(settings, videoId)).toEqual(expected);
+        expect(createUserIdFilter(settings, videoId)).toEqual(expected);
     });
 });

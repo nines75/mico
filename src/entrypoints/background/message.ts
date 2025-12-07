@@ -32,6 +32,9 @@ type ExtractData<
 > = Extract<BackgroundMessage, { type: T }>["data"];
 
 type BackgroundMessage =
+    // -------------------------------------------------------------------------------------------
+    // このファイルの関数を呼び出すもの
+    // -------------------------------------------------------------------------------------------
     | {
           type: "mount-to-dropdown";
           data: DropdownComment;
@@ -48,6 +51,15 @@ type BackgroundMessage =
           type: "filter-old-search";
           data: NiconicoVideo[];
       }
+    | {
+          type: "disable-ime";
+      }
+    | {
+          type: "restore-badge";
+      }
+    // -------------------------------------------------------------------------------------------
+    // 他のファイルの関数を呼び出すもの
+    // -------------------------------------------------------------------------------------------
     | {
           type: "set-settings";
           data: Partial<Settings>;
@@ -79,12 +91,6 @@ type BackgroundMessage =
           data: string;
       }
     | {
-          type: "disable-ime";
-      }
-    | {
-          type: "restore-badge";
-      }
-    | {
           type: "get-log-data";
           data: string;
       }
@@ -108,6 +114,9 @@ export async function backgroundMessageHandler(
         if (sender.id !== browser.runtime.id) return;
 
         switch (message.type) {
+            // -------------------------------------------------------------------------------------------
+            // このファイルの関数を呼び出すもの
+            // -------------------------------------------------------------------------------------------
             case "mount-to-dropdown": {
                 await mountToDropdown(message.data, sender);
                 break;
@@ -123,6 +132,17 @@ export async function backgroundMessageHandler(
                 await filterOldSearch(message.data, sender);
                 break;
             }
+            case "disable-ime": {
+                await disableIme();
+                break;
+            }
+            case "restore-badge": {
+                await restoreBadge(sender);
+                break;
+            }
+            // -------------------------------------------------------------------------------------------
+            // 他のファイルの関数を呼び出すもの
+            // -------------------------------------------------------------------------------------------
             case "set-settings": {
                 await setSettings(message.data);
                 break;
@@ -158,14 +178,6 @@ export async function backgroundMessageHandler(
                 await removeNgId(message.data);
                 break;
             }
-            case "disable-ime": {
-                await disableIme();
-                break;
-            }
-            case "restore-badge": {
-                await restoreBadge(sender);
-                break;
-            }
             case "get-log-data": {
                 return await getLogData(message.data);
             }
@@ -178,6 +190,10 @@ export async function backgroundMessageHandler(
         console.error(e);
     }
 }
+
+// -------------------------------------------------------------------------------------------
+// メッセージを処理する関数
+// -------------------------------------------------------------------------------------------
 
 async function mountToDropdown(
     data: ExtractData<"mount-to-dropdown">,
@@ -273,40 +289,8 @@ async function getCommentsFromDropdown(
         .join("\n");
 }
 
-// https://github.com/nines75/mico/issues/46
-function convertNoToComment(
-    log: LogData,
-    data: {
-        commentNo: number;
-        body: string;
-        isOwner: boolean;
-    },
-) {
-    const comments = log.commentFilterLog?.filtering?.renderedComments.filter(
-        (comment) => comment.no === data.commentNo,
-    );
-    if (comments === undefined || comments.length === 0) return;
-
-    // コメント番号の重複なし
-    if (comments.length === 1) return comments[0];
-
-    // コメント番号の重複あり
-    if (data.isOwner) {
-        return comments.find((comment) => comment.fork === "owner");
-    } else {
-        const filteredComments = comments.filter(
-            (comment) => comment.body === data.body,
-        );
-
-        // コメントが特定できない場合
-        if (filteredComments.length !== 1) return;
-
-        return filteredComments[0];
-    }
-}
-
 async function filterOldSearch(
-    videos: NiconicoVideo[],
+    videos: ExtractData<"filter-old-search">,
     sender: browser.runtime.MessageSender,
 ) {
     const settings = await loadSettings();
@@ -347,4 +331,33 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     if (count === undefined) return;
 
     await changeBadgeState(count, colors.videoBadge, tabId);
+}
+
+// -------------------------------------------------------------------------------------------
+// 重複をまとめる関数
+// -------------------------------------------------------------------------------------------
+
+// https://github.com/nines75/mico/issues/46
+function convertNoToComment(log: LogData, data: DropdownComment) {
+    const comments = log.commentFilterLog?.filtering?.renderedComments.filter(
+        (comment) => comment.no === data.commentNo,
+    );
+    if (comments === undefined || comments.length === 0) return;
+
+    // コメント番号の重複なし
+    if (comments.length === 1) return comments[0];
+
+    // コメント番号の重複あり
+    if (data.isOwner) {
+        return comments.find((comment) => comment.fork === "owner");
+    } else {
+        const filteredComments = comments.filter(
+            (comment) => comment.body === data.body,
+        );
+
+        // コメントが特定できない場合
+        if (filteredComments.length !== 1) return;
+
+        return filteredComments[0];
+    }
 }
