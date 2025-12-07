@@ -85,7 +85,7 @@ async function restorePlaybackTime(tabId: number, tabData: TabData) {
     const playbackTime = tabData.playbackTime ?? 0;
     if (playbackTime <= 0) return;
 
-    const tasks: Promise<void>[] = [];
+    const tasks: Promise<unknown>[] = [];
     tasks.push(setTabData({ playbackTime: 0 }, tabId));
     tasks.push(
         sendMessageToContent(tabId, {

@@ -251,7 +251,7 @@ async function addNgUserIdFromDropdown(
     );
 
     const settings = await loadSettings();
-    const tasks: Promise<void>[] = [];
+    const tasks: Promise<unknown>[] = [];
 
     if (settings.isAutoReload) {
         tasks.push(sendMessageToContent(tabId, { type: "reload" }));

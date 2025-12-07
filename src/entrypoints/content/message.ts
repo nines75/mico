@@ -29,13 +29,15 @@ type ContentMessage =
     | {
           type: "mount-log-id";
           data: LogId;
+      }
+    | {
+          type: "get-log-id";
       };
-
 export async function sendMessageToContent(
     tabId: number,
     message: ContentMessage,
-) {
-    await browser.tabs.sendMessage(tabId, message);
+): Promise<unknown> {
+    return await browser.tabs.sendMessage(tabId, message);
 }
 
 export function createContentMessageHandler(ctx: ContentScriptContext) {
@@ -71,6 +73,9 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                 case "mount-log-id": {
                     mountLogId(message.data);
                     break;
+                }
+                case "get-log-id": {
+                    return getLogId();
                 }
             }
         } catch (e) {
@@ -215,4 +220,11 @@ function mountLogId(logId: ExtractData<"mount-log-id">) {
     } else {
         current.textContent = logId;
     }
+}
+
+function getLogId() {
+    const id = `${browser.runtime.getManifest().name}-log-id`;
+    const element = document.getElementById(id);
+
+    return element?.textContent;
 }
