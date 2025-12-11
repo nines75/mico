@@ -171,7 +171,7 @@ export const messages = {
         confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n$1",
 
         undoStrict:
-            "strictルールによって自動追加されたNGユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n$1",
+            "strictルールによってNG登録されたユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n$1",
         alreadyAdded: "このユーザーIDは既にNG登録されています",
         cannotGetUserId: "このコメントのユーザーIDは取得できません",
     },
@@ -219,8 +219,9 @@ export const titles = {
     ngScore: "NGスコア",
     nicoruCount: "ニコるの数",
     duplicateComments: "本文が重複したコメントの数",
+    strictSymbol: "strictルールによってNG登録されたユーザーID",
 
-    undoStrict: "strictルールによって自動追加されたNGユーザーIDを削除します",
+    undoStrict: "strictルールによってNG登録されたユーザーIDを削除します",
 } as const;
 
 export const colors = {

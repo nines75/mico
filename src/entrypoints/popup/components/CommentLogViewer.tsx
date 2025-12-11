@@ -146,7 +146,12 @@ function renderUserIdLog(
                     <>
                         {"# "}
                         {strictNgUserIds?.has(userId) === true && (
-                            <span className="strict-symbol">[!]</span>
+                            <span
+                                className="strict-symbol"
+                                title={titles.strictSymbol}
+                            >
+                                [!]
+                            </span>
                         )}
                         <Clickable
                             title={titles.removeNgUserId}
