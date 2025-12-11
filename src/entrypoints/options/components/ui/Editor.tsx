@@ -209,11 +209,14 @@ export default function Editor({ id, value, onChange }: EditorProps) {
         if (settings.isVimModeEnabled && settings.isImeDisabledByContext) {
             // ノーマルモードに戻った時
             const cm = getCM(view.current);
-            cm?.on("vim-mode-change", async (obj: { mode: string }) => {
-                if (obj.mode === "normal") {
-                    await sendMessageToBackground({ type: "disable-ime" });
-                }
-            });
+            cm?.on(
+                "vim-mode-change",
+                catchAsync(async (obj: { mode: string }) => {
+                    if (obj.mode === "normal") {
+                        await sendMessageToBackground({ type: "disable-ime" });
+                    }
+                }),
+            );
 
             // エディタにフォーカスした時
             view.current.contentDOM.addEventListener(
