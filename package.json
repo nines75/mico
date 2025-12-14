@@ -17,7 +17,7 @@
         "test:ci": "vitest run",
         "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'",
         "pw": "playwright test",
-        "pw:install": "playwright install firefox"
+        "pw:install": "playwright install chromium"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.20.0",

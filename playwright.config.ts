@@ -10,8 +10,8 @@ export default defineConfig({
     retries: isCi ? 2 : 0, // CIでのみリトライ
     projects: [
         {
-            name: "firefox",
-            use: devices["Desktop Firefox"],
+            name: "chromium",
+            use: { ...devices["Desktop Chrome"] },
         },
     ],
 });
