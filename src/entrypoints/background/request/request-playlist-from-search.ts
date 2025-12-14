@@ -1,11 +1,11 @@
 import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { filterResponse } from "./request.js";
-import { safeParseJson } from "@/utils/util.js";
 import {
     PlaylistFromSearchApi,
     playlistFromSearchApiSchema,
 } from "@/types/api/playlist-from-search.types.js";
+import { safeParseJson } from "./safe-parse-json.js";
 
 export function playlistFromSearchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

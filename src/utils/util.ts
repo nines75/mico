@@ -2,7 +2,6 @@ import { Browser } from "#imports";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
 import { CommonLog, LogId } from "../types/storage/log.types.js";
 import { messages } from "./config.js";
-import { z } from "./zod.js";
 import delay from "delay";
 
 export function isNiconicoPage(url: string | undefined) {
@@ -91,22 +90,6 @@ export async function tryWithPermission(
         await sendNotification(
             replace(messages.other.permissionRequired, [permission]),
         );
-    }
-}
-
-export function safeParseJson<T>(
-    text: string | null | undefined,
-    schema: z.ZodType<T>,
-): T | undefined {
-    try {
-        if (text === null || text === undefined) return;
-
-        const data = JSON.parse(text) as string;
-        const result = schema.safeParse(data);
-
-        return result.success ? result.data : undefined;
-    } catch {
-        return;
     }
 }
 

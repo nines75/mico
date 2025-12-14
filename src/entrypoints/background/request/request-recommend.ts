@@ -6,8 +6,8 @@ import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse } from "./request.js";
-import { safeParseJson } from "@/utils/util.js";
 import { getTabData } from "@/utils/db.js";
+import { safeParseJson } from "./safe-parse-json.js";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

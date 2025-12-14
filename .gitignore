@@ -1,5 +1,14 @@
-/.output
 /node_modules
 /.vscode
+
+# WXT
 /.wxt
 /web-ext.config.ts
+/.output
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

@@ -15,7 +15,9 @@
         "format:ci": "prettier . -c",
         "test": "vitest",
         "test:ci": "vitest run",
-        "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'"
+        "check": "concurrently 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'",
+        "pw": "playwright test",
+        "pw:install": "playwright install firefox"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.20.0",
@@ -39,6 +41,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
+        "@playwright/test": "^1.57.0",
         "@types/firefox-webext-browser": "^143.0.0",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",

@@ -1,6 +1,7 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { catchAsync, safeParseJson } from "@/utils/util.js";
+import { catchAsync } from "@/utils/util.js";
 import { z } from "@/utils/zod.js";
+import { safeParseJson } from "./safe-parse-json.js";
 
 export function filterResponse(
     details: browser.webRequest._OnBeforeRequestDetails,
