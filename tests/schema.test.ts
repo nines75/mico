@@ -9,7 +9,7 @@ import { z } from "@/utils/zod.js";
 import { test, expect } from "@playwright/test";
 
 const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";
-const CHANNEL_WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/so30413239";
+const CHANNEL_WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/so15013657"; // 海外からのアクセスでも視聴可能なチャンネル動画
 const RANKING_PAGE_URL = "https://www.nicovideo.jp/ranking/genre/";
 const SEARCH_PAGE_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
 const TAG_SEARCH_PAGE_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
