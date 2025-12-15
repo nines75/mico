@@ -42,7 +42,7 @@ export default defineConfig({
                                   thirdParty: {
                                       multipleVersions: true,
                                       output: {
-                                          file: path.resolve(
+                                          file: path.join(
                                               __dirname,
                                               ".output",
                                               "firefox-mv2",
