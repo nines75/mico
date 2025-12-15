@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { SearchApi, SearchApiSchema } from "@/types/api/search.types.js";
+import { SearchApi, searchApiSchema } from "@/types/api/search.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
 
@@ -23,7 +23,7 @@ export function searchRequest(
             details,
             buf,
             settings,
-            SearchApiSchema,
+            searchApiSchema,
             searchApiFilter,
         );
         if (res === undefined) return true;

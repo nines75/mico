@@ -6,7 +6,7 @@
 import { z } from "@/utils/zod.js";
 import { niconicoVideoSchema } from "./niconico-video.types.js";
 
-export const SearchApiSchema = z.looseObject({
+export const searchApiSchema = z.looseObject({
     data: z.looseObject({
         response: z.looseObject({
             $getSearchVideoV2: z.looseObject({
@@ -18,4 +18,4 @@ export const SearchApiSchema = z.looseObject({
     }),
 });
 
-export type SearchApi = z.infer<typeof SearchApiSchema>;
+export type SearchApi = z.infer<typeof searchApiSchema>;

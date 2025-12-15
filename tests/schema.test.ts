@@ -3,7 +3,7 @@ import { commentApiSchema } from "@/types/api/comment.types.js";
 import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types.js";
 import { rankingApiSchema } from "@/types/api/ranking.types.js";
 import { recommendApiSchema } from "@/types/api/recommend.types.js";
-import { SearchApiSchema } from "@/types/api/search.types.js";
+import { searchApiSchema } from "@/types/api/search.types.js";
 import { watchApiSchema } from "@/types/api/watch.types.js";
 import { z } from "@/utils/zod.js";
 import { test, expect } from "@playwright/test";
@@ -89,12 +89,12 @@ const TAG_SEARCH_PAGE_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
         {
             title: "SearchApi",
             url: SEARCH_PAGE_URL,
-            schema: SearchApiSchema,
+            schema: searchApiSchema,
         },
         {
             title: "SearchApi(タグ)",
             url: TAG_SEARCH_PAGE_URL,
-            schema: SearchApiSchema,
+            schema: searchApiSchema,
         },
     ] satisfies {
         title: string;
