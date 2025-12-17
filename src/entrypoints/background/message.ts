@@ -26,6 +26,7 @@ import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
 import { TabData } from "@/types/storage/tab.types.js";
 import { LogData } from "@/types/storage/log.types.js";
 import { DropdownComment } from "../content/dropdown.js";
+import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],
@@ -246,11 +247,17 @@ async function addNgUserIdFromDropdown(
         return;
     }
 
+    const settings = await loadSettings();
     await addNgUserId(
-        new Set([data.specific ? `${videoId}@${userId}` : userId]),
+        new Set([
+            formatNgUserId(
+                data.specific ? `${videoId}@${userId}` : userId,
+                data.body,
+                settings,
+            ),
+        ]),
     );
 
-    const settings = await loadSettings();
     const tasks: Promise<unknown>[] = [];
 
     if (settings.isAutoReload) {

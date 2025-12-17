@@ -77,3 +77,11 @@ export function getNgUserIdSet(settings: Settings, videoId?: string) {
         createUserIdFilter(settings, videoId).map((data) => data.rule),
     );
 }
+
+export function formatNgUserId(
+    id: string,
+    context: string,
+    settings: Settings,
+) {
+    return `${settings.isCommentNgContextAppendedOnAdd ? `# ${context}` : ""}\n${id}\n`;
+}

@@ -83,13 +83,26 @@ export async function removeNgUserId(
                 .filter((data) => userIds.has(data.rule))
                 .map((data) => data.index),
         );
-        const value = settings.ngUserId
-            .split("\n")
-            .filter((_, index) => !toRemoveLines.has(index))
-            .join("\n");
+        const lines = settings.ngUserId.split("\n");
+
+        // 前がコメントかつ後ろが空行の場合は、それらを自動追加された行の一部とみなして削除する
+        toRemoveLines.forEach((index) => {
+            const before = index - 1;
+            const after = index + 1;
+
+            if (
+                lines[before]?.startsWith("# ") === true &&
+                lines[after] === ""
+            ) {
+                toRemoveLines.add(before);
+                toRemoveLines.add(after);
+            }
+        });
 
         return {
-            ngUserId: value,
+            ngUserId: lines
+                .filter((_, index) => !toRemoveLines.has(index))
+                .join("\n"),
         };
     };
 
