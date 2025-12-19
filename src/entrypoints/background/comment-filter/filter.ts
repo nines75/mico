@@ -94,7 +94,7 @@ export abstract class CustomFilter<T>
     private excludeCount = 0;
     protected invalidCount = 0;
     protected ngUserIds: Set<string>;
-    protected strictNgUserIds: string[] = [];
+    protected strictNgUserIds: { userId: string; context: string }[] = [];
     protected abstract filter: CustomRuleData<CustomRule>;
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
@@ -111,7 +111,7 @@ export abstract class CustomFilter<T>
     getInvalidCount(): number {
         return this.invalidCount;
     }
-    getStrictNgUserIds(): string[] {
+    getStrictNgUserIds() {
         return this.strictNgUserIds;
     }
 

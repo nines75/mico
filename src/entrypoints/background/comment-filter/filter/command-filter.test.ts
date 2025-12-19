@@ -81,12 +81,18 @@ describe(CommandFilter.name, () => {
 big
 @end
 `,
-            expected: "user-id-main-1",
+            expected: {
+                userId: "user-id-main-1",
+                context: "command(strict): big",
+            },
         },
         {
             name: "!",
             filter: "!device:switch",
-            expected: "user-id-main-2",
+            expected: {
+                userId: "user-id-main-2",
+                context: "command(strict): device:switch",
+            },
         },
     ])("$name", ({ filter, expected }) => {
         const commandFilter = filtering({
