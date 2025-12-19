@@ -102,7 +102,7 @@ big
         });
 
         expect(commandFilter.getLog()).toEqual(new Map());
-        expect(commandFilter.getStrictNgUserIds()).toEqual([expected]);
+        expect(commandFilter.getStrictData()).toEqual([expected]);
     });
 
     it.each([
@@ -174,7 +174,7 @@ big
         const commandFilter = filtering({ filter });
 
         checkComment(threads, []);
-        expect(strictCommandFilter.getStrictNgUserIds()).toEqual([]);
+        expect(strictCommandFilter.getStrictData()).toEqual([]);
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(hasCommand(["big"])).toBe(false);
     });

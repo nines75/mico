@@ -92,7 +92,7 @@ export function filterComment(
     const strictNgUserIds = new Set<string>();
     const strictNgUserIdsWithContext = new Set<string>();
     Object.values(customFilters).forEach((filter) => {
-        filter.getStrictNgUserIds().forEach(({ userId, context }) => {
+        filter.getStrictData().forEach(({ userId, context }) => {
             if (!strictNgUserIds.has(userId)) {
                 strictNgUserIdsWithContext.add(
                     formatNgUserId(userId, context, settings),

@@ -114,7 +114,7 @@ describe(WordFilter.name, () => {
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
-        expect(wordFilter.getStrictNgUserIds()).toEqual([expected]);
+        expect(wordFilter.getStrictData()).toEqual([expected]);
     });
 
     it.each([

@@ -36,7 +36,7 @@ export class WordFilter extends CustomFilter<WordLog> {
 
                 if (isStrictOnly) {
                     if (!this.ngUserIds.has(userId)) {
-                        this.strictNgUserIds.push({
+                        this.strictData.push({
                             userId,
                             context: `body(strict): ${body}`,
                         });

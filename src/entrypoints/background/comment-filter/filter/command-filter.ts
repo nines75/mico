@@ -74,7 +74,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
                     if (isStrictOnly) {
                         if (!this.ngUserIds.has(userId)) {
-                            this.strictNgUserIds.push({
+                            this.strictData.push({
                                 userId,
                                 context: `command(strict): ${command}`,
                             });
