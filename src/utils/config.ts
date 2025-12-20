@@ -66,7 +66,7 @@ export const defaultSettings: Settings = {
     isNgScoreMountedToDropdown: false,
 
     // その他
-    isCommentNgContextAppendedOnAdd: false,
+    isCommentNgContextAppended: false,
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
@@ -442,7 +442,7 @@ export const commentFilterSettings = {
             header: "その他",
             items: [
                 {
-                    id: "isCommentNgContextAppendedOnAdd",
+                    id: "isCommentNgContextAppended",
                     label: "NG追加時にコンテキスト情報を付与する",
                 },
             ],

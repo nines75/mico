@@ -83,7 +83,5 @@ export function formatNgUserId(
     context: string,
     settings: Settings,
 ) {
-    return settings.isCommentNgContextAppendedOnAdd
-        ? `# ${context}\n${id}\n`
-        : id;
+    return settings.isCommentNgContextAppended ? `# ${context}\n${id}\n` : id;
 }
