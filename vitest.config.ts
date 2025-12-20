@@ -4,6 +4,6 @@ import { WxtVitest } from "wxt/testing";
 export default defineConfig({
     plugins: [WxtVitest()],
     test: {
-        include: ["src/**/*.test.ts"],
+        dir: "./src",
     },
 });
