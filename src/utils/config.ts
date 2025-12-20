@@ -65,6 +65,9 @@ export const defaultSettings: Settings = {
     isUserIdMountedToDropdown: false,
     isNgScoreMountedToDropdown: false,
 
+    // その他
+    isCommentNgContextAppended: false,
+
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
@@ -435,6 +438,15 @@ export const commentFilterSettings = {
                 },
             ],
         },
+        {
+            header: "その他",
+            items: [
+                {
+                    id: "isCommentNgContextAppended",
+                    label: "NG追加時にコンテキスト情報を付与する",
+                },
+            ],
+        },
     ],
     filter: [
         {
@@ -517,8 +529,8 @@ export const videoFilterSettings = {
                 {
                     id: "isNgContextAppendedOnAdd",
                     label: "NG追加時にコンテキスト情報を付与する",
-                    details: `動画IDならタイトルが、ユーザーIDならユーザー名がコメントとして付与されます。
-                    コンテキストメニューからNG登録した場合は付与されません。`,
+                    details:
+                        "コンテキストメニューからNG登録した場合は付与されません。",
                 },
             ],
         },

@@ -49,7 +49,7 @@ export default function commentRequest(
         filter.disconnect();
 
         // ログをソートするときに参照するので先に保存する
-        const strictNgUserIds = filteredData.strictNgUserIds;
+        const strictNgUserIds = filteredData.strictNgUserIdsWithContext;
         if (strictNgUserIds.size > 0) {
             await addNgUserId(strictNgUserIds);
         }

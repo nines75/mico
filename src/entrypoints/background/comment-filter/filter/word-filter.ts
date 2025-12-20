@@ -36,7 +36,10 @@ export class WordFilter extends CustomFilter<WordLog> {
 
                 if (isStrictOnly) {
                     if (!this.ngUserIds.has(userId)) {
-                        this.strictNgUserIds.push(userId);
+                        this.strictData.push({
+                            userId,
+                            context: `body(strict): ${body}`,
+                        });
                     }
 
                     // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない

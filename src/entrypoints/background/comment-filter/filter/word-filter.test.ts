@@ -93,12 +93,18 @@ describe(WordFilter.name, () => {
 テスト
 @end
 `,
-            expected: "user-id-main-1",
+            expected: {
+                userId: "user-id-main-1",
+                context: "body(strict): テスト",
+            },
         },
         {
             name: "!",
             filter: "!コメント",
-            expected: "user-id-main-3",
+            expected: {
+                userId: "user-id-main-3",
+                context: "body(strict): コメント",
+            },
         },
     ])("$name", ({ filter, expected }) => {
         const wordFilter = filtering({
@@ -108,7 +114,7 @@ describe(WordFilter.name, () => {
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
-        expect(wordFilter.getStrictNgUserIds()).toEqual([expected]);
+        expect(wordFilter.getStrictData()).toEqual([expected]);
     });
 
     it.each([

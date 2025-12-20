@@ -1,7 +1,11 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { WordFilter } from "./filter/word-filter.js";
-import { getNgUserIdSet, UserIdFilter } from "./filter/user-id-filter.js";
+import {
+    formatNgUserId,
+    getNgUserIdSet,
+    UserIdFilter,
+} from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
 import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
@@ -22,6 +26,7 @@ export interface FilteredData {
     loadedCommentCount: number;
     filteringTime: number;
     strictNgUserIds: Set<string>;
+    strictNgUserIdsWithContext: Set<string>;
     threads: Thread[];
 }
 
@@ -84,12 +89,20 @@ export function filterComment(
         filter.filtering(threads, true);
     });
 
-    // strictルールによって追加されたユーザーIDを反映
-    const strictNgUserIds = new Set(
-        Object.values(customFilters).flatMap((filter) =>
-            filter.getStrictNgUserIds(),
-        ),
-    );
+    const strictNgUserIds = new Set<string>();
+    const strictNgUserIdsWithContext = new Set<string>();
+    Object.values(customFilters).forEach((filter) => {
+        filter.getStrictData().forEach(({ userId, context }) => {
+            if (!strictNgUserIds.has(userId)) {
+                strictNgUserIdsWithContext.add(
+                    formatNgUserId(userId, context, settings),
+                );
+            }
+            strictNgUserIds.add(userId);
+        });
+    });
+
+    // strictルールによってフィルタリングされたユーザーIDを反映
     userIdFilter.updateFilter(strictNgUserIds);
 
     // フィルタリング
@@ -104,6 +117,7 @@ export function filterComment(
         loadedCommentCount,
         filteringTime: end - start,
         strictNgUserIds,
+        strictNgUserIdsWithContext,
         threads,
     };
 }

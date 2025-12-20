@@ -64,6 +64,9 @@ export interface Settings {
     isUserIdMountedToDropdown: boolean;
     isNgScoreMountedToDropdown: boolean;
 
+    // その他
+    isCommentNgContextAppended: boolean;
+
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
