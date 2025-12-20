@@ -77,7 +77,7 @@ export function pushCommonLog(log: CommonLog, key: string, value: string) {
 }
 
 export async function tryWithPermission(
-    permission: Browser.runtime.ManifestPermissions,
+    permission: Browser.runtime.ManifestPermission,
     callback: () => void | Promise<void>,
 ) {
     const hasPermission = await browser.permissions.contains({
