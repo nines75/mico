@@ -1,7 +1,7 @@
 import js from "@eslint/js";
 import ts from "typescript-eslint";
 import { defineConfig } from "eslint/config";
-import prettier from "eslint-config-prettier";
+import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import importPlugin from "eslint-plugin-import";
