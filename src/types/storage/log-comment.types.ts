@@ -53,7 +53,7 @@ export interface CommentFiltering {
         /** Map<rule, Map<comment.body, comment.id[]>> */
         wordFilter: WordLog;
     };
-    strictNgUserIds: Set<string>;
+    strictUserIds: Set<string>;
     filteredComments: CommentMap;
     renderedComments: RenderedComment[];
 }

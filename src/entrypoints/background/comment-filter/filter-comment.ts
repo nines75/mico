@@ -25,8 +25,8 @@ export interface FilteredData {
     };
     loadedCommentCount: number;
     filteringTime: number;
-    strictNgUserIds: Set<string>;
-    strictNgUserIdsWithContext: Set<string>;
+    strictUserIds: Set<string>;
+    strictUserIdsWithContext: Set<string>;
     threads: Thread[];
 }
 
@@ -89,21 +89,21 @@ export function filterComment(
         filter.filtering(threads, true);
     });
 
-    const strictNgUserIds = new Set<string>();
-    const strictNgUserIdsWithContext = new Set<string>();
+    const strictUserIds = new Set<string>();
+    const strictUserIdsWithContext = new Set<string>();
     Object.values(customFilters).forEach((filter) => {
         filter.getStrictData().forEach(({ userId, context }) => {
-            if (!strictNgUserIds.has(userId)) {
-                strictNgUserIdsWithContext.add(
+            if (!strictUserIds.has(userId)) {
+                strictUserIdsWithContext.add(
                     formatNgUserId(userId, context, settings),
                 );
             }
-            strictNgUserIds.add(userId);
+            strictUserIds.add(userId);
         });
     });
 
     // strictルールによってフィルタリングされたユーザーIDを反映
-    userIdFilter.updateFilter(strictNgUserIds);
+    userIdFilter.updateFilter(strictUserIds);
 
     // フィルタリング
     Object.values(filters).forEach((filter) => {
@@ -116,8 +116,8 @@ export function filterComment(
         filters,
         loadedCommentCount,
         filteringTime: end - start,
-        strictNgUserIds,
-        strictNgUserIdsWithContext,
+        strictUserIds,
+        strictUserIdsWithContext,
         threads,
     };
 }

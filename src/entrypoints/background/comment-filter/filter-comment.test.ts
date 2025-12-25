@@ -59,7 +59,7 @@ device:Switch`,
         const res = filterComment(threads, settings, [], "sm1");
 
         checkComment(threads, ["1002", "1003", "1004"]);
-        expect(res?.strictNgUserIds).toEqual(
+        expect(res?.strictUserIds).toEqual(
             new Set(["user-id-main-1", "user-id-main-2", "user-id-main-3"]),
         );
         expect(res?.filters.userIdFilter.getLog()).toEqual(

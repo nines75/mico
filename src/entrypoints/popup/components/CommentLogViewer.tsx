@@ -57,7 +57,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             {...{ name, blocked }}
         >
             {id === "userIdFilter" &&
-                (filtering?.strictNgUserIds.size ?? 0) > 0 && (
+                (filtering?.strictUserIds.size ?? 0) > 0 && (
                     <div>
                         <button
                             title={titles.undoStrict}
@@ -92,7 +92,7 @@ function Log({ id, filtering, settings }: LogProps) {
                 filtering.filters.userIdFilter,
                 comments,
                 settings,
-                filtering.strictNgUserIds,
+                filtering.strictUserIds,
             );
         case "easyCommentFilter":
             return renderDuplicateLog(
@@ -135,7 +135,7 @@ function renderUserIdLog(
     log: CommonLog,
     comments: CommentMap,
     settings: Settings,
-    strictNgUserIds?: Set<string>,
+    strictUserIds?: Set<string>,
 ) {
     return log
         .keys()
@@ -145,7 +145,7 @@ function renderUserIdLog(
                 comment={
                     <>
                         {"# "}
-                        {strictNgUserIds?.has(userId) === true && (
+                        {strictUserIds?.has(userId) === true && (
                             <span
                                 className="strict-symbol"
                                 title={titles.strictSymbol}
@@ -334,7 +334,7 @@ function formatDuplicateComment(
 // -------------------------------------------------------------------------------------------
 
 async function undoStrict(filtering: CommentFiltering | undefined) {
-    const userIds = filtering?.strictNgUserIds ?? new Set();
+    const userIds = filtering?.strictUserIds ?? new Set();
     if (
         !confirm(
             replace(messages.ngUserId.undoStrict, [[...userIds].join("\n")]),

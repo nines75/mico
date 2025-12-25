@@ -49,9 +49,9 @@ export default function commentRequest(
         filter.disconnect();
 
         // ログをソートするときに参照するので先に保存する
-        const strictNgUserIds = filteredData.strictNgUserIdsWithContext;
-        if (strictNgUserIds.size > 0) {
-            await addNgUserId(strictNgUserIds);
+        const strictUserIds = filteredData.strictUserIdsWithContext;
+        if (strictUserIds.size > 0) {
+            await addNgUserId(strictUserIds);
         }
 
         const tasks: Promise<void>[] = [];
@@ -60,11 +60,11 @@ export default function commentRequest(
         tasks.push(saveLog(filteredData, logId, tabId));
 
         // 通知を送信
-        if (strictNgUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
+        if (strictUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
             tasks.push(
                 sendNotification(
                     replace(messages.ngUserId.notifyAddition, [
-                        strictNgUserIds.size.toString(),
+                        strictUserIds.size.toString(),
                     ]),
                 ),
             );

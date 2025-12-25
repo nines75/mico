@@ -117,7 +117,7 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
     ) as LogFilters;
 
     return {
-        strictNgUserIds: filteredData.strictNgUserIds,
+        strictUserIds: filteredData.strictUserIds,
         filters: logFilters,
         filteredComments,
         renderedComments,
