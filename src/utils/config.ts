@@ -163,7 +163,7 @@ export const messages = {
         extractionFailed: "IDの抽出に失敗しました",
     },
     ngUserId: {
-        // 追加
+        // 登録
         additionSuccess: "ユーザーのNG登録に成功しました",
         additionFailed: "ユーザーのNG登録に失敗しました",
         notifyAddition: "$1件のユーザーIDをNG登録しました",
@@ -209,7 +209,7 @@ export const messages = {
 } as const;
 
 export const titles = {
-    // 追加
+    // 登録
     addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
     addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
     addNgVideo: "クリックしてこの動画をNG登録",
@@ -411,11 +411,11 @@ export const commentFilterSettings = {
             items: [
                 {
                     id: "isNotifyAddNgUserId",
-                    label: "NGユーザーIDの手動追加時に通知する",
+                    label: "NGユーザーIDの手動登録時に通知する",
                 },
                 {
                     id: "isNotifyAutoAddNgUserId",
-                    label: "NGユーザーIDの自動追加時に通知する",
+                    label: "NGユーザーIDの自動登録時に通知する",
                 },
             ],
         },
@@ -443,7 +443,7 @@ export const commentFilterSettings = {
             items: [
                 {
                     id: "isCommentNgContextAppended",
-                    label: "NG追加時にコンテキスト情報を付与する",
+                    label: "NG登録時にコンテキスト情報を付与する",
                 },
             ],
         },
@@ -528,7 +528,7 @@ export const videoFilterSettings = {
             items: [
                 {
                     id: "isNgContextAppendedOnAdd",
-                    label: "NG追加時にコンテキスト情報を付与する",
+                    label: "NG登録時にコンテキスト情報を付与する",
                     details:
                         "コンテキストメニューからNG登録した場合は付与されません。",
                 },

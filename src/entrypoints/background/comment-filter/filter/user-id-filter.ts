@@ -38,7 +38,7 @@ export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
     }
 
     override sortLog(): void {
-        // strictルールによってユーザーIDが追加されていることがあるので、フィールドの値を使わずに改めて取得する
+        // strictルールによってユーザーIDがNG登録されていることがあるので、フィールドの値を使わずに改めて取得する
         const ngUserIds = getNgUserIdSet(this.settings);
 
         this.log = this.sortCommonLog(this.log, ngUserIds);

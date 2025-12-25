@@ -25,7 +25,7 @@ export async function saveLog(
 ) {
     const start = performance.now();
 
-    // strictルールで追加されたNGユーザーIDを反映した設定を読み込んで反映
+    // strictルールによってNG登録されたユーザーIDを反映した設定を読み込む
     const settings = await loadSettings();
     filteredData.filters.userIdFilter.setSettings(settings);
 

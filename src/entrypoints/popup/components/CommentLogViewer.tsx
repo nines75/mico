@@ -346,7 +346,7 @@ async function undoStrict(filtering: CommentFiltering | undefined) {
         type: "remove-ng-user-id",
         data: {
             userIds,
-            isRemoveSpecific: false, // strictルールで追加したユーザーIDだけを削除したいので、動画限定ルールを除外
+            isRemoveSpecific: false, // strictルールによってNG登録されたユーザーIDだけを削除したいので、動画限定ルールを除外
         },
     });
 }
