@@ -1,18 +1,12 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { CustomFilter, sortCommentId } from "../filter.js";
-import { pushCommonLog } from "@/utils/util.js";
+import { isString, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
-
-type NgWordData = CustomRuleData<NgWord>;
-
-interface NgWord extends CustomRule {
-    regex: RegExp;
-}
+import { CustomRuleData, parseCustomFilter } from "../../filter.js";
 
 export class WordFilter extends CustomFilter<WordLog> {
-    protected filter: NgWordData;
+    protected filter: CustomRuleData;
     protected log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
@@ -31,8 +25,9 @@ export class WordFilter extends CustomFilter<WordLog> {
         this.traverseThreads(threads, (comment) => {
             const { id, body, userId } = comment;
 
-            for (const { regex } of rules) {
-                if (!regex.test(body)) continue;
+            for (const { rule } of rules) {
+                if (isString(rule) ? !body.includes(rule) : !rule.test(body))
+                    continue;
 
                 if (isStrictOnly) {
                     if (!this.ngUserIds.has(userId)) {
@@ -46,12 +41,12 @@ export class WordFilter extends CustomFilter<WordLog> {
                     return true;
                 }
 
-                const regexStr = regex.source;
-                const map = this.log.get(regexStr);
+                const key = this.createKey(rule);
+                const map = this.log.get(key);
                 if (map !== undefined) {
                     pushCommonLog(map, body, id);
                 } else {
-                    this.log.set(regexStr, new Map([[body, [id]]]));
+                    this.log.set(key, new Map([[body, [id]]]));
                 }
 
                 this.filteredComments.set(id, comment);
@@ -67,7 +62,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
-            this.filter.rules.map((ngWord) => ngWord.regex.source),
+            this.filter.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         // フィルター順にソート
@@ -98,31 +93,12 @@ export class WordFilter extends CustomFilter<WordLog> {
         this.log = log;
     }
 
-    createFilter(settings: Settings): NgWordData {
-        const ngWords = parseCustomFilter(settings.ngWord).reduce<NgWord[]>(
-            (res, data) => {
-                try {
-                    const regex = settings.isCaseInsensitive
-                        ? RegExp(data.rule, "i")
-                        : RegExp(data.rule);
-
-                    res.push({
-                        regex,
-                        isStrict: data.isStrict,
-                        include: data.include,
-                        exclude: data.exclude,
-                    });
-                } catch {
-                    this.invalidCount++;
-                }
-
-                return res;
-            },
-            [],
-        );
+    createFilter(settings: Settings): CustomRuleData {
+        const parsedFilter = parseCustomFilter(settings.ngWord);
+        this.invalidCount += parsedFilter.invalid;
 
         return {
-            rules: ngWords,
+            rules: parsedFilter.rules,
         };
     }
 }

@@ -4,8 +4,11 @@ export interface Rule {
     index: number;
 }
 
-export interface CustomRuleData<T extends CustomRule> {
-    rules: T[];
+// export interface CustomRuleData<T extends CustomRule> {
+//     rules: T[];
+// }
+export interface CustomRuleData{
+    rules: RawCustomRule[]
 }
 
 export interface CustomRule {
@@ -14,8 +17,13 @@ export interface CustomRule {
     exclude: string[];
 }
 
+export interface RawCustomRuleData {
+    rules: RawCustomRule[];
+    invalid: number;
+}
+
 export interface RawCustomRule {
-    rule: string;
+    rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
     include: string[];
@@ -41,12 +49,13 @@ export function parseFilter(filter: string) {
         });
 }
 
-export function parseCustomFilter(filter: string): RawCustomRule[] {
+export function parseCustomFilter(filter: string): RawCustomRuleData {
     interface Directive {
         type: "include" | "exclude" | "strict" | "disable";
         params: string[];
     }
 
+    let invalidCount = 0;
     const directives: Directive[] = [];
     const rules: RawCustomRule[] = [];
 
@@ -107,8 +116,31 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
         const escapedRule = /^@escape\((.+)\)/.exec(rule)?.[1];
         const hasStrictSymbol = rule.startsWith("!");
 
+        const baseRule =
+            escapedRule ?? (hasStrictSymbol ? rule.slice(1) : rule);
+
+        const regexResult = /^\/(.*)\/(.*)$/.exec(baseRule);
+        const regexStr = regexResult?.[1];
+        const flags = regexResult?.[2];
+
+        let regex: RegExp | undefined;
+        if (regexStr !== undefined && flags !== undefined) {
+            // 想定外のフラグが含まれている場合はルールとして解釈しない
+            if (!/^[isuvm]*$/.test(flags)) {
+                invalidCount++;
+                return;
+            }
+
+            try {
+                regex = RegExp(regexStr, flags);
+            } catch {
+                invalidCount++;
+                return;
+            }
+        }
+
         rules.push({
-            rule: escapedRule ?? (hasStrictSymbol ? rule.slice(1) : rule),
+            rule: regex ?? baseRule,
             isStrict: isStrict || hasStrictSymbol,
             isDisable,
             include,
@@ -116,7 +148,7 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
         });
     });
 
-    return rules;
+    return { rules, invalid: invalidCount };
 }
 
 export interface CountableFilter {

@@ -145,3 +145,7 @@ export function catchAsync<T extends unknown[]>(
         fn(...args).catch(console.error);
     };
 }
+
+export function isString(value: unknown) {
+    return typeof value === "string";
+}

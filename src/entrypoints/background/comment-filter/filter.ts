@@ -3,8 +3,9 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
 import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule, CountableFilter } from "../filter.js";
+import { CustomRuleData, CountableFilter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
+import { isString } from "@/utils/util.js";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;
@@ -95,7 +96,7 @@ export abstract class CustomFilter<T>
     protected invalidCount = 0;
     protected ngUserIds: Set<string>;
     protected strictData: { userId: string; context: string }[] = [];
-    protected abstract filter: CustomRuleData<CustomRule>;
+    protected abstract filter: CustomRuleData;
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings);
@@ -143,6 +144,10 @@ export abstract class CustomFilter<T>
 
     countRules(): number {
         return this.filter.rules.length;
+    }
+
+    createKey(rule: string | RegExp): string {
+        return isString(rule) ? rule : rule.toString();
     }
 }
 
