@@ -1,10 +1,6 @@
 import { FilteredData } from "./filter-comment.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
-import {
-    CustomFilter,
-    getCountableFilters,
-    getCustomFilters,
-} from "./filter.js";
+import { RuleFilter, getCountableFilters, getRuleFilters } from "./filter.js";
 import {
     BlockedCount,
     CommentCount,
@@ -50,7 +46,7 @@ export async function saveLog(
 export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
     const countableFilters = getCountableFilters(filters);
-    const customFilters = getCustomFilters(filters);
+    const ruleFilters = getRuleFilters(filters);
 
     const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
         (obj, [key, filter]) => {
@@ -67,11 +63,9 @@ export function createCount(filteredData: FilteredData): CommentCount {
         {},
     ) as BlockedCount;
 
-    const calc = (
-        key: ConditionalKeys<CustomFilter<unknown>, () => number>,
-    ) => {
+    const calc = (key: ConditionalKeys<RuleFilter<unknown>, () => number>) => {
         return sumNumbers(
-            Object.values(customFilters).map((filter) => filter[key]()),
+            Object.values(ruleFilters).map((filter) => filter[key]()),
         );
     };
 

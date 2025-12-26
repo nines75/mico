@@ -2,7 +2,7 @@ import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
-import { CountableFilter, parseFilter } from "../filter.js";
+import { CountableFilter, parseFilterBase } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { Filters } from "./filter-video.js";
 import { ConditionalPick } from "type-fest";
@@ -103,7 +103,7 @@ export abstract class CommonFilter
 
     createFilter(): RegExp[] {
         const res: RegExp[] = [];
-        parseFilter(this.rawFilter).forEach((rule) => {
+        parseFilterBase(this.rawFilter).forEach((rule) => {
             try {
                 res.push(
                     this.settings.isCaseInsensitive

@@ -3,10 +3,10 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { sortCommentId, StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, parseCustomFilter } from "../../filter.js";
+import { RuleData, parseFilter } from "../../filter.js";
 
 export class WordFilter extends StrictFilter<WordLog> {
-    protected filter: CustomRuleData;
+    protected filter: RuleData;
     protected log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
@@ -93,8 +93,8 @@ export class WordFilter extends StrictFilter<WordLog> {
         this.log = log;
     }
 
-    createFilter(settings: Settings): CustomRuleData {
-        const parsedFilter = parseCustomFilter(settings.ngWord);
+    createFilter(settings: Settings): RuleData {
+        const parsedFilter = parseFilter(settings.ngWord);
         this.invalidCount += parsedFilter.invalid;
 
         return {

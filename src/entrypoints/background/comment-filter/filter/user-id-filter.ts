@@ -1,17 +1,17 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { CustomFilter } from "../filter.js";
+import { RuleFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import {
-    CustomRuleData,
-    Rule,
-    parseCustomFilter,
+    RuleData,
+    BaseRule,
     parseFilter,
+    parseFilterBase,
 } from "../../filter.js";
 
-export class UserIdFilter extends CustomFilter<CommonLog> {
-    protected filter: CustomRuleData;
+export class UserIdFilter extends RuleFilter<CommonLog> {
+    protected filter: RuleData;
     protected log: CommonLog = new Map();
 
     constructor(settings: Settings) {
@@ -86,8 +86,8 @@ export class UserIdFilter extends CustomFilter<CommonLog> {
         this.filter.rules = [...newUserIds, ...this.filter.rules];
     }
 
-    createFilter(settings: Settings): CustomRuleData {
-        const parsedFilter = parseCustomFilter(settings.ngUserId);
+    createFilter(settings: Settings): RuleData {
+        const parsedFilter = parseFilter(settings.ngUserId);
         this.invalidCount += parsedFilter.invalid;
 
         return {
@@ -97,9 +97,9 @@ export class UserIdFilter extends CustomFilter<CommonLog> {
 }
 
 export function createUserIdFilter(settings: Settings, videoId?: string) {
-    const res: Rule[] = [];
+    const res: BaseRule[] = [];
 
-    parseFilter(settings.ngUserId).forEach((data) => {
+    parseFilterBase(settings.ngUserId).forEach((data) => {
         const rule = data.rule;
         const index = rule.indexOf("@");
 

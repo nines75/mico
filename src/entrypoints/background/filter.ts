@@ -1,28 +1,14 @@
-export interface Rule {
+export interface BaseRule {
     rule: string;
     /** 元のフィルターを改行区切りで配列にしたときのインデックス */
     index: number;
 }
 
-// export interface CustomRuleData<T extends CustomRule> {
-//     rules: T[];
-// }
-export interface CustomRuleData{
-    rules: RawCustomRule[]
+export interface RuleData {
+    rules: Rule[];
 }
 
-export interface CustomRule {
-    isStrict: boolean;
-    include: string[];
-    exclude: string[];
-}
-
-export interface RawCustomRuleData {
-    rules: RawCustomRule[];
-    invalid: number;
-}
-
-export interface RawCustomRule {
+export interface Rule {
     rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
@@ -30,10 +16,10 @@ export interface RawCustomRule {
     exclude: string[];
 }
 
-export function parseFilter(filter: string) {
+export function parseFilterBase(filter: string) {
     return filter
         .split("\n")
-        .map((str, index): Rule => {
+        .map((str, index): BaseRule => {
             return {
                 // どんな文字列に対しても必ずマッチする
                 rule: /^(.*?)(?:\s*(?<!\\)#.*)?$/.exec(str)?.[1] as string,
@@ -41,7 +27,7 @@ export function parseFilter(filter: string) {
             };
         })
         .filter((data) => data.rule !== "")
-        .map((data): Rule => {
+        .map((data): BaseRule => {
             return {
                 rule: data.rule.replace(/\\#/g, "#"), // "\#"という文字列をエスケープ
                 index: data.index,
@@ -49,7 +35,10 @@ export function parseFilter(filter: string) {
         });
 }
 
-export function parseCustomFilter(filter: string): RawCustomRuleData {
+export function parseFilter(filter: string): {
+    rules: Rule[];
+    invalid: number;
+} {
     interface Directive {
         type: "include" | "exclude" | "strict" | "disable";
         params: string[];
@@ -57,7 +46,7 @@ export function parseCustomFilter(filter: string): RawCustomRuleData {
 
     let invalidCount = 0;
     const directives: Directive[] = [];
-    const rules: RawCustomRule[] = [];
+    const rules: Rule[] = [];
 
     const parseParams = (str: string) => {
         return str
@@ -67,7 +56,7 @@ export function parseCustomFilter(filter: string): RawCustomRuleData {
             .map((rule) => rule.toLowerCase());
     };
 
-    parseFilter(filter).forEach((data) => {
+    parseFilterBase(filter).forEach((data) => {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 

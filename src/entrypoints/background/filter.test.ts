@@ -1,8 +1,8 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilter, parseCustomFilter, RawCustomRule } from "./filter.js";
+import { parseFilterBase, parseFilter, Rule } from "./filter.js";
 
-describe(`${parseFilter.name}()`, () => {
+describe(`${parseFilterBase.name}()`, () => {
     it.each([
         {
             name: "コメントなし",
@@ -38,7 +38,7 @@ describe(`${parseFilter.name}()`, () => {
             expected: "@include tag0 tag1",
         },
     ])("一般($name)", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             expected === undefined ? [] : [{ rule: expected, index: 0 }],
         );
     });
@@ -48,14 +48,14 @@ describe(`${parseFilter.name}()`, () => {
         { name: "複数の全角スペース", filter: "rule　　　　# comment" },
         { name: "半角全角スペース交互", filter: "rule 　 　# comment" },
     ])("コメントの前に全角を含む($name)", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual([{ rule: "rule", index: 0 }]);
+        expect(parseFilterBase(filter)).toEqual([{ rule: "rule", index: 0 }]);
     });
 
     it.each([
         { name: "コメントなし", filter: "\\#rule\\#rule2\\#" },
         { name: "コメントあり", filter: "\\#rule\\#rule2\\# # comment" },
     ])("エスケープした#を含む($name)", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             [["#rule#rule2#", 0]].map(([rule, index]) => ({ rule, index })),
         );
     });
@@ -69,7 +69,7 @@ rule
 rule
 `;
 
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             [1, 3, 5].map((index) => ({ rule: "rule", index })),
         );
     });
@@ -79,8 +79,8 @@ rule
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
-describe(`${parseCustomFilter.name}()`, () => {
-    const createRule = (rule: Partial<RawCustomRule>): RawCustomRule => {
+describe(`${parseFilter.name}()`, () => {
+    const createRule = (rule: Partial<Rule>): Rule => {
         return {
             ...{
                 rule: "rule",
@@ -92,7 +92,7 @@ describe(`${parseCustomFilter.name}()`, () => {
             ...rule,
         };
     };
-    const createRules = (...rules: Partial<RawCustomRule>[]) => {
+    const createRules = (...rules: Partial<Rule>[]) => {
         return rules.map((rule) => createRule(rule));
     };
     const base = createRule({});
@@ -132,7 +132,7 @@ rule
             expected: [strict],
         },
     ])("$name", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ rule
 `,
         },
     ])("$name", ({ filter }) => {
-        expect(parseCustomFilter(filter)).toEqual([strict]);
+        expect(parseFilter(filter)).toEqual([strict]);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ rule
             expected: createRules({ rule: "@includes tag0 tag1" }, {}),
         },
     ])("@include($name)", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -229,9 +229,7 @@ rule
 @end
 `;
 
-        expect(parseCustomFilter(filter)).toEqual(
-            createRules({ isDisable: true }),
-        );
+        expect(parseFilter(filter)).toEqual(createRules({ isDisable: true }));
     });
 
     // -------------------------------------------------------------------------------------------
@@ -285,7 +283,7 @@ rule
             expected: createRules({ rule: "@escape (rule" }),
         },
     ])("@escape($name)", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -323,7 +321,7 @@ rule
 rule
 `;
 
-        expect(parseCustomFilter(filter)).toEqual([
+        expect(parseFilter(filter)).toEqual([
             ...createRules(
                 {
                     include: [tags[0]],

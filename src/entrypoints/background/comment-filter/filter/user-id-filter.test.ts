@@ -4,7 +4,7 @@ import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { createUserIdFilter, UserIdFilter } from "./user-id-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { Rule } from "../../filter.js";
+import { BaseRule } from "../../filter.js";
 
 describe(UserIdFilter.name, () => {
     let threads: Thread[];
@@ -131,7 +131,7 @@ describe(createUserIdFilter.name, () => {
     ] satisfies {
         name: string;
         videoId?: string;
-        expected: Rule[];
+        expected: BaseRule[];
     }[])("$name", ({ videoId, expected }) => {
         const settings = {
             ...defaultSettings,

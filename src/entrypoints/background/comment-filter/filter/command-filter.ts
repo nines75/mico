@@ -3,19 +3,15 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import {
-    CustomRuleData,
-    parseCustomFilter,
-    RawCustomRule,
-} from "../../filter.js";
+import { RuleData, parseFilter, Rule } from "../../filter.js";
 
-interface NgCommandData extends CustomRuleData {
+interface CommandRuleData extends RuleData {
     hasAll: boolean;
 }
 
 export class CommandFilter extends StrictFilter<CommonLog> {
     private disableCount = 0;
-    protected filter: NgCommandData;
+    protected filter: CommandRuleData;
     protected log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
@@ -109,8 +105,8 @@ export class CommandFilter extends StrictFilter<CommonLog> {
         this.log = this.sortCommonLog(this.log, ngCommands);
     }
 
-    createFilter(settings: Settings): NgCommandData {
-        const parsedFilter = parseCustomFilter(settings.ngCommand);
+    createFilter(settings: Settings): CommandRuleData {
+        const parsedFilter = parseFilter(settings.ngCommand);
         this.invalidCount += parsedFilter.invalid;
 
         let hasAll = false;
@@ -138,7 +134,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
         };
     }
 
-    isStrict(rule: RawCustomRule): boolean {
+    isStrict(rule: Rule): boolean {
         // strictルールと無効化ルールが併用されている場合、strictルールを無視する
         return rule.isStrict && !rule.isDisable;
     }

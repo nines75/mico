@@ -7,7 +7,7 @@ import {
     UserIdFilter,
 } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
-import { getCustomFilters, getStrictFilters } from "./filter.js";
+import { getRuleFilters, getStrictFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
@@ -73,11 +73,11 @@ export function filterComment(
         commandFilter,
         wordFilter,
     };
-    const customFilters = getCustomFilters(filters);
+    const ruleFilters = getRuleFilters(filters);
     const strictFilters = getStrictFilters(filters);
 
     // tagルール適用
-    Object.values(customFilters).forEach((filter) => {
+    Object.values(ruleFilters).forEach((filter) => {
         filter.filterRuleByTag(tags);
     });
 

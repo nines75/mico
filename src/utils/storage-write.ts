@@ -13,7 +13,7 @@ import {
     loadSettings,
 } from "./storage.js";
 import { createUserIdFilter } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import { parseFilter } from "@/entrypoints/background/filter.js";
+import { parseFilterBase } from "@/entrypoints/background/filter.js";
 import { messages } from "./config.js";
 import { replace, sendNotification } from "./util.js";
 import { clearDb } from "./db.js";
@@ -126,7 +126,7 @@ export async function removeNgId(id: string) {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            parseFilter(settings.ngId)
+            parseFilterBase(settings.ngId)
                 .filter((data) => id === data.rule)
                 .map((data) => data.index),
         );
