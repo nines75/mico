@@ -78,6 +78,15 @@ function Log({ id, filtering }: LogProps) {
 // -------------------------------------------------------------------------------------------
 
 function renderIdLog(log: IdLog, videos: VideoMap) {
+    const renderRegexLog = (regex: string) => {
+        return (
+            <Block key={regex} comment={`# ${regex}`}>
+                {renderVideos(log.regex.get(regex), videos, (video) => (
+                    <span>{escapeNewline(video.title)}</span>
+                ))}
+            </Block>
+        );
+    };
     const renderUserIdLog = (userId: string) => {
         const videoId = log.userId.get(userId)?.[0] as string;
         const userName = videos.get(videoId)?.owner?.name;
@@ -108,6 +117,13 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
 
     return (
         <>
+            {
+                // 正規表現によるログを生成
+                log.regex
+                    .keys()
+                    .map((regex) => renderRegexLog(regex))
+                    .toArray()
+            }
             {
                 // ユーザーIDによるログを生成
                 log.userId

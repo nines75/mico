@@ -70,7 +70,9 @@ function createCount(filteredData: FilteredData): VideoCount {
         totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedVideoCount,
         invalid: sumNumbers(
-            Object.values(filters).map((filter) => filter.getInvalidCount()),
+            Object.values(countableFilters).map((filter) =>
+                filter.getInvalidCount(),
+            ),
         ),
     };
 }
