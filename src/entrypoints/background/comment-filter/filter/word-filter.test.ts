@@ -167,18 +167,6 @@ describe(WordFilter.name, () => {
         checkComment(threads, ["1004"]);
     });
 
-    it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
-        const filter = "TesT";
-
-        expect(
-            filtering({
-                filter,
-                settings: { isCaseInsensitive: false },
-            }).getLog(),
-        ).toEqual(new Map());
-        checkComment(threads, []);
-    });
-
     it(`${WordFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 コメント

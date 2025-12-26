@@ -15,9 +15,6 @@ export const defaultSettings: Settings = {
     // 一般設定
     // -------------------------------------------------------------------------------------------
 
-    // フィルタリング
-    isCaseInsensitive: true,
-
     // エディター
     isCloseBrackets: true,
     isHighlightTrailingWhitespace: true,
@@ -272,17 +269,6 @@ export const settingsConfig = {
 
 export const generalSettings = {
     checkbox: [
-        {
-            header: "フィルタリング",
-            items: [
-                {
-                    id: "isCaseInsensitive",
-                    label: "大小文字を区別しない",
-                    details:
-                        "正規表現が使用可能なフィルターに対してのみ有効になります。",
-                },
-            ],
-        },
         {
             header: "エディター",
             items: [
