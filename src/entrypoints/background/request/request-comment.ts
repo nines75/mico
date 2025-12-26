@@ -48,13 +48,8 @@ export default function commentRequest(
         filter.write(encoder.encode(JSON.stringify(commentApi)));
         filter.disconnect();
 
-        // ログをソートするときに参照するので先に保存する
-        const strictUserIds = filteredData.strictUserIdsWithContext;
-        if (strictUserIds.size > 0) {
-            await addNgUserId(strictUserIds);
-        }
-
         const tasks: Promise<void>[] = [];
+        const strictUserIds = filteredData.strictUserIdsWithContext;
 
         // ログを保存
         tasks.push(saveLog(filteredData, logId, tabId));
@@ -68,6 +63,11 @@ export default function commentRequest(
                     ]),
                 ),
             );
+        }
+
+        // strictルールによってフィルタリングされたユーザーIDをNG登録
+        if (strictUserIds.size > 0) {
+            tasks.push(addNgUserId(strictUserIds));
         }
 
         await Promise.all(tasks);

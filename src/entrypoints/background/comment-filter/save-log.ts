@@ -1,5 +1,4 @@
 import { FilteredData } from "./filter-comment.js";
-import { loadSettings } from "@/utils/storage.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import {
     CustomFilter,
@@ -24,10 +23,6 @@ export async function saveLog(
     tabId: number,
 ) {
     const start = performance.now();
-
-    // strictルールによってNG登録されたユーザーIDを反映した設定を読み込む
-    const settings = await loadSettings();
-    filteredData.filters.userIdFilter.setSettings(settings);
 
     const count = createCount(filteredData);
     const filtering = createFiltering(filteredData);

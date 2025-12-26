@@ -20,10 +20,6 @@ export class UserIdFilter extends CustomFilter<CommonLog> {
         this.filter = this.createFilter(settings);
     }
 
-    setSettings(settings: Settings) {
-        this.settings = settings;
-    }
-
     override filtering(threads: Thread[]): void {
         const rules = this.filter.rules;
         if (rules.length === 0) return;
@@ -68,22 +64,26 @@ export class UserIdFilter extends CustomFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        // strictルールによってユーザーIDがNG登録されていることがあるので、フィールドの値を使わずに改めて取得する
-        const ngUserIds = getNgUserIdSet(this.settings);
+        const ngUserIds = new Set(
+            this.filter.rules.map(({ rule }) => this.createKey(rule)),
+        );
 
         this.log = this.sortCommonLog(this.log, ngUserIds);
     }
 
     updateFilter(userIds: Set<string>) {
-        userIds.forEach((id) =>
-            this.filter.rules.push({
+        const newUserIds = [...userIds].map((id) => {
+            return {
                 rule: id,
                 isStrict: false,
                 isDisable: false,
                 include: [],
                 exclude: [],
-            }),
-        );
+            };
+        });
+
+        // フィルターと同じ順序になるように先頭に追加する
+        this.filter.rules = [...newUserIds, ...this.filter.rules];
     }
 
     createFilter(settings: Settings): CustomRuleData {
