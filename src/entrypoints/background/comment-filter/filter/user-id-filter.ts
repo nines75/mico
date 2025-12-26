@@ -25,14 +25,14 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         if (rules.length === 0) return;
 
         const userIdSet = new Set<string>();
-        const regexRules: RegExp[] = [];
+        const regexes: RegExp[] = [];
         rules
             .map((data) => data.rule)
             .forEach((rule) => {
                 if (isString(rule)) {
                     userIdSet.add(rule);
                 } else {
-                    regexRules.push(rule);
+                    regexes.push(rule);
                 }
             });
 
@@ -42,7 +42,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 
             if (
                 userIdSet.has(userId) ||
-                regexRules.some((regex) => {
+                regexes.some((regex) => {
                     const isMatch = regex.test(userId);
                     if (isMatch) {
                         // 正規表現ルールではそれ自体をkeyにする
