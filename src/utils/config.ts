@@ -445,7 +445,7 @@ export const commentFilterSettings = {
         },
         {
             id: "ngWord",
-            name: "NGワード(正規表現)",
+            name: "NGワード",
         },
     ],
 } as const satisfies {
@@ -528,11 +528,11 @@ export const videoFilterSettings = {
         },
         {
             id: "ngUserName",
-            name: "NGユーザー名(正規表現)",
+            name: "NGユーザー名",
         },
         {
             id: "ngTitle",
-            name: "NGタイトル(正規表現)",
+            name: "NGタイトル",
         },
     ],
 } as const satisfies {
