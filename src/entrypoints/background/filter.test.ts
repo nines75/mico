@@ -233,60 +233,6 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // @escape
-    // -------------------------------------------------------------------------------------------
-
-    it.each([
-        {
-            name: "通常",
-            filter: `@escape(rule)`,
-            expected: createRules({}),
-        },
-        {
-            name: "括弧の後に文字列が続く",
-            filter: "@escape(rule)test",
-            expected: createRules({}),
-        },
-        {
-            name: "@から始まるディレクティブ",
-            filter: "@escape(@end)",
-            expected: createRules({ rule: "@end" }),
-        },
-        {
-            name: "一文字ディレクティブ",
-            filter: "@escape(!rule)",
-            expected: createRules({ rule: "!rule" }),
-        },
-        {
-            name: "ネストされた括弧",
-            filter: "@escape(())",
-            expected: createRules({ rule: "()" }),
-        },
-        {
-            name: "複数の括弧",
-            filter: "@escape(()))()",
-            expected: createRules({ rule: "()))(" }),
-        },
-        {
-            name: "誤り: 括弧内が空",
-            filter: "@escape()",
-            expected: createRules({ rule: "@escape()" }),
-        },
-        {
-            name: "誤り: 括弧の前に空白がある",
-            filter: "@escape (rule)",
-            expected: createRules({ rule: "@escape (rule)" }),
-        },
-        {
-            name: "誤り: 閉じ括弧がない",
-            filter: "@escape (rule",
-            expected: createRules({ rule: "@escape (rule" }),
-        },
-    ])("@escape($name)", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(expected);
-    });
-
-    // -------------------------------------------------------------------------------------------
     // その他
     // -------------------------------------------------------------------------------------------
 
@@ -303,7 +249,6 @@ rule
 
 @disable
 rule
-@escape(rule)
 @end
 
 @end
@@ -334,12 +279,6 @@ rule
                     include: [tags[0]],
                     exclude: [tags[1]],
                     isStrict: true,
-                },
-                {
-                    include: [tags[0]],
-                    exclude: [tags[1]],
-                    isStrict: true,
-                    isDisable: true,
                 },
                 {
                     include: [tags[0]],

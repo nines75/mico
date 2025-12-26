@@ -102,11 +102,8 @@ export function parseFilter(filter: string): {
             }
         });
 
-        const escapedRule = /^@escape\((.+)\)/.exec(rule)?.[1];
         const hasStrictSymbol = rule.startsWith("!");
-
-        const baseRule =
-            escapedRule ?? (hasStrictSymbol ? rule.slice(1) : rule);
+        const baseRule = hasStrictSymbol ? rule.slice(1) : rule;
 
         const regexResult = /^\/(.*)\/(.*)$/.exec(baseRule);
         const regexStr = regexResult?.[1];
