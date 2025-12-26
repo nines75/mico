@@ -94,14 +94,7 @@ export abstract class CustomFilter<T>
     private includeCount = 0;
     private excludeCount = 0;
     protected invalidCount = 0;
-    protected ngUserIds: Set<string>;
-    protected strictData: { userId: string; context: string }[] = [];
     protected abstract filter: CustomRuleData;
-
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings);
-        this.ngUserIds = ngUserIds;
-    }
 
     getIncludeCount(): number {
         return this.includeCount;
@@ -111,9 +104,6 @@ export abstract class CustomFilter<T>
     }
     getInvalidCount(): number {
         return this.invalidCount;
-    }
-    getStrictData() {
-        return this.strictData;
     }
 
     filterRuleByTag(tags: string[]) {
@@ -151,6 +141,20 @@ export abstract class CustomFilter<T>
     }
 }
 
+export abstract class StrictFilter<T> extends CustomFilter<T> {
+    protected ngUserIds: Set<string>;
+    protected strictData: { userId: string; context: string }[] = [];
+
+    constructor(settings: Settings, ngUserIds: Set<string>) {
+        super(settings);
+        this.ngUserIds = ngUserIds;
+    }
+
+    getStrictData() {
+        return this.strictData;
+    }
+}
+
 export function getCountableFilters(
     filters: Filters,
 ): ConditionalPick<Filters, CountableFilter> {
@@ -164,6 +168,16 @@ export function getCountableFilters(
 export function getCustomFilters(
     filters: Filters,
 ): ConditionalPick<Filters, CustomFilter<unknown>> {
+    return {
+        userIdFilter: filters.userIdFilter,
+        commandFilter: filters.commandFilter,
+        wordFilter: filters.wordFilter,
+    };
+}
+
+export function getStrictFilters(
+    filters: Filters,
+): ConditionalPick<Filters, StrictFilter<unknown>> {
     return {
         commandFilter: filters.commandFilter,
         wordFilter: filters.wordFilter,

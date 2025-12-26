@@ -1,6 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CustomFilter } from "../filter.js";
+import { StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import {
@@ -13,7 +13,7 @@ interface NgCommandData extends CustomRuleData {
     hasAll: boolean;
 }
 
-export class CommandFilter extends CustomFilter<CommonLog> {
+export class CommandFilter extends StrictFilter<CommonLog> {
     private disableCount = 0;
     protected filter: NgCommandData;
     protected log: CommonLog = new Map();

@@ -1,11 +1,11 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CustomFilter, sortCommentId } from "../filter.js";
+import { sortCommentId, StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
 import { CustomRuleData, parseCustomFilter } from "../../filter.js";
 
-export class WordFilter extends CustomFilter<WordLog> {
+export class WordFilter extends StrictFilter<WordLog> {
     protected filter: CustomRuleData;
     protected log: WordLog = new Map();
 
