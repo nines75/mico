@@ -2,7 +2,7 @@ import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
-import { CountableFilter, parseFilter, RuleData } from "../filter.js";
+import { parseFilter, RuleData } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { Filters } from "./filter-video.js";
 import { ConditionalPick } from "type-fest";
@@ -32,10 +32,7 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class RuleFilter<T>
-    extends Filter<T>
-    implements CountableFilter
-{
+export abstract class RuleFilter<T> extends Filter<T> {
     protected invalidCount = 0;
     protected filter: RuleData;
 
@@ -122,9 +119,9 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
     }
 }
 
-export function getCountableFilters(
+export function getRuleFilters(
     filters: Filters,
-): ConditionalPick<Filters, CountableFilter> {
+): ConditionalPick<Filters, RuleFilter<unknown>> {
     return {
         idFilter: filters.idFilter,
         userNameFilter: filters.userNameFilter,

@@ -139,7 +139,3 @@ export function parseFilter(filter: string): {
 
     return { rules, invalid: invalidCount };
 }
-
-export interface CountableFilter {
-    countRules(): number;
-}

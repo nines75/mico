@@ -1,6 +1,6 @@
 import { FilteredData } from "./filter-comment.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
-import { RuleFilter, getCountableFilters, getRuleFilters } from "./filter.js";
+import { RuleFilter, getRuleFilters } from "./filter.js";
 import {
     BlockedCount,
     CommentCount,
@@ -45,10 +45,9 @@ export async function saveLog(
 
 export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
-    const countableFilters = getCountableFilters(filters);
     const ruleFilters = getRuleFilters(filters);
 
-    const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
+    const rule = objectEntries(ruleFilters).reduce<Partial<RuleCount>>(
         (obj, [key, filter]) => {
             obj[key] = filter.countRules();
             return obj;

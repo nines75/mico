@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
 import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { RuleData, CountableFilter } from "../filter.js";
+import { RuleData } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { isString } from "@/utils/util.js";
 
@@ -87,10 +87,7 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class RuleFilter<T>
-    extends Filter<T>
-    implements CountableFilter
-{
+export abstract class RuleFilter<T> extends Filter<T> {
     private includeCount = 0;
     private excludeCount = 0;
     protected invalidCount = 0;
@@ -153,16 +150,6 @@ export abstract class StrictFilter<T> extends RuleFilter<T> {
     getStrictData() {
         return this.strictData;
     }
-}
-
-export function getCountableFilters(
-    filters: Filters,
-): ConditionalPick<Filters, CountableFilter> {
-    return {
-        userIdFilter: filters.userIdFilter,
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
-    };
 }
 
 export function getRuleFilters(
