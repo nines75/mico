@@ -4,10 +4,6 @@ export interface BaseRule {
     index: number;
 }
 
-export interface RuleData {
-    rules: Rule[];
-}
-
 export interface Rule {
     rule: string | RegExp;
     isStrict: boolean;

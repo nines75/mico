@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
 import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { parseFilter, RuleData } from "../filter.js";
+import { parseFilter, Rule } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { isString } from "@/utils/util.js";
 
@@ -88,16 +88,16 @@ export abstract class Filter<T> {
 }
 
 export abstract class RuleFilter<T> extends Filter<T> {
+    protected rules: Rule[];
     private includeCount = 0;
     private excludeCount = 0;
     protected invalidCount = 0;
-    protected filter: RuleData;
 
     constructor(settings: Settings, filter: string) {
         super(settings);
 
         const { rules, invalid } = parseFilter(filter);
-        this.filter = { rules };
+        this.rules = rules;
         this.invalidCount += invalid;
     }
 
@@ -114,7 +114,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
     filterRuleByTag(tags: string[]) {
         const tagSet = new Set(tags.map((tag) => tag.toLowerCase()));
 
-        this.filter.rules = this.filter.rules.filter(({ include, exclude }) => {
+        this.rules = this.rules.filter(({ include, exclude }) => {
             if (
                 include.length > 0 &&
                 include.every((rule) => !tagSet.has(rule))
@@ -138,7 +138,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
     }
 
     countRules(): number {
-        return this.filter.rules.length;
+        return this.rules.length;
     }
 
     createKey(rule: string | RegExp): string {

@@ -21,7 +21,7 @@ export class IdFilter extends RuleFilter<IdLog> {
         const videoIds = new Set<string>();
         const regexes: RegExp[] = [];
 
-        this.filter.rules
+        this.rules
             .map((rule) => rule.rule)
             .forEach((rule) => {
                 if (isString(rule)) {

@@ -13,7 +13,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     }
 
     override filtering(threads: Thread[]): void {
-        const rules = this.filter.rules;
+        const rules = this.rules;
         if (rules.length === 0) return;
 
         const userIdSet = new Set<string>();
@@ -57,7 +57,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 
     override sortLog(): void {
         const ngUserIds = new Set(
-            this.filter.rules.map(({ rule }) => this.createKey(rule)),
+            this.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         this.log = this.sortCommonLog(this.log, ngUserIds);
@@ -75,7 +75,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         });
 
         // フィルターと同じ順序になるように先頭に追加する
-        this.filter.rules = [...newUserIds, ...this.filter.rules];
+        this.rules = [...newUserIds, ...this.rules];
     }
 }
 

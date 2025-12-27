@@ -13,8 +13,8 @@ export class WordFilter extends StrictFilter<WordLog> {
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
-            ? this.filter.rules.filter((rule) => rule.isStrict)
-            : this.filter.rules.filter((rule) => !rule.isStrict);
+            ? this.rules.filter((rule) => rule.isStrict)
+            : this.rules.filter((rule) => !rule.isStrict);
 
         if (rules.length === 0) return;
 
@@ -58,7 +58,7 @@ export class WordFilter extends StrictFilter<WordLog> {
     override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
-            this.filter.rules.map(({ rule }) => this.createKey(rule)),
+            this.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         // フィルター順にソート

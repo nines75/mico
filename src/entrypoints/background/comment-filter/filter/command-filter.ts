@@ -14,7 +14,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
         super(settings, ngUserIds, settings.ngCommand);
 
         let hasAll = false;
-        const rules = this.filter.rules
+        const rules = this.rules
             .map((data) => {
                 const rule = data.rule;
                 return {
@@ -32,7 +32,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                 return true;
             });
 
-        this.filter = { rules };
+        this.rules = rules;
         this.hasAll = hasAll;
     }
 
@@ -42,8 +42,8 @@ export class CommandFilter extends StrictFilter<CommonLog> {
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
-            ? this.filter.rules.filter((rule) => this.isStrict(rule))
-            : this.filter.rules
+            ? this.rules.filter((rule) => this.isStrict(rule))
+            : this.rules
                   .filter((rule) => !this.isStrict(rule))
                   // 非表示ルールを無効化ルールより先に適用するためにソート
                   .sort((a, b) => {
@@ -114,7 +114,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
 
     override sortLog(): void {
         const ngCommands = new Set(
-            this.filter.rules.map(({ rule }) => this.createKey(rule)),
+            this.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         this.log = this.sortCommonLog(this.log, ngCommands);

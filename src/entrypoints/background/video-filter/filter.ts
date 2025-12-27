@@ -2,7 +2,7 @@ import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
-import { parseFilter, RuleData } from "../filter.js";
+import { parseFilter, Rule } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { Filters } from "./filter-video.js";
 import { ConditionalPick } from "type-fest";
@@ -33,14 +33,14 @@ export abstract class Filter<T> {
 }
 
 export abstract class RuleFilter<T> extends Filter<T> {
+    protected rules: Rule[];
     protected invalidCount = 0;
-    protected filter: RuleData;
 
     constructor(settings: Settings, filter: string) {
         super(settings);
 
         const { rules, invalid } = parseFilter(filter);
-        this.filter = { rules };
+        this.rules = rules;
         this.invalidCount += invalid;
     }
 
@@ -49,7 +49,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
     }
 
     countRules(): number {
-        return this.filter.rules.length;
+        return this.rules.length;
     }
 
     createKey(rule: string | RegExp): string {
@@ -68,7 +68,7 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
             const target = this.pickTarget(video);
             if (target === null) return true;
 
-            for (const { rule } of this.filter.rules) {
+            for (const { rule } of this.rules) {
                 if (
                     isString(rule) ? target.includes(rule) : rule.test(target)
                 ) {
@@ -88,7 +88,7 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
         const target = this.pickTarget(video);
         if (target === null) return false;
 
-        return this.filter.rules.some(({ rule }) =>
+        return this.rules.some(({ rule }) =>
             isString(rule) ? target.includes(rule) : rule.test(target),
         );
     }
@@ -97,7 +97,7 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
         const log: CommonLog = new Map();
 
         // フィルター順にソート
-        this.filter.rules.forEach(({ rule }) => {
+        this.rules.forEach(({ rule }) => {
             const key = this.createKey(rule);
             const value = this.log.get(key);
             if (value !== undefined) {
