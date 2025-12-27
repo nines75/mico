@@ -55,6 +55,26 @@ export abstract class RuleFilter<T> extends Filter<T> {
     createKey(rule: string | RegExp): string {
         return isString(rule) ? rule : rule.toString();
     }
+
+    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
+        const log: CommonLog = new Map();
+
+        // フィルター順にソート
+        keys.forEach((key) => {
+            const keyStr = this.createKey(key);
+            const value = currentLog.get(keyStr);
+            if (value !== undefined) {
+                log.set(keyStr, value);
+            }
+        });
+
+        // 各キーの動画IDをソート
+        log.forEach((ids, key) => {
+            log.set(key, sortVideoId(ids, this.filteredVideos));
+        });
+
+        return log;
+    }
 }
 
 export abstract class PartialFilter extends RuleFilter<CommonLog> {
@@ -94,23 +114,10 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        this.rules.forEach(({ rule }) => {
-            const key = this.createKey(rule);
-            const value = this.log.get(key);
-            if (value !== undefined) {
-                log.set(key, value);
-            }
-        });
-
-        // 各ルールのコメントをソート
-        log.forEach((ids, rule) => {
-            log.set(rule, sortVideoId(ids, this.filteredVideos));
-        });
-
-        this.log = log;
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map((rule) => rule.rule),
+        );
     }
 }
 

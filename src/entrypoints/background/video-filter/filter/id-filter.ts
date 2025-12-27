@@ -105,48 +105,10 @@ export class IdFilter extends RuleFilter<IdLog> {
     }
 
     override sortLog(): void {
-        // 正規表現によるフィルタリングのログをソート
-        {
-            const log: IdLog["regex"] = new Map();
-
-            // フィルター順にソート
-            this.regexes.forEach((userId) => {
-                const regexStr = userId.toString();
-                const value = this.log.regex.get(regexStr);
-                if (value !== undefined) {
-                    log.set(regexStr, value);
-                }
-            });
-
-            // 各ルールのコメントをソート
-            log.forEach((ids, key) => {
-                log.set(key, sortVideoId(ids, this.filteredVideos));
-            });
-
-            this.log.regex = log;
-        }
-
-        // ユーザーIDによるフィルタリングのログをソート
-        {
-            const log: IdLog["userId"] = new Map();
-
-            // フィルター順にソート
-            this.userIds.forEach((userId) => {
-                const value = this.log.userId.get(userId);
-                if (value !== undefined) {
-                    log.set(userId, value);
-                }
-            });
-
-            // 各ルールのコメントをソート
-            log.forEach((ids, userId) => {
-                log.set(userId, sortVideoId(ids, this.filteredVideos));
-            });
-
-            this.log.userId = log;
-        }
-
-        // 動画IDによるフィルタリングのログをソート
+        this.log.regex = this.sortCommonLog(this.log.regex, this.regexes);
+        this.log.userId = this.sortCommonLog(this.log.userId, [
+            ...this.userIds,
+        ]);
         this.log.videoId = sortVideoId(this.log.videoId, this.filteredVideos);
     }
 }
