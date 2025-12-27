@@ -41,22 +41,22 @@ import { catchAsync } from "@/utils/util.js";
 
 const generalHighlights = createHighlights([
     { regex: /(?<!\\)#.*/g, style: "color: gray" },
+    { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
 ]);
-const ngWordHighlights = createHighlights([
-    { regex: /^(@strict|!)/g, style: "color: coral" },
+const ngUserIdHighlights = createHighlights([
     { regex: /^(@include|@exclude)/g, style: "color: lime" },
     { regex: /^@end/g, style: "color: cyan" },
 ]);
+const ngWordHighlights = [
+    ...createHighlights([{ regex: /^(@strict|!)/g, style: "color: coral" }]),
+    ...ngUserIdHighlights,
+];
 const ngCommandHighlights = [
     ...createHighlights([{ regex: /^@disable/g, style: "color: yellow" }]),
     ...ngWordHighlights,
 ];
 
-const ngWordCompletions: Completion[] = [
-    {
-        label: "@strict",
-        type: "keyword",
-    },
+const ngUserIdCompletions: Completion[] = [
     {
         label: "@include",
         type: "keyword",
@@ -69,6 +69,13 @@ const ngWordCompletions: Completion[] = [
         label: "@end",
         type: "keyword",
     },
+];
+const ngWordCompletions: Completion[] = [
+    {
+        label: "@strict",
+        type: "keyword",
+    },
+    ...ngUserIdCompletions,
 ];
 const ngCommandCompletions: Completion[] = [
     {
@@ -276,10 +283,13 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
 }
 
 function getHighlights(id: keyof Settings): Extension {
-    if (id !== "ngCommand" && id !== "ngWord") return generalHighlights;
+    if (id !== "ngUserId" && id !== "ngCommand" && id !== "ngWord")
+        return generalHighlights;
 
     const customHighlights = (() => {
         switch (id) {
+            case "ngUserId":
+                return ngUserIdHighlights;
             case "ngCommand":
                 return ngCommandHighlights;
             case "ngWord":
@@ -291,10 +301,12 @@ function getHighlights(id: keyof Settings): Extension {
 }
 
 function getCompletions(id: keyof Settings): Extension {
-    if (id !== "ngCommand" && id !== "ngWord") return [];
+    if (id !== "ngUserId" && id !== "ngCommand" && id !== "ngWord") return [];
 
     const options = (() => {
         switch (id) {
+            case "ngUserId":
+                return ngUserIdCompletions;
             case "ngCommand":
                 return ngCommandCompletions;
             case "ngWord":
