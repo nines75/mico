@@ -3,21 +3,13 @@ import { Thread } from "@/types/api/comment.types.js";
 import { RuleFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import {
-    RuleData,
-    BaseRule,
-    parseFilter,
-    parseFilterBase,
-} from "../../filter.js";
+import { BaseRule, parseFilterBase } from "../../filter.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
-    protected filter: RuleData;
     protected log: CommonLog = new Map();
 
     constructor(settings: Settings) {
-        super(settings);
-
-        this.filter = this.createFilter(settings);
+        super(settings, settings.ngUserId);
     }
 
     override filtering(threads: Thread[]): void {
@@ -84,15 +76,6 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 
         // フィルターと同じ順序になるように先頭に追加する
         this.filter.rules = [...newUserIds, ...this.filter.rules];
-    }
-
-    createFilter(settings: Settings): RuleData {
-        const parsedFilter = parseFilter(settings.ngUserId);
-        this.invalidCount += parsedFilter.invalid;
-
-        return {
-            rules: parsedFilter.rules,
-        };
     }
 }
 

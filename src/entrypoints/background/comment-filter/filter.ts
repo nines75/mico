@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { ConditionalPick } from "type-fest";
 import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { RuleData } from "../filter.js";
+import { parseFilter, RuleData } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { isString } from "@/utils/util.js";
 
@@ -91,7 +91,15 @@ export abstract class RuleFilter<T> extends Filter<T> {
     private includeCount = 0;
     private excludeCount = 0;
     protected invalidCount = 0;
-    protected abstract filter: RuleData;
+    protected filter: RuleData;
+
+    constructor(settings: Settings, filter: string) {
+        super(settings);
+
+        const { rules, invalid } = parseFilter(filter);
+        this.filter = { rules };
+        this.invalidCount += invalid;
+    }
 
     getIncludeCount(): number {
         return this.includeCount;
@@ -142,8 +150,9 @@ export abstract class StrictFilter<T> extends RuleFilter<T> {
     protected ngUserIds: Set<string>;
     protected strictData: { userId: string; context: string }[] = [];
 
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings);
+    constructor(settings: Settings, ngUserIds: Set<string>, filter: string) {
+        super(settings, filter);
+
         this.ngUserIds = ngUserIds;
     }
 

@@ -3,16 +3,12 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { sortCommentId, StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
-import { RuleData, parseFilter } from "../../filter.js";
 
 export class WordFilter extends StrictFilter<WordLog> {
-    protected filter: RuleData;
     protected log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds);
-
-        this.filter = this.createFilter(settings);
+        super(settings, ngUserIds, settings.ngWord);
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
@@ -91,14 +87,5 @@ export class WordFilter extends StrictFilter<WordLog> {
         });
 
         this.log = log;
-    }
-
-    createFilter(settings: Settings): RuleData {
-        const parsedFilter = parseFilter(settings.ngWord);
-        this.invalidCount += parsedFilter.invalid;
-
-        return {
-            rules: parsedFilter.rules,
-        };
     }
 }

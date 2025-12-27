@@ -39,18 +39,13 @@ export abstract class RuleFilter<T> extends Filter<T> {
     constructor(settings: Settings, filter: string) {
         super(settings);
 
-        this.filter = this.createFilter(filter);
+        const { rules, invalid } = parseFilter(filter);
+        this.filter = { rules };
+        this.invalidCount += invalid;
     }
 
     getInvalidCount(): number {
         return this.invalidCount;
-    }
-
-    createFilter(filter: string): RuleData {
-        const { rules, invalid } = parseFilter(filter);
-        this.invalidCount += invalid;
-
-        return { rules };
     }
 
     countRules(): number {
