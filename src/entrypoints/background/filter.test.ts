@@ -80,20 +80,36 @@ rule
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
 describe(`${parseFilter.name}()`, () => {
-    const createRule = (rule: Partial<Rule>): Rule => {
+    const createRule = (
+        rule: Partial<Rule>,
+    ): { rules: Rule[]; invalid: number } => {
         return {
-            ...{
-                rule: "rule",
-                isStrict: false,
-                isDisable: false,
-                include: [],
-                exclude: [],
-            },
-            ...rule,
+            rules: [
+                {
+                    ...{
+                        rule: "rule",
+                        isStrict: false,
+                        isDisable: false,
+                        include: [],
+                        exclude: [],
+                    },
+                    ...rule,
+                },
+            ],
+            invalid: 0,
         };
     };
     const createRules = (...rules: Partial<Rule>[]) => {
-        return rules.map((rule) => createRule(rule));
+        return rules
+            .map((rule) => createRule(rule))
+            .reduce(
+                (all, current) => {
+                    all.rules.push(...current.rules);
+                    all.invalid += current.invalid;
+                    return all;
+                },
+                { rules: [], invalid: 0 },
+            );
     };
     const base = createRule({});
     const strict = createRule({ isStrict: true });
@@ -111,7 +127,7 @@ rule
 @end
 rule
 `,
-            expected: [strict, base],
+            expected: createRules({ isStrict: true }, {}),
         },
         {
             name: "不要な@end",
@@ -121,7 +137,7 @@ rule
 
 rule
 `,
-            expected: [base],
+            expected: base,
         },
         {
             name: "@endなし",
@@ -129,7 +145,7 @@ rule
 @strict
 rule
 `,
-            expected: [strict],
+            expected: strict,
         },
     ])("$name", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -161,7 +177,7 @@ rule
 `,
         },
     ])("$name", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual([strict]);
+        expect(parseFilter(filter)).toEqual(strict);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -266,8 +282,8 @@ rule
 rule
 `;
 
-        expect(parseFilter(filter)).toEqual([
-            ...createRules(
+        expect(parseFilter(filter)).toEqual(
+            createRules(
                 {
                     include: [tags[0]],
                 },
@@ -294,8 +310,8 @@ rule
                     include: [tags[0]],
                     exclude: [tags[1], tags[3]],
                 },
+                {},
             ),
-            base,
-        ]);
+        );
     });
 });
