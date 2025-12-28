@@ -22,7 +22,7 @@ export class IdFilter extends RuleFilter<IdLog> {
         const regexes: RegExp[] = [];
 
         this.rules
-            .map((rule) => rule.rule)
+            .map(({ rule }) => rule)
             .forEach((rule) => {
                 if (isString(rule)) {
                     if (/^(?:ch)?\d+$/.test(rule)) {

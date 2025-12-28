@@ -116,7 +116,7 @@ export abstract class PartialFilter extends RuleFilter<CommonLog> {
     override sortLog(): void {
         this.log = this.sortCommonLog(
             this.log,
-            this.rules.map((rule) => rule.rule),
+            this.rules.map(({ rule }) => rule),
         );
     }
 }
