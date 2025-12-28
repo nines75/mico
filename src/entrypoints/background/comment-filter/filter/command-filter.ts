@@ -63,24 +63,18 @@ export class CommandFilter extends StrictFilter<CommonLog> {
 
             // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
             const { id, commands, userId } = comment;
+            const disableCommands = new Set<string>();
 
             for (const { rule, isDisable } of rules) {
-                // commandsを内部で変更するのでコピーを作る
-                for (const command of [...commands]) {
+                for (const command of commands) {
                     if (isString(rule) ? rule !== command : !rule.test(command))
                         continue;
 
                     if (isDisable) {
-                        // allルールがある場合は後からまとめて無効化する
                         if (this.hasAll) break;
+                        disableCommands.add(command);
 
-                        const index = commands.indexOf(command);
-                        if (index !== -1) {
-                            commands.splice(index, 1);
-                            this.disableCount++;
-                        }
-
-                        break; // commandsに重複はないため、一致した時点でループを抜ける
+                        continue;
                     }
 
                     if (isStrictOnly) {
@@ -102,10 +96,19 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                 }
             }
 
-            // 無効化ルールより非表示ルールを優先するので後から無効化する
+            // forループ内で配列を変更するのは危険なので後から無効化する
             if (this.hasAll) {
+                comment.commands = [];
                 this.disableCount += commands.length;
-                commands.length = 0; // コマンド配列を空にする
+            } else {
+                if (disableCommands.size > 0) {
+                    comment.commands = commands.filter((command) => {
+                        const isMatch = disableCommands.has(command);
+                        if (isMatch) this.disableCount++;
+
+                        return !isMatch;
+                    });
+                }
             }
 
             return true;
