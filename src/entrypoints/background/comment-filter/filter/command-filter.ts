@@ -1,9 +1,9 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { StrictFilter } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Rule } from "../../filter.js";
+import { StrictFilter } from "../strict-filter.js";
 
 export class CommandFilter extends StrictFilter<CommonLog> {
     private hasAll: boolean;

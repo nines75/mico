@@ -1,11 +1,7 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { ConditionalPick } from "type-fest";
-import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { parseFilter, Rule } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { isString } from "@/utils/util.js";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;
@@ -85,99 +81,6 @@ export abstract class Filter<T> {
 
         return log;
     }
-}
-
-export abstract class RuleFilter<T> extends Filter<T> {
-    protected rules: Rule[];
-    private includeCount = 0;
-    private excludeCount = 0;
-    protected invalidCount = 0;
-
-    constructor(settings: Settings, filter: string) {
-        super(settings);
-
-        const { rules, invalid } = parseFilter(filter);
-        this.rules = rules;
-        this.invalidCount += invalid;
-    }
-
-    getIncludeCount(): number {
-        return this.includeCount;
-    }
-    getExcludeCount(): number {
-        return this.excludeCount;
-    }
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
-
-    filterRuleByTag(tags: string[]) {
-        const tagSet = new Set(tags.map((tag) => tag.toLowerCase()));
-
-        this.rules = this.rules.filter(({ include, exclude }) => {
-            if (
-                include.length > 0 &&
-                include.every((rule) => !tagSet.has(rule))
-            ) {
-                return false;
-            }
-            if (
-                exclude.length > 0 &&
-                exclude.some((rule) => tagSet.has(rule))
-            ) {
-                // 除外されたかどうか(exclude)はこの時点で確定するので、ここでカウントする
-                this.excludeCount++;
-                return false;
-            }
-
-            // 除外されなかったどうか(include)はこの時点まで確定しないため、ここでカウントする
-            if (include.length > 0) this.includeCount++;
-
-            return true;
-        });
-    }
-
-    countRules(): number {
-        return this.rules.length;
-    }
-
-    createKey(rule: string | RegExp): string {
-        return isString(rule) ? rule : rule.toString();
-    }
-}
-
-export abstract class StrictFilter<T> extends RuleFilter<T> {
-    protected ngUserIds: Set<string>;
-    protected strictData: { userId: string; context: string }[] = [];
-
-    constructor(settings: Settings, ngUserIds: Set<string>, filter: string) {
-        super(settings, filter);
-
-        this.ngUserIds = ngUserIds;
-    }
-
-    getStrictData() {
-        return this.strictData;
-    }
-}
-
-export function getRuleFilters(
-    filters: Filters,
-): ConditionalPick<Filters, RuleFilter<unknown>> {
-    return {
-        userIdFilter: filters.userIdFilter,
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
-    };
-}
-
-export function getStrictFilters(
-    filters: Filters,
-): ConditionalPick<Filters, StrictFilter<unknown>> {
-    return {
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
-    };
 }
 
 export function sortCommentId(

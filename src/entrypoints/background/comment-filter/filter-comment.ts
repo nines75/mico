@@ -7,10 +7,11 @@ import {
     UserIdFilter,
 } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
-import { getRuleFilters, getStrictFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
+import { getRuleFilters } from "./rule-filter.js";
+import { getStrictFilters } from "./strict-filter.js";
 
 export type Filters = FilteredData["filters"];
 
