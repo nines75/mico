@@ -31,7 +31,7 @@ describe(UserIdFilter.name, () => {
     };
 
     it("一般", () => {
-        const filter = `user-id-owner`;
+        const filter = "user-id-owner";
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["user-id-owner", ["1000", "1001"]]]),
@@ -44,6 +44,15 @@ describe(UserIdFilter.name, () => {
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         checkComment(threads, []);
+    });
+
+    it("正規表現", () => {
+        const filter = "/^user-id-main/";
+
+        expect(filtering({ filter }).getLog()).toEqual(
+            new Map([["/^user-id-main/", ["1002", "1003", "1004"]]]),
+        );
+        checkComment(threads, ["1002", "1003", "1004"]);
     });
 
     it("後からフィルターを更新", () => {

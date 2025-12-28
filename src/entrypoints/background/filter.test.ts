@@ -113,6 +113,7 @@ describe(`${parseFilter.name}()`, () => {
     };
     const base = createRule({});
     const strict = createRule({ isStrict: true });
+    const invalid = { rules: [], invalid: 1 };
 
     // -------------------------------------------------------------------------------------------
     // @end
@@ -246,6 +247,56 @@ rule
 `;
 
         expect(parseFilter(filter)).toEqual(createRules({ isDisable: true }));
+    });
+
+    // -------------------------------------------------------------------------------------------
+    // ルール
+    // -------------------------------------------------------------------------------------------
+
+    it("文字列", () => {
+        const filter = "rule";
+
+        expect(parseFilter(filter)).toEqual(createRules({ rule: "rule" }));
+    });
+
+    it.each([
+        {
+            name: "フラグなし",
+            filter: "/rule/",
+            expected: createRules({ rule: RegExp("rule") }),
+        },
+        {
+            name: "フラグあり",
+            filter: "/rule/i",
+            expected: createRules({ rule: RegExp("rule", "i") }),
+        },
+        {
+            name: "複数のフラグ",
+            filter: "/rule/isum",
+            expected: createRules({ rule: RegExp("rule", "isum") }),
+        },
+        {
+            name: "誤り: 先頭に空白文字を含む",
+            filter: " /rule/",
+            expected: createRules({ rule: " /rule/" }),
+        },
+        {
+            name: "誤り: 末尾に空白文字を含む",
+            filter: "/rule/ ",
+            expected: invalid,
+        },
+        {
+            name: "誤り: 対応していないフラグ",
+            filter: "/rule/g",
+            expected: invalid,
+        },
+        {
+            name: "誤り: 併用できないフラグ",
+            filter: "/rule/uv",
+            expected: invalid,
+        },
+    ])("正規表現($name)", ({ filter, expected }) => {
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------

@@ -73,6 +73,15 @@ describe(CommandFilter.name, () => {
         checkComment(threads, []);
     });
 
+    it("正規表現", () => {
+        const filter = "/big|device:switch/";
+
+        expect(filtering({ filter }).getLog()).toEqual(
+            new Map([["/big|device:switch/", ["1002", "1003", "1004"]]]),
+        );
+        checkComment(threads, ["1002", "1003", "1004"]);
+    });
+
     it.each([
         {
             name: "@strict",
@@ -136,13 +145,23 @@ device:switch
         checkComment(threads, ids);
     });
 
-    it("@disable", () => {
-        const filter = `
+    it.each([
+        {
+            name: "文字列",
+            filter: `
 @disable
 big
 device:switch
-`;
-
+`,
+        },
+        {
+            name: "正規表現",
+            filter: `
+@disable
+/big|device:switch/
+`,
+        },
+    ])("@disable($name)", ({ filter }) => {
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasCommand(["big", "device:switch"])).toBe(false);
     });
