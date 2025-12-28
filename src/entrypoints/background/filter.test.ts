@@ -295,6 +295,11 @@ rule
             filter: "/rule/uv",
             expected: invalid,
         },
+        {
+            name: "誤り: 無効な正規表現",
+            filter: "/(rule/",
+            expected: invalid,
+        },
     ])("正規表現($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
     });
