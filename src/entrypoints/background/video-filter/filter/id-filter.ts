@@ -75,7 +75,11 @@ export class IdFilter extends RuleFilter<IdLog> {
                     (regex) => regex.test(userId) || regex.test(videoId),
                 );
                 if (target !== undefined) {
-                    pushCommonLog(this.log.regex, target.toString(), videoId);
+                    pushCommonLog(
+                        this.log.regex,
+                        this.createKey(target),
+                        videoId,
+                    );
                     recordVideo();
 
                     return false;
