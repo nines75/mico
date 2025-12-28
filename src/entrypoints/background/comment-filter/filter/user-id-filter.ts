@@ -38,7 +38,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
                     const isMatch = regex.test(userId);
                     if (isMatch) {
                         // 正規表現ルールではそれ自体をkeyにする
-                        key = regex.toString();
+                        key = this.createKey(regex);
                     }
 
                     return isMatch;
