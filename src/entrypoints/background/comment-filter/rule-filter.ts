@@ -9,7 +9,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];
     private includeCount = 0;
     private excludeCount = 0;
-    protected invalidCount = 0;
+    private invalidCount = 0;
 
     constructor(settings: Settings, filter: string) {
         super(settings);
