@@ -3,7 +3,8 @@ import { isString } from "@/utils/util.js";
 import { ConditionalPick } from "type-fest";
 import { Rule, parseFilter } from "../filter.js";
 import { Filters } from "./filter-comment.js";
-import { Filter } from "./filter.js";
+import { Filter, sortCommentId } from "./filter.js";
+import { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];
@@ -61,6 +62,31 @@ export abstract class RuleFilter<T> extends Filter<T> {
 
     createKey(rule: string | RegExp): string {
         return isString(rule) ? rule : rule.toString();
+    }
+
+    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
+        const log: CommonLog = new Map();
+
+        // フィルター順にソート
+        keys.forEach((key) => {
+            const keyStr = this.createKey(key);
+            const value = currentLog.get(keyStr);
+            if (value !== undefined) {
+                log.set(keyStr, value);
+            }
+        });
+
+        // 各ルールのコメントをソート
+        log.forEach((ids, key) => {
+            log.set(
+                key,
+                this.settings.isNgScoreVisible
+                    ? sortCommentId(ids, this.filteredComments, true)
+                    : sortCommentId(ids, this.filteredComments),
+            );
+        });
+
+        return log;
     }
 }
 

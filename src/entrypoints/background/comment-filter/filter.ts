@@ -45,30 +45,6 @@ export abstract class Filter<T> {
         });
     }
 
-    sortCommonLog(currentLog: CommonLog, keys: Set<string>): CommonLog {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        keys.forEach((key) => {
-            const value = currentLog.get(key);
-            if (value !== undefined) {
-                log.set(key, value);
-            }
-        });
-
-        // 各ルールのコメントをソート
-        log.forEach((ids, key) => {
-            log.set(
-                key,
-                this.settings.isNgScoreVisible
-                    ? sortCommentId(ids, this.filteredComments, true)
-                    : sortCommentId(ids, this.filteredComments),
-            );
-        });
-
-        return log;
-    }
-
     sortDuplicateLog(currentLog: CommonLog): CommonLog {
         const log: CommonLog = new Map();
 

@@ -116,11 +116,10 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        const ngCommands = new Set(
-            this.rules.map(({ rule }) => this.createKey(rule)),
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map(({ rule }) => rule),
         );
-
-        this.log = this.sortCommonLog(this.log, ngCommands);
     }
 
     isStrict(rule: Rule): boolean {

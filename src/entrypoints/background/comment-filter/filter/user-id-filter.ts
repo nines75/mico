@@ -56,11 +56,10 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        const ngUserIds = new Set(
-            this.rules.map(({ rule }) => this.createKey(rule)),
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map(({ rule }) => rule),
         );
-
-        this.log = this.sortCommonLog(this.log, ngUserIds);
     }
 
     updateFilter(userIds: Set<string>) {
