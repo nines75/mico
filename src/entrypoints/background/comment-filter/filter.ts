@@ -1,9 +1,6 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { ConditionalPick } from "type-fest";
-import { Filters } from "./filter-comment.js";
 import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule, CountableFilter } from "../filter.js";
 import { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class Filter<T> {
@@ -48,30 +45,6 @@ export abstract class Filter<T> {
         });
     }
 
-    sortCommonLog(currentLog: CommonLog, keys: Set<string>): CommonLog {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        keys.forEach((key) => {
-            const value = currentLog.get(key);
-            if (value !== undefined) {
-                log.set(key, value);
-            }
-        });
-
-        // 各ルールのコメントをソート
-        log.forEach((ids, key) => {
-            log.set(
-                key,
-                this.settings.isNgScoreVisible
-                    ? sortCommentId(ids, this.filteredComments, true)
-                    : sortCommentId(ids, this.filteredComments),
-            );
-        });
-
-        return log;
-    }
-
     sortDuplicateLog(currentLog: CommonLog): CommonLog {
         const log: CommonLog = new Map();
 
@@ -84,85 +57,6 @@ export abstract class Filter<T> {
 
         return log;
     }
-}
-
-export abstract class CustomFilter<T>
-    extends Filter<T>
-    implements CountableFilter
-{
-    private includeCount = 0;
-    private excludeCount = 0;
-    protected invalidCount = 0;
-    protected ngUserIds: Set<string>;
-    protected strictData: { userId: string; context: string }[] = [];
-    protected abstract filter: CustomRuleData<CustomRule>;
-
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings);
-        this.ngUserIds = ngUserIds;
-    }
-
-    getIncludeCount(): number {
-        return this.includeCount;
-    }
-    getExcludeCount(): number {
-        return this.excludeCount;
-    }
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
-    getStrictData() {
-        return this.strictData;
-    }
-
-    filterRuleByTag(tags: string[]) {
-        const tagSet = new Set(tags.map((tag) => tag.toLowerCase()));
-
-        this.filter.rules = this.filter.rules.filter(({ include, exclude }) => {
-            if (
-                include.length > 0 &&
-                include.every((rule) => !tagSet.has(rule))
-            ) {
-                return false;
-            }
-            if (
-                exclude.length > 0 &&
-                exclude.some((rule) => tagSet.has(rule))
-            ) {
-                // 除外されたかどうか(exclude)はこの時点で確定するので、ここでカウントする
-                this.excludeCount++;
-                return false;
-            }
-
-            // 除外されなかったどうか(include)はこの時点まで確定しないため、ここでカウントする
-            if (include.length > 0) this.includeCount++;
-
-            return true;
-        });
-    }
-
-    countRules(): number {
-        return this.filter.rules.length;
-    }
-}
-
-export function getCountableFilters(
-    filters: Filters,
-): ConditionalPick<Filters, CountableFilter> {
-    return {
-        userIdFilter: filters.userIdFilter,
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
-    };
-}
-
-export function getCustomFilters(
-    filters: Filters,
-): ConditionalPick<Filters, CustomFilter<unknown>> {
-    return {
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
-    };
 }
 
 export function sortCommentId(

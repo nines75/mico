@@ -1,15 +1,10 @@
 import { Settings } from "@/types/storage/settings.types.js";
-import { CommonFilter } from "../filter.js";
+import { PartialFilter } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
-export class TitleFilter extends CommonFilter {
-    protected override filter: RegExp[];
-    protected override rawFilter: string = this.settings.ngTitle;
-
+export class TitleFilter extends PartialFilter {
     constructor(settings: Settings) {
-        super(settings);
-
-        this.filter = this.createFilter();
+        super(settings, settings.ngTitle);
     }
 
     protected override pickTarget(video: NiconicoVideo): string {

@@ -1,15 +1,14 @@
 import { CommonLog } from "@/types/storage/log.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { pushCommonLog } from "@/utils/util.js";
+import { isString, pushCommonLog } from "@/utils/util.js";
 import { VideoMap } from "@/types/storage/log-video.types.js";
-import { CountableFilter, parseFilter } from "../filter.js";
+import { parseFilter, Rule } from "../filter.js";
 import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { Filters } from "./filter-video.js";
 import { ConditionalPick } from "type-fest";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;
-    protected invalidCount = 0;
     protected filteredVideos: VideoMap = new Map();
     protected settings: Settings;
     protected abstract log: T;
@@ -25,9 +24,6 @@ export abstract class Filter<T> {
     getBlockedCount(): number {
         return this.blockedCount;
     }
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
     getFilteredVideos() {
         return this.filteredVideos;
     }
@@ -36,12 +32,52 @@ export abstract class Filter<T> {
     }
 }
 
-export abstract class CommonFilter
-    extends Filter<CommonLog>
-    implements CountableFilter
-{
-    protected abstract filter: RegExp[];
-    protected abstract rawFilter: string;
+export abstract class RuleFilter<T> extends Filter<T> {
+    protected rules: Rule[];
+    protected invalidCount = 0;
+
+    constructor(settings: Settings, filter: string) {
+        super(settings);
+
+        const { rules, invalidCount } = parseFilter(filter);
+        this.rules = rules;
+        this.invalidCount += invalidCount;
+    }
+
+    getInvalidCount(): number {
+        return this.invalidCount;
+    }
+
+    countRules(): number {
+        return this.rules.length;
+    }
+
+    createKey(rule: string | RegExp): string {
+        return isString(rule) ? rule : rule.toString();
+    }
+
+    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
+        const log: CommonLog = new Map();
+
+        // フィルター順にソート
+        keys.forEach((key) => {
+            const keyStr = this.createKey(key);
+            const value = currentLog.get(keyStr);
+            if (value !== undefined) {
+                log.set(keyStr, value);
+            }
+        });
+
+        // 各キーの動画IDをソート
+        log.forEach((ids, key) => {
+            log.set(key, sortVideoId(ids, this.filteredVideos));
+        });
+
+        return log;
+    }
+}
+
+export abstract class PartialFilter extends RuleFilter<CommonLog> {
     protected override log: CommonLog = new Map();
 
     protected abstract pickTarget(video: NiconicoVideo): string | null;
@@ -52,11 +88,11 @@ export abstract class CommonFilter
             const target = this.pickTarget(video);
             if (target === null) return true;
 
-            for (const regex of this.filter) {
-                const regexStr = regex.source;
-
-                if (regex.test(target)) {
-                    pushCommonLog(this.log, regexStr, videoId);
+            for (const { rule } of this.rules) {
+                if (
+                    isString(rule) ? target.includes(rule) : rule.test(target)
+                ) {
+                    pushCommonLog(this.log, this.createKey(rule), videoId);
                     this.filteredVideos.set(videoId, video);
                     this.blockedCount++;
 
@@ -72,60 +108,22 @@ export abstract class CommonFilter
         const target = this.pickTarget(video);
         if (target === null) return false;
 
-        for (const regex of this.filter) {
-            if (regex.test(target)) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.rules.some(({ rule }) =>
+            isString(rule) ? target.includes(rule) : rule.test(target),
+        );
     }
 
     override sortLog(): void {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        this.filter.forEach((rule) => {
-            const ruleStr = rule.source;
-            const value = this.log.get(ruleStr);
-            if (value !== undefined) {
-                log.set(ruleStr, value);
-            }
-        });
-
-        // 各ルールのコメントをソート
-        log.forEach((ids, rule) => {
-            log.set(rule, sortVideoId(ids, this.filteredVideos));
-        });
-
-        this.log = log;
-    }
-
-    createFilter(): RegExp[] {
-        const res: RegExp[] = [];
-        parseFilter(this.rawFilter).forEach((rule) => {
-            try {
-                res.push(
-                    this.settings.isCaseInsensitive
-                        ? RegExp(rule.rule, "i")
-                        : RegExp(rule.rule),
-                );
-            } catch {
-                this.invalidCount++;
-            }
-        });
-
-        return res;
-    }
-
-    countRules(): number {
-        return this.filter.length;
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map(({ rule }) => rule),
+        );
     }
 }
 
-export function getCountableFilters(
+export function getRuleFilters(
     filters: Filters,
-): ConditionalPick<Filters, CountableFilter> {
+): ConditionalPick<Filters, RuleFilter<unknown>> {
     return {
         idFilter: filters.idFilter,
         userNameFilter: filters.userNameFilter,

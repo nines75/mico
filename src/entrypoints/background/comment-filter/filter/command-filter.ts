@@ -1,28 +1,39 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CustomFilter } from "../filter.js";
-import { pushCommonLog } from "@/utils/util.js";
+import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
+import { Rule } from "../../filter.js";
+import { StrictFilter } from "../strict-filter.js";
 
-interface NgCommandData extends CustomRuleData<NgCommand> {
-    hasAll: boolean;
-}
-
-interface NgCommand extends CustomRule {
-    rule: string;
-    isDisable: boolean;
-}
-
-export class CommandFilter extends CustomFilter<CommonLog> {
+export class CommandFilter extends StrictFilter<CommonLog> {
+    private hasAll: boolean;
     private disableCount = 0;
-    protected filter: NgCommandData;
     protected log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds);
+        super(settings, ngUserIds, settings.ngCommand);
 
-        this.filter = this.createFilter(settings);
+        let hasAll = false;
+        const rules = this.rules
+            .map((data) => {
+                const rule = data.rule;
+                return {
+                    ...data,
+                    rule: isString(rule) ? rule.toLowerCase() : rule,
+                };
+            })
+            .filter((data) => {
+                if (data.rule === "all" && data.isDisable) {
+                    hasAll = true;
+
+                    return false;
+                }
+
+                return true;
+            });
+
+        this.rules = rules;
+        this.hasAll = hasAll;
     }
 
     getDisableCount(): number {
@@ -30,10 +41,9 @@ export class CommandFilter extends CustomFilter<CommonLog> {
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
-        const { hasAll } = this.filter;
         const rules = isStrictOnly
-            ? this.filter.rules.filter((rule) => this.isStrict(rule))
-            : this.filter.rules
+            ? this.rules.filter((rule) => this.isStrict(rule))
+            : this.rules
                   .filter((rule) => !this.isStrict(rule))
                   // 非表示ルールを無効化ルールより先に適用するためにソート
                   .sort((a, b) => {
@@ -41,7 +51,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                       return a.isDisable ? 1 : -1;
                   });
 
-        if (rules.length === 0 && !hasAll) return;
+        if (rules.length === 0 && !this.hasAll) return;
 
         this.traverseThreads(threads, (comment) => {
             // コマンドを小文字に変換し重複を排除
@@ -53,23 +63,18 @@ export class CommandFilter extends CustomFilter<CommonLog> {
 
             // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
             const { id, commands, userId } = comment;
+            const disableCommands = new Set<string>();
 
             for (const { rule, isDisable } of rules) {
-                // commandsを内部で変更するのでコピーを作る
-                for (const command of [...commands]) {
-                    if (rule !== command) continue;
+                for (const command of commands) {
+                    if (isString(rule) ? rule !== command : !rule.test(command))
+                        continue;
 
                     if (isDisable) {
-                        // allルールがある場合は後からまとめて無効化する
-                        if (hasAll) break;
+                        if (this.hasAll) break;
+                        disableCommands.add(command);
 
-                        const index = commands.indexOf(command);
-                        if (index !== -1) {
-                            commands.splice(index, 1);
-                            this.disableCount++;
-                        }
-
-                        break; // commandsに重複はないため、一致した時点でループを抜ける
+                        continue;
                     }
 
                     if (isStrictOnly) {
@@ -83,7 +88,7 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                         return true;
                     }
 
-                    pushCommonLog(this.log, rule, id);
+                    pushCommonLog(this.log, this.createKey(rule), id);
                     this.filteredComments.set(id, comment);
                     this.blockedCount++;
 
@@ -91,10 +96,19 @@ export class CommandFilter extends CustomFilter<CommonLog> {
                 }
             }
 
-            // 無効化ルールより非表示ルールを優先するので後から無効化する
-            if (hasAll) {
+            // forループ内で配列を変更するのは危険なので後から無効化する
+            if (this.hasAll) {
+                comment.commands = [];
                 this.disableCount += commands.length;
-                commands.length = 0; // コマンド配列を空にする
+            } else {
+                if (disableCommands.size > 0) {
+                    comment.commands = commands.filter((command) => {
+                        const isMatch = disableCommands.has(command);
+                        if (isMatch) this.disableCount++;
+
+                        return !isMatch;
+                    });
+                }
             }
 
             return true;
@@ -102,42 +116,13 @@ export class CommandFilter extends CustomFilter<CommonLog> {
     }
 
     override sortLog(): void {
-        const ngCommands = new Set(
-            this.filter.rules.map((ngCommand) => ngCommand.rule),
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map(({ rule }) => rule),
         );
-
-        this.log = this.sortCommonLog(this.log, ngCommands);
     }
 
-    createFilter(settings: Settings): NgCommandData {
-        let hasAll = false;
-        const ngCommands = parseCustomFilter(settings.ngCommand)
-            .map((data): NgCommand => {
-                return {
-                    rule: data.rule.toLowerCase(),
-                    isStrict: data.isStrict,
-                    isDisable: data.isDisable,
-                    include: data.include,
-                    exclude: data.exclude,
-                };
-            })
-            .filter((ngCommand) => {
-                if (ngCommand.rule === "all" && ngCommand.isDisable) {
-                    hasAll = true;
-
-                    return false;
-                }
-
-                return true;
-            });
-
-        return {
-            rules: ngCommands,
-            hasAll,
-        };
-    }
-
-    isStrict(rule: NgCommand): boolean {
+    isStrict(rule: Rule): boolean {
         // strictルールと無効化ルールが併用されている場合、strictルールを無視する
         return rule.isStrict && !rule.isDisable;
     }

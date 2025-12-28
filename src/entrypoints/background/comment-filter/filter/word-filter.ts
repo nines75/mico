@@ -1,38 +1,30 @@
 import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { CustomFilter, sortCommentId } from "../filter.js";
-import { pushCommonLog } from "@/utils/util.js";
+import { sortCommentId } from "../filter.js";
+import { isString, pushCommonLog } from "@/utils/util.js";
 import { WordLog } from "@/types/storage/log-comment.types.js";
-import { CustomRuleData, CustomRule, parseCustomFilter } from "../../filter.js";
+import { StrictFilter } from "../strict-filter.js";
 
-type NgWordData = CustomRuleData<NgWord>;
-
-interface NgWord extends CustomRule {
-    regex: RegExp;
-}
-
-export class WordFilter extends CustomFilter<WordLog> {
-    protected filter: NgWordData;
+export class WordFilter extends StrictFilter<WordLog> {
     protected log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds);
-
-        this.filter = this.createFilter(settings);
+        super(settings, ngUserIds, settings.ngWord);
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
         const rules = isStrictOnly
-            ? this.filter.rules.filter((rule) => rule.isStrict)
-            : this.filter.rules.filter((rule) => !rule.isStrict);
+            ? this.rules.filter((rule) => rule.isStrict)
+            : this.rules.filter((rule) => !rule.isStrict);
 
         if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
             const { id, body, userId } = comment;
 
-            for (const { regex } of rules) {
-                if (!regex.test(body)) continue;
+            for (const { rule } of rules) {
+                if (isString(rule) ? !body.includes(rule) : !rule.test(body))
+                    continue;
 
                 if (isStrictOnly) {
                     if (!this.ngUserIds.has(userId)) {
@@ -46,12 +38,12 @@ export class WordFilter extends CustomFilter<WordLog> {
                     return true;
                 }
 
-                const regexStr = regex.source;
-                const map = this.log.get(regexStr);
+                const key = this.createKey(rule);
+                const map = this.log.get(key);
                 if (map !== undefined) {
                     pushCommonLog(map, body, id);
                 } else {
-                    this.log.set(regexStr, new Map([[body, [id]]]));
+                    this.log.set(key, new Map([[body, [id]]]));
                 }
 
                 this.filteredComments.set(id, comment);
@@ -67,7 +59,7 @@ export class WordFilter extends CustomFilter<WordLog> {
     override sortLog(): void {
         const log: WordLog = new Map();
         const ngWords = new Set(
-            this.filter.rules.map((ngWord) => ngWord.regex.source),
+            this.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         // フィルター順にソート
@@ -96,33 +88,5 @@ export class WordFilter extends CustomFilter<WordLog> {
         });
 
         this.log = log;
-    }
-
-    createFilter(settings: Settings): NgWordData {
-        const ngWords = parseCustomFilter(settings.ngWord).reduce<NgWord[]>(
-            (res, data) => {
-                try {
-                    const regex = settings.isCaseInsensitive
-                        ? RegExp(data.rule, "i")
-                        : RegExp(data.rule);
-
-                    res.push({
-                        regex,
-                        isStrict: data.isStrict,
-                        include: data.include,
-                        exclude: data.exclude,
-                    });
-                } catch {
-                    this.invalidCount++;
-                }
-
-                return res;
-            },
-            [],
-        );
-
-        return {
-            rules: ngWords,
-        };
     }
 }

@@ -14,9 +14,6 @@ export interface Settings {
     // 一般設定
     // -------------------------------------------------------------------------------------------
 
-    // フィルタリング
-    isCaseInsensitive: boolean;
-
     // エディター
     isCloseBrackets: boolean;
     isHighlightTrailingWhitespace: boolean;

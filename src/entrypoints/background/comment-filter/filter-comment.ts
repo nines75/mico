@@ -7,10 +7,11 @@ import {
     UserIdFilter,
 } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
-import { getCustomFilters } from "./filter.js";
 import { CommandFilter } from "./filter/command-filter.js";
 import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
+import { getRuleFilters } from "./rule-filter.js";
+import { getStrictFilters } from "./strict-filter.js";
 
 export type Filters = FilteredData["filters"];
 
@@ -58,7 +59,7 @@ export function filterComment(
     const ngUserIds = getNgUserIdSet(settings, "");
 
     // フィルター初期化
-    const userIdFilter = new UserIdFilter(settings, videoId);
+    const userIdFilter = new UserIdFilter(settings);
     const easyCommentFilter = new EasyCommentFilter(settings);
     const commentAssistFilter = new CommentAssistFilter(settings);
     const scoreFilter = new ScoreFilter(settings);
@@ -73,10 +74,11 @@ export function filterComment(
         commandFilter,
         wordFilter,
     };
-    const customFilters = getCustomFilters(filters);
+    const ruleFilters = getRuleFilters(filters);
+    const strictFilters = getStrictFilters(filters);
 
     // tagルール適用
-    Object.values(customFilters).forEach((filter) => {
+    Object.values(ruleFilters).forEach((filter) => {
         filter.filterRuleByTag(tags);
     });
 
@@ -85,13 +87,13 @@ export function filterComment(
     // -------------------------------------------------------------------------------------------
 
     // strictルールのみでフィルタリング
-    Object.values(customFilters).forEach((filter) => {
+    Object.values(strictFilters).forEach((filter) => {
         filter.filtering(threads, true);
     });
 
     const strictUserIds = new Set<string>();
     const strictUserIdsWithContext = new Set<string>();
-    Object.values(customFilters).forEach((filter) => {
+    Object.values(strictFilters).forEach((filter) => {
         filter.getStrictData().forEach(({ userId, context }) => {
             if (!strictUserIds.has(userId)) {
                 strictUserIdsWithContext.add(

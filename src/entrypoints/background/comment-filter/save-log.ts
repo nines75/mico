@@ -1,11 +1,5 @@
 import { FilteredData } from "./filter-comment.js";
-import { loadSettings } from "@/utils/storage.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
-import {
-    CustomFilter,
-    getCountableFilters,
-    getCustomFilters,
-} from "./filter.js";
 import {
     BlockedCount,
     CommentCount,
@@ -17,6 +11,7 @@ import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
 import { objectEntries } from "ts-extras";
 import { ConditionalKeys } from "type-fest";
+import { getRuleFilters, RuleFilter } from "./rule-filter.js";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -24,10 +19,6 @@ export async function saveLog(
     tabId: number,
 ) {
     const start = performance.now();
-
-    // strictルールによってNG登録されたユーザーIDを反映した設定を読み込む
-    const settings = await loadSettings();
-    filteredData.filters.userIdFilter.setSettings(settings);
 
     const count = createCount(filteredData);
     const filtering = createFiltering(filteredData);
@@ -54,10 +45,9 @@ export async function saveLog(
 
 export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
-    const countableFilters = getCountableFilters(filters);
-    const customFilters = getCustomFilters(filters);
+    const ruleFilters = getRuleFilters(filters);
 
-    const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
+    const rule = objectEntries(ruleFilters).reduce<Partial<RuleCount>>(
         (obj, [key, filter]) => {
             obj[key] = filter.countRules();
             return obj;
@@ -72,11 +62,9 @@ export function createCount(filteredData: FilteredData): CommentCount {
         {},
     ) as BlockedCount;
 
-    const calc = (
-        key: ConditionalKeys<CustomFilter<unknown>, () => number>,
-    ) => {
+    const calc = (key: ConditionalKeys<RuleFilter<unknown>, () => number>) => {
         return sumNumbers(
-            Object.values(customFilters).map((filter) => filter[key]()),
+            Object.values(ruleFilters).map((filter) => filter[key]()),
         );
     };
 

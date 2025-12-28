@@ -4,7 +4,7 @@ import { checkComment, testThreads } from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { createUserIdFilter, UserIdFilter } from "./user-id-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { Rule } from "../../filter.js";
+import { BaseRule } from "../../filter.js";
 
 describe(UserIdFilter.name, () => {
     let threads: Thread[];
@@ -31,7 +31,7 @@ describe(UserIdFilter.name, () => {
     };
 
     it("一般", () => {
-        const filter = `user-id-owner`;
+        const filter = "user-id-owner";
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([["user-id-owner", ["1000", "1001"]]]),
@@ -44,6 +44,15 @@ describe(UserIdFilter.name, () => {
 
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         checkComment(threads, []);
+    });
+
+    it("正規表現", () => {
+        const filter = "/^user-id-main/";
+
+        expect(filtering({ filter }).getLog()).toEqual(
+            new Map([["/^user-id-main/", ["1002", "1003", "1004"]]]),
+        );
+        checkComment(threads, ["1002", "1003", "1004"]);
     });
 
     it("後からフィルターを更新", () => {
@@ -131,7 +140,7 @@ describe(createUserIdFilter.name, () => {
     ] satisfies {
         name: string;
         videoId?: string;
-        expected: Rule[];
+        expected: BaseRule[];
     }[])("$name", ({ videoId, expected }) => {
         const settings = {
             ...defaultSettings,

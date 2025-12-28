@@ -1,31 +1,21 @@
-export interface Rule {
+export interface BaseRule {
     rule: string;
     /** 元のフィルターを改行区切りで配列にしたときのインデックス */
     index: number;
 }
 
-export interface CustomRuleData<T extends CustomRule> {
-    rules: T[];
-}
-
-export interface CustomRule {
-    isStrict: boolean;
-    include: string[];
-    exclude: string[];
-}
-
-export interface RawCustomRule {
-    rule: string;
+export interface Rule {
+    rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
     include: string[];
     exclude: string[];
 }
 
-export function parseFilter(filter: string) {
+export function parseFilterBase(filter: string) {
     return filter
         .split("\n")
-        .map((str, index): Rule => {
+        .map((str, index): BaseRule => {
             return {
                 // どんな文字列に対しても必ずマッチする
                 rule: /^(.*?)(?:\s*(?<!\\)#.*)?$/.exec(str)?.[1] as string,
@@ -33,7 +23,7 @@ export function parseFilter(filter: string) {
             };
         })
         .filter((data) => data.rule !== "")
-        .map((data): Rule => {
+        .map((data): BaseRule => {
             return {
                 rule: data.rule.replace(/\\#/g, "#"), // "\#"という文字列をエスケープ
                 index: data.index,
@@ -41,14 +31,18 @@ export function parseFilter(filter: string) {
         });
 }
 
-export function parseCustomFilter(filter: string): RawCustomRule[] {
+export function parseFilter(filter: string): {
+    rules: Rule[];
+    invalidCount: number;
+} {
     interface Directive {
         type: "include" | "exclude" | "strict" | "disable";
         params: string[];
     }
 
+    let invalidCount = 0;
     const directives: Directive[] = [];
-    const rules: RawCustomRule[] = [];
+    const rules: Rule[] = [];
 
     const parseParams = (str: string) => {
         return str
@@ -58,7 +52,7 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
             .map((rule) => rule.toLowerCase());
     };
 
-    parseFilter(filter).forEach((data) => {
+    parseFilterBase(filter).forEach((data) => {
         const rule = data.rule;
         const trimmedRule = rule.trimEnd();
 
@@ -104,11 +98,31 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
             }
         });
 
-        const escapedRule = /^@escape\((.+)\)/.exec(rule)?.[1];
         const hasStrictSymbol = rule.startsWith("!");
+        const baseRule = hasStrictSymbol ? rule.slice(1) : rule;
+
+        const regexResult = /^\/(.*)\/(.*)$/.exec(baseRule);
+        const regexStr = regexResult?.[1];
+        const flags = regexResult?.[2];
+
+        let regex: RegExp | undefined;
+        if (regexStr !== undefined && flags !== undefined) {
+            // 想定外のフラグが含まれている場合はルールとして解釈しない
+            if (!/^[isuvm]*$/.test(flags)) {
+                invalidCount++;
+                return;
+            }
+
+            try {
+                regex = RegExp(regexStr, flags);
+            } catch {
+                invalidCount++;
+                return;
+            }
+        }
 
         rules.push({
-            rule: escapedRule ?? (hasStrictSymbol ? rule.slice(1) : rule),
+            rule: regex ?? baseRule,
             isStrict: isStrict || hasStrictSymbol,
             isDisable,
             include,
@@ -116,9 +130,5 @@ export function parseCustomFilter(filter: string): RawCustomRule[] {
         });
     });
 
-    return rules;
-}
-
-export interface CountableFilter {
-    countRules(): number;
+    return { rules, invalidCount };
 }

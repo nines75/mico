@@ -47,42 +47,25 @@ describe(WordFilter.name, () => {
     it("大小文字が異なる", () => {
         const filter = "TesT";
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["TesT", new Map([["test", ["1000", "1001"]]])]]),
-        );
-        checkComment(threads, ["1000", "1001"]);
+        expect(filtering({ filter }).getLog()).toEqual(new Map());
+        checkComment(threads, []);
     });
 
     it("正規表現", () => {
-        const filter = "テスト|コメント";
+        const filter = "/テスト/";
 
         expect(filtering({ filter }).getLog()).toEqual(
             new Map([
                 [
-                    "テスト|コメント",
+                    "/テスト/",
                     new Map([
                         ["テスト", ["1002"]],
                         ["テストコメント", ["1003"]],
-                        ["コメント", ["1004"]],
                     ]),
                 ],
             ]),
         );
-        checkComment(threads, ["1002", "1003", "1004"]);
-    });
-
-    it("無効な正規表現", () => {
-        const filter = `
-(テスト
-^コメント$
-`;
-        const wordFilter = filtering({ filter });
-
-        expect(wordFilter.getLog()).toEqual(
-            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
-        );
-        expect(wordFilter.getInvalidCount()).toBe(1);
-        checkComment(threads, ["1004"]);
+        checkComment(threads, ["1002", "1003"]);
     });
 
     it.each([
@@ -120,13 +103,15 @@ describe(WordFilter.name, () => {
     it.each([
         {
             name: "@include",
-            expected: new Map([["^テスト$", new Map([["テスト", ["1002"]]])]]),
+            expected: new Map([
+                ["/^テスト$/", new Map([["テスト", ["1002"]]])],
+            ]),
             ids: ["1002"],
         },
         {
             name: "@exclude",
             expected: new Map([
-                ["^コメント$", new Map([["コメント", ["1004"]]])],
+                ["/^コメント$/", new Map([["コメント", ["1004"]]])],
             ]),
             ids: ["1004"],
         },
@@ -134,11 +119,11 @@ describe(WordFilter.name, () => {
         const isExclude = name === "@exclude";
         const filter = `
 @include example-tag
-^テスト$
+/^テスト$/
 @end
 
 @include tag
-^コメント$
+/^コメント$/
 @end
 `;
         const wordFilter = filtering({
@@ -153,30 +138,18 @@ describe(WordFilter.name, () => {
     it("動画タグが存在しないときのtagルール判定", () => {
         const filter = `
 @include tag0
-^テスト$
+/^テスト$/
 @end
 
 @exclude tag1
-^コメント$
+/^コメント$/
 @end
 `;
 
         expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["^コメント$", new Map([["コメント", ["1004"]]])]]),
+            new Map([["/^コメント$/", new Map([["コメント", ["1004"]]])]]),
         );
         checkComment(threads, ["1004"]);
-    });
-
-    it(`Settings.${"isCaseInsensitive" satisfies keyof Settings}`, () => {
-        const filter = "TesT";
-
-        expect(
-            filtering({
-                filter,
-                settings: { isCaseInsensitive: false },
-            }).getLog(),
-        ).toEqual(new Map());
-        checkComment(threads, []);
     });
 
     it(`${WordFilter.prototype.sortLog.name}()`, () => {

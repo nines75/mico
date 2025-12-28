@@ -4,6 +4,8 @@ import { ProcessingTimeData, CommonLog } from "./log.types.js";
 export type PaidLog = string[];
 export type ViewsLog = string[];
 export interface IdLog {
+    /** Map<regex, videoId[]> */
+    regex: CommonLog;
     /** Map<userId, videoId[]> */
     userId: CommonLog;
     /** videoId[] */

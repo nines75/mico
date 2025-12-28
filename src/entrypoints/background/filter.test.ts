@@ -1,8 +1,8 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilter, parseCustomFilter, RawCustomRule } from "./filter.js";
+import { parseFilterBase, parseFilter, Rule } from "./filter.js";
 
-describe(`${parseFilter.name}()`, () => {
+describe(`${parseFilterBase.name}()`, () => {
     it.each([
         {
             name: "コメントなし",
@@ -38,7 +38,7 @@ describe(`${parseFilter.name}()`, () => {
             expected: "@include tag0 tag1",
         },
     ])("一般($name)", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             expected === undefined ? [] : [{ rule: expected, index: 0 }],
         );
     });
@@ -48,14 +48,14 @@ describe(`${parseFilter.name}()`, () => {
         { name: "複数の全角スペース", filter: "rule　　　　# comment" },
         { name: "半角全角スペース交互", filter: "rule 　 　# comment" },
     ])("コメントの前に全角を含む($name)", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual([{ rule: "rule", index: 0 }]);
+        expect(parseFilterBase(filter)).toEqual([{ rule: "rule", index: 0 }]);
     });
 
     it.each([
         { name: "コメントなし", filter: "\\#rule\\#rule2\\#" },
         { name: "コメントあり", filter: "\\#rule\\#rule2\\# # comment" },
     ])("エスケープした#を含む($name)", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             [["#rule#rule2#", 0]].map(([rule, index]) => ({ rule, index })),
         );
     });
@@ -69,7 +69,7 @@ rule
 rule
 `;
 
-        expect(parseFilter(filter)).toEqual(
+        expect(parseFilterBase(filter)).toEqual(
             [1, 3, 5].map((index) => ({ rule: "rule", index })),
         );
     });
@@ -79,24 +79,41 @@ rule
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
-describe(`${parseCustomFilter.name}()`, () => {
-    const createRule = (rule: Partial<RawCustomRule>): RawCustomRule => {
+describe(`${parseFilter.name}()`, () => {
+    const createRule = (
+        rule: Partial<Rule>,
+    ): { rules: Rule[]; invalidCount: number } => {
         return {
-            ...{
-                rule: "rule",
-                isStrict: false,
-                isDisable: false,
-                include: [],
-                exclude: [],
-            },
-            ...rule,
+            rules: [
+                {
+                    ...{
+                        rule: "rule",
+                        isStrict: false,
+                        isDisable: false,
+                        include: [],
+                        exclude: [],
+                    },
+                    ...rule,
+                },
+            ],
+            invalidCount: 0,
         };
     };
-    const createRules = (...rules: Partial<RawCustomRule>[]) => {
-        return rules.map((rule) => createRule(rule));
+    const createRules = (...rules: Partial<Rule>[]) => {
+        return rules
+            .map((rule) => createRule(rule))
+            .reduce(
+                (all, current) => {
+                    all.rules.push(...current.rules);
+                    all.invalidCount += current.invalidCount;
+                    return all;
+                },
+                { rules: [], invalidCount: 0 },
+            );
     };
     const base = createRule({});
     const strict = createRule({ isStrict: true });
+    const invalid = { rules: [], invalidCount: 1 };
 
     // -------------------------------------------------------------------------------------------
     // @end
@@ -111,7 +128,7 @@ rule
 @end
 rule
 `,
-            expected: [strict, base],
+            expected: createRules({ isStrict: true }, {}),
         },
         {
             name: "不要な@end",
@@ -121,7 +138,7 @@ rule
 
 rule
 `,
-            expected: [base],
+            expected: base,
         },
         {
             name: "@endなし",
@@ -129,10 +146,10 @@ rule
 @strict
 rule
 `,
-            expected: [strict],
+            expected: strict,
         },
     ])("$name", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -161,7 +178,7 @@ rule
 `,
         },
     ])("$name", ({ filter }) => {
-        expect(parseCustomFilter(filter)).toEqual([strict]);
+        expect(parseFilter(filter)).toEqual(strict);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -215,7 +232,7 @@ rule
             expected: createRules({ rule: "@includes tag0 tag1" }, {}),
         },
     ])("@include($name)", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -229,63 +246,62 @@ rule
 @end
 `;
 
-        expect(parseCustomFilter(filter)).toEqual(
-            createRules({ isDisable: true }),
-        );
+        expect(parseFilter(filter)).toEqual(createRules({ isDisable: true }));
     });
 
     // -------------------------------------------------------------------------------------------
-    // @escape
+    // ルール
     // -------------------------------------------------------------------------------------------
+
+    it("文字列", () => {
+        const filter = "rule";
+
+        expect(parseFilter(filter)).toEqual(createRules({ rule: "rule" }));
+    });
 
     it.each([
         {
-            name: "通常",
-            filter: `@escape(rule)`,
-            expected: createRules({}),
+            name: "フラグなし",
+            filter: "/rule/",
+            expected: createRules({ rule: RegExp("rule") }),
         },
         {
-            name: "括弧の後に文字列が続く",
-            filter: "@escape(rule)test",
-            expected: createRules({}),
+            name: "フラグあり",
+            filter: "/rule/i",
+            expected: createRules({ rule: RegExp("rule", "i") }),
         },
         {
-            name: "@から始まるディレクティブ",
-            filter: "@escape(@end)",
-            expected: createRules({ rule: "@end" }),
+            name: "複数のフラグ",
+            filter: "/rule/isum",
+            expected: createRules({ rule: RegExp("rule", "isum") }),
         },
         {
-            name: "一文字ディレクティブ",
-            filter: "@escape(!rule)",
-            expected: createRules({ rule: "!rule" }),
+            name: "誤り: 先頭に空白文字を含む",
+            filter: " /rule/",
+            expected: createRules({ rule: " /rule/" }),
         },
         {
-            name: "ネストされた括弧",
-            filter: "@escape(())",
-            expected: createRules({ rule: "()" }),
+            name: "誤り: 末尾に空白文字を含む",
+            filter: "/rule/ ",
+            expected: invalid,
         },
         {
-            name: "複数の括弧",
-            filter: "@escape(()))()",
-            expected: createRules({ rule: "()))(" }),
+            name: "誤り: 対応していないフラグ",
+            filter: "/rule/g",
+            expected: invalid,
         },
         {
-            name: "誤り: 括弧内が空",
-            filter: "@escape()",
-            expected: createRules({ rule: "@escape()" }),
+            name: "誤り: 併用できないフラグ",
+            filter: "/rule/uv",
+            expected: invalid,
         },
         {
-            name: "誤り: 括弧の前に空白がある",
-            filter: "@escape (rule)",
-            expected: createRules({ rule: "@escape (rule)" }),
+            name: "誤り: 無効な正規表現",
+            filter: "/(rule/",
+            expected: invalid,
         },
-        {
-            name: "誤り: 閉じ括弧がない",
-            filter: "@escape (rule",
-            expected: createRules({ rule: "@escape (rule" }),
-        },
-    ])("@escape($name)", ({ filter, expected }) => {
-        expect(parseCustomFilter(filter)).toEqual(expected);
+    ])("正規表現($name)", ({ filter, expected }) => {
+        expect(parseFilter(filter)).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -305,7 +321,6 @@ rule
 
 @disable
 rule
-@escape(rule)
 @end
 
 @end
@@ -323,8 +338,8 @@ rule
 rule
 `;
 
-        expect(parseCustomFilter(filter)).toEqual([
-            ...createRules(
+        expect(parseFilter(filter)).toEqual(
+            createRules(
                 {
                     include: [tags[0]],
                 },
@@ -336,12 +351,6 @@ rule
                     include: [tags[0]],
                     exclude: [tags[1]],
                     isStrict: true,
-                },
-                {
-                    include: [tags[0]],
-                    exclude: [tags[1]],
-                    isStrict: true,
-                    isDisable: true,
                 },
                 {
                     include: [tags[0]],
@@ -357,8 +366,8 @@ rule
                     include: [tags[0]],
                     exclude: [tags[1], tags[3]],
                 },
+                {},
             ),
-            base,
-        ]);
+        );
     });
 });

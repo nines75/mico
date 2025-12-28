@@ -1,32 +1,50 @@
 import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
-import { Filter } from "../filter.js";
-import { pushCommonLog } from "@/utils/util.js";
+import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { CountableFilter, Rule, parseFilter } from "../../filter.js";
+import { BaseRule, parseFilterBase } from "../../filter.js";
+import { RuleFilter } from "../rule-filter.js";
 
-export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
-    private filter = new Set<string>();
+export class UserIdFilter extends RuleFilter<CommonLog> {
     protected log: CommonLog = new Map();
 
-    constructor(settings: Settings, videoId: string) {
-        super(settings);
-
-        this.filter = getNgUserIdSet(settings, videoId);
-    }
-
-    setSettings(settings: Settings) {
-        this.settings = settings;
+    constructor(settings: Settings) {
+        super(settings, settings.ngUserId);
     }
 
     override filtering(threads: Thread[]): void {
-        if (this.filter.size === 0) return;
+        const rules = this.rules;
+        if (rules.length === 0) return;
+
+        const userIdSet = new Set<string>();
+        const regexes: RegExp[] = [];
+        rules
+            .map((data) => data.rule)
+            .forEach((rule) => {
+                if (isString(rule)) {
+                    userIdSet.add(rule);
+                } else {
+                    regexes.push(rule);
+                }
+            });
 
         this.traverseThreads(threads, (comment) => {
+            let key: string | undefined;
             const { id, userId } = comment;
 
-            if (this.filter.has(userId)) {
-                pushCommonLog(this.log, userId, id);
+            if (
+                userIdSet.has(userId) ||
+                regexes.some((regex) => {
+                    const isMatch = regex.test(userId);
+                    if (isMatch) {
+                        // 正規表現ルールではそれ自体をkeyにする
+                        key = this.createKey(regex);
+                    }
+
+                    return isMatch;
+                })
+            ) {
+                pushCommonLog(this.log, key ?? userId, id);
                 this.filteredComments.set(id, comment);
                 this.blockedCount++;
 
@@ -38,25 +56,32 @@ export class UserIdFilter extends Filter<CommonLog> implements CountableFilter {
     }
 
     override sortLog(): void {
-        // strictルールによってユーザーIDがNG登録されていることがあるので、フィールドの値を使わずに改めて取得する
-        const ngUserIds = getNgUserIdSet(this.settings);
-
-        this.log = this.sortCommonLog(this.log, ngUserIds);
+        this.log = this.sortCommonLog(
+            this.log,
+            this.rules.map(({ rule }) => rule),
+        );
     }
 
     updateFilter(userIds: Set<string>) {
-        userIds.forEach((id) => this.filter.add(id));
-    }
+        const newUserIds = [...userIds].map((id) => {
+            return {
+                rule: id,
+                isStrict: false,
+                isDisable: false,
+                include: [],
+                exclude: [],
+            };
+        });
 
-    countRules(): number {
-        return this.filter.size;
+        // フィルターと同じ順序になるように先頭に追加する
+        this.rules = [...newUserIds, ...this.rules];
     }
 }
 
 export function createUserIdFilter(settings: Settings, videoId?: string) {
-    const res: Rule[] = [];
+    const res: BaseRule[] = [];
 
-    parseFilter(settings.ngUserId).forEach((data) => {
+    parseFilterBase(settings.ngUserId).forEach((data) => {
         const rule = data.rule;
         const index = rule.indexOf("@");
 

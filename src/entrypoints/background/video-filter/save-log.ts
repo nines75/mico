@@ -9,7 +9,7 @@ import { FilteredData } from "./filter-video.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
-import { getCountableFilters } from "./filter.js";
+import { getRuleFilters } from "./filter.js";
 import { objectEntries } from "ts-extras";
 
 export async function saveLog(
@@ -47,9 +47,9 @@ export async function saveLog(
 
 function createCount(filteredData: FilteredData): VideoCount {
     const filters = filteredData.filters;
-    const countableFilters = getCountableFilters(filters);
+    const ruleFilters = getRuleFilters(filters);
 
-    const rule = objectEntries(countableFilters).reduce<Partial<RuleCount>>(
+    const rule = objectEntries(ruleFilters).reduce<Partial<RuleCount>>(
         (obj, [key, filter]) => {
             obj[key] = filter.countRules();
             return obj;
@@ -70,7 +70,9 @@ function createCount(filteredData: FilteredData): VideoCount {
         totalBlocked: sumNumbers(Object.values(blocked)),
         loaded: filteredData.loadedVideoCount,
         invalid: sumNumbers(
-            Object.values(filters).map((filter) => filter.getInvalidCount()),
+            Object.values(ruleFilters).map((filter) =>
+                filter.getInvalidCount(),
+            ),
         ),
     };
 }

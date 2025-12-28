@@ -15,9 +15,6 @@ export const defaultSettings: Settings = {
     // 一般設定
     // -------------------------------------------------------------------------------------------
 
-    // フィルタリング
-    isCaseInsensitive: true,
-
     // エディター
     isCloseBrackets: true,
     isHighlightTrailingWhitespace: true,
@@ -273,17 +270,6 @@ export const settingsConfig = {
 export const generalSettings = {
     checkbox: [
         {
-            header: "フィルタリング",
-            items: [
-                {
-                    id: "isCaseInsensitive",
-                    label: "大小文字を区別しない",
-                    details:
-                        "正規表現が使用可能なフィルターに対してのみ有効になります。",
-                },
-            ],
-        },
-        {
             header: "エディター",
             items: [
                 {
@@ -459,7 +445,7 @@ export const commentFilterSettings = {
         },
         {
             id: "ngWord",
-            name: "NGワード(正規表現)",
+            name: "NGワード",
         },
     ],
 } as const satisfies {
@@ -542,11 +528,11 @@ export const videoFilterSettings = {
         },
         {
             id: "ngUserName",
-            name: "NGユーザー名(正規表現)",
+            name: "NGユーザー名",
         },
         {
             id: "ngTitle",
-            name: "NGタイトル(正規表現)",
+            name: "NGタイトル",
         },
     ],
 } as const satisfies {
