@@ -82,7 +82,7 @@ const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 describe(`${parseFilter.name}()`, () => {
     const createRule = (
         rule: Partial<Rule>,
-    ): { rules: Rule[]; invalid: number } => {
+    ): { rules: Rule[]; invalidCount: number } => {
         return {
             rules: [
                 {
@@ -96,7 +96,7 @@ describe(`${parseFilter.name}()`, () => {
                     ...rule,
                 },
             ],
-            invalid: 0,
+            invalidCount: 0,
         };
     };
     const createRules = (...rules: Partial<Rule>[]) => {
@@ -105,15 +105,15 @@ describe(`${parseFilter.name}()`, () => {
             .reduce(
                 (all, current) => {
                     all.rules.push(...current.rules);
-                    all.invalid += current.invalid;
+                    all.invalidCount += current.invalidCount;
                     return all;
                 },
-                { rules: [], invalid: 0 },
+                { rules: [], invalidCount: 0 },
             );
     };
     const base = createRule({});
     const strict = createRule({ isStrict: true });
-    const invalid = { rules: [], invalid: 1 };
+    const invalid = { rules: [], invalidCount: 1 };
 
     // -------------------------------------------------------------------------------------------
     // @end

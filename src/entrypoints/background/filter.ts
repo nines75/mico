@@ -33,7 +33,7 @@ export function parseFilterBase(filter: string) {
 
 export function parseFilter(filter: string): {
     rules: Rule[];
-    invalid: number;
+    invalidCount: number;
 } {
     interface Directive {
         type: "include" | "exclude" | "strict" | "disable";
@@ -130,5 +130,5 @@ export function parseFilter(filter: string): {
         });
     });
 
-    return { rules, invalid: invalidCount };
+    return { rules, invalidCount };
 }
