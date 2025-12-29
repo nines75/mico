@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { checkComment, replaceInclude, testThreads } from "@/utils/test.js";
+import {
+    checkComment,
+    replaceInclude,
+    testTabData,
+    testThreads,
+} from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -29,7 +34,10 @@ describe(WordFilter.name, () => {
             },
             options.ngUserIds ?? new Set(),
         );
-        wordFilter.filterRuleByTag(options.tags ?? []);
+        wordFilter.filterRule({
+            ...testTabData,
+            ...{ tags: options.tags ?? [] },
+        });
         wordFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return wordFilter;

@@ -17,14 +17,11 @@ describe(UserIdFilter.name, () => {
         filter: string;
         settings?: Partial<Settings>;
     }) => {
-        const userIdFilter = new UserIdFilter(
-            {
-                ...defaultSettings,
-                ...{ ngUserId: options.filter },
-                ...options.settings,
-            },
-            "sm1",
-        );
+        const userIdFilter = new UserIdFilter({
+            ...defaultSettings,
+            ...{ ngUserId: options.filter },
+            ...options.settings,
+        });
         userIdFilter.filtering(threads);
 
         return userIdFilter;

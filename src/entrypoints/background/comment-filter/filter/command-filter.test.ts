@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { checkComment, replaceInclude, testThreads } from "@/utils/test.js";
+import {
+    checkComment,
+    replaceInclude,
+    testTabData,
+    testThreads,
+} from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 
@@ -29,7 +34,10 @@ describe(CommandFilter.name, () => {
             },
             options.ngUserIds ?? new Set(),
         );
-        commandFilter.filterRuleByTag(options.tags ?? []);
+        commandFilter.filterRule({
+            ...testTabData,
+            ...{ tags: options.tags ?? [] },
+        });
         commandFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return commandFilter;
