@@ -2,7 +2,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { BaseRule, parseFilterBase } from "../../filter.js";
+import { BaseRule, parseFilterBase, Rule } from "../../filter.js";
 import { RuleFilter } from "../rule-filter.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
@@ -63,13 +63,14 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     }
 
     updateFilter(userIds: Set<string>) {
-        const newUserIds = [...userIds].map((id) => {
+        const newUserIds = [...userIds].map((id): Rule => {
             return {
                 rule: id,
                 isStrict: false,
                 isDisable: false,
                 include: [],
                 exclude: [],
+                includeVideoIds: [],
             };
         });
 

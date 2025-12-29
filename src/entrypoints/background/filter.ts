@@ -10,6 +10,7 @@ export interface Rule {
     isDisable: boolean;
     include: string[];
     exclude: string[];
+    includeVideoIds: string[];
 }
 
 export function parseFilterBase(filter: string) {
@@ -41,6 +42,8 @@ export function parseFilter(filter: string): {
     }
 
     let invalidCount = 0;
+    let isStrictAlias = false;
+    let includeVideoIdsAlias: string[] = [];
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
@@ -64,6 +67,10 @@ export function parseFilter(filter: string): {
             directives.push({ type: "exclude", params: parseParams(rule) });
             return;
         }
+        if (rule.startsWith("@v ")) {
+            includeVideoIdsAlias = parseParams(rule);
+            return;
+        }
         if (trimmedRule === "@strict") {
             directives.push({ type: "strict", params: [] });
             return;
@@ -76,10 +83,15 @@ export function parseFilter(filter: string): {
             directives.pop();
             return;
         }
+        if (trimmedRule === "@s") {
+            isStrictAlias = true;
+            return;
+        }
 
         const include: string[] = [];
         const exclude: string[] = [];
-        let isStrict = false as boolean; // no-unnecessary-conditionによる誤検知を抑制
+        const includeVideoIds: string[] = [];
+        let isStrict = false;
         let isDisable = false;
         directives.forEach(({ type, params }) => {
             switch (type) {
@@ -98,10 +110,16 @@ export function parseFilter(filter: string): {
             }
         });
 
-        const hasStrictSymbol = rule.startsWith("!");
-        const baseRule = hasStrictSymbol ? rule.slice(1) : rule;
+        if (isStrictAlias) {
+            isStrict = true;
+            isStrictAlias = false;
+        }
+        if (includeVideoIdsAlias.length > 0) {
+            includeVideoIds.push(...includeVideoIdsAlias);
+            includeVideoIdsAlias = [];
+        }
 
-        const regexResult = /^\/(.*)\/(.*)$/.exec(baseRule);
+        const regexResult = /^\/(.*)\/(.*)$/.exec(rule);
         const regexStr = regexResult?.[1];
         const flags = regexResult?.[2];
 
@@ -122,11 +140,12 @@ export function parseFilter(filter: string): {
         }
 
         rules.push({
-            rule: regex ?? baseRule,
-            isStrict: isStrict || hasStrictSymbol,
+            rule: regex ?? rule,
+            isStrict,
             isDisable,
             include,
             exclude,
+            includeVideoIds,
         });
     });
 

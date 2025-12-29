@@ -12,6 +12,7 @@ import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
 import { getRuleFilters } from "./rule-filter.js";
 import { getStrictFilters } from "./strict-filter.js";
+import { TabData } from "@/types/storage/tab.types.js";
 
 export type Filters = FilteredData["filters"];
 
@@ -34,8 +35,7 @@ export interface FilteredData {
 export function filterComment(
     threads: Thread[],
     settings: Settings,
-    tags: string[],
-    videoId: string,
+    tab: TabData,
 ): FilteredData | undefined {
     if (!settings.isCommentFilterEnabled) return;
 
@@ -77,9 +77,9 @@ export function filterComment(
     const ruleFilters = getRuleFilters(filters);
     const strictFilters = getStrictFilters(filters);
 
-    // tagルール適用
+    // 適用するルールを決定
     Object.values(ruleFilters).forEach((filter) => {
-        filter.filterRuleByTag(tags);
+        filter.filterRule(tab);
     });
 
     // -------------------------------------------------------------------------------------------
