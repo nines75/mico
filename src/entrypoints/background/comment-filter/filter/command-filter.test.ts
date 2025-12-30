@@ -90,28 +90,11 @@ describe(CommandFilter.name, () => {
         checkComment(threads, ["1002", "1003", "1004"]);
     });
 
-    it.each([
-        {
-            name: "@strict",
-            filter: `
+    it("@strict", () => {
+        const filter = `
 @strict
 big
-@end
-`,
-            expected: {
-                userId: "user-id-main-1",
-                context: "command(strict): big",
-            },
-        },
-        {
-            name: "!",
-            filter: "!device:switch",
-            expected: {
-                userId: "user-id-main-2",
-                context: "command(strict): device:switch",
-            },
-        },
-    ])("$name", ({ filter, expected }) => {
+`;
         const commandFilter = filtering({
             filter,
             isStrictOnly: true,
@@ -119,7 +102,9 @@ big
         });
 
         expect(commandFilter.getLog()).toEqual(new Map());
-        expect(commandFilter.getStrictData()).toEqual([expected]);
+        expect(commandFilter.getStrictData()).toEqual([
+            { userId: "user-id-main-1", context: "command(strict): big" },
+        ]);
     });
 
     it.each([

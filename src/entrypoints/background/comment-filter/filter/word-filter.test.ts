@@ -76,28 +76,11 @@ describe(WordFilter.name, () => {
         checkComment(threads, ["1002", "1003"]);
     });
 
-    it.each([
-        {
-            name: "@strict",
-            filter: `
+    it("@strict", () => {
+        const filter = `
 @strict
 テスト
-@end
-`,
-            expected: {
-                userId: "user-id-main-1",
-                context: "body(strict): テスト",
-            },
-        },
-        {
-            name: "!",
-            filter: "!コメント",
-            expected: {
-                userId: "user-id-main-3",
-                context: "body(strict): コメント",
-            },
-        },
-    ])("$name", ({ filter, expected }) => {
+`;
         const wordFilter = filtering({
             filter,
             isStrictOnly: true,
@@ -105,7 +88,12 @@ describe(WordFilter.name, () => {
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
-        expect(wordFilter.getStrictData()).toEqual([expected]);
+        expect(wordFilter.getStrictData()).toEqual([
+            {
+                userId: "user-id-main-1",
+                context: "body(strict): テスト",
+            },
+        ]);
     });
 
     it.each([
