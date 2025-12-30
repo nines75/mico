@@ -98,8 +98,8 @@ export function parseNgUserId(settings: Settings, hasSpecific = true) {
 export function getBasicNgUserIdSet(settings: Settings) {
     return new Set(
         parseNgUserId(settings, false)
-            .filter(({ rule }) => isString(rule))
-            .map(({ rule }) => rule as string),
+            .map(({ rule }) => rule)
+            .filter((rule) => isString(rule)),
     );
 }
 
