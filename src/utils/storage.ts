@@ -6,7 +6,10 @@ import {
 } from "deepmerge-ts";
 import { defaultSettings } from "./config.js";
 import { storage } from "#imports";
-import { migrationSettingsToV2 } from "@/types/storage/settings-legacy.types.js";
+import {
+    migrateSettingsToV3,
+    migrateSettingsToV2,
+} from "@/types/storage/settings-legacy.types.js";
 
 export const storageArea = "local";
 
@@ -42,10 +45,11 @@ export async function getAllData() {
 const settingsStorage = storage.defineItem<Partial<Settings>>(
     `${storageArea}:settings`,
     {
-        version: 2,
+        version: 3,
         // TODO: しばらくしたら消す
         migrations: {
-            2: migrationSettingsToV2,
+            2: migrateSettingsToV2,
+            3: migrateSettingsToV3,
         },
     },
 );

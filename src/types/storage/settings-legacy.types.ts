@@ -138,7 +138,7 @@ const keyMapToV2 = [
     ["isOpenVideoLog", "isLogOpen"],
 ] satisfies [keyof SettingsV1, keyof Settings][];
 
-export function migrationSettingsToV2(v1: Partial<SettingsV1>) {
+export function migrateSettingsToV2(v1: Partial<SettingsV1>) {
     const v2: Record<string, unknown> = {};
     keyMapToV2.forEach(([v1Key, v2Key]) => {
         const value = v1[v1Key];
@@ -159,4 +159,48 @@ export function migrationSettingsToV2(v1: Partial<SettingsV1>) {
     }
 
     return customMerge(v1 as unknown, v2);
+}
+
+export function migrateSettingsToV3(v2: Partial<Settings>) {
+    const migrateFilter = (
+        filter: string,
+        lineEditor: (line: string) => string,
+    ) => {
+        return filter
+            .split("\n")
+            .map((line) => {
+                if (line.startsWith("#")) return line;
+                return lineEditor(line);
+            })
+            .join("\n");
+    };
+    const migrateVideoSpecificRule = (line: string) => {
+        const result = /^(.+)@(.+)$/.exec(line);
+        const videoId = result?.[1];
+        const rule = result?.[2];
+
+        if (videoId !== undefined && rule !== undefined) {
+            return `@v ${videoId}\n${rule}`;
+        } else {
+            return line;
+        }
+    };
+    const migrateStrictAlias = (line: string) => {
+        const result = /^!(.+)$/.exec(line);
+        const rule = result?.[1];
+
+        if (rule !== undefined) {
+            return `@s\n${rule}`;
+        } else {
+            return line;
+        }
+    };
+
+    const v3 = {
+        ngUserId: migrateFilter(v2.ngUserId ?? "", migrateVideoSpecificRule),
+        ngCommand: migrateFilter(v2.ngCommand ?? "", migrateStrictAlias),
+        ngWord: migrateFilter(v2.ngWord ?? "", migrateStrictAlias),
+    } satisfies Partial<Settings>;
+
+    return customMerge(v2 as unknown, v3);
 }
