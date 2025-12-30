@@ -3,6 +3,7 @@ import {
     CommentMap,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
+import { TabData } from "@/types/storage/tab.types.js";
 import { expect } from "vitest";
 
 export function createComments(
@@ -171,6 +172,17 @@ export const testLog = {
     },
     processingTime: { filtering: 1, saveLog: 5 },
 } as const satisfies CommentFilterLog;
+
+export const testTabData = {
+    series: {
+        hasNext: false,
+    },
+    videoId: "sm1",
+    title: "title",
+    userId: "user-id",
+    userName: "user-name",
+    tags: [],
+} as const satisfies TabData;
 
 export function checkComment(
     threads: Thread[],

@@ -40,8 +40,7 @@ export default function commentRequest(
         const filteredData = filterComment(
             commentApi.data.threads,
             settings,
-            tabData.tags,
-            tabData.videoId,
+            tabData,
         );
         if (filteredData === undefined) return true;
 

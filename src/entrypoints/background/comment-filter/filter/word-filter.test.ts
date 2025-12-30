@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { checkComment, replaceInclude, testThreads } from "@/utils/test.js";
+import {
+    checkComment,
+    replaceInclude,
+    testTabData,
+    testThreads,
+} from "@/utils/test.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
 import { Settings } from "@/types/storage/settings.types.js";
@@ -29,7 +34,10 @@ describe(WordFilter.name, () => {
             },
             options.ngUserIds ?? new Set(),
         );
-        wordFilter.filterRuleByTag(options.tags ?? []);
+        wordFilter.filterRule({
+            ...testTabData,
+            ...{ tags: options.tags ?? [] },
+        });
         wordFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return wordFilter;
@@ -68,28 +76,11 @@ describe(WordFilter.name, () => {
         checkComment(threads, ["1002", "1003"]);
     });
 
-    it.each([
-        {
-            name: "@strict",
-            filter: `
+    it("@strict", () => {
+        const filter = `
 @strict
 テスト
-@end
-`,
-            expected: {
-                userId: "user-id-main-1",
-                context: "body(strict): テスト",
-            },
-        },
-        {
-            name: "!",
-            filter: "!コメント",
-            expected: {
-                userId: "user-id-main-3",
-                context: "body(strict): コメント",
-            },
-        },
-    ])("$name", ({ filter, expected }) => {
+`;
         const wordFilter = filtering({
             filter,
             isStrictOnly: true,
@@ -97,7 +88,12 @@ describe(WordFilter.name, () => {
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
-        expect(wordFilter.getStrictData()).toEqual([expected]);
+        expect(wordFilter.getStrictData()).toEqual([
+            {
+                userId: "user-id-main-1",
+                context: "body(strict): テスト",
+            },
+        ]);
     });
 
     it.each([

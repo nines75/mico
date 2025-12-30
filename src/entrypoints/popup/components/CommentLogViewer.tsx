@@ -1,4 +1,4 @@
-import { getNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
+import { getBasicNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { NiconicoComment } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
@@ -346,7 +346,7 @@ async function undoStrict(filtering: CommentFiltering | undefined) {
         type: "remove-ng-user-id",
         data: {
             userIds,
-            isRemoveSpecific: false, // strictルールによってNG登録されたユーザーIDだけを削除したいので、動画限定ルールを除外
+            isRemoveSpecific: false, // strictルールによってNG登録されたユーザーIDだけを削除する
         },
     });
 }
@@ -366,7 +366,7 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     // 最新の設定を取得
     const settings = useStorageStore.getState().settings;
 
-    const ngUserIds = getNgUserIdSet(settings, ""); // 動画限定ルールではないNGユーザーIDを取得
+    const ngUserIds = getBasicNgUserIdSet(settings);
     const targetUserIds = new Set(
         (Array.isArray(comments) ? comments : [comments])
             .filter((comment) => !ngUserIds.has(comment.userId))

@@ -2,7 +2,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { Thread } from "@/types/api/comment.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import { CommonLog } from "@/types/storage/log.types.js";
-import { BaseRule, parseFilterBase } from "../../filter.js";
+import { parseFilter, Rule } from "../../filter.js";
 import { RuleFilter } from "../rule-filter.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
@@ -63,13 +63,14 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     }
 
     updateFilter(userIds: Set<string>) {
-        const newUserIds = [...userIds].map((id) => {
+        const newUserIds = [...userIds].map((id): Rule => {
             return {
                 rule: id,
                 isStrict: false,
                 isDisable: false,
                 include: [],
                 exclude: [],
+                includeVideoIds: [],
             };
         });
 
@@ -78,28 +79,27 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     }
 }
 
-export function createUserIdFilter(settings: Settings, videoId?: string) {
-    const res: BaseRule[] = [];
+export function parseNgUserId(settings: Settings, hasSpecific = true) {
+    return parseFilter(settings.ngUserId, true).rules.filter((rule) => {
+        if (hasSpecific) return true;
 
-    parseFilterBase(settings.ngUserId).forEach((data) => {
-        const rule = data.rule;
-        const index = rule.indexOf("@");
-
-        if (index === -1) {
-            res.push(data);
-        } else {
-            if (videoId === undefined || videoId === rule.slice(0, index)) {
-                res.push({ ...data, ...{ rule: rule.slice(index + 1) } });
-            }
-        }
+        // コンテキストに応じて無効化されないルールのみを返す
+        return (
+            rule.include.length === 0 &&
+            rule.exclude.length === 0 &&
+            rule.includeVideoIds.length === 0
+        );
     });
-
-    return res;
 }
 
-export function getNgUserIdSet(settings: Settings, videoId?: string) {
+/**
+ * @returns 文字列かつコンテキストに応じて無効化されないNGユーザーIDのSet
+ */
+export function getBasicNgUserIdSet(settings: Settings) {
     return new Set(
-        createUserIdFilter(settings, videoId).map((data) => data.rule),
+        parseNgUserId(settings, false)
+            .map(({ rule }) => rule)
+            .filter((rule) => isString(rule)),
     );
 }
 

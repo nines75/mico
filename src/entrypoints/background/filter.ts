@@ -1,21 +1,18 @@
-export interface BaseRule {
-    rule: string;
-    /** 元のフィルターを改行区切りで配列にしたときのインデックス */
-    index: number;
-}
-
 export interface Rule {
+    /** 元のフィルターを改行区切りで配列にしたときのインデックス */
+    index?: number;
     rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
     include: string[];
     exclude: string[];
+    includeVideoIds: string[];
 }
 
 export function parseFilterBase(filter: string) {
     return filter
         .split("\n")
-        .map((str, index): BaseRule => {
+        .map((str, index) => {
             return {
                 // どんな文字列に対しても必ずマッチする
                 rule: /^(.*?)(?:\s*(?<!\\)#.*)?$/.exec(str)?.[1] as string,
@@ -23,7 +20,7 @@ export function parseFilterBase(filter: string) {
             };
         })
         .filter((data) => data.rule !== "")
-        .map((data): BaseRule => {
+        .map((data) => {
             return {
                 rule: data.rule.replace(/\\#/g, "#"), // "\#"という文字列をエスケープ
                 index: data.index,
@@ -31,7 +28,10 @@ export function parseFilterBase(filter: string) {
         });
 }
 
-export function parseFilter(filter: string): {
+export function parseFilter(
+    filter: string,
+    hasIndex = false,
+): {
     rules: Rule[];
     invalidCount: number;
 } {
@@ -41,6 +41,8 @@ export function parseFilter(filter: string): {
     }
 
     let invalidCount = 0;
+    let isStrictAlias = false;
+    let includeVideoIdsAlias: string[] = [];
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
@@ -64,6 +66,10 @@ export function parseFilter(filter: string): {
             directives.push({ type: "exclude", params: parseParams(rule) });
             return;
         }
+        if (rule.startsWith("@v ")) {
+            includeVideoIdsAlias = parseParams(rule);
+            return;
+        }
         if (trimmedRule === "@strict") {
             directives.push({ type: "strict", params: [] });
             return;
@@ -76,10 +82,15 @@ export function parseFilter(filter: string): {
             directives.pop();
             return;
         }
+        if (trimmedRule === "@s") {
+            isStrictAlias = true;
+            return;
+        }
 
         const include: string[] = [];
         const exclude: string[] = [];
-        let isStrict = false as boolean; // no-unnecessary-conditionによる誤検知を抑制
+        const includeVideoIds: string[] = [];
+        let isStrict = false;
         let isDisable = false;
         directives.forEach(({ type, params }) => {
             switch (type) {
@@ -98,10 +109,16 @@ export function parseFilter(filter: string): {
             }
         });
 
-        const hasStrictSymbol = rule.startsWith("!");
-        const baseRule = hasStrictSymbol ? rule.slice(1) : rule;
+        if (isStrictAlias) {
+            isStrict = true;
+            isStrictAlias = false;
+        }
+        if (includeVideoIdsAlias.length > 0) {
+            includeVideoIds.push(...includeVideoIdsAlias);
+            includeVideoIdsAlias = [];
+        }
 
-        const regexResult = /^\/(.*)\/(.*)$/.exec(baseRule);
+        const regexResult = /^\/(.*)\/(.*)$/.exec(rule);
         const regexStr = regexResult?.[1];
         const flags = regexResult?.[2];
 
@@ -122,11 +139,15 @@ export function parseFilter(filter: string): {
         }
 
         rules.push({
-            rule: regex ?? baseRule,
-            isStrict: isStrict || hasStrictSymbol,
-            isDisable,
-            include,
-            exclude,
+            ...{
+                rule: regex ?? rule,
+                isStrict,
+                isDisable,
+                include,
+                exclude,
+                includeVideoIds,
+            },
+            ...(hasIndex ? { index: data.index } : {}),
         });
     });
 

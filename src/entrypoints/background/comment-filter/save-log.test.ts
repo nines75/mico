@@ -1,6 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { testLog, testThreads } from "@/utils/test.js";
+import { testLog, testTabData, testThreads } from "@/utils/test.js";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { filterComment, FilteredData } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
@@ -34,8 +34,7 @@ describe(`${saveLog.name}()`, () => {
         const filteredData = filterComment(
             threads,
             settings,
-            [],
-            "sm1",
+            testTabData,
         ) as FilteredData;
 
         // 処理時間のログは不定なのでそれ以外を確認

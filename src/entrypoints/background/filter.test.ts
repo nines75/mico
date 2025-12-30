@@ -92,6 +92,7 @@ describe(`${parseFilter.name}()`, () => {
                         isDisable: false,
                         include: [],
                         exclude: [],
+                        includeVideoIds: [],
                     },
                     ...rule,
                 },
@@ -166,19 +167,44 @@ rule
 `,
         },
         {
-            name: "!",
-            filter: "!rule",
+            name: "@s",
+            filter: `
+@s
+rule
+rule
+`,
+            expected: createRules({ isStrict: true }, {}),
         },
         {
-            name: "@strictと!が重複",
+            name: "@sの次の行にルールがない",
+            filter: `
+@s
+# comment
+@end
+rule
+`,
+        },
+        {
+            name: "@strictと@sが重複",
             filter: `
 @strict
-!rule
+@s
+rule
 @end
 `,
         },
-    ])("$name", ({ filter }) => {
-        expect(parseFilter(filter)).toEqual(strict);
+        {
+            name: "@sが連続",
+            filter: `
+@s
+@s
+rule
+rule
+`,
+            expected: createRules({ isStrict: true }, {}),
+        },
+    ])("$name", ({ filter, expected }) => {
+        expect(parseFilter(filter)).toEqual(expected ?? strict);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -232,6 +258,53 @@ rule
             expected: createRules({ rule: "@includes tag0 tag1" }, {}),
         },
     ])("@include($name)", ({ filter, expected }) => {
+        expect(parseFilter(filter)).toEqual(expected);
+    });
+
+    // -------------------------------------------------------------------------------------------
+    // @v
+    // -------------------------------------------------------------------------------------------
+
+    it.each([
+        {
+            name: "1つのタグ",
+            filter: `
+@v sm1
+rule
+rule
+`,
+            expected: createRules({ includeVideoIds: ["sm1"] }, {}),
+        },
+        {
+            name: "複数のタグ",
+            filter: `
+@v sm1 sm2
+rule
+rule
+`,
+            expected: createRules({ includeVideoIds: ["sm1", "sm2"] }, {}),
+        },
+        {
+            name: "次の行にルールがない",
+            filter: `
+@v sm1
+# comment
+@end
+rule
+`,
+            expected: createRules({ includeVideoIds: ["sm1"] }),
+        },
+        {
+            name: "ディレクティブが連続",
+            filter: `
+@v sm1
+@v sm1
+rule
+rule
+`,
+            expected: createRules({ includeVideoIds: ["sm1"] }, {}),
+        },
+    ])("@v($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
     });
 

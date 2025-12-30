@@ -12,8 +12,8 @@ import {
     storageArea,
     loadSettings,
 } from "./storage.js";
-import { createUserIdFilter } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import { parseFilterBase } from "@/entrypoints/background/filter.js";
+import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
+import { parseFilter } from "@/entrypoints/background/filter.js";
 import { messages } from "./config.js";
 import { replace, sendNotification } from "./util.js";
 import { clearDb } from "./db.js";
@@ -79,23 +79,39 @@ export async function removeNgUserId(
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            createUserIdFilter(settings, isRemoveSpecific ? undefined : "")
-                .filter((data) => userIds.has(data.rule))
-                .map((data) => data.index),
+            parseNgUserId(settings, isRemoveSpecific)
+                .filter(({ rule }) => userIds.has(rule.toString()))
+                .map(({ index }) => index as number),
         );
         const lines = settings.ngUserId.split("\n");
 
-        // 前がコメントかつ後ろが空行の場合は、それらを自動追加された行の一部とみなして削除する
+        // 自動追加された行の削除判定
         toRemoveLines.forEach((index) => {
-            const before = index - 1;
+            const before1 = index - 1;
+            const before2 = index - 2;
             const after = index + 1;
 
+            // コンテキスト
             if (
-                lines[before]?.startsWith("# ") === true &&
+                lines[before1]?.startsWith("# ") === true &&
                 lines[after] === ""
             ) {
-                toRemoveLines.add(before);
+                toRemoveLines.add(before1);
                 toRemoveLines.add(after);
+            }
+            // コンテキスト + @v
+            else if (
+                lines[before2]?.startsWith("# ") === true &&
+                lines[before1]?.startsWith("@v ") === true &&
+                lines[after] === ""
+            ) {
+                toRemoveLines.add(before2);
+                toRemoveLines.add(before1);
+                toRemoveLines.add(after);
+            }
+            // @v
+            else if (lines[before1]?.startsWith("@v ") === true) {
+                toRemoveLines.add(before1);
             }
         });
 
@@ -126,9 +142,9 @@ export async function removeNgId(id: string) {
         const settings = await loadSettings();
 
         const toRemoveLines = new Set(
-            parseFilterBase(settings.ngId)
-                .filter((data) => id === data.rule)
-                .map((data) => data.index),
+            parseFilter(settings.ngId, true)
+                .rules.filter((data) => id === data.rule)
+                .map((data) => data.index as number),
         );
         const value = settings.ngId
             .split("\n")

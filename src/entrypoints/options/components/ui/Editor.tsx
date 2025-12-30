@@ -44,11 +44,11 @@ const generalHighlights = createHighlights([
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
 ]);
 const ngUserIdHighlights = createHighlights([
-    { regex: /^(@include|@exclude)/g, style: "color: lime" },
+    { regex: /^(@include|@exclude|@v)/g, style: "color: lime" },
     { regex: /^@end/g, style: "color: cyan" },
 ]);
 const ngWordHighlights = [
-    ...createHighlights([{ regex: /^(@strict|!)/g, style: "color: coral" }]),
+    ...createHighlights([{ regex: /^(@strict|@s)/g, style: "color: coral" }]),
     ...ngUserIdHighlights,
 ];
 const ngCommandHighlights = [
@@ -69,10 +69,18 @@ const ngUserIdCompletions: Completion[] = [
         label: "@end",
         type: "keyword",
     },
+    {
+        label: "@v",
+        type: "keyword",
+    },
 ];
 const ngWordCompletions: Completion[] = [
     {
         label: "@strict",
+        type: "keyword",
+    },
+    {
+        label: "@s",
         type: "keyword",
     },
     ...ngUserIdCompletions,

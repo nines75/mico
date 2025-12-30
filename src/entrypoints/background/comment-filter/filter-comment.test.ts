@@ -1,6 +1,6 @@
 import { Thread } from "@/types/api/comment.types.js";
 import { Settings } from "@/types/storage/settings.types.js";
-import { checkComment, testThreads } from "@/utils/test.js";
+import { checkComment, testTabData, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
@@ -28,7 +28,7 @@ describe(`${filterComment.name}()`, () => {
     };
 
     it("default", () => {
-        const res = filterComment(threads, createSettings({}), [], "sm1");
+        const res = filterComment(threads, createSettings({}), testTabData);
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
         expect(res?.filters.commentAssistFilter.getLog()).toEqual(new Map());
@@ -49,14 +49,16 @@ describe(`${filterComment.name}()`, () => {
             ...defaultSettings,
             ngCommand: `
 big
-!big
+@s
+big
 device:Switch`,
             ngWord: `
 コメント
-!コメント
+@s
+コメント
 `,
         } satisfies Partial<Settings>;
-        const res = filterComment(threads, settings, [], "sm1");
+        const res = filterComment(threads, settings, testTabData);
 
         checkComment(threads, ["1002", "1003", "1004"]);
         expect(res?.strictUserIds).toEqual(
@@ -77,8 +79,7 @@ device:Switch`,
         filterComment(
             threads,
             createSettings({ isCommentFilterEnabled: false }),
-            [],
-            "sm1",
+            testTabData,
         );
 
         checkComment(threads, []);
@@ -91,8 +92,7 @@ device:Switch`,
         filterComment(
             threads,
             createSettings({ isMyCommentIgnored: true }),
-            [],
-            "sm1",
+            testTabData,
         );
 
         checkComment(threads, []);
@@ -102,8 +102,7 @@ device:Switch`,
         filterComment(
             threads,
             createSettings({ isIgnoreByNicoru: true }),
-            [],
-            "sm1",
+            testTabData,
         );
 
         checkComment(threads, ["1000", "1001", "1002"]);
