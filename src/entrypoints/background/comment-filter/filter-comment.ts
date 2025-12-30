@@ -3,7 +3,7 @@ import { Settings } from "@/types/storage/settings.types.js";
 import { WordFilter } from "./filter/word-filter.js";
 import {
     formatNgUserId,
-    getNgUserIdSet,
+    getBasicNgUserIdSet,
     UserIdFilter,
 } from "./filter/user-id-filter.js";
 import { ScoreFilter } from "./filter/score-filter.js";
@@ -55,8 +55,8 @@ export function filterComment(
     // フィルタリングの前処理
     // -------------------------------------------------------------------------------------------
 
-    // strictルールによってNG登録されるユーザーID(動画限定ルールでないもの)が、既にフィルターに存在するか確認するために必要
-    const ngUserIds = getNgUserIdSet(settings, "");
+    // strictルールによってNG登録されるユーザーIDが既にフィルターに存在するか確認するために使う
+    const ngUserIds = getBasicNgUserIdSet(settings);
 
     // フィルター初期化
     const userIdFilter = new UserIdFilter(settings);

@@ -1,10 +1,6 @@
-export interface BaseRule {
-    rule: string;
-    /** 元のフィルターを改行区切りで配列にしたときのインデックス */
-    index: number;
-}
-
 export interface Rule {
+    /** 元のフィルターを改行区切りで配列にしたときのインデックス */
+    index?: number;
     rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
@@ -16,7 +12,7 @@ export interface Rule {
 export function parseFilterBase(filter: string) {
     return filter
         .split("\n")
-        .map((str, index): BaseRule => {
+        .map((str, index) => {
             return {
                 // どんな文字列に対しても必ずマッチする
                 rule: /^(.*?)(?:\s*(?<!\\)#.*)?$/.exec(str)?.[1] as string,
@@ -24,7 +20,7 @@ export function parseFilterBase(filter: string) {
             };
         })
         .filter((data) => data.rule !== "")
-        .map((data): BaseRule => {
+        .map((data) => {
             return {
                 rule: data.rule.replace(/\\#/g, "#"), // "\#"という文字列をエスケープ
                 index: data.index,
@@ -32,7 +28,10 @@ export function parseFilterBase(filter: string) {
         });
 }
 
-export function parseFilter(filter: string): {
+export function parseFilter(
+    filter: string,
+    hasIndex = false,
+): {
     rules: Rule[];
     invalidCount: number;
 } {
@@ -140,12 +139,15 @@ export function parseFilter(filter: string): {
         }
 
         rules.push({
-            rule: regex ?? rule,
-            isStrict,
-            isDisable,
-            include,
-            exclude,
-            includeVideoIds,
+            ...{
+                rule: regex ?? rule,
+                isStrict,
+                isDisable,
+                include,
+                exclude,
+                includeVideoIds,
+            },
+            ...(hasIndex ? { index: data.index } : {}),
         });
     });
 

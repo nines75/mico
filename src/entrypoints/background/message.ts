@@ -251,7 +251,7 @@ async function addNgUserIdFromDropdown(
     await addNgUserId(
         new Set([
             formatNgUserId(
-                data.specific ? `${videoId}@${userId}` : userId,
+                data.specific ? `@v ${videoId}\n${userId}` : userId,
                 `body(dropdown): ${data.body}`,
                 settings,
             ),
