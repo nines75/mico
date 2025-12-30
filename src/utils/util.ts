@@ -1,6 +1,6 @@
-import { Browser } from "#imports";
+import type { Browser } from "#imports";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
-import { CommonLog, LogId } from "../types/storage/log.types.js";
+import type { CommonLog, LogId } from "../types/storage/log.types.js";
 import { messages } from "./config.js";
 import delay from "delay";
 

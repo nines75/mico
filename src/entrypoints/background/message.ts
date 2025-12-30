@@ -9,10 +9,10 @@ import {
     tryMountLogId,
     tryWithPermission,
 } from "@/utils/util.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import {
     setSettings,
     removeAllData,
@@ -23,9 +23,9 @@ import {
 } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "../content/message.js";
 import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
-import { TabData } from "@/types/storage/tab.types.js";
-import { LogData } from "@/types/storage/log.types.js";
-import { DropdownComment } from "../content/dropdown.js";
+import type { TabData } from "@/types/storage/tab.types.js";
+import type { LogData } from "@/types/storage/log.types.js";
+import type { DropdownComment } from "../content/dropdown.js";
 import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
 
 type ExtractData<

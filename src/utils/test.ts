@@ -1,9 +1,9 @@
-import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import {
+import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+import type {
     CommentMap,
     CommentFilterLog,
 } from "@/types/storage/log-comment.types.js";
-import { TabData } from "@/types/storage/tab.types.js";
+import type { TabData } from "@/types/storage/tab.types.js";
 import { expect } from "vitest";
 
 export function createComments(

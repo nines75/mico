@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import { Settings } from "../types/storage/settings.types.js";
+import type { Settings } from "../types/storage/settings.types.js";
 import { defaultSettings } from "./config.js";
 import { loadSettings } from "./storage.js";
-import { LogData } from "../types/storage/log.types.js";
+import type { LogData } from "../types/storage/log.types.js";
 import {
     catchAsync,
     getLogId,

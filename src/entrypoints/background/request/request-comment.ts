@@ -6,9 +6,10 @@ import { isWatchPage, replace, sendNotification } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId } from "@/utils/storage-write.js";
 import { sendMessageToContent } from "@/entrypoints/content/message.js";
-import { CommentApi, commentApiSchema } from "@/types/api/comment.types.js";
+import type { CommentApi } from "@/types/api/comment.types.js";
+import { commentApiSchema } from "@/types/api/comment.types.js";
 import { cleanupDb, getTabData, setTabData } from "@/utils/db.js";
-import { TabData } from "@/types/storage/tab.types.js";
+import type { TabData } from "@/types/storage/tab.types.js";
 import { safeParseJson } from "./safe-parse-json.js";
 
 export default function commentRequest(

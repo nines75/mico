@@ -1,8 +1,9 @@
-import { Settings } from "@/types/storage/settings.types.js";
-import { Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
-import { CommonLog } from "@/types/storage/log.types.js";
-import { parseFilter, Rule } from "../../filter.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
+import type { Rule } from "../../filter.js";
+import { parseFilter } from "../../filter.js";
 import { RuleFilter } from "../rule-filter.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {

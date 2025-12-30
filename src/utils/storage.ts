@@ -1,4 +1,4 @@
-import { Settings } from "../types/storage/settings.types.js";
+import type { Settings } from "../types/storage/settings.types.js";
 import {
     deepmergeCustom,
     type DeepMergeLeafURI,

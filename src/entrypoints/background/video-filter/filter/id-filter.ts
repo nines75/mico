@@ -1,8 +1,8 @@
 import { RuleFilter, sortVideoId } from "../filter.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
-import { IdLog } from "@/types/storage/log-video.types.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { IdLog } from "@/types/storage/log-video.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export class IdFilter extends RuleFilter<IdLog> {
     private userIds: Set<string>;

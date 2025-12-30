@@ -1,6 +1,6 @@
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { catchAsync } from "@/utils/util.js";
-import { z } from "@/utils/zod.js";
+import type { z } from "@/utils/zod.js";
 import { safeParseJson } from "./safe-parse-json.js";
 
 export function filterResponse(

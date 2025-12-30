@@ -1,5 +1,6 @@
-import { ContentScriptContext, createIframeUi } from "#imports";
-import { LogId } from "@/types/storage/log.types.js";
+import type { ContentScriptContext } from "#imports";
+import { createIframeUi } from "#imports";
+import type { LogId } from "@/types/storage/log.types.js";
 import { sendMessageToBackground } from "../background/message.js";
 import { loadSettings } from "@/utils/storage.js";
 import { messages } from "@/utils/config.js";

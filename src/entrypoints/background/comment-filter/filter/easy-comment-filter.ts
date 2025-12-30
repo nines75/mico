@@ -1,6 +1,6 @@
-import { Thread } from "@/types/api/comment.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
 import { Filter } from "../filter.js";
-import { CommonLog } from "@/types/storage/log.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
 import { pushCommonLog } from "@/utils/util.js";
 
 export class EasyCommentFilter extends Filter<CommonLog> {

@@ -1,14 +1,14 @@
-import { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
-import {
+import type { CommentLogViewerProps } from "@/entrypoints/popup/components/CommentLogViewer.js";
+import type {
     FilterTab,
     Settings,
     SettingsTab,
 } from "../types/storage/settings.types.js";
-import { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
-import { CommentFilterAreaProps } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
-import { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
-import { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
-import { CheckboxGroups } from "@/entrypoints/options/components/ui/CheckboxSection.js";
+import type { CheckboxProps } from "@/entrypoints/options/components/ui/Checkbox.js";
+import type { CommentFilterAreaProps } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
+import type { VideoFilterAreaProps } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+import type { VideoLogViewerProps } from "@/entrypoints/popup/components/VideoLogViewer.js";
+import type { CheckboxGroups } from "@/entrypoints/options/components/ui/CheckboxSection.js";
 
 export const defaultSettings: Settings = {
     // -------------------------------------------------------------------------------------------

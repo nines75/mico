@@ -1,4 +1,5 @@
-import Checkbox, { CheckboxProps } from "./Checkbox.js";
+import type { CheckboxProps } from "./Checkbox.js";
+import Checkbox from "./Checkbox.js";
 import H2 from "./H2.js";
 
 export type CheckboxGroups = {

@@ -1,6 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilterBase, parseFilter, Rule } from "./filter.js";
+import type { Rule } from "./filter.js";
+import { parseFilterBase, parseFilter } from "./filter.js";
 
 describe(`${parseFilterBase.name}()`, () => {
     it.each([

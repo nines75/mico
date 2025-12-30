@@ -1,4 +1,4 @@
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { sendMessageToBackground } from "../background/message.js";
 
 export async function renderOldSearch() {

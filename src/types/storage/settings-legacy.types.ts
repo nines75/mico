@@ -1,6 +1,6 @@
-import { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
-import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
-import {
+import type { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
+import type { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+import type {
     FilterTab,
     NicoruColor,
     Settings,

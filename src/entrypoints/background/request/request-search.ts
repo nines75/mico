@@ -1,9 +1,10 @@
 import { loadSettings } from "@/utils/storage.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { SearchApi, searchApiSchema } from "@/types/api/search.types.js";
+import type { SearchApi } from "@/types/api/search.types.js";
+import { searchApiSchema } from "@/types/api/search.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
 

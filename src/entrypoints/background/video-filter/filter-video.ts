@@ -1,8 +1,8 @@
 import { IdFilter } from "./filter/id-filter.js";
 import { UserNameFilter } from "./filter/user-name-filter.js";
 import { TitleFilter } from "./filter/title-filter.js";
-import { Settings } from "@/types/storage/settings.types.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { PaidFilter } from "./filter/paid-filter.js";
 import { ViewsFilter } from "./filter/views-filter.js";
 

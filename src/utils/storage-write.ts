@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { storage } from "#imports";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import PQueue from "p-queue";
 import {
     getSettingsData,

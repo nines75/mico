@@ -10,7 +10,7 @@ import {
     replace,
     sumNumbers,
 } from "./util.js";
-import { CommonLog } from "@/types/storage/log.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
 
 describe("util", () => {
     beforeEach(() => {

@@ -1,5 +1,5 @@
-import { Thread } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { WordFilter } from "./filter/word-filter.js";
 import {
     formatNgUserId,
@@ -12,7 +12,7 @@ import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
 import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
 import { getRuleFilters } from "./rule-filter.js";
 import { getStrictFilters } from "./strict-filter.js";
-import { TabData } from "@/types/storage/tab.types.js";
+import type { TabData } from "@/types/storage/tab.types.js";
 
 export type Filters = FilteredData["filters"];
 

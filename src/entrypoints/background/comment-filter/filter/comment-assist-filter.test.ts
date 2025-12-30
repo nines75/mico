@@ -1,11 +1,11 @@
-import { Thread } from "@/types/api/comment.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
 import { checkComment } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { CommentAssistFilter } from "./comment-assist-filter.js";
 import { createComments } from "@/utils/test.js";
-import { CommonLog } from "@/types/storage/log.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
 
 // コメントアシストは既存のコメントデータでテストできないので別で用意
 export const commentAssistThreads = [

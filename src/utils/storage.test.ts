@@ -2,7 +2,7 @@ import { fakeBrowser } from "#imports";
 import { defaultSettings } from "@/utils/config.js";
 import { customMerge, getSettingsData, loadSettings } from "@/utils/storage.js";
 import { describe, expect, it, beforeEach } from "vitest";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { setSettings } from "./storage-write.js";
 
 describe("storage", () => {

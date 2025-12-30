@@ -1,7 +1,7 @@
 import { mountToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
 import { createContentMessageHandler } from "./message.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import {

@@ -1,6 +1,6 @@
 import { useStorageStore } from "@/utils/store.js";
 import { Info } from "./Info.js";
-import { FilterTab } from "@/types/storage/settings.types.js";
+import type { FilterTab } from "@/types/storage/settings.types.js";
 
 interface CountProps {
     selectedTab: FilterTab;
