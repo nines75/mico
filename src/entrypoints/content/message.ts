@@ -1,14 +1,14 @@
 import type { ContentScriptContext } from "#imports";
 import { createIframeUi } from "#imports";
 import type { LogId } from "@/types/storage/log.types.js";
-import { sendMessageToBackground } from "../background/message.js";
 import { loadSettings } from "@/utils/storage.js";
 import { messages } from "@/utils/config.js";
+import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
 
 type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
     Extract<ContentMessage, { type: T }>["data"];
 
-type ContentMessage =
+export type ContentMessage =
     | {
           type: "reload";
       }
@@ -34,12 +34,6 @@ type ContentMessage =
     | {
           type: "get-log-id";
       };
-export async function sendMessageToContent(
-    tabId: number,
-    message: ContentMessage,
-): Promise<unknown> {
-    return await browser.tabs.sendMessage(tabId, message);
-}
 
 export function createContentMessageHandler(ctx: ContentScriptContext) {
     return async (

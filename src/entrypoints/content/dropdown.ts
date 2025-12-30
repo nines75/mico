@@ -1,5 +1,5 @@
 import { buttons, messages } from "@/utils/config.js";
-import { sendMessageToBackground } from "../background/message.js";
+import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
 import { catchAsync, replace } from "@/utils/util.js";
 
 interface DropdownContent {

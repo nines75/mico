@@ -11,7 +11,7 @@ import {
     isSearchPage,
     isWatchPage,
 } from "./util.js";
-import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import { sendMessageToBackground } from "./send-message-to-background.js";
 
 interface StorageState {
     settings: Settings;

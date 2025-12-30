@@ -11,9 +11,9 @@ import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
 import type { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
-import { sendMessageToBackground } from "../background/message.js";
 import clsx from "clsx";
 import { catchAsync, replace } from "@/utils/util.js";
+import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);

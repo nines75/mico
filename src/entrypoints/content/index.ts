@@ -11,7 +11,7 @@ import {
     isWatchPage,
 } from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
-import { sendMessageToBackground } from "../background/message.js";
+import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;
