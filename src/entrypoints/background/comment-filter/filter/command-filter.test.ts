@@ -165,6 +165,24 @@ big
         checkComment(threads, ["1002", "1004"]);
     });
 
+    // https://github.com/nines75/mico/issues/61
+    it("strictルール適用時の副作用", () => {
+        const filter = `
+@s
+big
+
+device:switch
+
+@disable
+184
+`;
+        const commandFilter = filtering({ filter, isStrictOnly: true });
+
+        expect(commandFilter.getLog()).toEqual(new Map());
+        expect(commandFilter.getDisableCount()).toEqual(0);
+        checkComment(threads, []);
+    });
+
     it(`${CommandFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 device:switch

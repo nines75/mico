@@ -70,13 +70,6 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                     if (isString(rule) ? rule !== command : !rule.test(command))
                         continue;
 
-                    if (isDisable) {
-                        if (this.hasAll) break;
-                        disableCommands.add(command);
-
-                        continue;
-                    }
-
                     if (isStrictOnly) {
                         if (!this.ngUserIds.has(userId)) {
                             this.strictData.push({
@@ -88,6 +81,13 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                         return true;
                     }
 
+                    if (isDisable) {
+                        if (this.hasAll) break;
+                        disableCommands.add(command);
+
+                        continue;
+                    }
+
                     pushCommonLog(this.log, this.createKey(rule), id);
                     this.filteredComments.set(id, comment);
                     this.blockedCount++;
@@ -95,6 +95,8 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                     return false;
                 }
             }
+
+            if (isStrictOnly) return true;
 
             // forループ内で配列を変更するのは危険なので後から無効化する
             if (this.hasAll) {

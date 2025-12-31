@@ -86,6 +86,20 @@ describe(WordFilter.name, () => {
         ]);
     });
 
+    // https://github.com/nines75/mico/issues/61
+    it("strictルール適用時の副作用", () => {
+        const filter = `
+@s
+テスト
+
+コメント
+`;
+        expect(filtering({ filter, isStrictOnly: true }).getLog()).toEqual(
+            new Map(),
+        );
+        checkComment(threads, []);
+    });
+
     it(`${WordFilter.prototype.sortLog.name}()`, () => {
         const filter = `
 コメント
