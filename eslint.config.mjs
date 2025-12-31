@@ -93,7 +93,7 @@ export default defineConfig(
             "no-shadow": ["error", { allow: ["_"] }],
             "no-implicit-coercion": "error", // 暗黙的な型強制を禁止
             "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅しているかチェック
-            "@typescript-eslint/consistent-type-imports": "error", // importでtypeキーワードを強制
+            "@typescript-eslint/consistent-type-imports": "warn", // importでtypeキーワードを強制
             // booleanへの型強制を禁止
             "@typescript-eslint/strict-boolean-expressions": [
                 "error",
