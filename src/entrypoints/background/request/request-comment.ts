@@ -10,7 +10,7 @@ import { commentApiSchema } from "@/types/api/comment.types.js";
 import { cleanupDb, getTabData, setTabData } from "@/utils/db.js";
 import type { TabData } from "@/types/storage/tab.types.js";
 import { safeParseJson } from "./safe-parse-json.js";
-import { sendMessageToContent } from "@/utils/send-message-to-content.js";
+import { sendMessageToContent } from "@/utils/browser.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

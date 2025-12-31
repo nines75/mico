@@ -35,7 +35,7 @@ import { getCM, vim } from "@replit/codemirror-vim";
 import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 import { catchAsync } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 const generalHighlights = createHighlights([
     { regex: /(?<!\\)#.*/g, style: "color: gray" },

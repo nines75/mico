@@ -15,7 +15,7 @@ import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer.js";
 import type { Filters } from "@/entrypoints/background/video-filter/filter-video.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 type LogId = keyof Filters;
 

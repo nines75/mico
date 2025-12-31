@@ -16,7 +16,7 @@ import type { CommonLog } from "@/types/storage/log.types.js";
 import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer.js";
 import type { Filters } from "@/entrypoints/background/comment-filter/filter-comment.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 type LogId = keyof Filters;
 

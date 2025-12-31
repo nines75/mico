@@ -1,8 +1,8 @@
 import type { Browser } from "#imports";
 import type { CommonLog, LogId } from "../types/storage/log.types.js";
+import { sendMessageToContent } from "./browser.js";
 import { messages } from "./config.js";
 import delay from "delay";
-import { sendMessageToContent } from "./send-message-to-content.js";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;

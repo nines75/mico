@@ -12,7 +12,7 @@ import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
 import CheckboxSection from "../ui/CheckboxSection.js";
 import { catchAsync } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);

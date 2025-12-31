@@ -15,7 +15,7 @@ import { watchRequest } from "./request/request-watch.js";
 import { playlistFromSearchRequest } from "./request/request-playlist-from-search.js";
 import { clearDb } from "@/utils/db.js";
 import { getAllData } from "@/utils/storage.js";
-import { sendMessageToContent } from "@/utils/send-message-to-content.js";
+import { sendMessageToContent } from "@/utils/browser.js";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視

@@ -26,7 +26,7 @@ import type { TabData } from "@/types/storage/tab.types.js";
 import type { LogData } from "@/types/storage/log.types.js";
 import type { DropdownComment } from "../content/dropdown.js";
 import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
-import { sendMessageToContent } from "@/utils/send-message-to-content.js";
+import { sendMessageToContent } from "@/utils/browser.js";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],

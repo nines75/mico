@@ -3,7 +3,7 @@ import { createIframeUi } from "#imports";
 import type { LogId } from "@/types/storage/log.types.js";
 import { loadSettings } from "@/utils/storage.js";
 import { messages } from "@/utils/config.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
     Extract<ContentMessage, { type: T }>["data"];

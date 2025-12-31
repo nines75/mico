@@ -13,7 +13,7 @@ import type { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
 import clsx from "clsx";
 import { catchAsync, replace } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/send-message-to-background.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
