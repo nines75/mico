@@ -6,6 +6,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import { importX } from "eslint-plugin-import-x";
 
+const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
     "./src/utils/store.ts",
     "./src/utils/util.ts",
@@ -124,6 +125,7 @@ export default defineConfig(
                     ],
                 },
             ],
+            "import-x/no-cycle": ["error", { maxDepth: isCi ? Infinity : 1 }],
         },
     },
 
