@@ -1,6 +1,7 @@
 import { fakeBrowser } from "#imports";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+    customMerge,
     escapeNewline,
     isNiconicoPage,
     isRankingPage,
@@ -123,5 +124,37 @@ describe("util", () => {
         expected: string;
     }[])(`${replace.name}($name)`, ({ text, placeholders, expected }) => {
         expect(replace(text, placeholders)).toEqual(expected);
+    });
+
+    it("customMerge()", () => {
+        const oldObj = {
+            nest: {
+                a: true,
+            },
+            array: [1],
+            map: new Map([["a", 1]]),
+            set: new Set([1]),
+            undefined: true,
+        };
+        const newObj = {
+            nest: {
+                b: false,
+            },
+            array: [2],
+            map: new Map([["b", 2]]),
+            set: new Set([2]),
+            undefined: undefined,
+        };
+
+        expect(customMerge(oldObj, newObj)).toStrictEqual({
+            nest: {
+                a: true,
+                b: false,
+            },
+            array: [2],
+            map: new Map([["b", 2]]),
+            set: new Set([2]),
+            undefined: undefined,
+        });
     });
 });

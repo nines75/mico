@@ -5,8 +5,8 @@
 
 import type { LogData } from "@/types/storage/log.types.js";
 import Dexie, { type EntityTable } from "dexie";
-import { customMerge } from "./storage.js";
 import type { TabData } from "@/types/storage/tab.types.js";
+import { customMerge } from "./util.js";
 
 interface LogDb {
     id: string;

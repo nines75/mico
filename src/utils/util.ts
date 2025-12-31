@@ -1,4 +1,6 @@
 import type { Browser } from "#imports";
+import type { DeepMergeLeafURI, DeepMergeNoFilteringURI } from "deepmerge-ts";
+import { deepmergeCustom } from "deepmerge-ts";
 import type { CommonLog, LogId } from "../types/storage/log.types.js";
 import { sendMessageToContent } from "./browser.js";
 import { messages } from "./config.js";
@@ -149,3 +151,21 @@ export function catchAsync<T extends unknown[]>(
 export function isString(value: unknown) {
     return typeof value === "string";
 }
+
+export const customMerge = deepmergeCustom<
+    unknown,
+    {
+        DeepMergeArraysURI: DeepMergeLeafURI;
+        DeepMergeMapsURI: DeepMergeLeafURI;
+        DeepMergeSetsURI: DeepMergeLeafURI;
+        DeepMergeFilterValuesURI: DeepMergeNoFilteringURI;
+    }
+>({
+    // マージではなく上書きする
+    mergeArrays: false,
+    mergeMaps: false,
+    mergeSets: false,
+
+    // 値がundefinedでも上書きする
+    filterValues: false,
+});

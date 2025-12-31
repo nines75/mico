@@ -6,16 +6,11 @@
 import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types.js";
 import PQueue from "p-queue";
-import {
-    getSettingsData,
-    customMerge,
-    storageArea,
-    loadSettings,
-} from "./storage.js";
+import { getSettingsData, storageArea, loadSettings } from "./storage.js";
 import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/filter.js";
 import { messages } from "./config.js";
-import { replace, sendNotification } from "./util.js";
+import { customMerge, replace, sendNotification } from "./util.js";
 import { clearDb } from "./db.js";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する

@@ -6,7 +6,7 @@ import type {
     Settings,
     SettingsTab,
 } from "./settings.types.js";
-import { customMerge } from "@/utils/storage.js";
+import { customMerge } from "@/utils/util.js";
 
 export interface SettingsV1 {
     // -------------------------------------------------------------------------------------------
