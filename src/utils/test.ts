@@ -1,3 +1,5 @@
+import type { parseFilter } from "@/entrypoints/background/filter.js";
+import { type Rule } from "@/entrypoints/background/filter.js";
 import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import type {
     CommentMap,
@@ -208,6 +210,23 @@ export function checkComment(
     expect(actualIds.sort()).toEqual(expectedIds.sort());
 }
 
-export function replaceInclude(filter: string) {
-    return filter.replace(/include/g, "exclude");
+export function createRules(
+    ...rules: Partial<Rule>[]
+): ReturnType<typeof parseFilter> {
+    return {
+        rules: rules.map((rule): Rule => {
+            return {
+                ...{
+                    rule: "rule",
+                    isStrict: false,
+                    isDisable: false,
+                    include: [],
+                    exclude: [],
+                    includeVideoIds: [],
+                },
+                ...rule,
+            };
+        }),
+        invalidCount: 0,
+    };
 }

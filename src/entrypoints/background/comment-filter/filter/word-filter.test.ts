@@ -1,11 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
-import {
-    checkComment,
-    replaceInclude,
-    testTabData,
-    testThreads,
-} from "@/utils/test.js";
+import { checkComment, testThreads } from "@/utils/test.js";
 import type { Thread } from "@/types/api/comment.types.js";
 import { WordFilter } from "./word-filter.js";
 import type { Settings } from "@/types/storage/settings.types.js";
@@ -19,7 +14,6 @@ describe(WordFilter.name, () => {
 
     const filtering = (options: {
         filter: string;
-        tags?: string[];
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
         settings?: Partial<Settings>;
@@ -34,10 +28,6 @@ describe(WordFilter.name, () => {
             },
             options.ngUserIds ?? new Set(),
         );
-        wordFilter.filterRule({
-            ...testTabData,
-            ...{ tags: options.tags ?? [] },
-        });
         wordFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return wordFilter;
@@ -94,58 +84,6 @@ describe(WordFilter.name, () => {
                 context: "body(strict): テスト",
             },
         ]);
-    });
-
-    it.each([
-        {
-            name: "@include",
-            expected: new Map([
-                ["/^テスト$/", new Map([["テスト", ["1002"]]])],
-            ]),
-            ids: ["1002"],
-        },
-        {
-            name: "@exclude",
-            expected: new Map([
-                ["/^コメント$/", new Map([["コメント", ["1004"]]])],
-            ]),
-            ids: ["1004"],
-        },
-    ])("$name", ({ name, expected, ids }) => {
-        const isExclude = name === "@exclude";
-        const filter = `
-@include example-tag
-/^テスト$/
-@end
-
-@include tag
-/^コメント$/
-@end
-`;
-        const wordFilter = filtering({
-            filter: isExclude ? replaceInclude(filter) : filter,
-            tags: ["example-TAG"],
-        });
-
-        expect(wordFilter.getLog()).toEqual(expected);
-        checkComment(threads, ids);
-    });
-
-    it("動画タグが存在しないときのtagルール判定", () => {
-        const filter = `
-@include tag0
-/^テスト$/
-@end
-
-@exclude tag1
-/^コメント$/
-@end
-`;
-
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["/^コメント$/", new Map([["コメント", ["1004"]]])]]),
-        );
-        checkComment(threads, ["1004"]);
     });
 
     it(`${WordFilter.prototype.sortLog.name}()`, () => {

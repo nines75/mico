@@ -1,7 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import type { Rule } from "./filter.js";
 import { parseFilterBase, parseFilter } from "./filter.js";
+import { createRules } from "@/utils/test.js";
 
 describe(`${parseFilterBase.name}()`, () => {
     it.each([
@@ -81,42 +81,6 @@ rule
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
 describe(`${parseFilter.name}()`, () => {
-    const createRule = (
-        rule: Partial<Rule>,
-    ): { rules: Rule[]; invalidCount: number } => {
-        return {
-            rules: [
-                {
-                    ...{
-                        rule: "rule",
-                        isStrict: false,
-                        isDisable: false,
-                        include: [],
-                        exclude: [],
-                        includeVideoIds: [],
-                    },
-                    ...rule,
-                },
-            ],
-            invalidCount: 0,
-        };
-    };
-    const createRules = (...rules: Partial<Rule>[]) => {
-        return rules
-            .map((rule) => createRule(rule))
-            .reduce(
-                (all, current) => {
-                    all.rules.push(...current.rules);
-                    all.invalidCount += current.invalidCount;
-                    return all;
-                },
-                { rules: [], invalidCount: 0 },
-            );
-    };
-    const base = createRule({});
-    const strict = createRule({ isStrict: true });
-    const invalid = { rules: [], invalidCount: 1 };
-
     // -------------------------------------------------------------------------------------------
     // @end
     // -------------------------------------------------------------------------------------------
@@ -140,7 +104,7 @@ rule
 
 rule
 `,
-            expected: base,
+            expected: createRules({}),
         },
         {
             name: "@endなし",
@@ -148,7 +112,7 @@ rule
 @strict
 rule
 `,
-            expected: strict,
+            expected: createRules({ isStrict: true }),
         },
     ])("$name", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -205,7 +169,9 @@ rule
             expected: createRules({ isStrict: true }, {}),
         },
     ])("$name", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(expected ?? strict);
+        expect(parseFilter(filter)).toEqual(
+            expected ?? createRules({ isStrict: true }),
+        );
     });
 
     // -------------------------------------------------------------------------------------------
@@ -357,25 +323,23 @@ rule
         {
             name: "誤り: 末尾に空白文字を含む",
             filter: "/rule/ ",
-            expected: invalid,
         },
         {
             name: "誤り: 対応していないフラグ",
             filter: "/rule/g",
-            expected: invalid,
         },
         {
             name: "誤り: 併用できないフラグ",
             filter: "/rule/uv",
-            expected: invalid,
         },
         {
             name: "誤り: 無効な正規表現",
             filter: "/(rule/",
-            expected: invalid,
         },
     ])("正規表現($name)", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(
+            expected ?? { rules: [], invalidCount: 1 },
+        );
     });
 
     // -------------------------------------------------------------------------------------------

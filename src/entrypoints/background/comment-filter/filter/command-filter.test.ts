@@ -1,12 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandFilter } from "./command-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import {
-    checkComment,
-    replaceInclude,
-    testTabData,
-    testThreads,
-} from "@/utils/test.js";
+import { checkComment, testThreads } from "@/utils/test.js";
 import type { Thread } from "@/types/api/comment.types.js";
 import type { Settings } from "@/types/storage/settings.types.js";
 
@@ -19,7 +14,6 @@ describe(CommandFilter.name, () => {
 
     const filtering = (options: {
         filter: string;
-        tags?: string[];
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
         settings?: Partial<Settings>;
@@ -34,10 +28,6 @@ describe(CommandFilter.name, () => {
             },
             options.ngUserIds ?? new Set(),
         );
-        commandFilter.filterRule({
-            ...testTabData,
-            ...{ tags: options.tags ?? [] },
-        });
         commandFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return commandFilter;
@@ -109,37 +99,6 @@ big
 
     it.each([
         {
-            name: "@include",
-            expected: new Map([["big", ["1002", "1004"]]]),
-            ids: ["1002", "1004"],
-        },
-        {
-            name: "@exclude",
-            expected: new Map([["device:switch", ["1003", "1004"]]]),
-            ids: ["1003", "1004"],
-        },
-    ])("$name", ({ name, expected, ids }) => {
-        const isExclude = name === "@exclude";
-        const filter = `
-@include example-tag
-big
-@end
-
-@include tag
-device:switch
-@end
-`;
-        const commandFilter = filtering({
-            filter: isExclude ? replaceInclude(filter) : filter,
-            tags: ["example-TAG"],
-        });
-
-        expect(commandFilter.getLog()).toEqual(expected);
-        checkComment(threads, ids);
-    });
-
-    it.each([
-        {
             name: "文字列",
             filter: `
 @disable
@@ -189,23 +148,6 @@ big
         expect(strictCommandFilter.getStrictData()).toEqual([]);
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(hasCommand(["big"])).toBe(false);
-    });
-
-    it("動画タグが存在しないときのtagルール判定", () => {
-        const filter = `
-@include tag0
-big
-@end
-
-@exclude tag1
-device:switch
-@end
-`;
-
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["device:switch", ["1003", "1004"]]]),
-        );
-        checkComment(threads, ["1003", "1004"]);
     });
 
     // https://github.com/nines75/mico/issues/31
