@@ -4,7 +4,7 @@ import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
-import importPlugin from "eslint-plugin-import";
+import { importX } from "eslint-plugin-import-x";
 
 const pathsExceptBackground = [
     "./src/utils/store.ts",
@@ -27,8 +27,8 @@ export default defineConfig(
     react.configs.flat.recommended,
     react.configs.flat["jsx-runtime"], // React17以降で必要
 
-    // https://github.com/import-js/eslint-plugin-import
-    importPlugin.flatConfigs.typescript,
+    // https://github.com/un-ts/eslint-plugin-import-x
+    importX.flatConfigs.typescript,
 
     // TypeScript
     {
@@ -42,11 +42,6 @@ export default defineConfig(
             // eslint-config-react
             react: {
                 version: "detect",
-            },
-            // eslint-plugin-import
-            "import/resolver": {
-                typescript: true,
-                node: true,
             },
         },
         rules: {
@@ -114,7 +109,7 @@ export default defineConfig(
                     ignoreStringArrays: true,
                 },
             ],
-            "import/no-restricted-paths": [
+            "import-x/no-restricted-paths": [
                 "error",
                 {
                     zones: [
