@@ -1,12 +1,12 @@
-import { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
-import { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
-import {
+import type { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea.js";
+import type { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea.js";
+import type {
     FilterTab,
     NicoruColor,
     Settings,
     SettingsTab,
 } from "./settings.types.js";
-import { customMerge } from "@/utils/storage.js";
+import { customMerge } from "@/utils/util.js";
 
 export interface SettingsV1 {
     // -------------------------------------------------------------------------------------------

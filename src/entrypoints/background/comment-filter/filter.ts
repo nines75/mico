@@ -1,7 +1,7 @@
-import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
-import { CommentMap } from "@/types/storage/log-comment.types.js";
-import { CommonLog } from "@/types/storage/log.types.js";
+import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
+import type { CommentMap } from "@/types/storage/log-comment.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;

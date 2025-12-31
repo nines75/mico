@@ -1,7 +1,5 @@
-import {
-    recommendApiSchema,
-    RecommendApi,
-} from "@/types/api/recommend.types.js";
+import type { RecommendApi } from "@/types/api/recommend.types.js";
+import { recommendApiSchema } from "@/types/api/recommend.types.js";
 import { loadSettings } from "@/utils/storage.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";

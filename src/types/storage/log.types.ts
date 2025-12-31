@@ -1,6 +1,6 @@
-import { CommentFilterLog } from "./log-comment.types.js";
-import { VideoFilterLog } from "./log-video.types.js";
-import { TabData } from "./tab.types.js";
+import type { CommentFilterLog } from "./log-comment.types.js";
+import type { VideoFilterLog } from "./log-video.types.js";
+import type { TabData } from "./tab.types.js";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
 export type CommonLog = Map<string, string[]>;

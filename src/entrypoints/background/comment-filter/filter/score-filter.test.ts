@@ -1,9 +1,9 @@
-import { Thread } from "@/types/api/comment.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
 import { checkComment, testThreads } from "@/utils/test.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter.js";
 import { defaultSettings } from "@/utils/config.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 
 describe(ScoreFilter.name, () => {
     let threads: Thread[];

@@ -1,11 +1,11 @@
-import {
+import type {
     VideoFiltering,
     VideoCount,
     RuleCount,
     BlockedCount,
     LogFilters,
 } from "@/types/storage/log-video.types.js";
-import { FilteredData } from "./filter-video.js";
+import type { FilteredData } from "./filter-video.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";

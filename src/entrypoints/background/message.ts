@@ -9,10 +9,10 @@ import {
     tryMountLogId,
     tryWithPermission,
 } from "@/utils/util.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import {
     setSettings,
     removeAllData,
@@ -21,18 +21,18 @@ import {
     addNgId,
     removeNgId,
 } from "@/utils/storage-write.js";
-import { sendMessageToContent } from "../content/message.js";
 import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
-import { TabData } from "@/types/storage/tab.types.js";
-import { LogData } from "@/types/storage/log.types.js";
-import { DropdownComment } from "../content/dropdown.js";
+import type { TabData } from "@/types/storage/tab.types.js";
+import type { LogData } from "@/types/storage/log.types.js";
+import type { DropdownComment } from "../content/dropdown.js";
 import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
+import { sendMessageToContent } from "@/utils/browser.js";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],
 > = Extract<BackgroundMessage, { type: T }>["data"];
 
-type BackgroundMessage =
+export type BackgroundMessage =
     // -------------------------------------------------------------------------------------------
     // このファイルの関数を呼び出すもの
     // -------------------------------------------------------------------------------------------
@@ -99,12 +99,6 @@ type BackgroundMessage =
           type: "send-notification";
           data: string;
       };
-
-export async function sendMessageToBackground(
-    message: BackgroundMessage,
-): Promise<unknown> {
-    return await browser.runtime.sendMessage(message);
-}
 
 export async function backgroundMessageHandler(
     message: BackgroundMessage,

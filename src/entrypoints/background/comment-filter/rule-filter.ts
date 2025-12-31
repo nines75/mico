@@ -1,11 +1,12 @@
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { isString } from "@/utils/util.js";
-import { ConditionalPick } from "type-fest";
-import { Rule, parseFilter } from "../filter.js";
-import { Filters } from "./filter-comment.js";
+import type { ConditionalPick } from "type-fest";
+import type { Rule } from "../filter.js";
+import { parseFilter } from "../filter.js";
+import type { Filters } from "./filter-comment.js";
 import { Filter, sortCommentId } from "./filter.js";
-import { CommonLog } from "@/types/storage/log.types.js";
-import { TabData } from "@/types/storage/tab.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
+import type { TabData } from "@/types/storage/tab.types.js";
 
 export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];

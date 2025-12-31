@@ -1,5 +1,5 @@
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import { sendMessageToBackground } from "../background/message.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export async function renderOldSearch() {
     await sendMessageToBackground({

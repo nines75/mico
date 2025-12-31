@@ -1,8 +1,8 @@
-import { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { sortCommentId } from "../filter.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
-import { WordLog } from "@/types/storage/log-comment.types.js";
+import type { WordLog } from "@/types/storage/log-comment.types.js";
 import { StrictFilter } from "../strict-filter.js";
 
 export class WordFilter extends StrictFilter<WordLog> {

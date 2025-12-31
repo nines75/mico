@@ -1,6 +1,6 @@
-import { Thread } from "@/types/api/comment.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
 import { Filter, sortCommentId } from "../filter.js";
-import { ScoreLog } from "@/types/storage/log-comment.types.js";
+import type { ScoreLog } from "@/types/storage/log-comment.types.js";
 
 export class ScoreFilter extends Filter<ScoreLog> {
     protected log: ScoreLog = [];

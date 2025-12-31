@@ -1,9 +1,10 @@
 import { loadSettings } from "@/utils/storage.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { filterVideo } from "../video-filter/filter-video.js";
 import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
-import { RankingApi, rankingApiSchema } from "@/types/api/ranking.types.js";
+import type { RankingApi } from "@/types/api/ranking.types.js";
+import { rankingApiSchema } from "@/types/api/ranking.types.js";
 import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
 

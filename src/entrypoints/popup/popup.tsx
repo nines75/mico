@@ -9,11 +9,11 @@ import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
-import { FilterTab } from "@/types/storage/settings.types.js";
+import type { FilterTab } from "@/types/storage/settings.types.js";
 import { formatNgId } from "../background/video-filter/filter/id-filter.js";
-import { sendMessageToBackground } from "../background/message.js";
 import clsx from "clsx";
 import { catchAsync, replace } from "@/utils/util.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);

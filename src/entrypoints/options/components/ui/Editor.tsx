@@ -1,10 +1,7 @@
 import { useEffect, useEffectEvent, useRef } from "react";
-import {
-    EditorState,
-    Extension,
-    RangeSet,
-    Transaction,
-} from "@codemirror/state";
+import type { Extension, RangeSet } from "@codemirror/state";
+import { EditorState, Transaction } from "@codemirror/state";
+import type { ViewUpdate } from "@codemirror/view";
 import {
     Decoration,
     drawSelection,
@@ -17,7 +14,6 @@ import {
     lineNumbers,
     MatchDecorator,
     ViewPlugin,
-    ViewUpdate,
 } from "@codemirror/view";
 import {
     history,
@@ -25,19 +21,21 @@ import {
     redo,
     standardKeymap,
 } from "@codemirror/commands";
+import type {
+    Completion,
+    CompletionContext,
+    CompletionResult,
+} from "@codemirror/autocomplete";
 import {
     autocompletion,
     closeBrackets,
-    Completion,
-    CompletionContext,
     completionKeymap,
-    CompletionResult,
 } from "@codemirror/autocomplete";
 import { getCM, vim } from "@replit/codemirror-vim";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
-import { sendMessageToBackground } from "@/entrypoints/background/message.js";
 import { catchAsync } from "@/utils/util.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 const generalHighlights = createHighlights([
     { regex: /(?<!\\)#.*/g, style: "color: gray" },

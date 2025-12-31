@@ -4,15 +4,15 @@ import { defaultSettings, generalSettings, messages } from "@/utils/config.js";
 import Checkbox from "../ui/Checkbox.js";
 import H2 from "../ui/H2.js";
 import { useStorageStore } from "@/utils/store.js";
-import { sendMessageToBackground } from "@/entrypoints/background/message.js";
-import { BackupData } from "@/types/storage/backup.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { BackupData } from "@/types/storage/backup.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { getSettingsData } from "@/utils/storage.js";
-import { ValueOf } from "type-fest";
+import type { ValueOf } from "type-fest";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
 import CheckboxSection from "../ui/CheckboxSection.js";
 import { catchAsync } from "@/utils/util.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);

@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import type { JSX } from "react";
 
 interface BlockProps {
     comment: JSX.Element | string;

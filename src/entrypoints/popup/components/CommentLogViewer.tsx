@@ -1,22 +1,22 @@
 import { getBasicNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import { NiconicoComment } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { NiconicoComment } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { messages, titles } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
 import { catchAsync, escapeNewline, replace } from "@/utils/util.js";
 import { useShallow } from "zustand/shallow";
 import { LogFrame } from "./LogFrame.js";
-import {
+import type {
     CommentMap,
     ScoreLog,
     WordLog,
     CommentFiltering,
 } from "@/types/storage/log-comment.types.js";
-import { CommonLog } from "@/types/storage/log.types.js";
-import { sendMessageToBackground } from "@/entrypoints/background/message.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
 import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer.js";
-import { Filters } from "@/entrypoints/background/comment-filter/filter-comment.js";
+import type { Filters } from "@/entrypoints/background/comment-filter/filter-comment.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 type LogId = keyof Filters;
 

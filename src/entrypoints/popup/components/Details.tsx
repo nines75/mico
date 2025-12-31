@@ -1,6 +1,6 @@
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
-import { ConditionalPick } from "type-fest";
+import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 
 interface DetailsProps {

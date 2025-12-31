@@ -1,6 +1,6 @@
-import { PaidLog } from "@/types/storage/log-video.types.js";
+import type { PaidLog } from "@/types/storage/log-video.types.js";
 import { Filter, sortVideoId } from "../filter.js";
-import { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 
 export class PaidFilter extends Filter<PaidLog> {
     protected override log: PaidLog = [];

@@ -1,5 +1,5 @@
-import { NiconicoComment, RenderedComment } from "../api/comment.types.js";
-import { CommonLog, ProcessingTimeData } from "./log.types.js";
+import type { NiconicoComment, RenderedComment } from "../api/comment.types.js";
+import type { CommonLog, ProcessingTimeData } from "./log.types.js";
 
 export type ScoreLog = string[];
 export type WordLog = Map<string, Map<string, string[]>>;

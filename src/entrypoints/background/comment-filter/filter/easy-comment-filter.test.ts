@@ -1,6 +1,6 @@
-import { Thread } from "@/types/api/comment.types.js";
-import { CommonLog } from "@/types/storage/log.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { defaultSettings } from "@/utils/config.js";
 import { checkComment, testThreads } from "@/utils/test.js";
 import { describe, beforeEach, it, expect } from "vitest";

@@ -1,5 +1,5 @@
-import { NiconicoVideo } from "../api/niconico-video.types.js";
-import { ProcessingTimeData, CommonLog } from "./log.types.js";
+import type { NiconicoVideo } from "../api/niconico-video.types.js";
+import type { ProcessingTimeData, CommonLog } from "./log.types.js";
 
 export type PaidLog = string[];
 export type ViewsLog = string[];

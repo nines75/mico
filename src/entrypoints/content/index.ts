@@ -1,7 +1,7 @@
 import { mountToDropdown } from "./dropdown.js";
 import { renderComment } from "./comment.js";
 import { createContentMessageHandler } from "./message.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { loadSettings } from "@/utils/storage.js";
 import { defineContentScript } from "#imports";
 import {
@@ -11,7 +11,7 @@ import {
     isWatchPage,
 } from "@/utils/util.js";
 import { renderOldSearch } from "./search.js";
-import { sendMessageToBackground } from "../background/message.js";
+import { sendMessageToBackground } from "@/utils/browser.js";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;

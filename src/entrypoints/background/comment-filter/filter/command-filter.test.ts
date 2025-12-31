@@ -7,8 +7,8 @@ import {
     testTabData,
     testThreads,
 } from "@/utils/test.js";
-import { Thread } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 
 describe(CommandFilter.name, () => {
     let threads: Thread[];

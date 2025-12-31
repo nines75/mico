@@ -11,11 +11,11 @@ import {
 import { rankingRequest } from "./request/request-ranking.js";
 import { searchRequest } from "./request/request-search.js";
 import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
-import { sendMessageToContent } from "../content/message.js";
 import { watchRequest } from "./request/request-watch.js";
 import { playlistFromSearchRequest } from "./request/request-playlist-from-search.js";
 import { clearDb } from "@/utils/db.js";
 import { getAllData } from "@/utils/storage.js";
+import { sendMessageToContent } from "@/utils/browser.js";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視

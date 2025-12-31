@@ -1,8 +1,8 @@
-import { Thread } from "@/types/api/comment.types.js";
-import { Settings } from "@/types/storage/settings.types.js";
+import type { Thread } from "@/types/api/comment.types.js";
+import type { Settings } from "@/types/storage/settings.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
-import { CommonLog } from "@/types/storage/log.types.js";
-import { Rule } from "../../filter.js";
+import type { CommonLog } from "@/types/storage/log.types.js";
+import type { Rule } from "../../filter.js";
 import { StrictFilter } from "../strict-filter.js";
 
 export class CommandFilter extends StrictFilter<CommonLog> {
