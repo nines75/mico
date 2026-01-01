@@ -138,7 +138,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ rule: "@include　tag0 tag1" }, {}),
+            expected: createRules({}),
         },
         {
             name: "誤り: @includes",
@@ -147,7 +147,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ rule: "@includes tag0 tag1" }, {}),
+            expected: createRules({}),
         },
     ])("@include($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -294,11 +294,21 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // その他
+    // ディレクティブ
     // -------------------------------------------------------------------------------------------
 
-    it("ディレクティブのネスト", () => {
-        const filter = `
+    it.each([
+        {
+            name: "無効",
+            filter: `
+@directive
+rule
+`,
+            expected: createRules({}),
+        },
+        {
+            name: "ネスト",
+            filter: `
 @include tag0
 rule
 
@@ -325,10 +335,8 @@ rule
 @end
 @end
 rule
-`;
-
-        expect(parseFilter(filter)).toEqual(
-            createRules(
+`,
+            expected: createRules(
                 {
                     include: [tags[0]],
                 },
@@ -357,6 +365,8 @@ rule
                 },
                 {},
             ),
-        );
+        },
+    ])("ディレクティブ($name)", ({ filter, expected }) => {
+        expect(parseFilter(filter)).toEqual(expected);
     });
 });

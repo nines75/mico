@@ -70,6 +70,8 @@ export function parseFilter(
                 isStrictAlias = true;
                 return;
             }
+            // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
+            if (rule.startsWith("@")) return;
 
             const include: string[] = [];
             const exclude: string[] = [];
