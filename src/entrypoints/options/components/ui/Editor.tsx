@@ -38,7 +38,7 @@ import { catchAsync } from "@/utils/util.js";
 import { sendMessageToBackground } from "@/utils/browser.js";
 
 const generalHighlights = createHighlights([
-    { regex: /(?<!\\)#.*/g, style: "color: gray" },
+    { regex: /^#.*$/g, style: "color: gray" },
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
 ]);
 const ngUserIdHighlights = createHighlights([

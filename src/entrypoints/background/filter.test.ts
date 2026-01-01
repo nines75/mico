@@ -1,82 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilterBase, parseFilter } from "./filter.js";
+import { parseFilter } from "./filter.js";
 import { createRules } from "@/utils/test.js";
-
-describe(`${parseFilterBase.name}()`, () => {
-    it.each([
-        {
-            name: "コメントなし",
-            filter: "rule",
-            expected: "rule",
-        },
-        {
-            name: "コメント(1つの半角スペース)",
-            filter: "rule # comment",
-            expected: "rule",
-        },
-        {
-            name: "コメント(複数の半角スペース)",
-            filter: "rule    # comment",
-            expected: "rule",
-        },
-        {
-            name: "コメントのみ",
-            filter: "# comment",
-        },
-        {
-            name: "空行",
-            filter: "",
-        },
-        {
-            name: "ディレクティブ",
-            filter: "@strict # comment",
-            expected: "@strict",
-        },
-        {
-            name: "ディレクティブ(パラメータあり)",
-            filter: "@include tag0 tag1 # comment",
-            expected: "@include tag0 tag1",
-        },
-    ])("一般($name)", ({ filter, expected }) => {
-        expect(parseFilterBase(filter)).toEqual(
-            expected === undefined ? [] : [{ rule: expected, index: 0 }],
-        );
-    });
-
-    it.each([
-        { name: "一つの全角スペース", filter: "rule　# comment" },
-        { name: "複数の全角スペース", filter: "rule　　　　# comment" },
-        { name: "半角全角スペース交互", filter: "rule 　 　# comment" },
-    ])("コメントの前に全角を含む($name)", ({ filter }) => {
-        expect(parseFilterBase(filter)).toEqual([{ rule: "rule", index: 0 }]);
-    });
-
-    it.each([
-        { name: "コメントなし", filter: "\\#rule\\#rule2\\#" },
-        { name: "コメントあり", filter: "\\#rule\\#rule2\\# # comment" },
-    ])("エスケープした#を含む($name)", ({ filter }) => {
-        expect(parseFilterBase(filter)).toEqual(
-            [["#rule#rule2#", 0]].map(([rule, index]) => ({ rule, index })),
-        );
-    });
-
-    it("index", () => {
-        const filter = `
-rule
-# comment
-rule
-
-rule
-`;
-
-        expect(parseFilterBase(filter)).toEqual(
-            [1, 3, 5].map((index) => ({ rule: "rule", index })),
-        );
-    });
-});
-
-// ===========================================================================================
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
@@ -293,10 +218,36 @@ rule
     // ルール
     // -------------------------------------------------------------------------------------------
 
-    it("文字列", () => {
-        const filter = "rule";
+    it.each([
+        {
+            name: "コメント",
+            filter: "# comment",
+        },
+        {
+            name: "空行",
+            filter: "",
+        },
+        {
+            name: "index",
+            hasIndex: true,
+            filter: `
+rule
+# comment
+rule
 
-        expect(parseFilter(filter)).toEqual(createRules({ rule: "rule" }));
+rule
+`,
+            expected: createRules(...[1, 3, 5].map((index) => ({ index }))),
+        },
+        {
+            name: "文字列ルール",
+            filter: "rule",
+            expected: createRules({}),
+        },
+    ])("$name", ({ filter, hasIndex, expected }) => {
+        expect(parseFilter(filter, hasIndex ?? false)).toEqual(
+            expected ?? createRules(),
+        );
     });
 
     it.each([
@@ -336,7 +287,7 @@ rule
             name: "誤り: 無効な正規表現",
             filter: "/(rule/",
         },
-    ])("正規表現($name)", ({ filter, expected }) => {
+    ])("正規表現ルール($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(
             expected ?? { rules: [], invalidCount: 1 },
         );

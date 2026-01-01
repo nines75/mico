@@ -141,13 +141,26 @@ export async function removeNgId(id: string) {
                 .rules.filter((data) => id === data.rule)
                 .map((data) => data.index as number),
         );
-        const value = settings.ngId
-            .split("\n")
-            .filter((_, index) => !toRemoveLines.has(index))
-            .join("\n");
+        const lines = settings.ngId.split("\n");
+
+        toRemoveLines.forEach((index) => {
+            const before = index - 1;
+            const after = index + 1;
+
+            // コンテキスト
+            if (
+                lines[before]?.startsWith("# ") === true &&
+                lines[after] === ""
+            ) {
+                toRemoveLines.add(before);
+                toRemoveLines.add(after);
+            }
+        });
 
         return {
-            ngId: value,
+            ngId: lines
+                .filter((_, index) => !toRemoveLines.has(index))
+                .join("\n"),
         };
     };
 

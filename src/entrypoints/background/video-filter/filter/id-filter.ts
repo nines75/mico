@@ -123,6 +123,6 @@ export function formatNgId(
     settings: Settings,
 ) {
     return settings.isNgContextAppendedOnAdd && context !== undefined
-        ? `${id} # ${context}`
+        ? `# ${context}\n${id}\n`
         : id;
 }

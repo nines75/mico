@@ -164,15 +164,17 @@ export function migrateSettingsToV2(v1: Partial<SettingsV1>) {
 export function migrateSettingsToV3(v2: Partial<Settings>) {
     const migrateFilter = (
         filter: string,
-        lineEditor: (line: string) => string,
+        lineEditors: ((line: string) => string)[],
     ) => {
-        return filter
-            .split("\n")
-            .map((line) => {
-                if (line.startsWith("#")) return line;
-                return lineEditor(line);
-            })
-            .join("\n");
+        return lineEditors.reduce((result, lineEditor) => {
+            return result
+                .split("\n")
+                .map((line) => {
+                    if (line.startsWith("#")) return line;
+                    return lineEditor(line);
+                })
+                .join("\n");
+        }, filter);
     };
     const migrateVideoSpecificRule = (line: string) => {
         const result = /^(.+)@(.+)$/.exec(line);
@@ -195,11 +197,34 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
             return line;
         }
     };
+    const migrateMiddleComment = (line: string) => {
+        const result = /^(.*?)\s*((?<!\\)#.*)$/.exec(line);
+        const rule = result?.[1];
+        const comment = result?.[2];
+
+        if (rule !== undefined && comment !== undefined) {
+            return `${comment}\n${rule}`;
+        } else {
+            return line;
+        }
+    };
 
     const v3 = {
-        ngUserId: migrateFilter(v2.ngUserId ?? "", migrateVideoSpecificRule),
-        ngCommand: migrateFilter(v2.ngCommand ?? "", migrateStrictAlias),
-        ngWord: migrateFilter(v2.ngWord ?? "", migrateStrictAlias),
+        ngUserId: migrateFilter(v2.ngUserId ?? "", [
+            migrateMiddleComment,
+            migrateVideoSpecificRule,
+        ]),
+        ngCommand: migrateFilter(v2.ngCommand ?? "", [
+            migrateMiddleComment,
+            migrateStrictAlias,
+        ]),
+        ngWord: migrateFilter(v2.ngWord ?? "", [
+            migrateMiddleComment,
+            migrateStrictAlias,
+        ]),
+        ngId: migrateFilter(v2.ngId ?? "", [migrateMiddleComment]),
+        ngUserName: migrateFilter(v2.ngUserName ?? "", [migrateMiddleComment]),
+        ngTitle: migrateFilter(v2.ngTitle ?? "", [migrateMiddleComment]),
     } satisfies Partial<Settings>;
 
     return customMerge(v2 as unknown, v3);
