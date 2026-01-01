@@ -33,10 +33,6 @@ describe(CommandFilter.name, () => {
         return commandFilter;
     };
 
-    const hasAnyCommand = () =>
-        threads.some((thread) =>
-            thread.comments.some((comment) => comment.commands.length > 0),
-        );
     const hasCommand = (targets: string[]) =>
         threads.some((thread) =>
             thread.comments.some((comment) =>
@@ -116,23 +112,6 @@ device:switch
     ])("@disable($name)", ({ filter }) => {
         expect(filtering({ filter }).getLog()).toEqual(new Map());
         expect(hasCommand(["big", "device:switch"])).toBe(false);
-    });
-
-    it("all", () => {
-        const filter = `
-@disable
-all
-`;
-
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasAnyCommand()).toBe(false);
-    });
-
-    it("無効なall", () => {
-        const filter = "all";
-
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasAnyCommand()).toBe(true);
     });
 
     it("@strictと@disableの競合", () => {

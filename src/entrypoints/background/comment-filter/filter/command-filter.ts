@@ -6,34 +6,21 @@ import type { Rule } from "../../filter.js";
 import { StrictFilter } from "../strict-filter.js";
 
 export class CommandFilter extends StrictFilter<CommonLog> {
-    private hasAll: boolean;
     private disableCount = 0;
     protected log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds, settings.ngCommand);
 
-        let hasAll = false;
-        const rules = this.rules
-            .map((data) => {
-                const rule = data.rule;
-                return {
-                    ...data,
-                    rule: isString(rule) ? rule.toLowerCase() : rule,
-                };
-            })
-            .filter((data) => {
-                if (data.rule === "all" && data.isDisable) {
-                    hasAll = true;
-
-                    return false;
-                }
-
-                return true;
-            });
+        const rules = this.rules.map((data) => {
+            const rule = data.rule;
+            return {
+                ...data,
+                rule: isString(rule) ? rule.toLowerCase() : rule,
+            };
+        });
 
         this.rules = rules;
-        this.hasAll = hasAll;
     }
 
     getDisableCount(): number {
@@ -51,7 +38,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                       return a.isDisable ? 1 : -1;
                   });
 
-        if (rules.length === 0 && !this.hasAll) return;
+        if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
             // コマンドを小文字に変換し重複を排除
@@ -82,7 +69,6 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                     }
 
                     if (isDisable) {
-                        if (this.hasAll) break;
                         disableCommands.add(command);
 
                         continue;
@@ -99,18 +85,13 @@ export class CommandFilter extends StrictFilter<CommonLog> {
             if (isStrictOnly) return true;
 
             // forループ内で配列を変更するのは危険なので後から無効化する
-            if (this.hasAll) {
-                comment.commands = [];
-                this.disableCount += commands.length;
-            } else {
-                if (disableCommands.size > 0) {
-                    comment.commands = commands.filter((command) => {
-                        const isMatch = disableCommands.has(command);
-                        if (isMatch) this.disableCount++;
+            if (disableCommands.size > 0) {
+                comment.commands = commands.filter((command) => {
+                    const isMatch = disableCommands.has(command);
+                    if (isMatch) this.disableCount++;
 
-                        return !isMatch;
-                    });
-                }
+                    return !isMatch;
+                });
             }
 
             return true;

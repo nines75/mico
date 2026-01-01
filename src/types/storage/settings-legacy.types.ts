@@ -7,6 +7,7 @@ import type {
     SettingsTab,
 } from "./settings.types.js";
 import { customMerge } from "@/utils/util.js";
+import { parseFilter } from "@/entrypoints/background/filter.js";
 
 export interface SettingsV1 {
     // -------------------------------------------------------------------------------------------
@@ -208,16 +209,33 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
             return line;
         }
     };
+    // 無効化ルールであるか判定する必要があるのでparseが必要
+    const migrateAllRule = (filter: string) => {
+        const allRuleLines = parseFilter(filter, true)
+            .rules.filter(({ rule, isDisable }) => rule === "all" && isDisable)
+            .map(({ index }) => index as number);
+
+        return filter
+            .split("\n")
+            .map((line, index) =>
+                allRuleLines.includes(index)
+                    ? "//" // 空文字列の正規表現
+                    : line,
+            )
+            .join("\n");
+    };
 
     const v3 = {
         ngUserId: migrateFilter(v2.ngUserId ?? "", [
             migrateMiddleComment,
             migrateVideoSpecificRule,
         ]),
-        ngCommand: migrateFilter(v2.ngCommand ?? "", [
-            migrateMiddleComment,
-            migrateStrictAlias,
-        ]),
+        ngCommand: migrateAllRule(
+            migrateFilter(v2.ngCommand ?? "", [
+                migrateMiddleComment,
+                migrateStrictAlias,
+            ]),
+        ),
         ngWord: migrateFilter(v2.ngWord ?? "", [
             migrateMiddleComment,
             migrateStrictAlias,
