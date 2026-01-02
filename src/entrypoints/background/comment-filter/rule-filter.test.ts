@@ -34,17 +34,18 @@ describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
             name: "動画タグが単数",
             tags: ["tag"],
             expected: createRules(
-                { include: ["tag"] },
-                { include: ["tag", "tag2"] },
+                { include: [["tag"]] },
+                { include: [["tag", "tag2"]] },
             ).rules,
         },
         {
             name: "動画タグが複数",
             tags: ["tag", "tag2"],
             expected: createRules(
-                { include: ["tag"] },
-                { include: ["tag2"] },
-                { include: ["tag", "tag2"] },
+                { include: [["tag"]] },
+                { include: [["tag2"]] },
+                { include: [["tag", "tag2"]] },
+                { include: [["tag"], ["tag2"]] },
             ).rules,
         },
         {
@@ -65,6 +66,12 @@ rule
 @include tag tag2
 rule
 @end
+
+@include tag
+@include tag2
+rule
+@end
+@end
 `;
 
         expect(filtering({ filter, tags }).getRule()).toEqual(expected);
@@ -78,7 +85,10 @@ rule
         {
             name: "動画タグが単数",
             tags: ["tag"],
-            expected: createRules({ exclude: ["tag2"] }).rules,
+            expected: createRules(
+                { exclude: [["tag2"]] },
+                { exclude: [["tag"], ["tag2"]] },
+            ).rules,
         },
         {
             name: "動画タグが複数",
@@ -89,9 +99,10 @@ rule
             name: "動画タグなし",
             tags: [],
             expected: createRules(
-                { exclude: ["tag"] },
-                { exclude: ["tag2"] },
-                { exclude: ["tag", "tag2"] },
+                { exclude: [["tag"]] },
+                { exclude: [["tag2"]] },
+                { exclude: [["tag", "tag2"]] },
+                { exclude: [["tag"], ["tag2"]] },
             ).rules,
         },
     ])("@exclude($name)", ({ tags, expected }) => {
@@ -107,6 +118,12 @@ rule
 @exclude tag tag2
 rule
 @end
+
+@exclude tag
+@exclude tag2
+rule
+@end
+@end
 `;
         expect(filtering({ filter, tags }).getRule()).toEqual(expected);
     });
@@ -119,7 +136,7 @@ rule
         {
             name: "@includeのみマッチ",
             tags: ["tag"],
-            expected: createRules({ include: ["tag"], exclude: ["tag2"] })
+            expected: createRules({ include: [["tag"]], exclude: [["tag2"]] })
                 .rules,
         },
         {
@@ -165,8 +182,8 @@ rule
 
         expect(filtering({ filter }).getRule()).toEqual(
             createRules(
-                { includeVideoIds: ["sm1"] },
-                { includeVideoIds: ["sm1", "sm2"] },
+                { includeVideoIds: [["sm1"]] },
+                { includeVideoIds: [["sm1", "sm2"]] },
             ).rules,
         );
     });

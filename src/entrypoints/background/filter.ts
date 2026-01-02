@@ -4,9 +4,9 @@ export interface Rule {
     rule: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
-    include: string[];
-    exclude: string[];
-    includeVideoIds: string[];
+    include: string[][];
+    exclude: string[][];
+    includeVideoIds: string[][];
 }
 
 export function parseFilter(
@@ -73,18 +73,18 @@ export function parseFilter(
             // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
             if (rule.startsWith("@")) return;
 
-            const include: string[] = [];
-            const exclude: string[] = [];
-            const includeVideoIds: string[] = [];
+            const include: string[][] = [];
+            const exclude: string[][] = [];
+            const includeVideoIds: string[][] = [];
             let isStrict = false;
             let isDisable = false;
             directives.forEach(({ type, params }) => {
                 switch (type) {
                     case "include":
-                        include.push(...params);
+                        include.push(params);
                         break;
                     case "exclude":
-                        exclude.push(...params);
+                        exclude.push(params);
                         break;
                     case "strict":
                         isStrict = true;
@@ -100,7 +100,7 @@ export function parseFilter(
                 isStrictAlias = false;
             }
             if (includeVideoIdsAlias.length > 0) {
-                includeVideoIds.push(...includeVideoIdsAlias);
+                includeVideoIds.push(includeVideoIdsAlias);
                 includeVideoIdsAlias = [];
             }
 

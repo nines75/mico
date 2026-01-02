@@ -40,7 +40,9 @@ export abstract class RuleFilter<T> extends Filter<T> {
                 // ルールを無効化するか判定
                 if (
                     exclude.length > 0 &&
-                    exclude.some((rule) => tagSet.has(rule))
+                    exclude.every((params) =>
+                        params.some((param) => tagSet.has(param)),
+                    )
                 ) {
                     this.excludeCount++;
                     return false;
@@ -49,9 +51,13 @@ export abstract class RuleFilter<T> extends Filter<T> {
                 // ルールを有効化するか判定
                 if (
                     (include.length > 0 &&
-                        include.some((rule) => tagSet.has(rule))) ||
+                        include.every((params) =>
+                            params.some((param) => tagSet.has(param)),
+                        )) ||
                     (includeVideoIds.length > 0 &&
-                        includeVideoIds.includes(tab.videoId))
+                        includeVideoIds.every((params) =>
+                            params.some((param) => param === tab.videoId),
+                        ))
                 ) {
                     this.includeCount++;
                     return true;

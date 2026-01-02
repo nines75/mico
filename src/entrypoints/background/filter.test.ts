@@ -111,7 +111,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ include: tags.slice(0, 2) }),
+            expected: createRules({ include: [tags.slice(0, 2)] }),
         },
         {
             name: "タグ間に複数の半角スペースを含む",
@@ -120,7 +120,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ include: tags.slice(0, 2) }),
+            expected: createRules({ include: [tags.slice(0, 2)] }),
         },
         {
             name: "誤り: タグ間に全角スペースを含む",
@@ -129,7 +129,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({ include: ["tag0　tag1"] }),
+            expected: createRules({ include: [["tag0　tag1"]] }),
         },
         {
             name: "誤り: @includeの後が全角スペース",
@@ -165,7 +165,7 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: ["sm1"] }, {}),
+            expected: createRules({ includeVideoIds: [["sm1"]] }, {}),
         },
         {
             name: "複数のタグ",
@@ -174,7 +174,7 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: ["sm1", "sm2"] }, {}),
+            expected: createRules({ includeVideoIds: [["sm1", "sm2"]] }, {}),
         },
         {
             name: "次の行にルールがない",
@@ -184,7 +184,7 @@ rule
 @end
 rule
 `,
-            expected: createRules({ includeVideoIds: ["sm1"] }),
+            expected: createRules({ includeVideoIds: [["sm1"]] }),
         },
         {
             name: "ディレクティブが連続",
@@ -194,7 +194,7 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: ["sm1"] }, {}),
+            expected: createRules({ includeVideoIds: [["sm1"]] }, {}),
         },
     ])("@v($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -338,30 +338,30 @@ rule
 `,
             expected: createRules(
                 {
-                    include: [tags[0]],
+                    include: [[tags[0]]],
                 },
                 {
-                    include: [tags[0]],
-                    exclude: [tags[1]],
+                    include: [[tags[0]]],
+                    exclude: [[tags[1]]],
                 },
                 {
-                    include: [tags[0]],
-                    exclude: [tags[1]],
+                    include: [[tags[0]]],
+                    exclude: [[tags[1]]],
                     isStrict: true,
                 },
                 {
-                    include: [tags[0]],
-                    exclude: [tags[1]],
+                    include: [[tags[0]]],
+                    exclude: [[tags[1]]],
                     isStrict: true,
                     isDisable: true,
                 },
                 {
-                    include: [tags[0], tags[2]],
-                    exclude: [tags[1]],
+                    include: [[tags[0]], [tags[2]]],
+                    exclude: [[tags[1]]],
                 },
                 {
-                    include: [tags[0]],
-                    exclude: [tags[1], tags[3]],
+                    include: [[tags[0]]],
+                    exclude: [[tags[1]], [tags[3]]],
                 },
                 {},
             ),
