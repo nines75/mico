@@ -209,6 +209,17 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
             return line;
         }
     };
+    const migrateToggleByTags = (line: string) => {
+        const result = /^@(include|exclude)( .*)$/.exec(line);
+        const directive = result?.[1];
+        const params = result?.[2];
+
+        if (directive !== undefined && params !== undefined) {
+            return `@${directive}-tags${params}`;
+        } else {
+            return line;
+        }
+    };
     // 無効化ルールであるか判定する必要があるのでparseが必要
     const migrateAllRule = (filter: string) => {
         const allRuleLines = parseFilter(filter, true)
@@ -234,11 +245,13 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
             migrateFilter(v2.ngCommand ?? "", [
                 migrateMiddleComment,
                 migrateStrictAlias,
+                migrateToggleByTags,
             ]),
         ),
         ngWord: migrateFilter(v2.ngWord ?? "", [
             migrateMiddleComment,
             migrateStrictAlias,
+            migrateToggleByTags,
         ]),
         ngId: migrateFilter(v2.ngId ?? "", [migrateMiddleComment]),
         ngUserName: migrateFilter(v2.ngUserName ?? "", [migrateMiddleComment]),

@@ -22,6 +22,7 @@ export const watchApiSchema = z.looseObject({
         response: z.looseObject({
             series: z
                 .looseObject({
+                    id: z.number().int(),
                     video: z.looseObject({
                         next: niconicoVideoSchema.nullable(), // シリーズの次の動画がなければnull
                     }),

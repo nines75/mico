@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRules, testTabData } from "@/utils/test.js";
+import { createRules, createTestToggle, testTabData } from "@/utils/test.js";
 import { RuleFilter } from "./rule-filter.js";
 import { defaultSettings } from "@/utils/config.js";
 
@@ -26,7 +26,7 @@ describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
     };
 
     // -------------------------------------------------------------------------------------------
-    // @include
+    // @include-tags
     // -------------------------------------------------------------------------------------------
 
     it.each([
@@ -34,18 +34,18 @@ describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
             name: "動画タグが単数",
             tags: ["tag"],
             expected: createRules(
-                { include: [["tag"]] },
-                { include: [["tag", "tag2"]] },
+                { include: createTestToggle({ tags: [["tag"]] }) },
+                { include: createTestToggle({ tags: [["tag", "tag2"]] }) },
             ).rules,
         },
         {
             name: "動画タグが複数",
             tags: ["tag", "tag2"],
             expected: createRules(
-                { include: [["tag"]] },
-                { include: [["tag2"]] },
-                { include: [["tag", "tag2"]] },
-                { include: [["tag"], ["tag2"]] },
+                { include: createTestToggle({ tags: [["tag"]] }) },
+                { include: createTestToggle({ tags: [["tag2"]] }) },
+                { include: createTestToggle({ tags: [["tag", "tag2"]] }) },
+                { include: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
         {
@@ -53,22 +53,22 @@ describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
             tags: [],
             expected: [],
         },
-    ])("@include($name)", ({ tags, expected }) => {
+    ])("@include-tags($name)", ({ tags, expected }) => {
         const filter = `
-@include tag
+@include-tags tag
 rule
 @end
 
-@include tag2
+@include-tags tag2
 rule
 @end
 
-@include tag tag2
+@include-tags tag tag2
 rule
 @end
 
-@include tag
-@include tag2
+@include-tags tag
+@include-tags tag2
 rule
 @end
 @end
@@ -78,7 +78,7 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // @exclude
+    // @exclude-tags
     // -------------------------------------------------------------------------------------------
 
     it.each([
@@ -86,8 +86,8 @@ rule
             name: "動画タグが単数",
             tags: ["tag"],
             expected: createRules(
-                { exclude: [["tag2"]] },
-                { exclude: [["tag"], ["tag2"]] },
+                { exclude: createTestToggle({ tags: [["tag2"]] }) },
+                { exclude: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
         {
@@ -99,28 +99,28 @@ rule
             name: "動画タグなし",
             tags: [],
             expected: createRules(
-                { exclude: [["tag"]] },
-                { exclude: [["tag2"]] },
-                { exclude: [["tag", "tag2"]] },
-                { exclude: [["tag"], ["tag2"]] },
+                { exclude: createTestToggle({ tags: [["tag"]] }) },
+                { exclude: createTestToggle({ tags: [["tag2"]] }) },
+                { exclude: createTestToggle({ tags: [["tag", "tag2"]] }) },
+                { exclude: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
-    ])("@exclude($name)", ({ tags, expected }) => {
+    ])("@exclude-tags($name)", ({ tags, expected }) => {
         const filter = `
-@exclude tag
+@exclude-tags tag
 rule
 @end
 
-@exclude tag2
+@exclude-tags tag2
 rule
 @end
 
-@exclude tag tag2
+@exclude-tags tag tag2
 rule
 @end
 
-@exclude tag
-@exclude tag2
+@exclude-tags tag
+@exclude-tags tag2
 rule
 @end
 @end
@@ -129,18 +129,20 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // @include + @exclude
+    // @include-tags + @exclude-tags
     // -------------------------------------------------------------------------------------------
 
     it.each([
         {
-            name: "@includeのみマッチ",
+            name: "@include-tagsのみマッチ",
             tags: ["tag"],
-            expected: createRules({ include: [["tag"]], exclude: [["tag2"]] })
-                .rules,
+            expected: createRules({
+                include: createTestToggle({ tags: [["tag"]] }),
+                exclude: createTestToggle({ tags: [["tag2"]] }),
+            }).rules,
         },
         {
-            name: "@excludeのみマッチ",
+            name: "@exclude-tagsのみマッチ",
             tags: ["tag2"],
             expected: [],
         },
@@ -154,10 +156,10 @@ rule
             tags: [],
             expected: [],
         },
-    ])("@include+@exclude($name)", ({ tags, expected }) => {
+    ])("@include-tags + @exclude-tags($name)", ({ tags, expected }) => {
         const filter = `
-@include tag
-@exclude tag2
+@include-tags tag
+@exclude-tags tag2
 rule
 `;
 
@@ -165,26 +167,91 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // @v
+    // @include-video-ids
+    // @exclude-video-ids
     // -------------------------------------------------------------------------------------------
 
-    it("@v", () => {
+    it.each([
+        {
+            name: "@include-video-ids",
+            expected: createRules(
+                { include: createTestToggle({ videoIds: [["sm1"]] }) },
+                { include: createTestToggle({ videoIds: [["sm1", "sm2"]] }) },
+            ).rules,
+        },
+        {
+            name: "@exclude-video-ids",
+            expected: createRules({
+                exclude: createTestToggle({ videoIds: [["sm2"]] }),
+            }).rules,
+        },
+    ])("$name", ({ name, expected }) => {
         const filter = `
-@v sm1
+${name} sm1
 rule
+@end
 
-@v sm2
+${name} sm2
 rule
+@end
 
-@v sm1 sm2
+${name} sm1 sm2
 rule
+@end
 `;
 
-        expect(filtering({ filter }).getRule()).toEqual(
-            createRules(
-                { includeVideoIds: [["sm1"]] },
-                { includeVideoIds: [["sm1", "sm2"]] },
+        expect(filtering({ filter }).getRule()).toEqual(expected);
+    });
+
+    // -------------------------------------------------------------------------------------------
+    // @include-user-ids
+    // @exclude-user-ids
+    // @include-series-ids
+    // @exclude-series-ids
+    // -------------------------------------------------------------------------------------------
+
+    it.each([
+        {
+            name: "@include-user-ids",
+            expected: createRules(
+                { include: createTestToggle({ userIds: [["1"]] }) },
+                { include: createTestToggle({ userIds: [["1", "2"]] }) },
             ).rules,
-        );
+        },
+        {
+            name: "@exclude-user-ids",
+            expected: createRules({
+                exclude: createTestToggle({ userIds: [["2"]] }),
+            }).rules,
+        },
+        {
+            name: "@include-series-ids",
+            expected: createRules(
+                { include: createTestToggle({ seriesIds: [["1"]] }) },
+                { include: createTestToggle({ seriesIds: [["1", "2"]] }) },
+            ).rules,
+        },
+        {
+            name: "@exclude-series-ids",
+            expected: createRules({
+                exclude: createTestToggle({ seriesIds: [["2"]] }),
+            }).rules,
+        },
+    ])("$name", ({ name, expected }) => {
+        const filter = `
+${name} 1
+rule
+@end
+
+${name} 2
+rule
+@end
+
+${name} 1 2
+rule
+@end
+`;
+
+        expect(filtering({ filter }).getRule()).toEqual(expected);
     });
 });

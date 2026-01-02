@@ -1,5 +1,10 @@
 import type { parseFilter } from "@/entrypoints/background/filter.js";
-import { type Rule } from "@/entrypoints/background/filter.js";
+import type { Toggle } from "@/entrypoints/background/rule.js";
+import {
+    createDefaultRule,
+    createDefaultToggle,
+    type Rule,
+} from "@/entrypoints/background/rule.js";
 import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
 import type {
     CommentMap,
@@ -180,8 +185,9 @@ export const testTabData = {
         hasNext: false,
     },
     videoId: "sm1",
+    seriesId: "1",
     title: "title",
-    userId: "user-id",
+    userId: "1",
     userName: "user-name",
     tags: [],
 } as const satisfies TabData;
@@ -216,17 +222,18 @@ export function createRules(
     return {
         rules: rules.map((rule): Rule => {
             return {
-                ...{
-                    rule: "rule",
-                    isStrict: false,
-                    isDisable: false,
-                    include: [],
-                    exclude: [],
-                    includeVideoIds: [],
-                },
+                rule: "rule",
+                ...createDefaultRule(),
                 ...rule,
             };
         }),
         invalidCount: 0,
+    };
+}
+
+export function createTestToggle(toggle: Partial<Toggle>): Toggle {
+    return {
+        ...createDefaultToggle(),
+        ...toggle,
     };
 }

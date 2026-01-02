@@ -30,22 +30,13 @@ export default function Count({ selectedTab }: CountProps) {
                 <Info name="無効なルールの数:" value={count.invalid} />
             )}
             {count !== undefined && "include" in count && count.include > 0 && (
-                <Info
-                    name="@includeによって有効化されたルールの数:"
-                    value={count.include}
-                />
+                <Info name="有効化されたルールの数:" value={count.include} />
             )}
             {count !== undefined && "exclude" in count && count.exclude > 0 && (
-                <Info
-                    name="@excludeによって無効化されたルールの数:"
-                    value={count.exclude}
-                />
+                <Info name="無効化されたルールの数:" value={count.exclude} />
             )}
             {count !== undefined && "disable" in count && count.disable > 0 && (
-                <Info
-                    name="@disableによって無効化されたコマンドの数:"
-                    value={count.disable}
-                />
+                <Info name="無効化されたコマンドの数:" value={count.disable} />
             )}
         </>
     );

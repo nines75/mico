@@ -2,9 +2,11 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import type { Thread } from "@/types/api/comment.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import type { CommonLog } from "@/types/storage/log.types.js";
-import type { Rule } from "../../filter.js";
 import { parseFilter } from "../../filter.js";
 import { RuleFilter } from "../rule-filter.js";
+import { objectKeys } from "ts-extras";
+import type { Rule } from "../../rule.js";
+import { createDefaultRule } from "../../rule.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
     protected log: CommonLog = new Map();
@@ -67,11 +69,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         const newUserIds = [...userIds].map((id): Rule => {
             return {
                 rule: id,
-                isStrict: false,
-                isDisable: false,
-                include: [],
-                exclude: [],
-                includeVideoIds: [],
+                ...createDefaultRule(),
             };
         });
 
@@ -81,16 +79,17 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 }
 
 export function parseNgUserId(settings: Settings, hasSpecific = true) {
-    return parseFilter(settings.ngUserId, true).rules.filter((rule) => {
-        if (hasSpecific) return true;
+    return parseFilter(settings.ngUserId, true).rules.filter(
+        ({ include, exclude }) => {
+            if (hasSpecific) return true;
 
-        // コンテキストに応じて無効化されないルールのみを返す
-        return (
-            rule.include.length === 0 &&
-            rule.exclude.length === 0 &&
-            rule.includeVideoIds.length === 0
-        );
-    });
+            // コンテキストに応じて無効化されないルールのみを返す
+            return (
+                objectKeys(include).every((key) => include[key].length === 0) &&
+                objectKeys(exclude).every((key) => exclude[key].length === 0)
+            );
+        },
+    );
 }
 
 /**

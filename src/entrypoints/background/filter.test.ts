@@ -1,7 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
 import { parseFilter } from "./filter.js";
-import { createRules } from "@/utils/test.js";
+import { createTestToggle, createRules } from "@/utils/test.js";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
@@ -100,56 +100,73 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // @include/@exclude
+    // @include-tags
     // -------------------------------------------------------------------------------------------
 
     it.each([
         {
             name: "通常",
             filter: `
-@include tag0 TAG1
+@include-tags tag0 TAG1
 rule
 @end
 `,
-            expected: createRules({ include: [tags.slice(0, 2)] }),
+            expected: createRules({
+                include: createTestToggle({ tags: [tags.slice(0, 2)] }),
+            }),
         },
         {
             name: "タグ間に複数の半角スペースを含む",
             filter: `
-@include    tag0    tag1    
+@include-tags    tag0    tag1    
 rule
 @end
 `,
-            expected: createRules({ include: [tags.slice(0, 2)] }),
+            expected: createRules({
+                include: createTestToggle({ tags: [tags.slice(0, 2)] }),
+            }),
+        },
+        {
+            // スペースのみの場合パラメータは空の配列としてパースされる
+            // これが有効なディレクティブとしてカウントされるとruleFilter()が正しく動作しないため空配列が除外されていることを確認する
+            name: "ディレクティブの後にスペースのみ含む",
+            filter: `
+@include-tags 
+rule
+@end
+`,
+            expected: createRules({}),
         },
         {
             name: "誤り: タグ間に全角スペースを含む",
             filter: `
-@include tag0　tag1
+@include-tags tag0　tag1
 rule
 @end
 `,
-            expected: createRules({ include: [["tag0　tag1"]] }),
+            expected: createRules({
+                include: createTestToggle({ tags: [["tag0　tag1"]] }),
+            }),
         },
         {
             name: "誤り: @includeの後が全角スペース",
             filter: `
-@include　tag0 tag1
+@include-tags　tag0 tag1
 rule
 @end
 `,
             expected: createRules({}),
         },
         {
-            name: "誤り: @includes",
+            name: "誤り: @includes-tagss",
             filter: `
-@includes tag0 tag1
+@include-tagss tag0 tag1
 rule
 @end
 `,
             expected: createRules({}),
         },
-    ])("@include($name)", ({ filter, expected }) => {
+    ])("@include-tags($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
     });
 
@@ -165,7 +182,10 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: [["sm1"]] }, {}),
+            expected: createRules(
+                { include: createTestToggle({ videoIds: [["sm1"]] }) },
+                {},
+            ),
         },
         {
             name: "複数のタグ",
@@ -174,7 +194,10 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: [["sm1", "sm2"]] }, {}),
+            expected: createRules(
+                { include: createTestToggle({ videoIds: [["sm1", "sm2"]] }) },
+                {},
+            ),
         },
         {
             name: "次の行にルールがない",
@@ -184,7 +207,9 @@ rule
 @end
 rule
 `,
-            expected: createRules({ includeVideoIds: [["sm1"]] }),
+            expected: createRules({
+                include: createTestToggle({ videoIds: [["sm1"]] }),
+            }),
         },
         {
             name: "ディレクティブが連続",
@@ -194,7 +219,10 @@ rule
 rule
 rule
 `,
-            expected: createRules({ includeVideoIds: [["sm1"]] }, {}),
+            expected: createRules(
+                { include: createTestToggle({ videoIds: [["sm1"]] }) },
+                {},
+            ),
         },
     ])("@v($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -309,10 +337,10 @@ rule
         {
             name: "ネスト",
             filter: `
-@include tag0
+@include-tags tag0
 rule
 
-@exclude tag1
+@exclude-tags tag1
 rule
 
 @strict
@@ -324,11 +352,11 @@ rule
 
 @end
 
-@include tag2
+@include-tags tag2
 rule
 @end
 
-@exclude tag3
+@exclude-tags tag3
 rule
 @end
 
@@ -338,30 +366,30 @@ rule
 `,
             expected: createRules(
                 {
-                    include: [[tags[0]]],
+                    include: createTestToggle({ tags: [[tags[0]]] }),
                 },
                 {
-                    include: [[tags[0]]],
-                    exclude: [[tags[1]]],
+                    include: createTestToggle({ tags: [[tags[0]]] }),
+                    exclude: createTestToggle({ tags: [[tags[1]]] }),
                 },
                 {
-                    include: [[tags[0]]],
-                    exclude: [[tags[1]]],
+                    include: createTestToggle({ tags: [[tags[0]]] }),
+                    exclude: createTestToggle({ tags: [[tags[1]]] }),
                     isStrict: true,
                 },
                 {
-                    include: [[tags[0]]],
-                    exclude: [[tags[1]]],
+                    include: createTestToggle({ tags: [[tags[0]]] }),
+                    exclude: createTestToggle({ tags: [[tags[1]]] }),
                     isStrict: true,
                     isDisable: true,
                 },
                 {
-                    include: [[tags[0]], [tags[2]]],
-                    exclude: [[tags[1]]],
+                    include: createTestToggle({ tags: [[tags[0]], [tags[2]]] }),
+                    exclude: createTestToggle({ tags: [[tags[1]]] }),
                 },
                 {
-                    include: [[tags[0]]],
-                    exclude: [[tags[1]], [tags[3]]],
+                    include: createTestToggle({ tags: [[tags[0]]] }),
+                    exclude: createTestToggle({ tags: [[tags[1]], [tags[3]]] }),
                 },
                 {},
             ),

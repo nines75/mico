@@ -1,12 +1,13 @@
 import type { Settings } from "@/types/storage/settings.types.js";
 import { isString } from "@/utils/util.js";
 import type { ConditionalPick } from "type-fest";
-import type { Rule } from "../filter.js";
 import { parseFilter } from "../filter.js";
 import type { Filters } from "./filter-comment.js";
 import { Filter, sortCommentId } from "./filter.js";
 import type { CommonLog } from "@/types/storage/log.types.js";
 import type { TabData } from "@/types/storage/tab.types.js";
+import { objectKeys } from "ts-extras";
+import type { Rule } from "../rule.js";
 
 export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];
@@ -33,42 +34,46 @@ export abstract class RuleFilter<T> extends Filter<T> {
     }
 
     filterRule(tab: TabData) {
-        const tagSet = new Set(tab.tags.map((tag) => tag.toLowerCase()));
+        const { videoId, userId, seriesId } = tab;
+        const tags = tab.tags.map((tag) => tag.toLowerCase());
 
-        this.rules = this.rules.filter(
-            ({ include, exclude, includeVideoIds }) => {
-                // ルールを無効化するか判定
-                if (
-                    exclude.length > 0 &&
-                    exclude.every((params) =>
-                        params.some((param) => tagSet.has(param)),
-                    )
-                ) {
-                    this.excludeCount++;
-                    return false;
-                }
+        const matches = (
+            rules: string[][],
+            pred: (param: string) => boolean,
+        ) => {
+            return (
+                rules.length > 0 && rules.every((params) => params.some(pred))
+            );
+        };
 
-                // ルールを有効化するか判定
-                if (
-                    (include.length > 0 &&
-                        include.every((params) =>
-                            params.some((param) => tagSet.has(param)),
-                        )) ||
-                    (includeVideoIds.length > 0 &&
-                        includeVideoIds.every((params) =>
-                            params.some((param) => param === tab.videoId),
-                        ))
-                ) {
-                    this.includeCount++;
-                    return true;
-                }
-
-                if (include.length === 0 && includeVideoIds.length === 0)
-                    return true;
-
+        this.rules = this.rules.filter(({ include, exclude }) => {
+            // ルールを無効化するか判定
+            if (
+                matches(exclude.tags, (param) => tags.includes(param)) ||
+                matches(exclude.videoIds, (param) => param === videoId) ||
+                matches(exclude.userIds, (param) => param === userId) ||
+                matches(exclude.seriesIds, (param) => param === seriesId)
+            ) {
+                this.excludeCount++;
                 return false;
-            },
-        );
+            }
+
+            // ルールを有効化するか判定
+            if (
+                matches(include.tags, (param) => tags.includes(param)) ||
+                matches(include.videoIds, (param) => param === videoId) ||
+                matches(include.userIds, (param) => param === userId) ||
+                matches(include.seriesIds, (param) => param === seriesId)
+            ) {
+                this.includeCount++;
+                return true;
+            }
+
+            if (objectKeys(include).every((key) => include[key].length === 0))
+                return true;
+
+            return false;
+        });
     }
 
     countRules(): number {

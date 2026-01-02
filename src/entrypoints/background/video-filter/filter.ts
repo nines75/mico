@@ -2,11 +2,11 @@ import type { CommonLog } from "@/types/storage/log.types.js";
 import type { Settings } from "@/types/storage/settings.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import type { VideoMap } from "@/types/storage/log-video.types.js";
-import type { Rule } from "../filter.js";
 import { parseFilter } from "../filter.js";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import type { Filters } from "./filter-video.js";
 import type { ConditionalPick } from "type-fest";
+import type { Rule } from "../rule.js";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;

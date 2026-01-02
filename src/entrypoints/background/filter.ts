@@ -1,13 +1,32 @@
-export interface Rule {
-    /** 元のフィルターを改行区切りで配列にしたときのインデックス */
-    index?: number;
-    rule: string | RegExp;
-    isStrict: boolean;
-    isDisable: boolean;
-    include: string[][];
-    exclude: string[][];
-    includeVideoIds: string[][];
-}
+import { createDefaultToggle, type Rule } from "./rule.js";
+
+export type Directive =
+    | {
+          type:
+              | "include-tags"
+              | "include-video-ids"
+              | "include-user-ids"
+              | "include-series-ids"
+              | "exclude-tags"
+              | "exclude-video-ids"
+              | "exclude-user-ids"
+              | "exclude-series-ids";
+          params: string[];
+      }
+    | {
+          type: "strict" | "disable";
+      };
+
+export const paramDirectives = [
+    "include-tags",
+    "include-video-ids",
+    "include-user-ids",
+    "include-series-ids",
+    "exclude-tags",
+    "exclude-video-ids",
+    "exclude-user-ids",
+    "exclude-series-ids",
+] as const satisfies Extract<Directive, { params: string[] }>["type"][];
 
 export function parseFilter(
     filter: string,
@@ -16,14 +35,9 @@ export function parseFilter(
     rules: Rule[];
     invalidCount: number;
 } {
-    interface Directive {
-        type: "include" | "exclude" | "strict" | "disable";
-        params: string[];
-    }
-
     let invalidCount = 0;
     let isStrictAlias = false;
-    let includeVideoIdsAlias: string[] = [];
+    let videoIdsAlias: string[] = [];
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
@@ -40,26 +54,33 @@ export function parseFilter(
         .map((line, index) => ({ rule: line, index }))
         .filter(({ rule }) => rule !== "" && !rule.startsWith("#"))
         .forEach(({ rule, index }) => {
+            // -------------------------------------------------------------------------------------------
+            // ディレクティブのパース
+            // -------------------------------------------------------------------------------------------
             const trimmedRule = rule.trimEnd();
 
-            if (rule.startsWith("@include ")) {
-                directives.push({ type: "include", params: parseParams(rule) });
-                return;
-            }
-            if (rule.startsWith("@exclude ")) {
-                directives.push({ type: "exclude", params: parseParams(rule) });
-                return;
+            // パラメータあり
+            for (const directive of paramDirectives) {
+                if (rule.startsWith(`@${directive} `)) {
+                    directives.push({
+                        type: directive,
+                        params: parseParams(rule),
+                    });
+                    return;
+                }
             }
             if (rule.startsWith("@v ")) {
-                includeVideoIdsAlias = parseParams(rule);
+                videoIdsAlias = parseParams(rule);
                 return;
             }
+
+            // パラメータなし
             if (trimmedRule === "@strict") {
-                directives.push({ type: "strict", params: [] });
+                directives.push({ type: "strict" });
                 return;
             }
             if (trimmedRule === "@disable") {
-                directives.push({ type: "disable", params: [] });
+                directives.push({ type: "disable" });
                 return;
             }
             if (trimmedRule === "@end") {
@@ -70,22 +91,58 @@ export function parseFilter(
                 isStrictAlias = true;
                 return;
             }
+
             // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
             if (rule.startsWith("@")) return;
 
-            const include: string[][] = [];
-            const exclude: string[][] = [];
-            const includeVideoIds: string[][] = [];
+            // -------------------------------------------------------------------------------------------
+            // ルールに適用するディレクティブを決定
+            // -------------------------------------------------------------------------------------------
+
+            const pushParams = (
+                array: string[][],
+                directive: { params: string[] },
+            ) => {
+                const params = directive.params;
+                if (params.length > 0) array.push(params);
+            };
+
             let isStrict = false;
             let isDisable = false;
-            directives.forEach(({ type, params }) => {
-                switch (type) {
-                    case "include":
-                        include.push(params);
+            const include = createDefaultToggle();
+            const exclude = createDefaultToggle();
+
+            directives.forEach((directive) => {
+                switch (directive.type) {
+                    // include
+                    case "include-tags":
+                        pushParams(include.tags, directive);
                         break;
-                    case "exclude":
-                        exclude.push(params);
+                    case "include-video-ids":
+                        pushParams(include.videoIds, directive);
                         break;
+                    case "include-user-ids":
+                        pushParams(include.userIds, directive);
+                        break;
+                    case "include-series-ids":
+                        pushParams(include.seriesIds, directive);
+                        break;
+
+                    // exclude
+                    case "exclude-tags":
+                        pushParams(exclude.tags, directive);
+                        break;
+                    case "exclude-video-ids":
+                        pushParams(exclude.videoIds, directive);
+                        break;
+                    case "exclude-user-ids":
+                        pushParams(exclude.userIds, directive);
+                        break;
+                    case "exclude-series-ids":
+                        pushParams(exclude.seriesIds, directive);
+                        break;
+
+                    // その他
                     case "strict":
                         isStrict = true;
                         break;
@@ -95,14 +152,19 @@ export function parseFilter(
                 }
             });
 
+            // エイリアスの適用
             if (isStrictAlias) {
                 isStrict = true;
                 isStrictAlias = false;
             }
-            if (includeVideoIdsAlias.length > 0) {
-                includeVideoIds.push(includeVideoIdsAlias);
-                includeVideoIdsAlias = [];
+            if (videoIdsAlias.length > 0) {
+                include.videoIds.push(videoIdsAlias);
+                videoIdsAlias = [];
             }
+
+            // -------------------------------------------------------------------------------------------
+            // ルールのパース
+            // -------------------------------------------------------------------------------------------
 
             const regexResult = /^\/(.*)\/(.*)$/.exec(rule);
             const regexStr = regexResult?.[1];
@@ -131,7 +193,6 @@ export function parseFilter(
                     isDisable,
                     include,
                     exclude,
-                    includeVideoIds,
                 },
                 ...(hasIndex ? { index } : {}),
             });

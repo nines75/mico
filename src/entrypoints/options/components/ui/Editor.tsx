@@ -36,13 +36,19 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 import { catchAsync } from "@/utils/util.js";
 import { sendMessageToBackground } from "@/utils/browser.js";
+import { paramDirectives } from "@/entrypoints/background/filter.js";
+
+const toggleDirectivesRegex = RegExp(
+    `^(${paramDirectives.map((directive) => `@${directive}`).join("|")}|@v)`,
+    "g",
+);
 
 const generalHighlights = createHighlights([
     { regex: /^#.*$/g, style: "color: gray" },
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
 ]);
 const ngUserIdHighlights = createHighlights([
-    { regex: /^(@include|@exclude|@v)/g, style: "color: lime" },
+    { regex: toggleDirectivesRegex, style: "color: lime" },
     { regex: /^@end/g, style: "color: cyan" },
 ]);
 const ngWordHighlights = [
@@ -55,14 +61,10 @@ const ngCommandHighlights = [
 ];
 
 const ngUserIdCompletions: Completion[] = [
-    {
-        label: "@include",
+    ...paramDirectives.map((directive) => ({
+        label: `@${directive}`,
         type: "keyword",
-    },
-    {
-        label: "@exclude",
-        type: "keyword",
-    },
+    })),
     {
         label: "@end",
         type: "keyword",
@@ -323,7 +325,7 @@ function getCompletions(id: keyof Settings): Extension {
     return autocompletion({
         override: [
             (context: CompletionContext): CompletionResult | null => {
-                const word = context.matchBefore(/@\w*/);
+                const word = context.matchBefore(/@[\w-]*/);
                 if (
                     word === null ||
                     (word.from === word.to && !context.explicit)
