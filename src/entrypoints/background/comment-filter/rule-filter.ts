@@ -37,22 +37,17 @@ export abstract class RuleFilter<T> extends Filter<T> {
         const { videoId, userId, seriesId } = tab;
         const tags = tab.tags.map((tag) => tag.toLowerCase());
 
-        const matches = (
-            rules: string[][],
-            pred: (param: string) => boolean,
-        ) => {
-            return (
-                rules.length > 0 && rules.every((params) => params.some(pred))
-            );
+        const matches = (rules: string[][], pred: (arg: string) => boolean) => {
+            return rules.length > 0 && rules.every((args) => args.some(pred));
         };
 
         this.rules = this.rules.filter(({ include, exclude }) => {
             // ルールを無効化するか判定
             if (
-                matches(exclude.tags, (param) => tags.includes(param)) ||
-                matches(exclude.videoIds, (param) => param === videoId) ||
-                matches(exclude.userIds, (param) => param === userId) ||
-                matches(exclude.seriesIds, (param) => param === seriesId)
+                matches(exclude.tags, (arg) => tags.includes(arg)) ||
+                matches(exclude.videoIds, (arg) => arg === videoId) ||
+                matches(exclude.userIds, (arg) => arg === userId) ||
+                matches(exclude.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.excludeCount++;
                 return false;
@@ -60,10 +55,10 @@ export abstract class RuleFilter<T> extends Filter<T> {
 
             // ルールを有効化するか判定
             if (
-                matches(include.tags, (param) => tags.includes(param)) ||
-                matches(include.videoIds, (param) => param === videoId) ||
-                matches(include.userIds, (param) => param === userId) ||
-                matches(include.seriesIds, (param) => param === seriesId)
+                matches(include.tags, (arg) => tags.includes(arg)) ||
+                matches(include.videoIds, (arg) => arg === videoId) ||
+                matches(include.userIds, (arg) => arg === userId) ||
+                matches(include.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.includeCount++;
                 return true;

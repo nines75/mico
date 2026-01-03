@@ -11,13 +11,13 @@ export type Directive =
               | "exclude-video-ids"
               | "exclude-user-ids"
               | "exclude-series-ids";
-          params: string[];
+          args: string[];
       }
     | {
           type: "strict" | "disable";
       };
 
-export const paramDirectives = [
+export const argsDirectives = [
     "include-tags",
     "include-video-ids",
     "include-user-ids",
@@ -26,7 +26,7 @@ export const paramDirectives = [
     "exclude-video-ids",
     "exclude-user-ids",
     "exclude-series-ids",
-] as const satisfies Extract<Directive, { params: string[] }>["type"][];
+] as const satisfies Extract<Directive, { args: string[] }>["type"][];
 
 export function parseFilter(
     filter: string,
@@ -41,40 +41,40 @@ export function parseFilter(
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
-    const parseParams = (str: string) => {
-        return str
+    const parseArgs = (line: string) => {
+        return line
             .split(" ")
-            .filter((rule) => rule !== "")
             .slice(1)
-            .map((rule) => rule.toLowerCase());
+            .filter((arg) => arg !== "")
+            .map((arg) => arg.toLowerCase());
     };
 
     filter
         .split("\n")
-        .map((line, index) => ({ rule: line, index }))
-        .filter(({ rule }) => rule !== "" && !rule.startsWith("#"))
-        .forEach(({ rule, index }) => {
+        .map((line, index) => ({ line, index }))
+        .filter(({ line }) => line !== "" && !line.startsWith("#"))
+        .forEach(({ line, index }) => {
             // -------------------------------------------------------------------------------------------
             // ディレクティブのパース
             // -------------------------------------------------------------------------------------------
-            const trimmedRule = rule.trimEnd();
+            const trimmedRule = line.trimEnd();
 
-            // パラメータあり
-            for (const directive of paramDirectives) {
-                if (rule.startsWith(`@${directive} `)) {
+            // 引数あり
+            for (const directive of argsDirectives) {
+                if (line.startsWith(`@${directive} `)) {
                     directives.push({
                         type: directive,
-                        params: parseParams(rule),
+                        args: parseArgs(line),
                     });
                     return;
                 }
             }
-            if (rule.startsWith("@v ")) {
-                videoIdsAlias = parseParams(rule);
+            if (line.startsWith("@v ")) {
+                videoIdsAlias = parseArgs(line);
                 return;
             }
 
-            // パラメータなし
+            // 引数なし
             if (trimmedRule === "@strict") {
                 directives.push({ type: "strict" });
                 return;
@@ -93,18 +93,18 @@ export function parseFilter(
             }
 
             // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
-            if (rule.startsWith("@")) return;
+            if (line.startsWith("@")) return;
 
             // -------------------------------------------------------------------------------------------
             // ルールに適用するディレクティブを決定
             // -------------------------------------------------------------------------------------------
 
-            const pushParams = (
+            const pushArgs = (
                 array: string[][],
-                directive: { params: string[] },
+                directive: { args: string[] },
             ) => {
-                const params = directive.params;
-                if (params.length > 0) array.push(params);
+                const args = directive.args;
+                if (args.length > 0) array.push(args);
             };
 
             let isStrict = false;
@@ -116,30 +116,30 @@ export function parseFilter(
                 switch (directive.type) {
                     // include
                     case "include-tags":
-                        pushParams(include.tags, directive);
+                        pushArgs(include.tags, directive);
                         break;
                     case "include-video-ids":
-                        pushParams(include.videoIds, directive);
+                        pushArgs(include.videoIds, directive);
                         break;
                     case "include-user-ids":
-                        pushParams(include.userIds, directive);
+                        pushArgs(include.userIds, directive);
                         break;
                     case "include-series-ids":
-                        pushParams(include.seriesIds, directive);
+                        pushArgs(include.seriesIds, directive);
                         break;
 
                     // exclude
                     case "exclude-tags":
-                        pushParams(exclude.tags, directive);
+                        pushArgs(exclude.tags, directive);
                         break;
                     case "exclude-video-ids":
-                        pushParams(exclude.videoIds, directive);
+                        pushArgs(exclude.videoIds, directive);
                         break;
                     case "exclude-user-ids":
-                        pushParams(exclude.userIds, directive);
+                        pushArgs(exclude.userIds, directive);
                         break;
                     case "exclude-series-ids":
-                        pushParams(exclude.seriesIds, directive);
+                        pushArgs(exclude.seriesIds, directive);
                         break;
 
                     // その他
@@ -166,7 +166,7 @@ export function parseFilter(
             // ルールのパース
             // -------------------------------------------------------------------------------------------
 
-            const regexResult = /^\/(.*)\/(.*)$/.exec(rule);
+            const regexResult = /^\/(.*)\/(.*)$/.exec(line);
             const regexStr = regexResult?.[1];
             const flags = regexResult?.[2];
 
@@ -188,7 +188,7 @@ export function parseFilter(
 
             rules.push({
                 ...{
-                    rule: regex ?? rule,
+                    rule: regex ?? line,
                     isStrict,
                     isDisable,
                     include,

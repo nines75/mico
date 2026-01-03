@@ -212,10 +212,10 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
     const migrateToggleByTags = (line: string) => {
         const result = /^@(include|exclude)( .*)$/.exec(line);
         const directive = result?.[1];
-        const params = result?.[2];
+        const args = result?.[2];
 
-        if (directive !== undefined && params !== undefined) {
-            return `@${directive}-tags${params}`;
+        if (directive !== undefined && args !== undefined) {
+            return `@${directive}-tags${args}`;
         } else {
             return line;
         }

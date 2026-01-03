@@ -36,10 +36,10 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 import { catchAsync } from "@/utils/util.js";
 import { sendMessageToBackground } from "@/utils/browser.js";
-import { paramDirectives } from "@/entrypoints/background/parse-filter.js";
+import { argsDirectives } from "@/entrypoints/background/parse-filter.js";
 
 const toggleDirectivesRegex = RegExp(
-    `^(${paramDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
+    `^(${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
     "g",
 );
 
@@ -63,7 +63,7 @@ const ngCommandHighlights = [
 ];
 
 const ngUserIdCompletions: Completion[] = [
-    ...paramDirectives.map((directive) => ({
+    ...argsDirectives.map((directive) => ({
         label: `@${directive} `,
         type: "keyword",
     })),
