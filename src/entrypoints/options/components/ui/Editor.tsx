@@ -39,7 +39,7 @@ import { sendMessageToBackground } from "@/utils/browser.js";
 import { argsDirectives } from "@/entrypoints/background/parse-filter.js";
 
 const toggleDirectivesRegex = RegExp(
-    `^(${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
+    `^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
     "g",
 );
 
@@ -53,7 +53,7 @@ const ngUserIdHighlights = createHighlights([
 ]);
 const ngWordHighlights = [
     ...createHighlights([
-        { regex: /^(@strict|@s)\s*$/g, style: "color: coral" },
+        { regex: /^(?:@strict|@s)\s*$/g, style: "color: coral" },
     ]),
     ...ngUserIdHighlights,
 ];
