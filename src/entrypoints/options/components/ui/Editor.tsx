@@ -39,7 +39,7 @@ import { sendMessageToBackground } from "@/utils/browser.js";
 import { paramDirectives } from "@/entrypoints/background/filter.js";
 
 const toggleDirectivesRegex = RegExp(
-    `^(${paramDirectives.map((directive) => `@${directive}`).join("|")}|@v)`,
+    `^(${paramDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
     "g",
 );
 
@@ -49,28 +49,30 @@ const generalHighlights = createHighlights([
 ]);
 const ngUserIdHighlights = createHighlights([
     { regex: toggleDirectivesRegex, style: "color: lime" },
-    { regex: /^@end/g, style: "color: cyan" },
+    { regex: /^@end\s*$/g, style: "color: cyan" },
 ]);
 const ngWordHighlights = [
-    ...createHighlights([{ regex: /^(@strict|@s)/g, style: "color: coral" }]),
+    ...createHighlights([
+        { regex: /^(@strict|@s)\s*$/g, style: "color: coral" },
+    ]),
     ...ngUserIdHighlights,
 ];
 const ngCommandHighlights = [
-    ...createHighlights([{ regex: /^@disable/g, style: "color: yellow" }]),
+    ...createHighlights([{ regex: /^@disable\s*$/g, style: "color: yellow" }]),
     ...ngWordHighlights,
 ];
 
 const ngUserIdCompletions: Completion[] = [
     ...paramDirectives.map((directive) => ({
-        label: `@${directive}`,
+        label: `@${directive} `,
         type: "keyword",
     })),
     {
-        label: "@end",
+        label: "@v ",
         type: "keyword",
     },
     {
-        label: "@v",
+        label: "@end",
         type: "keyword",
     },
 ];
