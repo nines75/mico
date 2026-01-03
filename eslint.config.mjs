@@ -1,6 +1,6 @@
 import js from "@eslint/js";
 import ts from "typescript-eslint";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
@@ -15,6 +15,8 @@ const pathsExceptBackground = [
 
 export default defineConfig(
     // 下に行くほど優先される
+
+    globalIgnores([".output/", ".wxt/", "eslint.config.mjs"]),
 
     // https://typescript-eslint.io/getting-started
     js.configs.recommended,
