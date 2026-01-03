@@ -9,8 +9,8 @@ import type { FilteredData } from "./filter-video.js";
 import { changeBadgeState, sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
-import { getRuleFilters } from "./filter.js";
 import { objectEntries } from "ts-extras";
+import { getRuleFilters } from "./rule-filter.js";
 
 export async function saveLog(
     filteredData: FilteredData,

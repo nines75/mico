@@ -1,6 +1,6 @@
 import type { Settings } from "@/types/storage/settings.types.js";
-import { PartialFilter } from "../filter.js";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import { PartialFilter } from "../partial-filter.js";
 
 export class TitleFilter extends PartialFilter {
     constructor(settings: Settings) {
