@@ -80,7 +80,8 @@ export async function removeNgUserId(
         const lines = settings.ngUserId.split("\n");
 
         // 自動追加された行の削除判定
-        removeLines.forEach((index) => {
+        // ループ内で変更するため新しい配列を作る
+        [...removeLines].forEach((index) => {
             const before1 = index - 1;
             const before2 = index - 2;
             const after = index + 1;
@@ -142,7 +143,8 @@ export async function removeNgId(id: string) {
         );
         const lines = settings.ngId.split("\n");
 
-        removeLines.forEach((index) => {
+        // ループ内で変更するため新しい配列を作る
+        [...removeLines].forEach((index) => {
             const before = index - 1;
             const after = index + 1;
 
