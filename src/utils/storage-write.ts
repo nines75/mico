@@ -73,7 +73,7 @@ export async function removeNgUserId(
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
-        const toRemoveLines = new Set(
+        const removeLines = new Set(
             parseNgUserId(settings, isRemoveSpecific)
                 .filter(({ rule }) => userIds.has(rule.toString()))
                 .map(({ index }) => index as number),
@@ -81,7 +81,7 @@ export async function removeNgUserId(
         const lines = settings.ngUserId.split("\n");
 
         // 自動追加された行の削除判定
-        toRemoveLines.forEach((index) => {
+        removeLines.forEach((index) => {
             const before1 = index - 1;
             const before2 = index - 2;
             const after = index + 1;
@@ -91,8 +91,8 @@ export async function removeNgUserId(
                 lines[before1]?.startsWith("# ") === true &&
                 lines[after] === ""
             ) {
-                toRemoveLines.add(before1);
-                toRemoveLines.add(after);
+                removeLines.add(before1);
+                removeLines.add(after);
             }
             // コンテキスト + @v
             else if (
@@ -100,19 +100,19 @@ export async function removeNgUserId(
                 lines[before1]?.startsWith("@v ") === true &&
                 lines[after] === ""
             ) {
-                toRemoveLines.add(before2);
-                toRemoveLines.add(before1);
-                toRemoveLines.add(after);
+                removeLines.add(before2);
+                removeLines.add(before1);
+                removeLines.add(after);
             }
             // @v
             else if (lines[before1]?.startsWith("@v ") === true) {
-                toRemoveLines.add(before1);
+                removeLines.add(before1);
             }
         });
 
         return {
             ngUserId: lines
-                .filter((_, index) => !toRemoveLines.has(index))
+                .filter((_, index) => !removeLines.has(index))
                 .join("\n"),
         };
     };
@@ -136,14 +136,14 @@ export async function removeNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
-        const toRemoveLines = new Set(
+        const removeLines = new Set(
             parseFilter(settings.ngId, true)
-                .rules.filter((data) => id === data.rule)
-                .map((data) => data.index as number),
+                .rules.filter(({ rule }) => rule === id)
+                .map(({ index }) => index as number),
         );
         const lines = settings.ngId.split("\n");
 
-        toRemoveLines.forEach((index) => {
+        removeLines.forEach((index) => {
             const before = index - 1;
             const after = index + 1;
 
@@ -152,14 +152,14 @@ export async function removeNgId(id: string) {
                 lines[before]?.startsWith("# ") === true &&
                 lines[after] === ""
             ) {
-                toRemoveLines.add(before);
-                toRemoveLines.add(after);
+                removeLines.add(before);
+                removeLines.add(after);
             }
         });
 
         return {
             ngId: lines
-                .filter((_, index) => !toRemoveLines.has(index))
+                .filter((_, index) => !removeLines.has(index))
                 .join("\n"),
         };
     };

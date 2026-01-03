@@ -139,13 +139,13 @@ function renderUserIdLog(
 ) {
     return log
         .keys()
-        .map((userId) => (
+        .map((key) => (
             <Block
-                key={userId}
+                key={key}
                 comment={
                     <>
                         {"# "}
-                        {strictUserIds?.has(userId) === true && (
+                        {strictUserIds?.has(key) === true && (
                             <span
                                 className="strict-symbol"
                                 title={titles.strictSymbol}
@@ -155,14 +155,14 @@ function renderUserIdLog(
                         )}
                         <Clickable
                             title={titles.removeNgUserId}
-                            onClick={catchAsync(() => onClickUserId(userId))}
+                            onClick={catchAsync(() => onClickUserId(key))}
                         >
-                            {userId}
+                            {key}
                         </Clickable>
                     </>
                 }
             >
-                {renderComments(log.get(userId), comments, settings, false)}
+                {renderComments(log.get(key), comments, settings, false)}
             </Block>
         ))
         .toArray();
@@ -188,9 +188,9 @@ function renderCommandLog(
 ) {
     return log
         .keys()
-        .map((command) => (
-            <Block key={command} comment={`# ${command}`}>
-                {renderComments(log.get(command), comments, settings, true)}
+        .map((key) => (
+            <Block key={key} comment={`# ${key}`}>
+                {renderComments(log.get(key), comments, settings, true)}
             </Block>
         ))
         .toArray();
@@ -199,9 +199,9 @@ function renderCommandLog(
 function renderWordLog(log: WordLog, comments: CommentMap, settings: Settings) {
     return log
         .keys()
-        .map((word) => (
-            <Block key={word} comment={`# ${word}`}>
-                {renderDuplicateComments(log.get(word), comments, settings)}
+        .map((key) => (
+            <Block key={key} comment={`# ${key}`}>
+                {renderDuplicateComments(log.get(key), comments, settings)}
             </Block>
         ))
         .toArray();
@@ -369,8 +369,8 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     const ngUserIds = getBasicNgUserIdSet(settings);
     const targetUserIds = new Set(
         (Array.isArray(comments) ? comments : [comments])
-            .filter((comment) => !ngUserIds.has(comment.userId))
-            .map((comment) => comment.userId),
+            .map(({ userId }) => userId)
+            .filter((userId) => !ngUserIds.has(userId)),
     );
 
     if (targetUserIds.size === 0) {

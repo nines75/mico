@@ -93,7 +93,7 @@ function watchApiFilter(
         response.owner?.nickname ??
         response.channel?.name ??
         metadata.jsonLds[0]?.author?.name;
-    const tags = response.tag.items.map((data) => data.name);
+    const tags = response.tag.items.map(({ name }) => name);
 
     return {
         series: seriesData,

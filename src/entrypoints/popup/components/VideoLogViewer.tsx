@@ -78,38 +78,36 @@ function Log({ id, filtering }: LogProps) {
 // -------------------------------------------------------------------------------------------
 
 function renderIdLog(log: IdLog, videos: VideoMap) {
-    const renderRegexLog = (regex: string) => {
+    const renderRegexLog = (key: string) => {
         return (
-            <Block key={regex} comment={`# ${regex}`}>
-                {renderVideos(log.regex.get(regex), videos, (video) => (
-                    <span>{escapeNewline(video.title)}</span>
+            <Block key={key} comment={`# ${key}`}>
+                {renderVideos(log.regex.get(key), videos, ({ title }) => (
+                    <span>{escapeNewline(title)}</span>
                 ))}
             </Block>
         );
     };
-    const renderUserIdLog = (userId: string) => {
-        const videoId = log.userId.get(userId)?.[0] as string;
+    const renderUserIdLog = (key: string) => {
+        const videoId = log.userId.get(key)?.[0] as string;
         const userName = videos.get(videoId)?.owner?.name;
 
         return (
             <Block
-                key={userId}
+                key={key}
                 comment={
                     <>
                         {"# "}
                         <Clickable
                             title={titles.removeNgUserId}
-                            onClick={catchAsync(() =>
-                                onClickId(userId, "user"),
-                            )}
+                            onClick={catchAsync(() => onClickId(key, "user"))}
                         >
-                            {`${userId}${userName === null || userName === undefined ? "" : `(${userName})`}`}
+                            {`${key}${userName === null || userName === undefined ? "" : `(${userName})`}`}
                         </Clickable>
                     </>
                 }
             >
-                {renderVideos(log.userId.get(userId), videos, (video) => (
-                    <span>{escapeNewline(video.title)}</span>
+                {renderVideos(log.userId.get(key), videos, ({ title }) => (
+                    <span>{escapeNewline(title)}</span>
                 ))}
             </Block>
         );
@@ -121,14 +119,14 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
                 // 正規表現によるログを生成
                 log.regex
                     .keys()
-                    .map((regex) => renderRegexLog(regex))
+                    .map((key) => renderRegexLog(key))
                     .toArray()
             }
             {
                 // ユーザーIDによるログを生成
                 log.userId
                     .keys()
-                    .map((userId) => renderUserIdLog(userId))
+                    .map((key) => renderUserIdLog(key))
                     .toArray()
             }
             {
@@ -155,9 +153,9 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
 function renderCommonLog(log: CommonLog, videos: VideoMap) {
     return log
         .keys()
-        .map((rule) => (
-            <Block key={rule} comment={`# ${rule}`}>
-                {renderVideos(log.get(rule), videos, getTitleElement)}
+        .map((key) => (
+            <Block key={key} comment={`# ${key}`}>
+                {renderVideos(log.get(key), videos, getTitleElement)}
             </Block>
         ))
         .toArray();
@@ -174,11 +172,11 @@ function renderVideos(
 ) {
     const settings = useStorageStore.getState().settings;
 
-    return ids?.map((videoId) => {
-        const video = videos.get(videoId) as NiconicoVideo;
+    return ids?.map((id) => {
+        const video = videos.get(id) as NiconicoVideo;
 
         return (
-            <Line key={videoId}>
+            <Line key={id}>
                 {settings.isTitleRenderedAsLink
                     ? renderVideoLink(video)
                     : getElement(video)}
@@ -236,7 +234,7 @@ async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     if (!confirm(replace(messages.ngUserId.confirmAddition, [userId]))) return;
 
     const settings = useStorageStore.getState().settings;
-    const userName = video.owner?.name ?? undefined;
+    const userName = video.owner?.name;
 
     await sendMessageToBackground({
         type: "add-ng-id",

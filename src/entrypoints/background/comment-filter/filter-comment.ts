@@ -79,7 +79,7 @@ export function filterComment(
 
     // 適用するルールを決定
     Object.values(ruleFilters).forEach((filter) => {
-        filter.filterRule(tab);
+        filter.filterRules(tab);
     });
 
     // -------------------------------------------------------------------------------------------

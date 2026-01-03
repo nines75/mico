@@ -21,15 +21,13 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 
         const userIdSet = new Set<string>();
         const regexes: RegExp[] = [];
-        rules
-            .map((data) => data.rule)
-            .forEach((rule) => {
-                if (isString(rule)) {
-                    userIdSet.add(rule);
-                } else {
-                    regexes.push(rule);
-                }
-            });
+        rules.forEach(({ rule }) => {
+            if (isString(rule)) {
+                userIdSet.add(rule);
+            } else {
+                regexes.push(rule);
+            }
+        });
 
         this.traverseThreads(threads, (comment) => {
             let key: string | undefined;

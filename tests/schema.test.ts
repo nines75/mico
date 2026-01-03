@@ -5,7 +5,7 @@ import { rankingApiSchema } from "@/types/api/ranking.types.js";
 import { recommendApiSchema } from "@/types/api/recommend.types.js";
 import { searchApiSchema } from "@/types/api/search.types.js";
 import { watchApiSchema } from "@/types/api/watch.types.js";
-import { z } from "@/utils/zod.js";
+import type { z } from "@/utils/zod.js";
 import { test, expect } from "@playwright/test";
 
 const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";

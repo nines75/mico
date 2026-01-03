@@ -42,7 +42,7 @@ export type BackgroundMessage =
       }
     | {
           type: "add-ng-user-id-from-dropdown";
-          data: DropdownComment & { specific: boolean };
+          data: DropdownComment & { isSpecific: boolean };
       }
     | {
           type: "get-comments-from-dropdown";
@@ -245,7 +245,7 @@ async function addNgUserIdFromDropdown(
     await addNgUserId(
         new Set([
             formatNgUserId(
-                data.specific ? `@v ${videoId}\n${userId}` : userId,
+                data.isSpecific ? `@v ${videoId}\n${userId}` : userId,
                 `body(dropdown): ${data.body}`,
                 settings,
             ),
@@ -253,11 +253,9 @@ async function addNgUserIdFromDropdown(
     );
 
     const tasks: Promise<unknown>[] = [];
-
     if (settings.isAutoReload) {
         tasks.push(sendMessageToContent(tabId, { type: "reload" }));
     }
-
     if (settings.isNotifyAddNgUserId) {
         tasks.push(sendNotification(messages.ngUserId.additionSuccess));
     }
@@ -341,7 +339,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
 // https://github.com/nines75/mico/issues/46
 function convertNoToComment(log: LogData, data: DropdownComment) {
     const comments = log.commentFilterLog?.filtering?.renderedComments.filter(
-        (comment) => comment.no === data.commentNo,
+        ({ no }) => no === data.commentNo,
     );
     if (comments === undefined || comments.length === 0) return;
 
@@ -350,10 +348,10 @@ function convertNoToComment(log: LogData, data: DropdownComment) {
 
     // コメント番号の重複あり
     if (data.isOwner) {
-        return comments.find((comment) => comment.fork === "owner");
+        return comments.find(({ fork }) => fork === "owner");
     } else {
         const filteredComments = comments.filter(
-            (comment) => comment.body === data.body,
+            ({ body }) => body === data.body,
         );
 
         // コメントが特定できない場合

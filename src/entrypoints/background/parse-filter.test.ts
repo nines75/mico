@@ -1,7 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
 import { parseFilter } from "./parse-filter.js";
-import { createTestToggle, createRules } from "@/utils/test.js";
+import { mockToggle, mockRules } from "@/utils/test.js";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
@@ -19,7 +19,7 @@ rule
 @end
 rule
 `,
-            expected: createRules({ isStrict: true }, {}),
+            expected: mockRules({ isStrict: true }, {}),
         },
         {
             name: "不要な@end",
@@ -29,7 +29,7 @@ rule
 
 rule
 `,
-            expected: createRules({}),
+            expected: mockRules({}),
         },
         {
             name: "@endなし",
@@ -37,7 +37,7 @@ rule
 @strict
 rule
 `,
-            expected: createRules({ isStrict: true }),
+            expected: mockRules({ isStrict: true }),
         },
     ])("$name", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -63,7 +63,7 @@ rule
 rule
 rule
 `,
-            expected: createRules({ isStrict: true }, {}),
+            expected: mockRules({ isStrict: true }, {}),
         },
         {
             name: "@sの次の行にルールがない",
@@ -91,11 +91,11 @@ rule
 rule
 rule
 `,
-            expected: createRules({ isStrict: true }, {}),
+            expected: mockRules({ isStrict: true }, {}),
         },
     ])("$name", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(
-            expected ?? createRules({ isStrict: true }),
+            expected ?? mockRules({ isStrict: true }),
         );
     });
 
@@ -111,8 +111,8 @@ rule
 rule
 @end
 `,
-            expected: createRules({
-                include: createTestToggle({ tags: [tags.slice(0, 2)] }),
+            expected: mockRules({
+                include: mockToggle({ tags: [tags.slice(0, 2)] }),
             }),
         },
         {
@@ -122,20 +122,20 @@ rule
 rule
 @end
 `,
-            expected: createRules({
-                include: createTestToggle({ tags: [tags.slice(0, 2)] }),
+            expected: mockRules({
+                include: mockToggle({ tags: [tags.slice(0, 2)] }),
             }),
         },
         {
             // スペースのみの場合パラメータは空の配列としてパースされる
-            // これが有効なディレクティブとしてカウントされるとruleFilter()が正しく動作しないため空配列が除外されていることを確認する
+            // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
             name: "ディレクティブの後にスペースのみ含む",
             filter: `
 @include-tags 
 rule
 @end
 `,
-            expected: createRules({}),
+            expected: mockRules({}),
         },
         {
             name: "誤り: タグ間に全角スペースを含む",
@@ -144,8 +144,8 @@ rule
 rule
 @end
 `,
-            expected: createRules({
-                include: createTestToggle({ tags: [["tag0　tag1"]] }),
+            expected: mockRules({
+                include: mockToggle({ tags: [["tag0　tag1"]] }),
             }),
         },
         {
@@ -155,7 +155,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({}),
+            expected: mockRules({}),
         },
         {
             name: "誤り: @includes-tagss",
@@ -164,7 +164,7 @@ rule
 rule
 @end
 `,
-            expected: createRules({}),
+            expected: mockRules({}),
         },
     ])("@include-tags($name)", ({ filter, expected }) => {
         expect(parseFilter(filter)).toEqual(expected);
@@ -182,8 +182,8 @@ rule
 rule
 rule
 `,
-            expected: createRules(
-                { include: createTestToggle({ videoIds: [["sm1"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ videoIds: [["sm1"]] }) },
                 {},
             ),
         },
@@ -194,8 +194,8 @@ rule
 rule
 rule
 `,
-            expected: createRules(
-                { include: createTestToggle({ videoIds: [["sm1", "sm2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ videoIds: [["sm1", "sm2"]] }) },
                 {},
             ),
         },
@@ -207,8 +207,8 @@ rule
 @end
 rule
 `,
-            expected: createRules({
-                include: createTestToggle({ videoIds: [["sm1"]] }),
+            expected: mockRules({
+                include: mockToggle({ videoIds: [["sm1"]] }),
             }),
         },
         {
@@ -219,8 +219,8 @@ rule
 rule
 rule
 `,
-            expected: createRules(
-                { include: createTestToggle({ videoIds: [["sm1"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ videoIds: [["sm1"]] }) },
                 {},
             ),
         },
@@ -239,7 +239,7 @@ rule
 @end
 `;
 
-        expect(parseFilter(filter)).toEqual(createRules({ isDisable: true }));
+        expect(parseFilter(filter)).toEqual(mockRules({ isDisable: true }));
     });
 
     // -------------------------------------------------------------------------------------------
@@ -265,16 +265,16 @@ rule
 
 rule
 `,
-            expected: createRules(...[1, 3, 5].map((index) => ({ index }))),
+            expected: mockRules(...[1, 3, 5].map((index) => ({ index }))),
         },
         {
             name: "文字列ルール",
             filter: "rule",
-            expected: createRules({}),
+            expected: mockRules({}),
         },
     ])("$name", ({ filter, hasIndex, expected }) => {
         expect(parseFilter(filter, hasIndex ?? false)).toEqual(
-            expected ?? createRules(),
+            expected ?? mockRules(),
         );
     });
 
@@ -282,22 +282,22 @@ rule
         {
             name: "フラグなし",
             filter: "/rule/",
-            expected: createRules({ rule: RegExp("rule") }),
+            expected: mockRules({ rule: RegExp("rule") }),
         },
         {
             name: "フラグあり",
             filter: "/rule/i",
-            expected: createRules({ rule: RegExp("rule", "i") }),
+            expected: mockRules({ rule: RegExp("rule", "i") }),
         },
         {
             name: "複数のフラグ",
             filter: "/rule/isum",
-            expected: createRules({ rule: RegExp("rule", "isum") }),
+            expected: mockRules({ rule: RegExp("rule", "isum") }),
         },
         {
             name: "誤り: 先頭に空白文字を含む",
             filter: " /rule/",
-            expected: createRules({ rule: " /rule/" }),
+            expected: mockRules({ rule: " /rule/" }),
         },
         {
             name: "誤り: 末尾に空白文字を含む",
@@ -332,7 +332,7 @@ rule
 @directive
 rule
 `,
-            expected: createRules({}),
+            expected: mockRules({}),
         },
         {
             name: "ネスト",
@@ -364,32 +364,32 @@ rule
 @end
 rule
 `,
-            expected: createRules(
+            expected: mockRules(
                 {
-                    include: createTestToggle({ tags: [[tags[0]]] }),
+                    include: mockToggle({ tags: [[tags[0]]] }),
                 },
                 {
-                    include: createTestToggle({ tags: [[tags[0]]] }),
-                    exclude: createTestToggle({ tags: [[tags[1]]] }),
+                    include: mockToggle({ tags: [[tags[0]]] }),
+                    exclude: mockToggle({ tags: [[tags[1]]] }),
                 },
                 {
-                    include: createTestToggle({ tags: [[tags[0]]] }),
-                    exclude: createTestToggle({ tags: [[tags[1]]] }),
+                    include: mockToggle({ tags: [[tags[0]]] }),
+                    exclude: mockToggle({ tags: [[tags[1]]] }),
                     isStrict: true,
                 },
                 {
-                    include: createTestToggle({ tags: [[tags[0]]] }),
-                    exclude: createTestToggle({ tags: [[tags[1]]] }),
+                    include: mockToggle({ tags: [[tags[0]]] }),
+                    exclude: mockToggle({ tags: [[tags[1]]] }),
                     isStrict: true,
                     isDisable: true,
                 },
                 {
-                    include: createTestToggle({ tags: [[tags[0]], [tags[2]]] }),
-                    exclude: createTestToggle({ tags: [[tags[1]]] }),
+                    include: mockToggle({ tags: [[tags[0]], [tags[2]]] }),
+                    exclude: mockToggle({ tags: [[tags[1]]] }),
                 },
                 {
-                    include: createTestToggle({ tags: [[tags[0]]] }),
-                    exclude: createTestToggle({ tags: [[tags[1]], [tags[3]]] }),
+                    include: mockToggle({ tags: [[tags[0]]] }),
+                    exclude: mockToggle({ tags: [[tags[1]], [tags[3]]] }),
                 },
                 {},
             ),

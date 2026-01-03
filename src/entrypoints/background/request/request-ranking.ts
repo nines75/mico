@@ -56,7 +56,7 @@ function rankingApiFilter(
     if (filteredData === undefined) return;
 
     const filteredVideos = videos.filter(
-        (video) => !filteredData.filteredIds.has(video.id),
+        ({ id }) => !filteredData.filteredIds.has(id),
     );
 
     rankingApi.data.response.$getTeibanRanking.data.items = filteredVideos;

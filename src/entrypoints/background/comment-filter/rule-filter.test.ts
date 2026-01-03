@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRules, createTestToggle, testTabData } from "@/utils/test.js";
+import { mockRules, mockToggle, testTabData } from "@/utils/test.js";
 import { RuleFilter } from "./rule-filter.js";
 import { defaultSettings } from "@/utils/config.js";
 
@@ -14,10 +14,10 @@ class TestFilter extends RuleFilter<unknown> {
     }
 }
 
-describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
+describe(`${RuleFilter.prototype.filterRules.name}()`, () => {
     const filtering = (options: { filter: string; tags?: string[] }) => {
         const testFilter = new TestFilter(defaultSettings, options.filter);
-        testFilter.filterRule({
+        testFilter.filterRules({
             ...testTabData,
             ...{ tags: options.tags ?? [] },
         });
@@ -33,19 +33,19 @@ describe(`${RuleFilter.prototype.filterRule.name}()`, () => {
         {
             name: "動画タグが単数",
             tags: ["tag"],
-            expected: createRules(
-                { include: createTestToggle({ tags: [["tag"]] }) },
-                { include: createTestToggle({ tags: [["tag", "tag2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ tags: [["tag"]] }) },
+                { include: mockToggle({ tags: [["tag", "tag2"]] }) },
             ).rules,
         },
         {
             name: "動画タグが複数",
             tags: ["tag", "tag2"],
-            expected: createRules(
-                { include: createTestToggle({ tags: [["tag"]] }) },
-                { include: createTestToggle({ tags: [["tag2"]] }) },
-                { include: createTestToggle({ tags: [["tag", "tag2"]] }) },
-                { include: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ tags: [["tag"]] }) },
+                { include: mockToggle({ tags: [["tag2"]] }) },
+                { include: mockToggle({ tags: [["tag", "tag2"]] }) },
+                { include: mockToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
         {
@@ -85,9 +85,9 @@ rule
         {
             name: "動画タグが単数",
             tags: ["tag"],
-            expected: createRules(
-                { exclude: createTestToggle({ tags: [["tag2"]] }) },
-                { exclude: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
+            expected: mockRules(
+                { exclude: mockToggle({ tags: [["tag2"]] }) },
+                { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
         {
@@ -98,11 +98,11 @@ rule
         {
             name: "動画タグなし",
             tags: [],
-            expected: createRules(
-                { exclude: createTestToggle({ tags: [["tag"]] }) },
-                { exclude: createTestToggle({ tags: [["tag2"]] }) },
-                { exclude: createTestToggle({ tags: [["tag", "tag2"]] }) },
-                { exclude: createTestToggle({ tags: [["tag"], ["tag2"]] }) },
+            expected: mockRules(
+                { exclude: mockToggle({ tags: [["tag"]] }) },
+                { exclude: mockToggle({ tags: [["tag2"]] }) },
+                { exclude: mockToggle({ tags: [["tag", "tag2"]] }) },
+                { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
             ).rules,
         },
     ])("@exclude-tags($name)", ({ tags, expected }) => {
@@ -136,9 +136,9 @@ rule
         {
             name: "@include-tagsのみマッチ",
             tags: ["tag"],
-            expected: createRules({
-                include: createTestToggle({ tags: [["tag"]] }),
-                exclude: createTestToggle({ tags: [["tag2"]] }),
+            expected: mockRules({
+                include: mockToggle({ tags: [["tag"]] }),
+                exclude: mockToggle({ tags: [["tag2"]] }),
             }).rules,
         },
         {
@@ -174,15 +174,15 @@ rule
     it.each([
         {
             name: "@include-video-ids",
-            expected: createRules(
-                { include: createTestToggle({ videoIds: [["sm1"]] }) },
-                { include: createTestToggle({ videoIds: [["sm1", "sm2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ videoIds: [["sm1"]] }) },
+                { include: mockToggle({ videoIds: [["sm1", "sm2"]] }) },
             ).rules,
         },
         {
             name: "@exclude-video-ids",
-            expected: createRules({
-                exclude: createTestToggle({ videoIds: [["sm2"]] }),
+            expected: mockRules({
+                exclude: mockToggle({ videoIds: [["sm2"]] }),
             }).rules,
         },
     ])("$name", ({ name, expected }) => {
@@ -213,28 +213,28 @@ rule
     it.each([
         {
             name: "@include-user-ids",
-            expected: createRules(
-                { include: createTestToggle({ userIds: [["1"]] }) },
-                { include: createTestToggle({ userIds: [["1", "2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ userIds: [["1"]] }) },
+                { include: mockToggle({ userIds: [["1", "2"]] }) },
             ).rules,
         },
         {
             name: "@exclude-user-ids",
-            expected: createRules({
-                exclude: createTestToggle({ userIds: [["2"]] }),
+            expected: mockRules({
+                exclude: mockToggle({ userIds: [["2"]] }),
             }).rules,
         },
         {
             name: "@include-series-ids",
-            expected: createRules(
-                { include: createTestToggle({ seriesIds: [["1"]] }) },
-                { include: createTestToggle({ seriesIds: [["1", "2"]] }) },
+            expected: mockRules(
+                { include: mockToggle({ seriesIds: [["1"]] }) },
+                { include: mockToggle({ seriesIds: [["1", "2"]] }) },
             ).rules,
         },
         {
             name: "@exclude-series-ids",
-            expected: createRules({
-                exclude: createTestToggle({ seriesIds: [["2"]] }),
+            expected: mockRules({
+                exclude: mockToggle({ seriesIds: [["2"]] }),
             }).rules,
         },
     ])("$name", ({ name, expected }) => {

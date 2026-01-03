@@ -85,14 +85,14 @@ function appendButton(
 
 function getNgButtonCallback(
     dropdownComment: DropdownComment,
-    specific: boolean,
+    isSpecific: boolean,
 ) {
     return catchAsync(async () => {
         await sendMessageToBackground({
             type: "add-ng-user-id-from-dropdown",
             data: {
                 ...dropdownComment,
-                specific,
+                isSpecific,
             },
         });
     });

@@ -13,7 +13,7 @@ import type {
 import type { TabData } from "@/types/storage/tab.types.js";
 import { expect } from "vitest";
 
-export function createComments(
+export function mockComments(
     ...comments: Partial<NiconicoComment>[]
 ): NiconicoComment[] {
     return comments.map((comment) => {
@@ -42,7 +42,7 @@ export const testThreads = [
     {
         fork: "owner",
         commentCount: 2,
-        comments: createComments(
+        comments: mockComments(
             {
                 commands: [], // 投稿者コメントは184コマンドが付与されない
             },
@@ -55,7 +55,7 @@ export const testThreads = [
     {
         fork: "main",
         commentCount: 3,
-        comments: createComments(
+        comments: mockComments(
             {
                 id: "1002",
                 commands: ["big", "184"],
@@ -85,7 +85,7 @@ export const testThreads = [
     {
         fork: "easy",
         commentCount: 2,
-        comments: createComments(
+        comments: mockComments(
             {
                 id: "1005",
                 userId: "user-id-easy",
@@ -199,16 +199,15 @@ export function checkComment(
 ) {
     // 実際のコメントIDを抽出
     const actualIds = threads.flatMap((thread) =>
-        thread.comments.map((comment) => comment.id),
+        thread.comments.map(({ id }) => id),
     );
 
     // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
     const expectedIds: string[] = [];
     (baseThreads ?? testThreads).forEach((thread) => {
-        thread.comments.forEach((comment) => {
-            const targetId = comment.id;
-            if (!filteredIds.includes(targetId)) {
-                expectedIds.push(targetId);
+        thread.comments.forEach(({ id }) => {
+            if (!filteredIds.includes(id)) {
+                expectedIds.push(id);
             }
         });
     });
@@ -216,7 +215,7 @@ export function checkComment(
     expect(actualIds.sort()).toEqual(expectedIds.sort());
 }
 
-export function createRules(
+export function mockRules(
     ...rules: Partial<Rule>[]
 ): ReturnType<typeof parseFilter> {
     return {
@@ -231,7 +230,7 @@ export function createRules(
     };
 }
 
-export function createTestToggle(toggle: Partial<Toggle>): Toggle {
+export function mockToggle(toggle: Partial<Toggle>): Toggle {
     return {
         ...createDefaultToggle(),
         ...toggle,

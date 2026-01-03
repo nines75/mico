@@ -12,15 +12,13 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds, settings.ngCommand);
 
-        const rules = this.rules.map((data) => {
+        this.rules = this.rules.map((data) => {
             const rule = data.rule;
             return {
                 ...data,
                 rule: isString(rule) ? rule.toLowerCase() : rule,
             };
         });
-
-        this.rules = rules;
     }
 
     getDisableCount(): number {
@@ -37,7 +35,6 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                       if (a.isDisable === b.isDisable) return 0;
                       return a.isDisable ? 1 : -1;
                   });
-
         if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
@@ -48,7 +45,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                 ),
             ];
 
-            // コマンドを置き換えた後に定義しないと前の参照を持ってしまう
+            // 前の参照を持たないようコマンドを置き換えた後に定義する
             const { id, commands, userId } = comment;
             const disableCommands = new Set<string>();
 

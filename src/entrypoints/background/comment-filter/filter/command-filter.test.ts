@@ -35,8 +35,8 @@ describe(CommandFilter.name, () => {
 
     const hasCommand = (targets: string[]) =>
         threads.some((thread) =>
-            thread.comments.some((comment) =>
-                comment.commands.some((command) =>
+            thread.comments.some(({ commands }) =>
+                commands.some((command) =>
                     targets.includes(command.toLowerCase()),
                 ),
             ),

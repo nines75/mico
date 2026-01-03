@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config.js";
 import type { Settings } from "@/types/storage/settings.types.js";
 import { CommentAssistFilter } from "./comment-assist-filter.js";
-import { createComments } from "@/utils/test.js";
+import { mockComments } from "@/utils/test.js";
 import type { CommonLog } from "@/types/storage/log.types.js";
 
 // コメントアシストは既存のコメントデータでテストできないので別で用意
@@ -12,14 +12,14 @@ export const commentAssistThreads = [
     {
         fork: "owner",
         commentCount: 1,
-        comments: createComments({
+        comments: mockComments({
             commands: [],
         }),
     },
     {
         fork: "main",
         commentCount: 4,
-        comments: createComments(
+        comments: mockComments(
             {
                 id: "1001",
                 commands: [],

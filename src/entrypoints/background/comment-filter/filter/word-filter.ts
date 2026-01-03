@@ -16,7 +16,6 @@ export class WordFilter extends StrictFilter<WordLog> {
         const rules = isStrictOnly
             ? this.rules.filter((rule) => rule.isStrict)
             : this.rules.filter((rule) => !rule.isStrict);
-
         if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
@@ -58,20 +57,20 @@ export class WordFilter extends StrictFilter<WordLog> {
 
     override sortLog(): void {
         const log: WordLog = new Map();
-        const ngWords = new Set(
+        const keys = new Set(
             this.rules.map(({ rule }) => this.createKey(rule)),
         );
 
         // フィルター順にソート
-        ngWords.forEach((word) => {
-            const map = this.log.get(word);
+        keys.forEach((key) => {
+            const map = this.log.get(key);
             if (map !== undefined) {
-                log.set(word, map);
+                log.set(key, map);
             }
         });
 
         // 各ルールのコメントをソート
-        log.forEach((map, word) => {
+        log.forEach((map, key) => {
             const sampleIds = [...map.values()].map((ids) => ids[0] as string); // コメントIDは必ず一つ以上存在する
             const sortedMap = new Map(
                 sortCommentId(sampleIds, this.filteredComments).map((id) => {
@@ -84,7 +83,7 @@ export class WordFilter extends StrictFilter<WordLog> {
                 }),
             );
 
-            log.set(word, sortedMap);
+            log.set(key, sortedMap);
         });
 
         this.log = log;

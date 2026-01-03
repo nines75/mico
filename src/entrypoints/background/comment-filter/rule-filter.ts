@@ -33,7 +33,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
         return this.invalidCount;
     }
 
-    filterRule(tab: TabData) {
+    filterRules(tab: TabData) {
         const { videoId, userId, seriesId } = tab;
         const tags = tab.tags.map((tag) => tag.toLowerCase());
 
