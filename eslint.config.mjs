@@ -92,6 +92,7 @@ export default defineConfig(
             eqeqeq: "error",
             "no-shadow": ["error", { allow: ["_"] }],
             "no-implicit-coercion": "error", // 暗黙的な型強制を禁止
+            "no-param-reassign": "error", // 関数パラメータへの再代入を禁止
             "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅しているかチェック
             "@typescript-eslint/consistent-type-imports": "warn", // importでtypeキーワードを強制
             // booleanへの型強制を禁止

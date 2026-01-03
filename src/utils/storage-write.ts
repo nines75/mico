@@ -38,12 +38,11 @@ export async function setSettings(
     value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
     await queue.add(async () => {
-        if (typeof value === "function") {
-            value = await value();
-        }
-
         const settings = await getSettingsData();
-        const newSettings = customMerge(settings, value);
+        const newSettings = customMerge(
+            settings,
+            typeof value === "function" ? await value() : value,
+        );
 
         await storage.setItem(`${storageArea}:settings`, newSettings);
     });
