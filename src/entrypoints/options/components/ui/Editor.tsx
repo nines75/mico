@@ -36,7 +36,7 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import { useStorageStore } from "@/utils/store.js";
 import { catchAsync } from "@/utils/util.js";
 import { sendMessageToBackground } from "@/utils/browser.js";
-import { paramDirectives } from "@/entrypoints/background/filter.js";
+import { paramDirectives } from "@/entrypoints/background/parse-filter.js";
 
 const toggleDirectivesRegex = RegExp(
     `^(${paramDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,

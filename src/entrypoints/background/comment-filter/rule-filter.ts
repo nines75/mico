@@ -1,7 +1,7 @@
 import type { Settings } from "@/types/storage/settings.types.js";
 import { isString } from "@/utils/util.js";
 import type { ConditionalPick } from "type-fest";
-import { parseFilter } from "../filter.js";
+import { parseFilter } from "../parse-filter.js";
 import type { Filters } from "./filter-comment.js";
 import { Filter, sortCommentId } from "./filter.js";
 import type { CommonLog } from "@/types/storage/log.types.js";

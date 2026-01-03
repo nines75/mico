@@ -1,4 +1,4 @@
-import type { parseFilter } from "@/entrypoints/background/filter.js";
+import type { parseFilter } from "@/entrypoints/background/parse-filter.js";
 import type { Toggle } from "@/entrypoints/background/rule.js";
 import {
     createDefaultRule,

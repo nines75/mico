@@ -1,6 +1,6 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilter } from "./filter.js";
+import { parseFilter } from "./parse-filter.js";
 import { createTestToggle, createRules } from "@/utils/test.js";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;

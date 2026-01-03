@@ -2,7 +2,7 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import type { Thread } from "@/types/api/comment.types.js";
 import { isString, pushCommonLog } from "@/utils/util.js";
 import type { CommonLog } from "@/types/storage/log.types.js";
-import { parseFilter } from "../../filter.js";
+import { parseFilter } from "../../parse-filter.js";
 import { RuleFilter } from "../rule-filter.js";
 import { objectKeys } from "ts-extras";
 import type { Rule } from "../../rule.js";

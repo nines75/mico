@@ -7,7 +7,7 @@ import type {
     SettingsTab,
 } from "./settings.types.js";
 import { customMerge } from "@/utils/util.js";
-import { parseFilter } from "@/entrypoints/background/filter.js";
+import { parseFilter } from "@/entrypoints/background/parse-filter.js";
 
 export interface SettingsV1 {
     // -------------------------------------------------------------------------------------------
