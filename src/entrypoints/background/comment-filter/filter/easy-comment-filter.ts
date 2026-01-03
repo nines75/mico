@@ -4,7 +4,7 @@ import type { CommonLog } from "@/types/storage/log.types.js";
 import { pushCommonLog } from "@/utils/util.js";
 
 export class EasyCommentFilter extends Filter<CommonLog> {
-    protected log: CommonLog = new Map();
+    protected override log: CommonLog = new Map();
 
     override filtering(threads: Thread[]): void {
         if (!this.settings.isEasyCommentHidden) return;

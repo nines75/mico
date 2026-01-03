@@ -6,7 +6,7 @@ import type { WordLog } from "@/types/storage/log-comment.types.js";
 import { StrictFilter } from "../strict-filter.js";
 
 export class WordFilter extends StrictFilter<WordLog> {
-    protected log: WordLog = new Map();
+    protected override log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds, settings.ngWord);

@@ -3,7 +3,7 @@ import { Filter, sortCommentId } from "../filter.js";
 import type { ScoreLog } from "@/types/storage/log-comment.types.js";
 
 export class ScoreFilter extends Filter<ScoreLog> {
-    protected log: ScoreLog = [];
+    protected override log: ScoreLog = [];
 
     override filtering(threads: Thread[]): void {
         if (!this.settings.isScoreFilterEnabled) return;

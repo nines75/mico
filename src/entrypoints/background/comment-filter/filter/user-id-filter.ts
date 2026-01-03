@@ -9,7 +9,7 @@ import type { Rule } from "../../rule.js";
 import { createDefaultRule } from "../../rule.js";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
-    protected log: CommonLog = new Map();
+    protected override log: CommonLog = new Map();
 
     constructor(settings: Settings) {
         super(settings, settings.ngUserId);

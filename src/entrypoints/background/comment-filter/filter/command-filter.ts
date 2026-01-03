@@ -7,7 +7,7 @@ import type { Rule } from "../../rule.js";
 
 export class CommandFilter extends StrictFilter<CommonLog> {
     private disableCount = 0;
-    protected log: CommonLog = new Map();
+    protected override log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
         super(settings, ngUserIds, settings.ngCommand);
