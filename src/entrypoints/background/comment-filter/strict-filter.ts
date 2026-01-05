@@ -2,6 +2,7 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import type { ConditionalPick } from "type-fest";
 import type { Filters } from "./filter-comment.js";
 import { RuleFilter } from "./rule-filter.js";
+import type { Thread } from "@/types/api/comment.types.js";
 
 export abstract class StrictFilter<T> extends RuleFilter<T> {
     protected ngUserIds: Set<string>;
@@ -12,6 +13,11 @@ export abstract class StrictFilter<T> extends RuleFilter<T> {
 
         this.ngUserIds = ngUserIds;
     }
+
+    abstract override filtering(
+        threads: Thread[],
+        isStrictOnly?: boolean,
+    ): void;
 
     getStrictData() {
         return this.strictData;

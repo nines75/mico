@@ -13,7 +13,7 @@ export abstract class Filter<T> {
         this.settings = settings;
     }
 
-    abstract filtering(threads: Thread[], isStrictOnly: boolean): void;
+    abstract filtering(threads: Thread[]): void;
     abstract sortLog(): void;
 
     getBlockedCount(): number {
