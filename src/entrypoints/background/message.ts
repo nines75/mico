@@ -1,14 +1,5 @@
 import { colors, messages } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
-import {
-    changeBadgeState,
-    createLogId,
-    escapeNewline,
-    getLogId,
-    sendNotification,
-    tryMountLogId,
-    tryWithPermission,
-} from "@/utils/util.js";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
 import { filterVideo } from "./video-filter/filter-video.js";
 import { saveLog } from "./video-filter/save-log.js";
@@ -26,7 +17,14 @@ import type { TabData } from "@/types/storage/tab.types.js";
 import type { LogData } from "@/types/storage/log.types.js";
 import type { DropdownComment } from "../content/dropdown.js";
 import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
-import { sendMessageToContent } from "@/utils/browser.js";
+import {
+    changeBadgeState,
+    sendMessageToContent,
+    sendNotification,
+    tryWithPermission,
+} from "@/utils/browser.js";
+import { getLogId, createLogId, tryMountLogId } from "@/utils/log.js";
+import { escapeNewline } from "@/utils/util.js";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],

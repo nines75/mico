@@ -7,7 +7,7 @@ import { filterComment } from "./filter-comment.js";
 import { defaultSettings } from "@/utils/config.js";
 import { fakeBrowser } from "#imports";
 import { createCount, createFiltering, saveLog } from "./save-log.js";
-import * as util from "@/utils/util.js";
+import * as util from "@/utils/browser.js";
 
 beforeAll(() => {
     vi.spyOn(util, "changeBadgeState").mockResolvedValue();

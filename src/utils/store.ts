@@ -6,12 +6,12 @@ import { loadSettings } from "./storage.js";
 import type { LogData } from "../types/storage/log.types.js";
 import {
     catchAsync,
-    getLogId,
     isRankingPage,
     isSearchPage,
     isWatchPage,
 } from "./util.js";
 import { sendMessageToBackground } from "./browser.js";
+import { getLogId } from "./log.js";
 
 interface StorageState {
     settings: Settings;

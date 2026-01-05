@@ -1,5 +1,5 @@
 import type { FilteredData } from "./filter-comment.js";
-import { changeBadgeState, sumNumbers } from "@/utils/util.js";
+import { sumNumbers } from "@/utils/util.js";
 import type {
     BlockedCount,
     CommentCount,
@@ -13,6 +13,7 @@ import { objectEntries } from "ts-extras";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter.js";
 import { getRuleFilters } from "./rule-filter.js";
+import { changeBadgeState } from "@/utils/browser.js";
 
 export async function saveLog(
     filteredData: FilteredData,

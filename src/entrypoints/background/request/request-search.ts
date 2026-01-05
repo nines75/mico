@@ -5,8 +5,8 @@ import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import type { SearchApi } from "@/types/api/search.types.js";
 import { searchApiSchema } from "@/types/api/search.types.js";
-import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
+import { createLogId, tryMountLogId } from "@/utils/log.js";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

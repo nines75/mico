@@ -4,9 +4,9 @@ import type { Settings } from "@/types/storage/settings.types.js";
 import { filterResponse, spaFilter } from "./request.js";
 import type { WatchApi } from "@/types/api/watch.types.js";
 import { watchApiSchema } from "@/types/api/watch.types.js";
-import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { setLog, setTabData } from "@/utils/db.js";
 import type { SeriesData, TabData } from "@/types/storage/tab.types.js";
+import { createLogId, tryMountLogId } from "@/utils/log.js";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

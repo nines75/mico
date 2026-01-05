@@ -6,11 +6,12 @@ import type {
     LogFilters,
 } from "@/types/storage/log-video.types.js";
 import type { FilteredData } from "./filter-video.js";
-import { changeBadgeState, sumNumbers } from "@/utils/util.js";
+import { sumNumbers } from "@/utils/util.js";
 import { colors } from "@/utils/config.js";
 import { setLog } from "@/utils/db.js";
 import { objectEntries } from "ts-extras";
 import { getRuleFilters } from "./rule-filter.js";
+import { changeBadgeState } from "@/utils/browser.js";
 
 export async function saveLog(
     filteredData: FilteredData,

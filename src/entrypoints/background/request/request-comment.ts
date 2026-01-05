@@ -2,7 +2,7 @@ import { filterComment } from "../comment-filter/filter-comment.js";
 import { saveLog } from "../comment-filter/save-log.js";
 import { messages } from "@/utils/config.js";
 import { loadSettings } from "@/utils/storage.js";
-import { isWatchPage, replace, sendNotification } from "@/utils/util.js";
+import { isWatchPage, replace } from "@/utils/util.js";
 import { filterResponse } from "./request.js";
 import { addNgUserId } from "@/utils/storage-write.js";
 import type { CommentApi } from "@/types/api/comment.types.js";
@@ -10,7 +10,7 @@ import { commentApiSchema } from "@/types/api/comment.types.js";
 import { cleanupDb, getTabData, setTabData } from "@/utils/db.js";
 import type { TabData } from "@/types/storage/tab.types.js";
 import { safeParseJson } from "./safe-parse-json.js";
-import { sendMessageToContent } from "@/utils/browser.js";
+import { sendMessageToContent, sendNotification } from "@/utils/browser.js";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

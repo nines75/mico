@@ -5,8 +5,8 @@ import { saveLog } from "../video-filter/save-log.js";
 import { filterResponse, spaFilter } from "./request.js";
 import type { RankingApi } from "@/types/api/ranking.types.js";
 import { rankingApiSchema } from "@/types/api/ranking.types.js";
-import { createLogId, tryMountLogId } from "@/utils/util.js";
 import { cleanupDb } from "@/utils/db.js";
+import { createLogId, tryMountLogId } from "@/utils/log.js";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

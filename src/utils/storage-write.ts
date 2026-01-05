@@ -10,8 +10,9 @@ import { getSettingsData, storageArea, loadSettings } from "./storage.js";
 import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
 import { parseFilter } from "@/entrypoints/background/parse-filter.js";
 import { messages } from "./config.js";
-import { customMerge, replace, sendNotification } from "./util.js";
+import { customMerge, replace } from "./util.js";
 import { clearDb } from "./db.js";
+import { sendNotification } from "./browser.js";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
