@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import Count from "./components/Count.js";
+import type { CommentLogViewerProps } from "./components/CommentLogViewer.js";
 import CommentLogViewer from "./components/CommentLogViewer.js";
 import ProcessingTime from "./components/ProcessingTime.js";
-import { popupConfig, messages, urls, titles } from "@/utils/config.js";
+import { messages, urls, titles } from "@/utils/config.js";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
+import type { VideoLogViewerProps } from "./components/VideoLogViewer.js";
 import VideoLogViewer from "./components/VideoLogViewer.js";
 import Details from "./components/Details.js";
 import type { FilterTab } from "@/types/storage/settings.types.js";
@@ -102,7 +104,7 @@ function Main() {
             )}
             {isWatchPage && (
                 <div>
-                    {popupConfig.tab.map((filter) => (
+                    {config.tab.map((filter) => (
                         <button
                             key={filter.id}
                             className={clsx(
@@ -128,11 +130,11 @@ function Main() {
                 {(() => {
                     switch (selectedTab) {
                         case "commentFilter":
-                            return popupConfig.commentFilter.log.map((log) => (
+                            return config.commentFilter.log.map((log) => (
                                 <CommentLogViewer key={log.id} {...log} />
                             ));
                         case "videoFilter":
-                            return popupConfig.videoFilter.log.map((log) => (
+                            return config.videoFilter.log.map((log) => (
                                 <VideoLogViewer key={log.id} {...log} />
                             ));
                     }
@@ -190,3 +192,83 @@ async function onClickNgUserButton() {
         data: formatNgId(userId, userName, settings),
     });
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+const config = {
+    tab: [
+        {
+            id: "commentFilter",
+            name: "コメントフィルター",
+        },
+        {
+            id: "videoFilter",
+            name: "動画フィルター",
+        },
+    ],
+    commentFilter: {
+        log: [
+            {
+                id: "userIdFilter",
+                name: "NGユーザーID",
+            },
+            {
+                id: "easyCommentFilter",
+                name: "かんたんコメント",
+            },
+            {
+                id: "commentAssistFilter",
+                name: "コメントアシスト",
+            },
+            {
+                id: "scoreFilter",
+                name: "NGスコア",
+            },
+            {
+                id: "commandFilter",
+                name: "NGコマンド",
+            },
+            {
+                id: "wordFilter",
+                name: "NGワード",
+            },
+        ],
+    },
+    videoFilter: {
+        log: [
+            {
+                id: "idFilter",
+                name: "NGユーザーID/動画ID",
+            },
+            {
+                id: "paidFilter",
+                name: "有料動画",
+            },
+            {
+                id: "viewsFilter",
+                name: "再生回数",
+            },
+            {
+                id: "userNameFilter",
+                name: "NGユーザー名",
+            },
+            {
+                id: "titleFilter",
+                name: "NGタイトル",
+            },
+        ],
+    },
+} as const satisfies {
+    tab: {
+        id: FilterTab;
+        name: string;
+    }[];
+    commentFilter: {
+        log: CommentLogViewerProps[];
+    };
+    videoFilter: {
+        log: VideoLogViewerProps[];
+    };
+};

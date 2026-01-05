@@ -1,7 +1,6 @@
 import Editor from "./Editor.js";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
-import { videoFilterSettings } from "@/utils/config.js";
 import clsx from "clsx";
 
 export type VideoFilterId = "ngId" | "ngTitle" | "ngUserName";
@@ -20,7 +19,7 @@ export default function VideoFilterArea() {
     return (
         <div className="setting">
             <div>
-                {videoFilterSettings.filter.map((filter) => (
+                {videoFilterAreaConfig.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -47,3 +46,22 @@ export default function VideoFilterArea() {
         </div>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+export const videoFilterAreaConfig = [
+    {
+        id: "ngId",
+        name: "NGユーザーID/動画ID",
+    },
+    {
+        id: "ngUserName",
+        name: "NGユーザー名",
+    },
+    {
+        id: "ngTitle",
+        name: "NGタイトル",
+    },
+] satisfies VideoFilterAreaProps[];

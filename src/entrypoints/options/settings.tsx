@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
-import { settingsConfig, urls } from "@/utils/config.js";
+import { urls } from "@/utils/config.js";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter.js";
@@ -9,6 +9,7 @@ import General from "./components/tabs/General.js";
 import Support from "./components/tabs/Support.js";
 import VideoFilter from "./components/tabs/VideoFilter.js";
 import clsx from "clsx";
+import type { SettingsTab } from "@/types/storage/settings.types.js";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
@@ -52,7 +53,7 @@ function Page() {
                 </a>
             </div>
             <div className="tab-container">
-                {settingsConfig.tab.map((filter) => (
+                {config.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -84,3 +85,33 @@ function Page() {
         </>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+const config = [
+    {
+        id: "general",
+        name: "一般設定",
+    },
+    {
+        id: "commentFilter",
+        name: "コメントフィルター",
+    },
+    {
+        id: "videoFilter",
+        name: "動画フィルター",
+    },
+    {
+        id: "expandNicoru",
+        name: "拡張ニコる",
+    },
+    {
+        id: "support",
+        name: "サポート",
+    },
+] satisfies {
+    id: SettingsTab;
+    name: string;
+}[];

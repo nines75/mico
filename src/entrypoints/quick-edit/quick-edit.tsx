@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
-import { quickEditConfig } from "@/utils/config.js";
 import { useShallow } from "zustand/shallow";
 import VideoFilterArea from "../options/components/ui/VideoFilterArea.js";
 import clsx from "clsx";
+import type { FilterTab } from "@/types/storage/settings.types.js";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
@@ -37,7 +37,7 @@ function Page() {
     return (
         <>
             <div className="tab-container">
-                {quickEditConfig.tab.map((filter) => (
+                {config.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -63,3 +63,21 @@ function Page() {
         </>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+const config = [
+    {
+        id: "commentFilter",
+        name: "コメントフィルター",
+    },
+    {
+        id: "videoFilter",
+        name: "動画フィルター",
+    },
+] satisfies {
+    id: FilterTab;
+    name: string;
+}[];

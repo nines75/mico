@@ -1,6 +1,7 @@
 // TODO: 原因を調べる(eslint-plugin-react-hooks自体の不具合？)
 /* eslint-disable react-hooks/refs */
-import { defaultSettings, generalSettings, messages } from "@/utils/config.js";
+import { defaultSettings, messages } from "@/utils/config.js";
+import type { CheckboxProps } from "../ui/Checkbox.js";
 import Checkbox from "../ui/Checkbox.js";
 import H2 from "../ui/H2.js";
 import { useStorageStore } from "@/utils/store.js";
@@ -10,6 +11,7 @@ import { getSettingsData } from "@/utils/storage.js";
 import type { ValueOf } from "type-fest";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
+import type { CheckboxGroups } from "../ui/CheckboxSection.js";
 import CheckboxSection from "../ui/CheckboxSection.js";
 import { catchAsync } from "@/utils/util.js";
 import { sendMessageToBackground } from "@/utils/browser.js";
@@ -29,9 +31,9 @@ export default function General() {
 
     return (
         <div className="settings-container">
-            <CheckboxSection groups={generalSettings.checkbox}>
+            <CheckboxSection groups={config.checkbox}>
                 {isAdvancedFeaturesVisible &&
-                    generalSettings.advanced.map((props) => (
+                    config.advanced.map((props) => (
                         <Checkbox key={props.id} {...props} />
                     ))}
             </CheckboxSection>
@@ -134,3 +136,59 @@ async function reset() {
         type: "remove-all-data",
     });
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+const config = {
+    checkbox: [
+        {
+            header: "エディター",
+            items: [
+                {
+                    id: "isCloseBrackets",
+                    label: "括弧を自動で閉じる",
+                },
+                {
+                    id: "isHighlightTrailingWhitespace",
+                    label: "行末の空白文字をハイライトする",
+                },
+                {
+                    id: "isVimModeEnabled",
+                    label: "Vimモードを有効にする",
+                },
+            ],
+        },
+        {
+            header: "クイック編集",
+            items: [
+                {
+                    id: "isConfirmCloseQuickEdit",
+                    label: "閉じる前に確認ダイアログを表示する",
+                },
+            ],
+        },
+        {
+            header: "高度な機能",
+            isChildren: true,
+            items: [
+                {
+                    id: "isAdvancedFeaturesVisible",
+                    label: "高度な機能を表示する",
+                },
+            ],
+        },
+    ],
+    advanced: [
+        {
+            id: "isImeDisabledByContext",
+            label: "コンテキストに応じてIMEを無効化する",
+            details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
+            ネイティブメッセージング権限とバイナリのインストールが必要です。`,
+        },
+    ],
+} as const satisfies {
+    checkbox: CheckboxGroups;
+    advanced: CheckboxProps[];
+};

@@ -1,7 +1,6 @@
 import Editor from "./Editor.js";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store.js";
-import { commentFilterSettings } from "@/utils/config.js";
 import clsx from "clsx";
 
 export type CommentFilterId = "ngUserId" | "ngCommand" | "ngWord";
@@ -20,7 +19,7 @@ export default function CommentFilterArea() {
     return (
         <div className="setting">
             <div>
-                {commentFilterSettings.filter.map((filter) => (
+                {commentFilterAreaConfig.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -47,3 +46,22 @@ export default function CommentFilterArea() {
         </div>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+export const commentFilterAreaConfig = [
+    {
+        id: "ngUserId",
+        name: "NGユーザーID",
+    },
+    {
+        id: "ngCommand",
+        name: "NGコマンド",
+    },
+    {
+        id: "ngWord",
+        name: "NGワード",
+    },
+] satisfies CommentFilterAreaProps[];

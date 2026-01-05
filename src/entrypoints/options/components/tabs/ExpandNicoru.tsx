@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 import CustomNicoru from "../ui/CustomNicoru.js";
-import {
-    defaultSettings,
-    expandNicoruSettings,
-    messages,
-} from "@/utils/config.js";
+import { defaultSettings, messages } from "@/utils/config.js";
 import { useStorageStore } from "@/utils/store.js";
+import type { CheckboxGroups } from "../ui/CheckboxSection.js";
 import CheckboxSection from "../ui/CheckboxSection.js";
 
 export default function ExpandNicoru() {
@@ -51,7 +48,7 @@ export default function ExpandNicoru() {
 
     return (
         <div className="settings-container">
-            <CheckboxSection groups={expandNicoruSettings.checkbox}>
+            <CheckboxSection groups={config}>
                 <div className="setting">
                     <button
                         className="small-button"
@@ -92,3 +89,28 @@ export default function ExpandNicoru() {
         </div>
     );
 }
+
+// -------------------------------------------------------------------------------------------
+// config
+// -------------------------------------------------------------------------------------------
+
+const config = [
+    {
+        items: [
+            {
+                id: "isExpandNicoruEnabled",
+                label: "拡張ニコるを有効にする",
+            },
+        ],
+    },
+    {
+        header: "スタイル",
+        isChildren: true,
+        items: [
+            {
+                id: "isCommentBodyHighlighted",
+                label: "装飾対象のコメントの本文を強調する",
+            },
+        ],
+    },
+] satisfies CheckboxGroups;
