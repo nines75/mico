@@ -61,9 +61,11 @@ device:Switch`,
         const res = filterComment(threads, settings, testTabData);
 
         checkComment(threads, ["1002", "1003", "1004"]);
-        expect(res?.strictUserIds).toEqual(
-            new Set(["user-id-main-1", "user-id-main-2", "user-id-main-3"]),
-        );
+        expect(res?.strictUserIds).toEqual([
+            "user-id-main-1",
+            "user-id-main-3",
+            "user-id-main-2",
+        ]);
         expect(res?.filters.userIdFilter.getLog()).toEqual(
             new Map([
                 ["user-id-main-1", ["1002"]],

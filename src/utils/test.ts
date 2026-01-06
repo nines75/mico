@@ -158,7 +158,7 @@ export const testLog = {
                 ["コメント", new Map([["テストコメント", ["1003"]]])],
             ]),
         },
-        strictUserIds: new Set(),
+        strictUserIds: [],
         filteredComments: new Map(
             getComments([
                 // NGユーザーID

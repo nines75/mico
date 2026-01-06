@@ -12,7 +12,7 @@ describe(`${addNgUserId.name}()`, () => {
     });
 
     it("通常", async () => {
-        await addNgUserId(new Set(userIds));
+        await addNgUserId(userIds);
 
         const settings = await loadSettings();
         expect(settings.ngUserId).toBe(`${userIds.join("\n")}\n`);
@@ -48,7 +48,7 @@ describe(`${removeNgUserId.name}()`, () => {
                 ngUserId: ids.join("\n"),
             },
         });
-        await removeNgUserId(new Set(userIds));
+        await removeNgUserId(userIds);
 
         const settings = await loadSettings();
         expect(settings.ngUserId).toBe("");
@@ -63,7 +63,7 @@ describe(`${removeNgUserId.name}()`, () => {
                 ngUserId: `${ids}\n${specificIds}`,
             },
         });
-        await removeNgUserId(new Set(userIds), false);
+        await removeNgUserId(userIds, false);
 
         const settings = await loadSettings();
         expect(settings.ngUserId).toBe(specificIds);

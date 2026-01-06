@@ -53,7 +53,7 @@ describe(UserIdFilter.name, () => {
 
     it(UserIdFilter.prototype.updateFilter.name, () => {
         const userIdFilter = filtering({ filter: "" });
-        userIdFilter.updateFilter(new Set(["user-id-main-1"]));
+        userIdFilter.updateFilter(["user-id-main-1"]);
         userIdFilter.filtering(threads);
 
         expect(userIdFilter.getLog()).toEqual(

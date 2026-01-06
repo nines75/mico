@@ -72,12 +72,12 @@ export type BackgroundMessage =
       }
     | {
           type: "add-ng-user-id";
-          data: Set<string>;
+          data: string[];
       }
     | {
           type: "remove-ng-user-id";
           data: {
-              userIds: Set<string>;
+              userIds: string[];
               isRemoveSpecific?: boolean;
           };
       }
@@ -240,15 +240,13 @@ async function addNgUserIdFromDropdown(
     }
 
     const settings = await loadSettings();
-    await addNgUserId(
-        new Set([
-            formatNgUserId(
-                data.isSpecific ? `@v ${videoId}\n${userId}` : userId,
-                `body(dropdown): ${data.body}`,
-                settings,
-            ),
-        ]),
-    );
+    await addNgUserId([
+        formatNgUserId(
+            data.isSpecific ? `@v ${videoId}\n${userId}` : userId,
+            `body(dropdown): ${data.body}`,
+            settings,
+        ),
+    ]);
 
     const tasks: Promise<unknown>[] = [];
     if (settings.isAutoReload) {

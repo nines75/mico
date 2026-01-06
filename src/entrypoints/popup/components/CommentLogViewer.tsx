@@ -57,7 +57,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
             {...{ name, blocked }}
         >
             {id === "userIdFilter" &&
-                (filtering?.strictUserIds.size ?? 0) > 0 && (
+                (filtering?.strictUserIds.length ?? 0) > 0 && (
                     <div>
                         <button
                             title={titles.undoStrict}
@@ -135,7 +135,7 @@ function renderUserIdLog(
     log: CommonLog,
     comments: CommentMap,
     settings: Settings,
-    strictUserIds?: Set<string>,
+    strictUserIds?: string[],
 ) {
     return log
         .keys()
@@ -145,7 +145,7 @@ function renderUserIdLog(
                 comment={
                     <>
                         {"# "}
-                        {strictUserIds?.has(key) === true && (
+                        {strictUserIds?.includes(key) === true && (
                             <span
                                 className="strict-symbol"
                                 title={titles.strictSymbol}
@@ -334,7 +334,7 @@ function formatDuplicateComment(
 // -------------------------------------------------------------------------------------------
 
 async function undoStrict(filtering: CommentFiltering | undefined) {
-    const userIds = filtering?.strictUserIds ?? new Set();
+    const userIds = filtering?.strictUserIds ?? [];
     if (
         !confirm(
             replace(messages.ngUserId.undoStrict, [[...userIds].join("\n")]),
@@ -357,7 +357,7 @@ async function onClickUserId(userId: string) {
     await sendMessageToBackground({
         type: "remove-ng-user-id",
         data: {
-            userIds: new Set([userId]),
+            userIds: [userId],
         },
     });
 }
@@ -365,15 +365,18 @@ async function onClickUserId(userId: string) {
 async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     // 最新の設定を取得
     const settings = useStorageStore.getState().settings;
-
     const ngUserIds = getBasicNgUserIdSet(settings);
-    const targetUserIds = new Set(
-        (Array.isArray(comments) ? comments : [comments])
-            .map(({ userId }) => userId)
-            .filter((userId) => !ngUserIds.has(userId)),
-    );
 
-    if (targetUserIds.size === 0) {
+    // 削除対象のユーザーIDを生成して重複排除
+    const targetUserIds = [
+        ...new Set(
+            (Array.isArray(comments) ? comments : [comments])
+                .map(({ userId }) => userId)
+                .filter((userId) => !ngUserIds.has(userId)),
+        ),
+    ];
+
+    if (targetUserIds.length === 0) {
         alert(messages.ngUserId.alreadyAdded);
         return;
     }
@@ -381,7 +384,7 @@ async function onClickComment(comments: NiconicoComment | NiconicoComment[]) {
     if (
         !confirm(
             replace(messages.ngUserId.confirmAddition, [
-                [...targetUserIds].join("\n"),
+                targetUserIds.join("\n"),
             ]),
         )
     )

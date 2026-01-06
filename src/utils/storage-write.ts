@@ -49,15 +49,15 @@ export async function setSettings(
     });
 }
 
-export async function addNgUserId(userIds: Set<string>) {
-    if (userIds.size === 0) return;
+export async function addNgUserId(userIds: string[]) {
+    if (userIds.length === 0) return;
 
-    const str = [...userIds].join("\n");
+    const filter = userIds.join("\n");
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         return {
-            ngUserId: `${str}\n${settings.ngUserId}`,
+            ngUserId: `${filter}\n${settings.ngUserId}`,
         };
     };
 
@@ -65,24 +65,22 @@ export async function addNgUserId(userIds: Set<string>) {
 }
 
 export async function removeNgUserId(
-    userIds: Set<string>,
+    userIds: string[],
     isRemoveSpecific = true,
 ) {
-    if (userIds.size === 0) return;
+    if (userIds.length === 0) return;
 
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
-        const removeLines = new Set(
-            parseNgUserId(settings, isRemoveSpecific)
-                .filter(({ rule }) => userIds.has(rule.toString()))
-                .map(({ index }) => index as number),
-        );
+        const removeLines = parseNgUserId(settings, isRemoveSpecific)
+            .filter(({ rule }) => userIds.includes(rule.toString()))
+            .map(({ index }) => index as number);
         const lines = settings.ngUserId.split("\n");
 
         // 自動追加された行の削除判定
         // ループ内で変更するため新しい配列を作る
-        [...removeLines].forEach((index) => {
+        removeLines.forEach((index) => {
             const before1 = index - 1;
             const before2 = index - 2;
             const after = index + 1;
@@ -92,8 +90,7 @@ export async function removeNgUserId(
                 lines[before1]?.startsWith("# ") === true &&
                 lines[after] === ""
             ) {
-                removeLines.add(before1);
-                removeLines.add(after);
+                removeLines.push(before1, after);
             }
             // コンテキスト + @v
             else if (
@@ -101,19 +98,17 @@ export async function removeNgUserId(
                 lines[before1]?.startsWith("@v ") === true &&
                 lines[after] === ""
             ) {
-                removeLines.add(before2);
-                removeLines.add(before1);
-                removeLines.add(after);
+                removeLines.push(before2, before1, after);
             }
             // @v
             else if (lines[before1]?.startsWith("@v ") === true) {
-                removeLines.add(before1);
+                removeLines.push(before1);
             }
         });
 
         return {
             ngUserId: lines
-                .filter((_, index) => !removeLines.has(index))
+                .filter((_, index) => !removeLines.includes(index))
                 .join("\n"),
         };
     };
@@ -137,15 +132,13 @@ export async function removeNgId(id: string) {
     const func = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
-        const removeLines = new Set(
-            parseFilter(settings.ngId, true)
-                .rules.filter(({ rule }) => rule === id)
-                .map(({ index }) => index as number),
-        );
+        const removeLines = parseFilter(settings.ngId, true)
+            .rules.filter(({ rule }) => rule === id)
+            .map(({ index }) => index as number);
         const lines = settings.ngId.split("\n");
 
         // ループ内で変更するため新しい配列を作る
-        [...removeLines].forEach((index) => {
+        removeLines.forEach((index) => {
             const before = index - 1;
             const after = index + 1;
 
@@ -154,14 +147,13 @@ export async function removeNgId(id: string) {
                 lines[before]?.startsWith("# ") === true &&
                 lines[after] === ""
             ) {
-                removeLines.add(before);
-                removeLines.add(after);
+                removeLines.push(before, after);
             }
         });
 
         return {
             ngId: lines
-                .filter((_, index) => !removeLines.has(index))
+                .filter((_, index) => !removeLines.includes(index))
                 .join("\n"),
         };
     };

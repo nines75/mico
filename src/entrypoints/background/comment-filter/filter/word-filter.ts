@@ -57,9 +57,7 @@ export class WordFilter extends StrictFilter<WordLog> {
 
     override sortLog(): void {
         const log: WordLog = new Map();
-        const keys = new Set(
-            this.rules.map(({ rule }) => this.createKey(rule)),
-        );
+        const keys = this.rules.map(({ rule }) => this.createKey(rule));
 
         // フィルター順にソート
         keys.forEach((key) => {

@@ -55,18 +55,18 @@ export default function commentRequest(
         tasks.push(saveLog(filteredData, logId, tabId));
 
         // 通知を送信
-        if (strictUserIds.size > 0 && settings.isNotifyAutoAddNgUserId) {
+        if (strictUserIds.length > 0 && settings.isNotifyAutoAddNgUserId) {
             tasks.push(
                 sendNotification(
                     replace(messages.ngUserId.notifyAddition, [
-                        strictUserIds.size.toString(),
+                        strictUserIds.length.toString(),
                     ]),
                 ),
             );
         }
 
         // strictルールによってフィルタリングされたユーザーIDをNG登録
-        if (strictUserIds.size > 0) {
+        if (strictUserIds.length > 0) {
             tasks.push(addNgUserId(strictUserIds));
         }
 

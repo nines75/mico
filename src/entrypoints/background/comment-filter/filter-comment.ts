@@ -27,8 +27,8 @@ export interface FilteredData {
     };
     loadedCommentCount: number;
     filteringTime: number;
-    strictUserIds: Set<string>;
-    strictUserIdsWithContext: Set<string>;
+    strictUserIds: string[];
+    strictUserIdsWithContext: string[];
     threads: Thread[];
 }
 
@@ -91,16 +91,16 @@ export function filterComment(
         filter.filtering(threads, true);
     });
 
-    const strictUserIds = new Set<string>();
-    const strictUserIdsWithContext = new Set<string>();
+    const strictUserIds: string[] = [];
+    const strictUserIdsWithContext: string[] = [];
     Object.values(strictFilters).forEach((filter) => {
         filter.getStrictData().forEach(({ userId, context }) => {
-            if (!strictUserIds.has(userId)) {
-                strictUserIdsWithContext.add(
+            if (!strictUserIds.includes(userId)) {
+                strictUserIds.push(userId);
+                strictUserIdsWithContext.push(
                     formatNgUserId(userId, context, settings),
                 );
             }
-            strictUserIds.add(userId);
         });
     });
 

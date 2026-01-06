@@ -63,8 +63,8 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         );
     }
 
-    updateFilter(userIds: Set<string>) {
-        const newUserIds = [...userIds].map((id): Rule => {
+    updateFilter(userIds: string[]) {
+        const newUserIds = userIds.map((id): Rule => {
             return {
                 rule: id,
                 ...createDefaultRule(),

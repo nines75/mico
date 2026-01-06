@@ -82,11 +82,11 @@ function importBackup(
                 type valuesType = ValueOf<typeof defaultSettings>;
 
                 const newSettings: Record<string, valuesType> = {};
-                const keys = new Set(Object.keys(defaultSettings));
+                const keys = Object.keys(defaultSettings);
 
                 // defaultSettingsに存在するキーのみを抽出
                 Object.keys(backup.settings).forEach((key) => {
-                    if (keys.has(key)) {
+                    if (keys.includes(key)) {
                         const value = backup.settings?.[key as keyof Settings];
 
                         if (value !== undefined) newSettings[key] = value;
