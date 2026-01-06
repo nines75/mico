@@ -3,7 +3,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { createRoot } from "react-dom/client";
-import { Init } from "./settings.js";
+import { Init } from "./settings";
 import { StrictMode } from "react";
 
 const dom = document.getElementById("root");

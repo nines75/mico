@@ -1,16 +1,16 @@
-import { filterComment } from "../comment-filter/filter-comment.js";
-import { saveLog } from "../comment-filter/save-log.js";
-import { messages } from "@/utils/config.js";
-import { loadSettings } from "@/utils/storage.js";
-import { isWatchPage, replace } from "@/utils/util.js";
-import { filterResponse } from "./request.js";
-import { addNgUserId } from "@/utils/storage-write.js";
-import type { CommentApi } from "@/types/api/comment.types.js";
-import { commentApiSchema } from "@/types/api/comment.types.js";
-import { cleanupDb, getTabData, setTabData } from "@/utils/db.js";
-import type { TabData } from "@/types/storage/tab.types.js";
-import { safeParseJson } from "./safe-parse-json.js";
-import { sendMessageToContent, sendNotification } from "@/utils/browser.js";
+import { filterComment } from "../comment-filter/filter-comment";
+import { saveLog } from "../comment-filter/save-log";
+import { messages } from "@/utils/config";
+import { loadSettings } from "@/utils/storage";
+import { isWatchPage, replace } from "@/utils/util";
+import { filterResponse } from "./request";
+import { addNgUserId } from "@/utils/storage-write";
+import type { CommentApi } from "@/types/api/comment.types";
+import { commentApiSchema } from "@/types/api/comment.types";
+import { cleanupDb, getTabData, setTabData } from "@/utils/db";
+import type { TabData } from "@/types/storage/tab.types";
+import { safeParseJson } from "./safe-parse-json";
+import { sendMessageToContent, sendNotification } from "@/utils/browser";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

@@ -1,9 +1,9 @@
 import { fakeBrowser } from "#imports";
-import { defaultSettings } from "@/utils/config.js";
-import { getSettingsData, loadSettings } from "@/utils/storage.js";
+import { defaultSettings } from "@/utils/config";
+import { getSettingsData, loadSettings } from "@/utils/storage";
 import { describe, expect, it, beforeEach } from "vitest";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { setSettings } from "./storage-write.js";
+import type { Settings } from "@/types/storage/settings.types";
+import { setSettings } from "./storage-write";
 
 describe("storage", () => {
     beforeEach(() => {

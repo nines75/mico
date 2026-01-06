@@ -1,8 +1,8 @@
-import type { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types";
 import type { ConditionalPick } from "type-fest";
-import type { Filters } from "./filter-comment.js";
-import { RuleFilter } from "./rule-filter.js";
-import type { Thread } from "@/types/api/comment.types.js";
+import type { Filters } from "./filter-comment";
+import { RuleFilter } from "./rule-filter";
+import type { Thread } from "@/types/api/comment.types";
 
 export abstract class StrictFilter<T> extends RuleFilter<T> {
     protected ngUserIds: Set<string>;

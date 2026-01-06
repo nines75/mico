@@ -1,6 +1,6 @@
-import type { LogId } from "@/types/storage/log.types.js";
+import type { LogId } from "@/types/storage/log.types";
 import delay from "delay";
-import { sendMessageToContent } from "./browser.js";
+import { sendMessageToContent } from "./browser";
 
 export function createLogId() {
     return crypto.randomUUID();

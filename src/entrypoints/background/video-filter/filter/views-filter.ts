@@ -1,7 +1,7 @@
-import type { ViewsLog } from "@/types/storage/log-video.types.js";
-import { Filter, sortVideoId } from "../filter.js";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
+import type { ViewsLog } from "@/types/storage/log-video.types";
+import { Filter, sortVideoId } from "../filter";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Settings } from "@/types/storage/settings.types";
 
 export class ViewsFilter extends Filter<ViewsLog> {
     private isEnabled: boolean;

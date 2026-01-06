@@ -1,6 +1,6 @@
-import type { Settings } from "@/types/storage/settings.types.js";
-import type { VideoMap } from "@/types/storage/log-video.types.js";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+import type { Settings } from "@/types/storage/settings.types";
+import type { VideoMap } from "@/types/storage/log-video.types";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 
 export abstract class Filter<T> {
     protected blockedCount = 0;

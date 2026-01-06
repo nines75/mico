@@ -1,6 +1,6 @@
-import Editor from "./Editor.js";
+import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
-import { useStorageStore } from "@/utils/store.js";
+import { useStorageStore } from "@/utils/store";
 import clsx from "clsx";
 
 export type VideoFilterId = "ngId" | "ngTitle" | "ngUserName";

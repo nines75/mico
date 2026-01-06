@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { mockRules, mockToggle, testTabData } from "@/utils/test.js";
-import { RuleFilter } from "./rule-filter.js";
-import { defaultSettings } from "@/utils/config.js";
+import { mockRules, mockToggle, testTabData } from "@/utils/test";
+import { RuleFilter } from "./rule-filter";
+import { defaultSettings } from "@/utils/config";
 
 class TestFilter extends RuleFilter<unknown> {
     protected override log: unknown;

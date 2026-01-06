@@ -1,9 +1,9 @@
 import { Fragment } from "react";
-import CheckboxInput from "./CheckboxInput.js";
+import CheckboxInput from "./CheckboxInput";
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { useStorageStore } from "@/utils/store.js";
+import type { Settings } from "@/types/storage/settings.types";
+import { useStorageStore } from "@/utils/store";
 
 export interface CheckboxProps {
     id: keyof ConditionalPick<Settings, boolean>;

@@ -2,8 +2,8 @@
 // https://nvapi.nicovideo.jp/v1/recommend
 // -------------------------------------------------------------------------------------------
 
-import { z } from "@/utils/zod.js";
-import { niconicoVideoSchema } from "./niconico-video.types.js";
+import { z } from "@/utils/zod";
+import { niconicoVideoSchema } from "./niconico-video.types";
 
 export const recommendApiSchema = z.looseObject({
     data: z.looseObject({

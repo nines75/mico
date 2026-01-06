@@ -1,20 +1,20 @@
 // TODO: 原因を調べる(eslint-plugin-react-hooks自体の不具合？)
 /* eslint-disable react-hooks/refs */
-import { defaultSettings, messages } from "@/utils/config.js";
-import type { CheckboxProps } from "../ui/Checkbox.js";
-import Checkbox from "../ui/Checkbox.js";
-import H2 from "../ui/H2.js";
-import { useStorageStore } from "@/utils/store.js";
-import type { BackupData } from "@/types/storage/backup.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { getSettingsData } from "@/utils/storage.js";
+import { defaultSettings, messages } from "@/utils/config";
+import type { CheckboxProps } from "../ui/Checkbox";
+import Checkbox from "../ui/Checkbox";
+import H2 from "../ui/H2";
+import { useStorageStore } from "@/utils/store";
+import type { BackupData } from "@/types/storage/backup.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { getSettingsData } from "@/utils/storage";
 import type { ValueOf } from "type-fest";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
-import type { CheckboxGroups } from "../ui/CheckboxSection.js";
-import CheckboxSection from "../ui/CheckboxSection.js";
-import { catchAsync } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+import type { CheckboxGroups } from "../ui/CheckboxSection";
+import CheckboxSection from "../ui/CheckboxSection";
+import { catchAsync } from "@/utils/util";
+import { sendMessageToBackground } from "@/utils/browser";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);

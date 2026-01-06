@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { defaultSettings } from "@/utils/config.js";
-import { checkComment, testThreads } from "@/utils/test.js";
-import type { Thread } from "@/types/api/comment.types.js";
-import { UserIdFilter } from "./user-id-filter.js";
-import type { Settings } from "@/types/storage/settings.types.js";
+import { defaultSettings } from "@/utils/config";
+import { checkComment, testThreads } from "@/utils/test";
+import type { Thread } from "@/types/api/comment.types";
+import { UserIdFilter } from "./user-id-filter";
+import type { Settings } from "@/types/storage/settings.types";
 
 describe(UserIdFilter.name, () => {
     let threads: Thread[];

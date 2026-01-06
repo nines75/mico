@@ -1,6 +1,6 @@
-import type { CheckboxGroups } from "../ui/CheckboxSection.js";
-import CheckboxSection from "../ui/CheckboxSection.js";
-import VideoFilterArea from "../ui/VideoFilterArea.js";
+import type { CheckboxGroups } from "../ui/CheckboxSection";
+import CheckboxSection from "../ui/CheckboxSection";
+import VideoFilterArea from "../ui/VideoFilterArea";
 
 export default function VideoFilter() {
     return (

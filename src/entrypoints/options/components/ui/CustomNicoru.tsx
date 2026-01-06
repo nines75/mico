@@ -1,6 +1,6 @@
 import { useShallow } from "zustand/shallow";
-import NicoruColorPicker from "./NicoruColorPicker.js";
-import { useStorageStore } from "@/utils/store.js";
+import NicoruColorPicker from "./NicoruColorPicker";
+import { useStorageStore } from "@/utils/store";
 
 interface CustomNicoruProps {
     id: number;

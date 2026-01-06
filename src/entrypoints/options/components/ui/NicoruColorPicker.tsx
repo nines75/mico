@@ -1,4 +1,4 @@
-import { useStorageStore } from "@/utils/store.js";
+import { useStorageStore } from "@/utils/store";
 import { useShallow } from "zustand/shallow";
 
 interface NicoruColorPickerProps {

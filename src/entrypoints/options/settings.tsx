@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
-import { urls } from "@/utils/config.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
+import { urls } from "@/utils/config";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
-import CommentFilter from "./components/tabs/CommentFilter.js";
-import ExpandNicoru from "./components/tabs/ExpandNicoru.js";
-import General from "./components/tabs/General.js";
-import Support from "./components/tabs/Support.js";
-import VideoFilter from "./components/tabs/VideoFilter.js";
+import CommentFilter from "./components/tabs/CommentFilter";
+import ExpandNicoru from "./components/tabs/ExpandNicoru";
+import General from "./components/tabs/General";
+import Support from "./components/tabs/Support";
+import VideoFilter from "./components/tabs/VideoFilter";
 import clsx from "clsx";
-import type { SettingsTab } from "@/types/storage/settings.types.js";
+import type { SettingsTab } from "@/types/storage/settings.types";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);

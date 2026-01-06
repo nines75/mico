@@ -10,8 +10,8 @@ import {
     pushCommonLog,
     replace,
     sumNumbers,
-} from "./util.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
+} from "./util";
+import type { CommonLog } from "@/types/storage/log.types";
 
 describe("util", () => {
     beforeEach(() => {

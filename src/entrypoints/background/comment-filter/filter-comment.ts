@@ -1,18 +1,18 @@
-import type { Thread } from "@/types/api/comment.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { WordFilter } from "./filter/word-filter.js";
+import type { Thread } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { WordFilter } from "./filter/word-filter";
 import {
     formatNgUserId,
     getBasicNgUserIdSet,
     UserIdFilter,
-} from "./filter/user-id-filter.js";
-import { ScoreFilter } from "./filter/score-filter.js";
-import { CommandFilter } from "./filter/command-filter.js";
-import { CommentAssistFilter } from "./filter/comment-assist-filter.js";
-import { EasyCommentFilter } from "./filter/easy-comment-filter.js";
-import { getRuleFilters } from "./rule-filter.js";
-import { getStrictFilters } from "./strict-filter.js";
-import type { TabData } from "@/types/storage/tab.types.js";
+} from "./filter/user-id-filter";
+import { ScoreFilter } from "./filter/score-filter";
+import { CommandFilter } from "./filter/command-filter";
+import { CommentAssistFilter } from "./filter/comment-assist-filter";
+import { EasyCommentFilter } from "./filter/easy-comment-filter";
+import { getRuleFilters } from "./rule-filter";
+import { getStrictFilters } from "./strict-filter";
+import type { TabData } from "@/types/storage/tab.types";
 
 export type Filters = FilteredData["filters"];
 

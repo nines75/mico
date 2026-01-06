@@ -1,11 +1,11 @@
-import type { RecommendApi } from "@/types/api/recommend.types.js";
-import { recommendApiSchema } from "@/types/api/recommend.types.js";
-import { loadSettings } from "@/utils/storage.js";
-import { filterVideo } from "../video-filter/filter-video.js";
-import { saveLog } from "../video-filter/save-log.js";
-import { filterResponse } from "./request.js";
-import { getTabData } from "@/utils/db.js";
-import { safeParseJson } from "./safe-parse-json.js";
+import type { RecommendApi } from "@/types/api/recommend.types";
+import { recommendApiSchema } from "@/types/api/recommend.types";
+import { loadSettings } from "@/utils/storage";
+import { filterVideo } from "../video-filter/filter-video";
+import { saveLog } from "../video-filter/save-log";
+import { filterResponse } from "./request";
+import { getTabData } from "@/utils/db";
+import { safeParseJson } from "./safe-parse-json";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

@@ -1,8 +1,8 @@
 import type { Browser } from "#imports";
-import type { BackgroundMessage } from "@/entrypoints/background/message.js";
-import type { ContentMessage } from "@/entrypoints/content/message.js";
-import { replace } from "./util.js";
-import { messages } from "./config.js";
+import type { BackgroundMessage } from "@/entrypoints/background/message";
+import type { ContentMessage } from "@/entrypoints/content/message";
+import { replace } from "./util";
+import { messages } from "./config";
 
 export async function sendMessageToBackground(
     message: BackgroundMessage,

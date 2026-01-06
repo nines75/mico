@@ -1,11 +1,11 @@
-import type { CommonLog } from "@/types/storage/log.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { isString } from "@/utils/util.js";
+import type { CommonLog } from "@/types/storage/log.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
-import { parseFilter } from "../parse-filter.js";
-import type { Rule } from "../rule.js";
-import type { Filters } from "./filter-video.js";
-import { Filter, sortVideoId } from "./filter.js";
+import { parseFilter } from "../parse-filter";
+import type { Rule } from "../rule";
+import type { Filters } from "./filter-video";
+import { Filter, sortVideoId } from "./filter";
 
 export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];

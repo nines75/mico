@@ -1,21 +1,21 @@
-import type { CommonLog } from "@/types/storage/log.types.js";
-import { messages, titles } from "@/utils/config.js";
-import { useStorageStore } from "@/utils/store.js";
-import { catchAsync, escapeNewline, replace } from "@/utils/util.js";
+import type { CommonLog } from "@/types/storage/log.types";
+import { messages, titles } from "@/utils/config";
+import { useStorageStore } from "@/utils/store";
+import { catchAsync, escapeNewline, replace } from "@/utils/util";
 import type { JSX } from "react";
 import { useShallow } from "zustand/shallow";
-import { LogFrame } from "./LogFrame.js";
-import { formatNgId } from "@/entrypoints/background/video-filter/filter/id-filter.js";
+import { LogFrame } from "./LogFrame";
+import { formatNgId } from "@/entrypoints/background/video-filter/filter/id-filter";
 import type {
     VideoFiltering,
     IdLog,
     VideoMap,
-} from "@/types/storage/log-video.types.js";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
+} from "@/types/storage/log-video.types";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import { keyIn } from "ts-extras";
-import { Line, Block, Clickable } from "./LogViewer.js";
-import type { Filters } from "@/entrypoints/background/video-filter/filter-video.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+import { Line, Block, Clickable } from "./LogViewer";
+import type { Filters } from "@/entrypoints/background/video-filter/filter-video";
+import { sendMessageToBackground } from "@/utils/browser";
 
 type LogId = keyof Filters;
 

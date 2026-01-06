@@ -1,4 +1,4 @@
-import { z } from "@/utils/zod.js";
+import { z } from "@/utils/zod";
 
 // optionalにしているプロパティは旧検索で生成した動画データに含まれていないもの
 export const niconicoVideoSchema = z.looseObject({

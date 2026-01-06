@@ -2,7 +2,7 @@
 // safeParseJson()はutil.tsで定義していたが、playwrightで使うとエラーが出るためここに隔離
 // -------------------------------------------------------------------------------------------
 
-import type { z } from "@/utils/zod.js";
+import type { z } from "@/utils/zod";
 
 export function safeParseJson<T>(
     text: string | null | undefined,

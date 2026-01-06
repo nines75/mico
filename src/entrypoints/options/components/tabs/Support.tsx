@@ -1,5 +1,5 @@
-import { urls } from "@/utils/config.js";
-import H2 from "../ui/H2.js";
+import { urls } from "@/utils/config";
+import H2 from "../ui/H2";
 
 export default function Support() {
     return (

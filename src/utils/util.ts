@@ -1,6 +1,6 @@
 import type { DeepMergeLeafURI, DeepMergeNoFilteringURI } from "deepmerge-ts";
 import { deepmergeCustom } from "deepmerge-ts";
-import type { CommonLog } from "../types/storage/log.types.js";
+import type { CommonLog } from "../types/storage/log.types";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;

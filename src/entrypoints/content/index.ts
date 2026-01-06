@@ -1,17 +1,17 @@
-import { mountToDropdown } from "./dropdown.js";
-import { renderComment } from "./comment.js";
-import { createContentMessageHandler } from "./message.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { loadSettings } from "@/utils/storage.js";
+import { mountToDropdown } from "./dropdown";
+import { renderComment } from "./comment";
+import { createContentMessageHandler } from "./message";
+import type { Settings } from "@/types/storage/settings.types";
+import { loadSettings } from "@/utils/storage";
 import { defineContentScript } from "#imports";
 import {
     catchAsync,
     isRankingPage,
     isSearchPage,
     isWatchPage,
-} from "@/utils/util.js";
-import { renderOldSearch } from "./search.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+} from "@/utils/util";
+import { renderOldSearch } from "./search";
+import { sendMessageToBackground } from "@/utils/browser";
 
 export interface customObserver extends MutationObserver {
     settings?: Settings;

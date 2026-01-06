@@ -1,13 +1,13 @@
-import type { Thread } from "@/types/api/comment.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { testLog, testTabData, testThreads } from "@/utils/test.js";
+import type { Thread } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { testLog, testTabData, testThreads } from "@/utils/test";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { FilteredData } from "./filter-comment.js";
-import { filterComment } from "./filter-comment.js";
-import { defaultSettings } from "@/utils/config.js";
+import type { FilteredData } from "./filter-comment";
+import { filterComment } from "./filter-comment";
+import { defaultSettings } from "@/utils/config";
 import { fakeBrowser } from "#imports";
-import { createCount, createFiltering, saveLog } from "./save-log.js";
-import * as util from "@/utils/browser.js";
+import { createCount, createFiltering, saveLog } from "./save-log";
+import * as util from "@/utils/browser";
 
 beforeAll(() => {
     vi.spyOn(util, "changeBadgeState").mockResolvedValue();

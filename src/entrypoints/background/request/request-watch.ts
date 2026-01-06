@@ -1,12 +1,12 @@
-import { isNgVideo } from "../video-filter/filter-video.js";
-import { loadSettings } from "@/utils/storage.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { filterResponse, spaFilter } from "./request.js";
-import type { WatchApi } from "@/types/api/watch.types.js";
-import { watchApiSchema } from "@/types/api/watch.types.js";
-import { setLog, setTabData } from "@/utils/db.js";
-import type { SeriesData, TabData } from "@/types/storage/tab.types.js";
-import { createLogId, tryMountLogId } from "@/utils/log.js";
+import { isNgVideo } from "../video-filter/filter-video";
+import { loadSettings } from "@/utils/storage";
+import type { Settings } from "@/types/storage/settings.types";
+import { filterResponse, spaFilter } from "./request";
+import type { WatchApi } from "@/types/api/watch.types";
+import { watchApiSchema } from "@/types/api/watch.types";
+import { setLog, setTabData } from "@/utils/db";
+import type { SeriesData, TabData } from "@/types/storage/tab.types";
+import { createLogId, tryMountLogId } from "@/utils/log";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

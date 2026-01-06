@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { Init } from "./popup.js";
+import { Init } from "./popup";
 import { StrictMode } from "react";
 
 const dom = document.getElementById("root");

@@ -1,12 +1,12 @@
-import type { Settings } from "@/types/storage/settings.types.js";
-import type { Thread } from "@/types/api/comment.types.js";
-import { isString, pushCommonLog } from "@/utils/util.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
-import { parseFilter } from "../../parse-filter.js";
-import { RuleFilter } from "../rule-filter.js";
+import type { Settings } from "@/types/storage/settings.types";
+import type { Thread } from "@/types/api/comment.types";
+import { isString, pushCommonLog } from "@/utils/util";
+import type { CommonLog } from "@/types/storage/log.types";
+import { parseFilter } from "../../parse-filter";
+import { RuleFilter } from "../rule-filter";
 import { objectKeys } from "ts-extras";
-import type { Rule } from "../../rule.js";
-import { createDefaultRule } from "../../rule.js";
+import type { Rule } from "../../rule";
+import { createDefaultRule } from "../../rule";
 
 export class UserIdFilter extends RuleFilter<CommonLog> {
     protected override log: CommonLog = new Map();

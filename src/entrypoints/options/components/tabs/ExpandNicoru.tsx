@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
-import CustomNicoru from "../ui/CustomNicoru.js";
-import { defaultSettings, messages } from "@/utils/config.js";
-import { useStorageStore } from "@/utils/store.js";
-import type { CheckboxGroups } from "../ui/CheckboxSection.js";
-import CheckboxSection from "../ui/CheckboxSection.js";
+import CustomNicoru from "../ui/CustomNicoru";
+import { defaultSettings, messages } from "@/utils/config";
+import { useStorageStore } from "@/utils/store";
+import type { CheckboxGroups } from "../ui/CheckboxSection";
+import CheckboxSection from "../ui/CheckboxSection";
 
 export default function ExpandNicoru() {
     const [nicoruCounts, save] = useStorageStore(

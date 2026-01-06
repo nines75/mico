@@ -1,17 +1,12 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import type { Settings } from "../types/storage/settings.types.js";
-import { defaultSettings } from "./config.js";
-import { loadSettings } from "./storage.js";
-import type { LogData } from "../types/storage/log.types.js";
-import {
-    catchAsync,
-    isRankingPage,
-    isSearchPage,
-    isWatchPage,
-} from "./util.js";
-import { sendMessageToBackground } from "./browser.js";
-import { getLogId } from "./log.js";
+import type { Settings } from "../types/storage/settings.types";
+import { defaultSettings } from "./config";
+import { loadSettings } from "./storage";
+import type { LogData } from "../types/storage/log.types";
+import { catchAsync, isRankingPage, isSearchPage, isWatchPage } from "./util";
+import { sendMessageToBackground } from "./browser";
+import { getLogId } from "./log";
 
 interface StorageState {
     settings: Settings;

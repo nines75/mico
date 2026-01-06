@@ -1,9 +1,9 @@
-import { colors, messages } from "@/utils/config.js";
-import { loadSettings } from "@/utils/storage.js";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import { filterVideo } from "./video-filter/filter-video.js";
-import { saveLog } from "./video-filter/save-log.js";
-import type { Settings } from "@/types/storage/settings.types.js";
+import { colors, messages } from "@/utils/config";
+import { loadSettings } from "@/utils/storage";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import { filterVideo } from "./video-filter/filter-video";
+import { saveLog } from "./video-filter/save-log";
+import type { Settings } from "@/types/storage/settings.types";
 import {
     setSettings,
     removeAllData,
@@ -11,20 +11,20 @@ import {
     removeNgUserId,
     addNgId,
     removeNgId,
-} from "@/utils/storage-write.js";
-import { cleanupDb, getLogData, setTabData } from "@/utils/db.js";
-import type { TabData } from "@/types/storage/tab.types.js";
-import type { LogData } from "@/types/storage/log.types.js";
-import type { DropdownComment } from "../content/dropdown.js";
-import { formatNgUserId } from "./comment-filter/filter/user-id-filter.js";
+} from "@/utils/storage-write";
+import { cleanupDb, getLogData, setTabData } from "@/utils/db";
+import type { TabData } from "@/types/storage/tab.types";
+import type { LogData } from "@/types/storage/log.types";
+import type { DropdownComment } from "../content/dropdown";
+import { formatNgUserId } from "./comment-filter/filter/user-id-filter";
 import {
     changeBadgeState,
     sendMessageToContent,
     sendNotification,
     tryWithPermission,
-} from "@/utils/browser.js";
-import { getLogId, createLogId, tryMountLogId } from "@/utils/log.js";
-import { escapeNewline } from "@/utils/util.js";
+} from "@/utils/browser";
+import { getLogId, createLogId, tryMountLogId } from "@/utils/log";
+import { escapeNewline } from "@/utils/util";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],

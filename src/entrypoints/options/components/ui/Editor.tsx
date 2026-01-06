@@ -32,11 +32,11 @@ import {
     completionKeymap,
 } from "@codemirror/autocomplete";
 import { getCM, vim } from "@replit/codemirror-vim";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { useStorageStore } from "@/utils/store.js";
-import { catchAsync } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
-import { argsDirectives } from "@/entrypoints/background/parse-filter.js";
+import type { Settings } from "@/types/storage/settings.types";
+import { useStorageStore } from "@/utils/store";
+import { catchAsync } from "@/utils/util";
+import { sendMessageToBackground } from "@/utils/browser";
+import { argsDirectives } from "@/entrypoints/background/parse-filter";
 
 const toggleDirectivesRegex = RegExp(
     `^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,

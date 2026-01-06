@@ -4,14 +4,14 @@ import type {
     RuleCount,
     BlockedCount,
     LogFilters,
-} from "@/types/storage/log-video.types.js";
-import type { FilteredData } from "./filter-video.js";
-import { sumNumbers } from "@/utils/util.js";
-import { colors } from "@/utils/config.js";
-import { setLog } from "@/utils/db.js";
+} from "@/types/storage/log-video.types";
+import type { FilteredData } from "./filter-video";
+import { sumNumbers } from "@/utils/util";
+import { colors } from "@/utils/config";
+import { setLog } from "@/utils/db";
 import { objectEntries } from "ts-extras";
-import { getRuleFilters } from "./rule-filter.js";
-import { changeBadgeState } from "@/utils/browser.js";
+import { getRuleFilters } from "./rule-filter";
+import { changeBadgeState } from "@/utils/browser";
 
 export async function saveLog(
     filteredData: FilteredData,

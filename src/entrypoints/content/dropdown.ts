@@ -1,6 +1,6 @@
-import { sendMessageToBackground } from "@/utils/browser.js";
-import { buttons, messages } from "@/utils/config.js";
-import { catchAsync, replace } from "@/utils/util.js";
+import { sendMessageToBackground } from "@/utils/browser";
+import { buttons, messages } from "@/utils/config";
+import { catchAsync, replace } from "@/utils/util";
 
 interface DropdownContent {
     buttonsParentElement: HTMLDivElement;

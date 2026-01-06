@@ -1,10 +1,10 @@
-import { IdFilter } from "./filter/id-filter.js";
-import { UserNameFilter } from "./filter/user-name-filter.js";
-import { TitleFilter } from "./filter/title-filter.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import { PaidFilter } from "./filter/paid-filter.js";
-import { ViewsFilter } from "./filter/views-filter.js";
+import { IdFilter } from "./filter/id-filter";
+import { UserNameFilter } from "./filter/user-name-filter";
+import { TitleFilter } from "./filter/title-filter";
+import type { Settings } from "@/types/storage/settings.types";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import { PaidFilter } from "./filter/paid-filter";
+import { ViewsFilter } from "./filter/views-filter";
 
 export type Filters = FilteredData["filters"];
 

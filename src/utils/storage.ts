@@ -1,11 +1,11 @@
-import type { Settings } from "../types/storage/settings.types.js";
-import { defaultSettings } from "./config.js";
+import type { Settings } from "../types/storage/settings.types";
+import { defaultSettings } from "./config";
 import { storage } from "#imports";
 import {
     migrateSettingsToV3,
     migrateSettingsToV2,
-} from "@/types/storage/settings-legacy.types.js";
-import { customMerge } from "./util.js";
+} from "@/types/storage/settings-legacy.types";
+import { customMerge } from "./util";
 
 export const storageArea = "local";
 

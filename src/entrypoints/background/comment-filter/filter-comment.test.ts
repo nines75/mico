@@ -1,9 +1,9 @@
-import type { Thread } from "@/types/api/comment.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { checkComment, testTabData, testThreads } from "@/utils/test.js";
+import type { Thread } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { checkComment, testTabData, testThreads } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
-import { filterComment } from "./filter-comment.js";
-import { defaultSettings } from "@/utils/config.js";
+import { filterComment } from "./filter-comment";
+import { defaultSettings } from "@/utils/config";
 import { fakeBrowser } from "#imports";
 
 describe(`${filterComment.name}()`, () => {

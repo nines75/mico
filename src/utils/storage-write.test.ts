@@ -1,8 +1,8 @@
 import { fakeBrowser } from "#imports";
-import { defaultSettings } from "@/utils/config.js";
-import { loadSettings } from "@/utils/storage.js";
+import { defaultSettings } from "@/utils/config";
+import { loadSettings } from "@/utils/storage";
 import { describe, expect, it, beforeEach } from "vitest";
-import { setSettings, addNgUserId, removeNgUserId } from "./storage-write.js";
+import { setSettings, addNgUserId, removeNgUserId } from "./storage-write";
 
 const userIds = ["user-id-owner", "user-id-main-1"];
 

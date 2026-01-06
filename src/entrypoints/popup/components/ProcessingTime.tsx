@@ -1,6 +1,6 @@
-import { useStorageStore } from "@/utils/store.js";
-import { Info } from "./Info.js";
-import type { FilterTab } from "@/types/storage/settings.types.js";
+import { useStorageStore } from "@/utils/store";
+import { Info } from "./Info";
+import type { FilterTab } from "@/types/storage/settings.types";
 
 interface ProcessingTimeProps {
     selectedTab: FilterTab;

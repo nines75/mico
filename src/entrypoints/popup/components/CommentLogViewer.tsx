@@ -1,22 +1,22 @@
-import { getBasicNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import type { NiconicoComment } from "@/types/api/comment.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { messages, titles } from "@/utils/config.js";
-import { useStorageStore } from "@/utils/store.js";
-import { catchAsync, escapeNewline, replace } from "@/utils/util.js";
+import { getBasicNgUserIdSet } from "@/entrypoints/background/comment-filter/filter/user-id-filter";
+import type { NiconicoComment } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { messages, titles } from "@/utils/config";
+import { useStorageStore } from "@/utils/store";
+import { catchAsync, escapeNewline, replace } from "@/utils/util";
 import { useShallow } from "zustand/shallow";
-import { LogFrame } from "./LogFrame.js";
+import { LogFrame } from "./LogFrame";
 import type {
     CommentMap,
     ScoreLog,
     WordLog,
     CommentFiltering,
-} from "@/types/storage/log-comment.types.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
+} from "@/types/storage/log-comment.types";
+import type { CommonLog } from "@/types/storage/log.types";
 import { keyIn } from "ts-extras";
-import { Line, Block, Clickable } from "./LogViewer.js";
-import type { Filters } from "@/entrypoints/background/comment-filter/filter-comment.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+import { Line, Block, Clickable } from "./LogViewer";
+import type { Filters } from "@/entrypoints/background/comment-filter/filter-comment";
+import { sendMessageToBackground } from "@/utils/browser";
 
 type LogId = keyof Filters;
 

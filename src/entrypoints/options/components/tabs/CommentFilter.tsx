@@ -1,6 +1,6 @@
-import CommentFilterArea from "../ui/CommentFilterArea.js";
-import type { CheckboxGroups } from "../ui/CheckboxSection.js";
-import CheckboxSection from "../ui/CheckboxSection.js";
+import CommentFilterArea from "../ui/CommentFilterArea";
+import type { CheckboxGroups } from "../ui/CheckboxSection";
+import CheckboxSection from "../ui/CheckboxSection";
 
 export default function CommentFilter() {
     return (

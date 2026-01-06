@@ -3,8 +3,8 @@
 // https://www.nicovideo.jp/tag
 // -------------------------------------------------------------------------------------------
 
-import { z } from "@/utils/zod.js";
-import { niconicoVideoSchema } from "./niconico-video.types.js";
+import { z } from "@/utils/zod";
+import { niconicoVideoSchema } from "./niconico-video.types";
 
 export const searchApiSchema = z.looseObject({
     data: z.looseObject({

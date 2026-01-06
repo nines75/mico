@@ -1,12 +1,12 @@
-import { loadSettings } from "@/utils/storage.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { filterVideo } from "../video-filter/filter-video.js";
-import { saveLog } from "../video-filter/save-log.js";
-import { filterResponse, spaFilter } from "./request.js";
-import type { SearchApi } from "@/types/api/search.types.js";
-import { searchApiSchema } from "@/types/api/search.types.js";
-import { cleanupDb } from "@/utils/db.js";
-import { createLogId, tryMountLogId } from "@/utils/log.js";
+import { loadSettings } from "@/utils/storage";
+import type { Settings } from "@/types/storage/settings.types";
+import { filterVideo } from "../video-filter/filter-video";
+import { saveLog } from "../video-filter/save-log";
+import { filterResponse, spaFilter } from "./request";
+import type { SearchApi } from "@/types/api/search.types";
+import { searchApiSchema } from "@/types/api/search.types";
+import { cleanupDb } from "@/utils/db";
+import { createLogId, tryMountLogId } from "@/utils/log";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

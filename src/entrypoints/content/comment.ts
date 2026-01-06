@@ -1,4 +1,4 @@
-import type { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types";
 
 export function renderComment(element: Element, settings: Settings) {
     const commentContent = getCommentContent(element);

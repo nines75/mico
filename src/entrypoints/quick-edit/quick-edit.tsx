@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
-import CommentFilterArea from "../options/components/ui/CommentFilterArea.js";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
+import CommentFilterArea from "../options/components/ui/CommentFilterArea";
 import { useShallow } from "zustand/shallow";
-import VideoFilterArea from "../options/components/ui/VideoFilterArea.js";
+import VideoFilterArea from "../options/components/ui/VideoFilterArea";
 import clsx from "clsx";
-import type { FilterTab } from "@/types/storage/settings.types.js";
+import type { FilterTab } from "@/types/storage/settings.types";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);

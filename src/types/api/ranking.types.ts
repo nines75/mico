@@ -2,8 +2,8 @@
 // https://www.nicovideo.jp/ranking
 // -------------------------------------------------------------------------------------------
 
-import { z } from "@/utils/zod.js";
-import { niconicoVideoSchema } from "./niconico-video.types.js";
+import { z } from "@/utils/zod";
+import { niconicoVideoSchema } from "./niconico-video.types";
 
 export const rankingApiSchema = z.looseObject({
     data: z.looseObject({

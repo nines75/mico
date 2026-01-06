@@ -1,9 +1,9 @@
-import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { sortCommentId } from "../filter.js";
-import { isString, pushCommonLog } from "@/utils/util.js";
-import type { WordLog } from "@/types/storage/log-comment.types.js";
-import { StrictFilter } from "../strict-filter.js";
+import type { NiconicoComment, Thread } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { sortCommentId } from "../filter";
+import { isString, pushCommonLog } from "@/utils/util";
+import type { WordLog } from "@/types/storage/log-comment.types";
+import { StrictFilter } from "../strict-filter";
 
 export class WordFilter extends StrictFilter<WordLog> {
     protected override log: WordLog = new Map();

@@ -1,9 +1,9 @@
 import type { ContentScriptContext } from "#imports";
 import { createIframeUi } from "#imports";
-import type { LogId } from "@/types/storage/log.types.js";
-import { loadSettings } from "@/utils/storage.js";
-import { messages } from "@/utils/config.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+import type { LogId } from "@/types/storage/log.types";
+import { loadSettings } from "@/utils/storage";
+import { messages } from "@/utils/config";
+import { sendMessageToBackground } from "@/utils/browser";
 
 type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
     Extract<ContentMessage, { type: T }>["data"];

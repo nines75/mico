@@ -1,6 +1,6 @@
-import type { CheckboxProps } from "./Checkbox.js";
-import Checkbox from "./Checkbox.js";
-import H2 from "./H2.js";
+import type { CheckboxProps } from "./Checkbox";
+import Checkbox from "./Checkbox";
+import H2 from "./H2";
 
 export type CheckboxGroups = {
     header?: string;

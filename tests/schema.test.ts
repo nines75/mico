@@ -1,11 +1,11 @@
-import { safeParseJson } from "@/entrypoints/background/request/safe-parse-json.js";
-import { commentApiSchema } from "@/types/api/comment.types.js";
-import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types.js";
-import { rankingApiSchema } from "@/types/api/ranking.types.js";
-import { recommendApiSchema } from "@/types/api/recommend.types.js";
-import { searchApiSchema } from "@/types/api/search.types.js";
-import { watchApiSchema } from "@/types/api/watch.types.js";
-import type { z } from "@/utils/zod.js";
+import { safeParseJson } from "@/entrypoints/background/request/safe-parse-json";
+import { commentApiSchema } from "@/types/api/comment.types";
+import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
+import { rankingApiSchema } from "@/types/api/ranking.types";
+import { recommendApiSchema } from "@/types/api/recommend.types";
+import { searchApiSchema } from "@/types/api/search.types";
+import { watchApiSchema } from "@/types/api/watch.types";
+import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
 
 const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";

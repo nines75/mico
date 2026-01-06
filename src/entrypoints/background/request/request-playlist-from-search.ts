@@ -1,9 +1,9 @@
-import { loadSettings } from "@/utils/storage.js";
-import { filterVideo } from "../video-filter/filter-video.js";
-import { filterResponse } from "./request.js";
-import type { PlaylistFromSearchApi } from "@/types/api/playlist-from-search.types.js";
-import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types.js";
-import { safeParseJson } from "./safe-parse-json.js";
+import { loadSettings } from "@/utils/storage";
+import { filterVideo } from "../video-filter/filter-video";
+import { filterResponse } from "./request";
+import type { PlaylistFromSearchApi } from "@/types/api/playlist-from-search.types";
+import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
+import { safeParseJson } from "./safe-parse-json";
 
 export function playlistFromSearchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

@@ -1,4 +1,4 @@
-import { createDefaultToggle, type Rule } from "./rule.js";
+import { createDefaultToggle, type Rule } from "./rule";
 
 export type Directive =
     | {

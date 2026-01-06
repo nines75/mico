@@ -1,10 +1,10 @@
-import type { Thread } from "@/types/api/comment.types.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { defaultSettings } from "@/utils/config.js";
-import { checkComment, testThreads } from "@/utils/test.js";
+import type { Thread } from "@/types/api/comment.types";
+import type { CommonLog } from "@/types/storage/log.types";
+import type { Settings } from "@/types/storage/settings.types";
+import { defaultSettings } from "@/utils/config";
+import { checkComment, testThreads } from "@/utils/test";
 import { describe, beforeEach, it, expect } from "vitest";
-import { EasyCommentFilter } from "./easy-comment-filter.js";
+import { EasyCommentFilter } from "./easy-comment-filter";
 
 describe(EasyCommentFilter.name, () => {
     let threads: Thread[];

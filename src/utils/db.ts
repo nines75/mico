@@ -3,10 +3,10 @@
 // https://github.com/nines75/mico/issues/40
 // -------------------------------------------------------------------------------------------
 
-import type { LogData } from "@/types/storage/log.types.js";
+import type { LogData } from "@/types/storage/log.types";
 import Dexie, { type EntityTable } from "dexie";
-import type { TabData } from "@/types/storage/tab.types.js";
-import { customMerge } from "./util.js";
+import type { TabData } from "@/types/storage/tab.types";
+import { customMerge } from "./util";
 
 interface LogDb {
     id: string;

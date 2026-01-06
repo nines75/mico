@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { Init } from "./quick-edit.js";
+import { Init } from "./quick-edit";
 import { StrictMode } from "react";
 
 const dom = document.getElementById("root");

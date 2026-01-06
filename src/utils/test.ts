@@ -1,16 +1,16 @@
-import type { parseFilter } from "@/entrypoints/background/parse-filter.js";
-import type { Toggle } from "@/entrypoints/background/rule.js";
+import type { parseFilter } from "@/entrypoints/background/parse-filter";
+import type { Toggle } from "@/entrypoints/background/rule";
 import {
     createDefaultRule,
     createDefaultToggle,
     type Rule,
-} from "@/entrypoints/background/rule.js";
-import type { NiconicoComment, Thread } from "@/types/api/comment.types.js";
+} from "@/entrypoints/background/rule";
+import type { NiconicoComment, Thread } from "@/types/api/comment.types";
 import type {
     CommentMap,
     CommentFilterLog,
-} from "@/types/storage/log-comment.types.js";
-import type { TabData } from "@/types/storage/tab.types.js";
+} from "@/types/storage/log-comment.types";
+import type { TabData } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 
 export function mockComments(

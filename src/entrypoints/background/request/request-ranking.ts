@@ -1,12 +1,12 @@
-import { loadSettings } from "@/utils/storage.js";
-import type { Settings } from "@/types/storage/settings.types.js";
-import { filterVideo } from "../video-filter/filter-video.js";
-import { saveLog } from "../video-filter/save-log.js";
-import { filterResponse, spaFilter } from "./request.js";
-import type { RankingApi } from "@/types/api/ranking.types.js";
-import { rankingApiSchema } from "@/types/api/ranking.types.js";
-import { cleanupDb } from "@/utils/db.js";
-import { createLogId, tryMountLogId } from "@/utils/log.js";
+import { loadSettings } from "@/utils/storage";
+import type { Settings } from "@/types/storage/settings.types";
+import { filterVideo } from "../video-filter/filter-video";
+import { saveLog } from "../video-filter/save-log";
+import { filterResponse, spaFilter } from "./request";
+import type { RankingApi } from "@/types/api/ranking.types";
+import { rankingApiSchema } from "@/types/api/ranking.types";
+import { cleanupDb } from "@/utils/db";
+import { createLogId, tryMountLogId } from "@/utils/log";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

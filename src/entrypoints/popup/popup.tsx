@@ -1,21 +1,21 @@
 import { useEffect } from "react";
-import Count from "./components/Count.js";
-import type { CommentLogViewerProps } from "./components/CommentLogViewer.js";
-import CommentLogViewer from "./components/CommentLogViewer.js";
-import ProcessingTime from "./components/ProcessingTime.js";
-import { messages, urls, titles } from "@/utils/config.js";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store.js";
+import Count from "./components/Count";
+import type { CommentLogViewerProps } from "./components/CommentLogViewer";
+import CommentLogViewer from "./components/CommentLogViewer";
+import ProcessingTime from "./components/ProcessingTime";
+import { messages, urls, titles } from "@/utils/config";
+import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
-import type { VideoLogViewerProps } from "./components/VideoLogViewer.js";
-import VideoLogViewer from "./components/VideoLogViewer.js";
-import Details from "./components/Details.js";
-import type { FilterTab } from "@/types/storage/settings.types.js";
-import { formatNgId } from "../background/video-filter/filter/id-filter.js";
+import type { VideoLogViewerProps } from "./components/VideoLogViewer";
+import VideoLogViewer from "./components/VideoLogViewer";
+import Details from "./components/Details";
+import type { FilterTab } from "@/types/storage/settings.types";
+import { formatNgId } from "../background/video-filter/filter/id-filter";
 import clsx from "clsx";
-import { catchAsync, replace } from "@/utils/util.js";
-import { sendMessageToBackground } from "@/utils/browser.js";
+import { catchAsync, replace } from "@/utils/util";
+import { sendMessageToBackground } from "@/utils/browser";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);

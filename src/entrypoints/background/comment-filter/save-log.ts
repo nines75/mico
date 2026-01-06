@@ -1,19 +1,19 @@
-import type { FilteredData } from "./filter-comment.js";
-import { sumNumbers } from "@/utils/util.js";
+import type { FilteredData } from "./filter-comment";
+import { sumNumbers } from "@/utils/util";
 import type {
     BlockedCount,
     CommentCount,
     CommentFiltering,
     LogFilters,
     RuleCount,
-} from "@/types/storage/log-comment.types.js";
-import { colors } from "@/utils/config.js";
-import { setLog } from "@/utils/db.js";
+} from "@/types/storage/log-comment.types";
+import { colors } from "@/utils/config";
+import { setLog } from "@/utils/db";
 import { objectEntries } from "ts-extras";
 import type { ConditionalKeys } from "type-fest";
-import type { RuleFilter } from "./rule-filter.js";
-import { getRuleFilters } from "./rule-filter.js";
-import { changeBadgeState } from "@/utils/browser.js";
+import type { RuleFilter } from "./rule-filter";
+import { getRuleFilters } from "./rule-filter";
+import { changeBadgeState } from "@/utils/browser";
 
 export async function saveLog(
     filteredData: FilteredData,

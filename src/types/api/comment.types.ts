@@ -2,7 +2,7 @@
 // https://public.nvcomment.nicovideo.jp/v1/threads
 // -------------------------------------------------------------------------------------------
 
-import { z } from "@/utils/zod.js";
+import { z } from "@/utils/zod";
 
 const niconicoCommentSchema = z.looseObject({
     id: z.string(),

@@ -1,7 +1,7 @@
-import type { NiconicoVideo } from "@/types/api/niconico-video.types.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
-import { isString, pushCommonLog } from "@/utils/util.js";
-import { RuleFilter } from "./rule-filter.js";
+import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { CommonLog } from "@/types/storage/log.types";
+import { isString, pushCommonLog } from "@/utils/util";
+import { RuleFilter } from "./rule-filter";
 
 export abstract class PartialFilter extends RuleFilter<CommonLog> {
     protected override log: CommonLog = new Map();

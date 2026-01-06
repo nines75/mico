@@ -4,15 +4,15 @@
 // -------------------------------------------------------------------------------------------
 
 import { storage } from "#imports";
-import type { Settings } from "@/types/storage/settings.types.js";
+import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
-import { getSettingsData, storageArea, loadSettings } from "./storage.js";
-import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter.js";
-import { parseFilter } from "@/entrypoints/background/parse-filter.js";
-import { messages } from "./config.js";
-import { customMerge, replace } from "./util.js";
-import { clearDb } from "./db.js";
-import { sendNotification } from "./browser.js";
+import { getSettingsData, storageArea, loadSettings } from "./storage";
+import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter";
+import { parseFilter } from "@/entrypoints/background/parse-filter";
+import { messages } from "./config";
+import { customMerge, replace } from "./util";
+import { clearDb } from "./db";
+import { sendNotification } from "./browser";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });

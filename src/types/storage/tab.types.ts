@@ -1,4 +1,4 @@
-import type { NiconicoVideo } from "../api/niconico-video.types.js";
+import type { NiconicoVideo } from "../api/niconico-video.types";
 
 export interface TabData {
     series: SeriesData;

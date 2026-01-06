@@ -1,7 +1,7 @@
-import type { Thread } from "@/types/api/comment.types.js";
-import { Filter } from "../filter.js";
-import type { CommonLog } from "@/types/storage/log.types.js";
-import { pushCommonLog } from "@/utils/util.js";
+import type { Thread } from "@/types/api/comment.types";
+import { Filter } from "../filter";
+import type { CommonLog } from "@/types/storage/log.types";
+import { pushCommonLog } from "@/utils/util";
 
 export class CommentAssistFilter extends Filter<CommonLog> {
     protected override log: CommonLog = new Map();

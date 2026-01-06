@@ -1,7 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
-import { parseFilter } from "./parse-filter.js";
-import { mockToggle, mockRules } from "@/utils/test.js";
+import { parseFilter } from "./parse-filter";
+import { mockToggle, mockRules } from "@/utils/test";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 

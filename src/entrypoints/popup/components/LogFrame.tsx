@@ -1,4 +1,4 @@
-import { InfoContent } from "./Info.js";
+import { InfoContent } from "./Info";
 
 interface LogFrameProps {
     name: string;

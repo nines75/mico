@@ -1,16 +1,16 @@
-import { backgroundMessageHandler } from "./message.js";
-import commentRequest from "./request/request-comment.js";
+import { backgroundMessageHandler } from "./message";
+import commentRequest from "./request/request-comment";
 import { defineBackground } from "#imports";
-import { recommendRequest } from "./request/request-recommend.js";
-import { catchAsync, isNiconicoPage, isWatchPage } from "@/utils/util.js";
-import { rankingRequest } from "./request/request-ranking.js";
-import { searchRequest } from "./request/request-search.js";
-import { addNgIdFromUrl, removeData } from "@/utils/storage-write.js";
-import { watchRequest } from "./request/request-watch.js";
-import { playlistFromSearchRequest } from "./request/request-playlist-from-search.js";
-import { clearDb } from "@/utils/db.js";
-import { getAllData } from "@/utils/storage.js";
-import { sendMessageToContent, tryWithPermission } from "@/utils/browser.js";
+import { recommendRequest } from "./request/request-recommend";
+import { catchAsync, isNiconicoPage, isWatchPage } from "@/utils/util";
+import { rankingRequest } from "./request/request-ranking";
+import { searchRequest } from "./request/request-search";
+import { addNgIdFromUrl, removeData } from "@/utils/storage-write";
+import { watchRequest } from "./request/request-watch";
+import { playlistFromSearchRequest } from "./request/request-playlist-from-search";
+import { clearDb } from "@/utils/db";
+import { getAllData } from "@/utils/storage";
+import { sendMessageToContent, tryWithPermission } from "@/utils/browser";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
