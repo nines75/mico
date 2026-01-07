@@ -125,6 +125,10 @@ export default defineConfig(
                             target: pathsExceptBackground,
                             from: "./src/utils/db.ts",
                         },
+                        {
+                            target: "src/**/!(*.test).ts?(x)",
+                            from: "./src/utils/test.ts",
+                        },
                     ],
                 },
             ],
