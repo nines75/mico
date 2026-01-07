@@ -54,7 +54,8 @@ describe(filterComment.name, () => {
 big
 @s
 big
-device:Switch`,
+device:Switch
+`,
             ngWord: `
 コメント
 @s
@@ -77,6 +78,29 @@ device:Switch`,
         );
         expect(res?.filters.commandFilter.getLog()).toEqual(new Map());
         expect(res?.filters.wordFilter.getLog()).toEqual(new Map());
+    });
+
+    it("strictルールによるフィルタリングの重複", () => {
+        const res = filtering({
+            ngUserId: "",
+            ngCommand: `
+# 1003と1004に一致
+@s
+device:switch
+`,
+            ngWord: `
+# 1003に一致
+@s
+テストコメント
+`,
+        });
+
+        // 重複がないことを確認
+        expect(res?.strictUserIds).toEqual([
+            "user-id-main-2",
+            "user-id-main-3",
+        ]);
+        checkComment(threads, ["1003", "1004"]);
     });
 
     it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {

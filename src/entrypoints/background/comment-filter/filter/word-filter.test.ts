@@ -37,6 +37,15 @@ describe(WordFilter.name, () => {
             checkComment(threads, ["1000", "1001"]);
         });
 
+        it("部分一致", () => {
+            const filter = "tes";
+
+            expect(filtering({ filter }).getLog()).toEqual(
+                new Map([["tes", new Map([["test", ["1000", "1001"]]])]]),
+            );
+            checkComment(threads, ["1000", "1001"]);
+        });
+
         it("大小文字が異なる", () => {
             const filter = "TesT";
 

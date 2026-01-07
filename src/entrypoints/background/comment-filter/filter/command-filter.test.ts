@@ -127,7 +127,7 @@ big
     });
 
     // https://github.com/nines75/mico/issues/31
-    it("無効化ルールの先行適用", () => {
+    it("無効化ルールを後から適用", () => {
         const filter = `
 @disable
 big
@@ -156,6 +156,7 @@ device:switch
 
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(commandFilter.getDisableCount()).toEqual(0);
+        expect(hasCommand(["184"])).toBe(true);
         checkComment(threads, []);
     });
 

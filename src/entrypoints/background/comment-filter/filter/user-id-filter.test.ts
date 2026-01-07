@@ -51,14 +51,17 @@ describe(UserIdFilter.name, () => {
     });
 
     it(UserIdFilter.prototype.updateFilter.name, () => {
-        const userIdFilter = filtering({ filter: "" });
-        userIdFilter.updateFilter(["user-id-main-1"]);
+        const userIdFilter = filtering({ filter: "user-id-main-1" });
+        userIdFilter.updateFilter(["user-id-main-2"]);
         userIdFilter.filtering(threads);
+        userIdFilter.sortLog();
 
-        expect(userIdFilter.getLog()).toEqual(
-            new Map([["user-id-main-1", ["1002"]]]),
-        );
-        checkComment(threads, ["1002"]);
+        // 後から追加したユーザーIDが先にくることを確認
+        expect([...userIdFilter.getLog()]).toEqual([
+            ["user-id-main-2", ["1003"]],
+            ["user-id-main-1", ["1002"]],
+        ]);
+        checkComment(threads, ["1002", "1003"]);
     });
 
     it(UserIdFilter.prototype.sortLog.name, () => {
