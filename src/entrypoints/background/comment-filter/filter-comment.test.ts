@@ -4,33 +4,36 @@ import { checkComment, testTabData, testThreads } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
-import { fakeBrowser } from "#imports";
 
-describe(`${filterComment.name}()`, () => {
+describe(filterComment.name, () => {
     let threads: Thread[];
 
     beforeEach(() => {
         threads = structuredClone(testThreads);
-        fakeBrowser.reset();
     });
 
-    const createSettings = (settings: Partial<Settings>) => {
-        return {
-            ...{
+    const filtering = (settings?: Partial<Settings>) => {
+        return filterComment(
+            threads,
+            {
                 ...defaultSettings,
-                scoreFilterCount: -1001,
-                ngUserId: "user-id-owner",
-                ngCommand: "big",
-                ngWord: "コメント",
+                ...{
+                    scoreFilterCount: -1001,
+                    ngUserId: "user-id-owner",
+                    ngCommand: "big",
+                    ngWord: "コメント",
+                },
+                ...settings,
             },
-            ...settings,
-        };
+            testTabData,
+        );
     };
 
-    it("default", () => {
-        const res = filterComment(threads, createSettings({}), testTabData);
+    it("基本", () => {
+        const res = filtering();
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
+        expect(res?.filters.easyCommentFilter.getLog()).toEqual(new Map());
         expect(res?.filters.commentAssistFilter.getLog()).toEqual(new Map());
         expect(res?.filters.scoreFilter.getLog()).toEqual([]);
         expect(res?.filters.userIdFilter.getLog()).toEqual(
@@ -45,8 +48,8 @@ describe(`${filterComment.name}()`, () => {
     });
 
     it("strictルールの先行適用", () => {
-        const settings = {
-            ...defaultSettings,
+        const res = filtering({
+            ngUserId: "",
             ngCommand: `
 big
 @s
@@ -57,8 +60,7 @@ device:Switch`,
 @s
 コメント
 `,
-        } satisfies Partial<Settings>;
-        const res = filterComment(threads, settings, testTabData);
+        });
 
         checkComment(threads, ["1002", "1003", "1004"]);
         expect(res?.strictUserIds).toEqual([
@@ -78,11 +80,7 @@ device:Switch`,
     });
 
     it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
-        filterComment(
-            threads,
-            createSettings({ isCommentFilterEnabled: false }),
-            testTabData,
-        );
+        filtering({ isCommentFilterEnabled: false });
 
         checkComment(threads, []);
     });
@@ -91,21 +89,13 @@ device:Switch`,
         threads.forEach((thread) => {
             thread.comments.forEach((comment) => (comment.isMyPost = true));
         });
-        filterComment(
-            threads,
-            createSettings({ isMyCommentIgnored: true }),
-            testTabData,
-        );
+        filtering({ isMyCommentIgnored: true });
 
         checkComment(threads, []);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        filterComment(
-            threads,
-            createSettings({ isIgnoreByNicoru: true }),
-            testTabData,
-        );
+        filtering({ isIgnoreByNicoru: true });
 
         checkComment(threads, ["1000", "1001", "1002"]);
     });

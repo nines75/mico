@@ -5,5 +5,6 @@ export default defineConfig({
     plugins: [WxtVitest()],
     test: {
         dir: "./src",
+        setupFiles: "./src/utils/vitest.setup.ts",
     },
 });

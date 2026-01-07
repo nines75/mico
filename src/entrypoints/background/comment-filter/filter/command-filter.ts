@@ -30,7 +30,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
             ? this.rules.filter((rule) => this.isStrict(rule))
             : this.rules
                   .filter((rule) => !this.isStrict(rule))
-                  // 非表示ルールを無効化ルールより先に適用するためにソート
+                  // 無効化ルールを後から適用するためにソート
                   .sort((a, b) => {
                       if (a.isDisable === b.isDisable) return 0;
                       return a.isDisable ? 1 : -1;

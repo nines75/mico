@@ -3,7 +3,6 @@ import { defaultSettings } from "@/utils/config";
 import { checkComment, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import { WordFilter } from "./word-filter";
-import type { Settings } from "@/types/storage/settings.types";
 
 describe(WordFilter.name, () => {
     let threads: Thread[];
@@ -16,16 +15,9 @@ describe(WordFilter.name, () => {
         filter: string;
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
-        settings?: Partial<Settings>;
     }) => {
         const wordFilter = new WordFilter(
-            {
-                ...defaultSettings,
-                ...{
-                    ngWord: options.filter,
-                },
-                ...options.settings,
-            },
+            { ...defaultSettings, ...{ ngWord: options.filter } },
             options.ngUserIds ?? new Set(),
         );
         wordFilter.filtering(threads, options.isStrictOnly ?? false);
@@ -33,23 +25,27 @@ describe(WordFilter.name, () => {
         return wordFilter;
     };
 
-    it("一般", () => {
-        const filter = "test";
+    // -------------------------------------------------------------------------------------------
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["test", new Map([["test", ["1000", "1001"]]])]]),
-        );
-        checkComment(threads, ["1000", "1001"]);
+    describe("文字列ルール", () => {
+        it("基本", () => {
+            const filter = "test";
+
+            expect(filtering({ filter }).getLog()).toEqual(
+                new Map([["test", new Map([["test", ["1000", "1001"]]])]]),
+            );
+            checkComment(threads, ["1000", "1001"]);
+        });
+
+        it("大小文字が異なる", () => {
+            const filter = "TesT";
+
+            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            checkComment(threads, []);
+        });
     });
 
-    it("大小文字が異なる", () => {
-        const filter = "TesT";
-
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        checkComment(threads, []);
-    });
-
-    it("正規表現", () => {
+    it("正規表現ルール", () => {
         const filter = "/テスト/";
 
         expect(filtering({ filter }).getLog()).toEqual(
@@ -100,7 +96,7 @@ describe(WordFilter.name, () => {
         checkComment(threads, []);
     });
 
-    it(`${WordFilter.prototype.sortLog.name}()`, () => {
+    it(WordFilter.prototype.sortLog.name, () => {
         const filter = `
 コメント
 テスト

@@ -3,7 +3,6 @@ import { CommandFilter } from "./command-filter";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
-import type { Settings } from "@/types/storage/settings.types";
 
 describe(CommandFilter.name, () => {
     let threads: Thread[];
@@ -16,23 +15,15 @@ describe(CommandFilter.name, () => {
         filter: string;
         isStrictOnly?: boolean;
         ngUserIds?: Set<string>;
-        settings?: Partial<Settings>;
     }) => {
         const commandFilter = new CommandFilter(
-            {
-                ...defaultSettings,
-                ...{
-                    ngCommand: options.filter,
-                },
-                ...options.settings,
-            },
+            { ...defaultSettings, ...{ ngCommand: options.filter } },
             options.ngUserIds ?? new Set(),
         );
         commandFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return commandFilter;
     };
-
     const hasCommand = (targets: string[]) =>
         threads.some((thread) =>
             thread.comments.some(({ commands }) =>
@@ -42,32 +33,36 @@ describe(CommandFilter.name, () => {
             ),
         );
 
-    it("一般", () => {
-        const filter = "big";
+    // -------------------------------------------------------------------------------------------
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["big", ["1002", "1004"]]]),
-        );
-        checkComment(threads, ["1002", "1004"]);
+    describe("文字列ルール", () => {
+        it("基本", () => {
+            const filter = "big";
+
+            expect(filtering({ filter }).getLog()).toEqual(
+                new Map([["big", ["1002", "1004"]]]),
+            );
+            checkComment(threads, ["1002", "1004"]);
+        });
+
+        it("大小文字が異なる", () => {
+            const filter = "BiG";
+
+            expect(filtering({ filter }).getLog()).toEqual(
+                new Map([["big", ["1002", "1004"]]]),
+            );
+            checkComment(threads, ["1002", "1004"]);
+        });
+
+        it("部分一致", () => {
+            const filter = "bi";
+
+            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            checkComment(threads, []);
+        });
     });
 
-    it("大小文字が異なる", () => {
-        const filter = "BiG";
-
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["big", ["1002", "1004"]]]),
-        );
-        checkComment(threads, ["1002", "1004"]);
-    });
-
-    it("部分一致", () => {
-        const filter = "bi";
-
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        checkComment(threads, []);
-    });
-
-    it("正規表現", () => {
+    it("正規表現ルール", () => {
         const filter = "/big|device:switch/";
 
         expect(filtering({ filter }).getLog()).toEqual(
@@ -93,25 +88,27 @@ big
         ]);
     });
 
-    it.each([
-        {
-            name: "文字列",
-            filter: `
+    describe("@disable", () => {
+        it.each([
+            {
+                name: "文字列ルール",
+                filter: `
 @disable
 big
 device:switch
 `,
-        },
-        {
-            name: "正規表現",
-            filter: `
+            },
+            {
+                name: "正規表現ルール",
+                filter: `
 @disable
 /big|device:switch/
 `,
-        },
-    ])("@disable($name)", ({ filter }) => {
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        expect(hasCommand(["big", "device:switch"])).toBe(false);
+            },
+        ])("$name", ({ filter }) => {
+            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            expect(hasCommand(["big", "device:switch"])).toBe(false);
+        });
     });
 
     it("@strictと@disableの競合", () => {
@@ -130,7 +127,7 @@ big
     });
 
     // https://github.com/nines75/mico/issues/31
-    it("非表示ルールを無効化ルールより先に適用", () => {
+    it("無効化ルールの先行適用", () => {
         const filter = `
 @disable
 big
@@ -162,7 +159,7 @@ device:switch
         checkComment(threads, []);
     });
 
-    it(`${CommandFilter.prototype.sortLog.name}()`, () => {
+    it(CommandFilter.prototype.sortLog.name, () => {
         const filter = `
 device:switch
 big

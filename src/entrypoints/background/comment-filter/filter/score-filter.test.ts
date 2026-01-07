@@ -27,18 +27,22 @@ describe(ScoreFilter.name, () => {
         return scoreFilter;
     };
 
-    it.each([
-        {
-            score: 0,
-            ids: ["1000", "1001", "1002", "1003", "1004", "1005", "1006"],
-        },
-        { score: -999, ids: ["1002", "1003", "1004"] },
-        { score: -1000, ids: ["1002", "1003"] },
-        { score: -1001, ids: ["1002"] },
-        { score: -10000, ids: [] },
-    ])("score: $score", ({ score, ids }) => {
-        expect(filtering({ score }).getLog()).toEqual(ids);
-        checkComment(threads, ids);
+    // -------------------------------------------------------------------------------------------
+
+    describe("score", () => {
+        it.each([
+            {
+                score: 0,
+                ids: ["1000", "1001", "1002", "1003", "1004", "1005", "1006"],
+            },
+            { score: -999, ids: ["1002", "1003", "1004"] },
+            { score: -1000, ids: ["1002", "1003"] },
+            { score: -1001, ids: ["1002"] },
+            { score: -10000, ids: [] },
+        ])("$score", ({ score, ids }) => {
+            expect(filtering({ score }).getLog()).toEqual(ids);
+            checkComment(threads, ids);
+        });
     });
 
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
@@ -51,7 +55,7 @@ describe(ScoreFilter.name, () => {
         checkComment(threads, []);
     });
 
-    it(`${ScoreFilter.prototype.sortLog.name}()`, () => {
+    it(ScoreFilter.prototype.sortLog.name, () => {
         const scoreFilter = filtering({
             score: 0,
         });

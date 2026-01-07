@@ -25,33 +25,38 @@ describe(EasyCommentFilter.name, () => {
         return easyCommentFilter;
     };
 
-    it.each([
-        {
-            isEnabled: true,
-            ids: ["1005", "1006"],
-            expected: new Map([
-                ["！？", ["1005"]],
-                ["うぽつ", ["1006"]],
-            ]),
-        },
-        {
-            isEnabled: false,
-            ids: [],
-            expected: new Map(),
-        },
-    ] satisfies { isEnabled: boolean; ids: string[]; expected: CommonLog }[])(
-        `Settings.${"isEasyCommentHidden" satisfies keyof Settings}($isEnabled)`,
-        ({ isEnabled, ids, expected }) => {
+    // -------------------------------------------------------------------------------------------
+
+    describe(`Settings.${"isEasyCommentHidden" satisfies keyof Settings}`, () => {
+        it.each([
+            {
+                isEnabled: true,
+                ids: ["1005", "1006"],
+                expected: new Map([
+                    ["！？", ["1005"]],
+                    ["うぽつ", ["1006"]],
+                ]),
+            },
+            {
+                isEnabled: false,
+                ids: [],
+                expected: new Map(),
+            },
+        ] satisfies {
+            isEnabled: boolean;
+            ids: string[];
+            expected: CommonLog;
+        }[])("$isEnabled", ({ isEnabled, ids, expected }) => {
             expect(
                 filtering({
                     settings: { isEasyCommentHidden: isEnabled },
                 }).getLog(),
             ).toEqual(expected);
             checkComment(threads, ids);
-        },
-    );
+        });
+    });
 
-    it(`${EasyCommentFilter.prototype.sortLog.name}()`, () => {
+    it(EasyCommentFilter.prototype.sortLog.name, () => {
         const easyCommentFilter = filtering({});
         easyCommentFilter.sortLog();
 

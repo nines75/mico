@@ -1,5 +1,4 @@
-import { fakeBrowser } from "#imports";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
     customMerge,
     escapeNewline,
@@ -13,29 +12,29 @@ import {
 } from "./util";
 import type { CommonLog } from "@/types/storage/log.types";
 
-describe("util", () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
+describe(isNiconicoPage.name, () => {
     it.each([
         { url: "https://www.nicovideo.jp/", expected: true },
         { url: "https://www.nicovideo.jp/ranking/genre", expected: true },
         { url: "https://live.nicovideo.jp/", expected: false },
         { expected: false },
-    ])(`${isNiconicoPage.name}($url)`, ({ url, expected }) => {
+    ])(`$url`, ({ url, expected }) => {
         expect(isNiconicoPage(url)).toBe(expected);
     });
+});
 
+describe(isWatchPage.name, () => {
     it.each([
         { url: "https://www.nicovideo.jp/watch/sm0", expected: true },
         { url: "https://www.nicovideo.jp/watch/0", expected: true }, // https://github.com/nines75/mico/issues/13
         { url: "https://www.nicovideo.jp/", expected: false },
         { expected: false },
-    ])(`${isWatchPage.name}($url)`, ({ url, expected }) => {
+    ])(`$url`, ({ url, expected }) => {
         expect(isWatchPage(url)).toBe(expected);
     });
+});
 
+describe(isRankingPage.name, () => {
     it.each([
         { url: "https://www.nicovideo.jp/ranking", expected: true }, // https://github.com/nines75/mico/issues/39
         { url: "https://www.nicovideo.jp/ranking/genre", expected: true },
@@ -46,10 +45,12 @@ describe("util", () => {
         { url: "https://www.nicovideo.jp/ranking/custom", expected: false },
         { url: "https://www.nicovideo.jp/", expected: false },
         { expected: false },
-    ])(`${isRankingPage.name}($url)`, ({ url, expected }) => {
+    ])(`$url`, ({ url, expected }) => {
         expect(isRankingPage(url)).toBe(expected);
     });
+});
 
+describe(isSearchPage.name, () => {
     it.each([
         { url: "https://www.nicovideo.jp/search/test", expected: true },
         { url: "https://www.nicovideo.jp/tag/test", expected: true },
@@ -58,52 +59,58 @@ describe("util", () => {
         { url: "https://www.nicovideo.jp/user_search/test", expected: false },
         { url: "https://www.nicovideo.jp/", expected: false },
         { expected: false },
-    ])(`${isSearchPage.name}($url)`, ({ url, expected }) => {
+    ])(`$url`, ({ url, expected }) => {
         expect(isSearchPage(url)).toBe(expected);
     });
+});
 
-    it(`${escapeNewline.name}()`, () => {
-        expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
-    });
+it(escapeNewline.name, () => {
+    expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
+});
 
+describe(pushCommonLog.name, () => {
     it.each([
         {
-            name: "存在しないキー",
+            name: "キーが存在しない",
             log: new Map<string, string[]>(),
             expected: new Map([["a", ["1"]]]),
         },
         {
-            name: "存在するキー",
+            name: "キーが存在する",
             log: new Map([["a", ["0"]]]),
             expected: new Map([["a", ["0", "1"]]]),
         },
     ] satisfies { name: string; log: CommonLog; expected: CommonLog }[])(
-        `${pushCommonLog.name}($name)`,
+        `$name`,
         ({ log, expected }) => {
             pushCommonLog(log, "a", "1");
 
             expect(log).toEqual(expected);
         },
     );
+});
 
+describe(sumNumbers.name, () => {
     it.each([
         {
-            name: "一般",
+            name: "基本",
             numbers: [1, 2, 3],
             expected: 6,
         },
         {
-            name: "空の配列",
+            name: "空配列",
             numbers: [],
             expected: 0,
         },
     ] satisfies { name: string; numbers: number[]; expected: number }[])(
-        `${sumNumbers.name}($name)`,
+        `$name`,
         ({ numbers, expected }) => {
             expect(sumNumbers(numbers)).toEqual(expected);
         },
     );
+});
 
+describe(replace.name, () => {
     it.each([
         {
             name: "単数",
@@ -122,39 +129,39 @@ describe("util", () => {
         text: string;
         placeholders: string[];
         expected: string;
-    }[])(`${replace.name}($name)`, ({ text, placeholders, expected }) => {
+    }[])(`$name`, ({ text, placeholders, expected }) => {
         expect(replace(text, placeholders)).toEqual(expected);
     });
+});
 
-    it("customMerge()", () => {
-        const oldObj = {
-            nest: {
-                a: true,
-            },
-            array: [1],
-            map: new Map([["a", 1]]),
-            set: new Set([1]),
-            undefined: true,
-        };
-        const newObj = {
-            nest: {
-                b: false,
-            },
-            array: [2],
-            map: new Map([["b", 2]]),
-            set: new Set([2]),
-            undefined: undefined,
-        };
+it("customMerge", () => {
+    const oldObj = {
+        nest: {
+            a: true,
+        },
+        array: [1],
+        map: new Map([["a", 1]]),
+        set: new Set([1]),
+        undefined: true,
+    };
+    const newObj = {
+        nest: {
+            b: false,
+        },
+        array: [2],
+        map: new Map([["b", 2]]),
+        set: new Set([2]),
+        undefined: undefined,
+    };
 
-        expect(customMerge(oldObj, newObj)).toStrictEqual({
-            nest: {
-                a: true,
-                b: false,
-            },
-            array: [2],
-            map: new Map([["b", 2]]),
-            set: new Set([2]),
-            undefined: undefined,
-        });
+    expect(customMerge(oldObj, newObj)).toStrictEqual({
+        nest: {
+            a: true,
+            b: false,
+        },
+        array: [2],
+        map: new Map([["b", 2]]),
+        set: new Set([2]),
+        undefined: undefined,
     });
 });

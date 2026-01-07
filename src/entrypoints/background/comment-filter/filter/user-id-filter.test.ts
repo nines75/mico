@@ -3,7 +3,6 @@ import { defaultSettings } from "@/utils/config";
 import { checkComment, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import { UserIdFilter } from "./user-id-filter";
-import type { Settings } from "@/types/storage/settings.types";
 
 describe(UserIdFilter.name, () => {
     let threads: Thread[];
@@ -12,37 +11,37 @@ describe(UserIdFilter.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: {
-        filter: string;
-        settings?: Partial<Settings>;
-    }) => {
+    const filtering = (options: { filter: string }) => {
         const userIdFilter = new UserIdFilter({
             ...defaultSettings,
             ...{ ngUserId: options.filter },
-            ...options.settings,
         });
         userIdFilter.filtering(threads);
 
         return userIdFilter;
     };
 
-    it("一般", () => {
-        const filter = "user-id-owner";
+    // -------------------------------------------------------------------------------------------
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["user-id-owner", ["1000", "1001"]]]),
-        );
-        checkComment(threads, ["1000", "1001"]);
+    describe("文字列ルール", () => {
+        it("基本", () => {
+            const filter = "user-id-owner";
+
+            expect(filtering({ filter }).getLog()).toEqual(
+                new Map([["user-id-owner", ["1000", "1001"]]]),
+            );
+            checkComment(threads, ["1000", "1001"]);
+        });
+
+        it("部分一致", () => {
+            const filter = "user-id";
+
+            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            checkComment(threads, []);
+        });
     });
 
-    it("部分一致", () => {
-        const filter = "user-id";
-
-        expect(filtering({ filter }).getLog()).toEqual(new Map());
-        checkComment(threads, []);
-    });
-
-    it("正規表現", () => {
+    it("正規表現ルール", () => {
         const filter = "/^user-id-main/";
 
         expect(filtering({ filter }).getLog()).toEqual(
@@ -62,7 +61,7 @@ describe(UserIdFilter.name, () => {
         checkComment(threads, ["1002"]);
     });
 
-    it(`${UserIdFilter.prototype.sortLog.name}()`, () => {
+    it(UserIdFilter.prototype.sortLog.name, () => {
         const filter = `
 user-id-main-1
 user-id-owner

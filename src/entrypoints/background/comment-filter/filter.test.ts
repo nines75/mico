@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { sortCommentId } from "./filter";
 import { testComments } from "@/utils/test";
 
-describe(`${sortCommentId.name}()`, () => {
+describe(sortCommentId.name, () => {
     const ids = ["1000", "1001", "1002", "1003", "1004", "1005", "1006"];
 
-    it("default", () => {
+    it("基本", () => {
         expect(sortCommentId(ids, testComments)).toEqual([
             "1005",
             "1000",

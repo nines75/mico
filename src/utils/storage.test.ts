@@ -1,15 +1,10 @@
-import { fakeBrowser } from "#imports";
 import { defaultSettings } from "@/utils/config";
 import { getSettingsData, loadSettings } from "@/utils/storage";
-import { describe, expect, it, beforeEach } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { Settings } from "@/types/storage/settings.types";
 import { setSettings } from "./storage-write";
 
-describe("storage", () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
+describe(loadSettings.name, () => {
     it.each([
         {
             name: "設定なし",
@@ -24,15 +19,15 @@ describe("storage", () => {
         name: string;
         settings?: Partial<Settings>;
         expected: Settings;
-    }[])(`${loadSettings.name}():$name`, async ({ settings, expected }) => {
+    }[])(`$name`, async ({ settings, expected }) => {
         if (settings !== undefined) await setSettings(settings);
 
         expect(await loadSettings()).toEqual(expected);
     });
+});
 
-    it(`${getSettingsData.name}()`, async () => {
-        await setSettings(defaultSettings);
+it(getSettingsData.name, async () => {
+    await setSettings(defaultSettings);
 
-        expect(await getSettingsData()).toEqual(defaultSettings);
-    });
+    expect(await getSettingsData()).toEqual(defaultSettings);
 });

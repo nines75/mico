@@ -14,47 +14,48 @@ class TestFilter extends RuleFilter<unknown> {
     }
 }
 
-describe(`${RuleFilter.prototype.filterRules.name}()`, () => {
-    const filtering = (options: { filter: string; tags?: string[] }) => {
-        const testFilter = new TestFilter(defaultSettings, options.filter);
-        testFilter.filterRules({
-            ...testTabData,
-            ...{ tags: options.tags ?? [] },
-        });
+function filtering(options: { filter: string; tags?: string[] }) {
+    const testFilter = new TestFilter(defaultSettings, options.filter);
+    testFilter.filterRules({
+        ...testTabData,
+        ...{ tags: options.tags ?? [] },
+    });
 
-        return testFilter;
-    };
+    return testFilter;
+}
 
+describe(RuleFilter.prototype.filterRules.name, () => {
     // -------------------------------------------------------------------------------------------
     // @include-tags
     // -------------------------------------------------------------------------------------------
 
-    it.each([
-        {
-            name: "動画タグが単数",
-            tags: ["tag"],
-            expected: mockRules(
-                { include: mockToggle({ tags: [["tag"]] }) },
-                { include: mockToggle({ tags: [["tag", "tag2"]] }) },
-            ).rules,
-        },
-        {
-            name: "動画タグが複数",
-            tags: ["tag", "tag2"],
-            expected: mockRules(
-                { include: mockToggle({ tags: [["tag"]] }) },
-                { include: mockToggle({ tags: [["tag2"]] }) },
-                { include: mockToggle({ tags: [["tag", "tag2"]] }) },
-                { include: mockToggle({ tags: [["tag"], ["tag2"]] }) },
-            ).rules,
-        },
-        {
-            name: "動画タグなし",
-            tags: [],
-            expected: [],
-        },
-    ])("@include-tags($name)", ({ tags, expected }) => {
-        const filter = `
+    describe("@include-tags", () => {
+        it.each([
+            {
+                name: "動画タグが単数",
+                tags: ["tag"],
+                expected: mockRules(
+                    { include: mockToggle({ tags: [["tag"]] }) },
+                    { include: mockToggle({ tags: [["tag", "tag2"]] }) },
+                ).rules,
+            },
+            {
+                name: "動画タグが複数",
+                tags: ["tag", "tag2"],
+                expected: mockRules(
+                    { include: mockToggle({ tags: [["tag"]] }) },
+                    { include: mockToggle({ tags: [["tag2"]] }) },
+                    { include: mockToggle({ tags: [["tag", "tag2"]] }) },
+                    { include: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+                ).rules,
+            },
+            {
+                name: "動画タグなし",
+                tags: [],
+                expected: [],
+            },
+        ])("$name", ({ tags, expected }) => {
+            const filter = `
 @include-tags tag
 rule
 @end
@@ -74,39 +75,41 @@ rule
 @end
 `;
 
-        expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+        });
     });
 
     // -------------------------------------------------------------------------------------------
     // @exclude-tags
     // -------------------------------------------------------------------------------------------
 
-    it.each([
-        {
-            name: "動画タグが単数",
-            tags: ["tag"],
-            expected: mockRules(
-                { exclude: mockToggle({ tags: [["tag2"]] }) },
-                { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
-            ).rules,
-        },
-        {
-            name: "動画タグが複数",
-            tags: ["tag", "tag2"],
-            expected: [],
-        },
-        {
-            name: "動画タグなし",
-            tags: [],
-            expected: mockRules(
-                { exclude: mockToggle({ tags: [["tag"]] }) },
-                { exclude: mockToggle({ tags: [["tag2"]] }) },
-                { exclude: mockToggle({ tags: [["tag", "tag2"]] }) },
-                { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
-            ).rules,
-        },
-    ])("@exclude-tags($name)", ({ tags, expected }) => {
-        const filter = `
+    describe("@exclude-tags", () => {
+        it.each([
+            {
+                name: "動画タグが単数",
+                tags: ["tag"],
+                expected: mockRules(
+                    { exclude: mockToggle({ tags: [["tag2"]] }) },
+                    { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+                ).rules,
+            },
+            {
+                name: "動画タグが複数",
+                tags: ["tag", "tag2"],
+                expected: [],
+            },
+            {
+                name: "動画タグなし",
+                tags: [],
+                expected: mockRules(
+                    { exclude: mockToggle({ tags: [["tag"]] }) },
+                    { exclude: mockToggle({ tags: [["tag2"]] }) },
+                    { exclude: mockToggle({ tags: [["tag", "tag2"]] }) },
+                    { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+                ).rules,
+            },
+        ])("$name", ({ tags, expected }) => {
+            const filter = `
 @exclude-tags tag
 rule
 @end
@@ -125,45 +128,48 @@ rule
 @end
 @end
 `;
-        expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+        });
     });
 
     // -------------------------------------------------------------------------------------------
     // @include-tags + @exclude-tags
     // -------------------------------------------------------------------------------------------
 
-    it.each([
-        {
-            name: "@include-tagsのみマッチ",
-            tags: ["tag"],
-            expected: mockRules({
-                include: mockToggle({ tags: [["tag"]] }),
-                exclude: mockToggle({ tags: [["tag2"]] }),
-            }).rules,
-        },
-        {
-            name: "@exclude-tagsのみマッチ",
-            tags: ["tag2"],
-            expected: [],
-        },
-        {
-            name: "両方マッチ",
-            tags: ["tag", "tag2"],
-            expected: [],
-        },
-        {
-            name: "動画タグなし",
-            tags: [],
-            expected: [],
-        },
-    ])("@include-tags + @exclude-tags($name)", ({ tags, expected }) => {
-        const filter = `
+    describe("@include-tags + @exclude-tags", () => {
+        it.each([
+            {
+                name: "@include-tagsのみマッチ",
+                tags: ["tag"],
+                expected: mockRules({
+                    include: mockToggle({ tags: [["tag"]] }),
+                    exclude: mockToggle({ tags: [["tag2"]] }),
+                }).rules,
+            },
+            {
+                name: "@exclude-tagsのみマッチ",
+                tags: ["tag2"],
+                expected: [],
+            },
+            {
+                name: "両方マッチ",
+                tags: ["tag", "tag2"],
+                expected: [],
+            },
+            {
+                name: "動画タグなし",
+                tags: [],
+                expected: [],
+            },
+        ])("$name", ({ tags, expected }) => {
+            const filter = `
 @include-tags tag
 @exclude-tags tag2
 rule
 `;
 
-        expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+        });
     });
 
     // -------------------------------------------------------------------------------------------

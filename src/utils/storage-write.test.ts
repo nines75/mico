@@ -1,32 +1,21 @@
-import { fakeBrowser } from "#imports";
 import { defaultSettings } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
-import { describe, expect, it, beforeEach } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setSettings, addNgUserId, removeNgUserId } from "./storage-write";
 
 const userIds = ["user-id-owner", "user-id-main-1"];
 
-describe(`${addNgUserId.name}()`, () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
+it(addNgUserId.name, async () => {
+    await addNgUserId(userIds);
 
-    it("通常", async () => {
-        await addNgUserId(userIds);
-
-        const settings = await loadSettings();
-        expect(settings.ngUserId).toBe(`${userIds.join("\n")}\n`);
-    });
+    const settings = await loadSettings();
+    expect(settings.ngUserId).toBe(`${userIds.join("\n")}\n`);
 });
 
-describe(`${removeNgUserId.name}()`, () => {
-    beforeEach(() => {
-        fakeBrowser.reset();
-    });
-
+describe(removeNgUserId.name, () => {
     it.each([
         {
-            name: "通常",
+            name: "基本",
             ids: userIds,
         },
         {

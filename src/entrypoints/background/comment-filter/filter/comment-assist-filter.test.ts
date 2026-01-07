@@ -64,33 +64,38 @@ describe(CommentAssistFilter.name, () => {
         return commentAssistFilter;
     };
 
-    it.each([
-        {
-            isEnabled: true,
-            ids: ["1001", "1003", "1004"],
-            expected: new Map([
-                ["test", ["1001"]],
-                ["test2", ["1003", "1004"]],
-            ]),
-        },
-        {
-            isEnabled: false,
-            ids: [],
-            expected: new Map(),
-        },
-    ] satisfies { isEnabled: boolean; ids: string[]; expected: CommonLog }[])(
-        `Settings.${"isCommentAssistFilterEnabled" satisfies keyof Settings}($isEnabled)`,
-        ({ isEnabled, ids, expected }) => {
+    // -------------------------------------------------------------------------------------------
+
+    describe(`Settings.${"isCommentAssistFilterEnabled" satisfies keyof Settings}`, () => {
+        it.each([
+            {
+                isEnabled: true,
+                ids: ["1001", "1003", "1004"],
+                expected: new Map([
+                    ["test", ["1001"]],
+                    ["test2", ["1003", "1004"]],
+                ]),
+            },
+            {
+                isEnabled: false,
+                ids: [],
+                expected: new Map(),
+            },
+        ] satisfies {
+            isEnabled: boolean;
+            ids: string[];
+            expected: CommonLog;
+        }[])("$isEnabled", ({ isEnabled, ids, expected }) => {
             expect(
                 filtering({
                     settings: { isCommentAssistFilterEnabled: isEnabled },
                 }).getLog(),
             ).toEqual(expected);
             checkComment(threads, ids, commentAssistThreads);
-        },
-    );
+        });
+    });
 
-    it(`${CommentAssistFilter.prototype.sortLog.name}()`, () => {
+    it(CommentAssistFilter.prototype.sortLog.name, () => {
         const commentAssistFilter = filtering({});
         commentAssistFilter.sortLog();
 
