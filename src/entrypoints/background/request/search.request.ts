@@ -6,7 +6,7 @@ import { filterResponse, spaFilter } from "./request";
 import type { SearchApi } from "@/types/api/search.types";
 import { searchApiSchema } from "@/types/api/search.types";
 import { cleanupDb } from "@/utils/db";
-import { createLogId, tryMountLogId } from "@/utils/log";
+import { createLogId, mountLogId } from "@/utils/log";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -16,7 +16,7 @@ export function searchRequest(
         const logId = createLogId();
         if (details.type === "xmlhttprequest") {
             // XHRでないとmountできない
-            await tryMountLogId(logId, tabId);
+            await mountLogId(logId, tabId);
         }
 
         const settings = await loadSettings();
@@ -38,7 +38,7 @@ export function searchRequest(
         await Promise.all([
             saveLog(filteredData, logId, tabId),
             ...(details.type === "main_frame"
-                ? [tryMountLogId(logId, tabId)]
+                ? [mountLogId(logId, tabId)]
                 : []),
         ]);
         await cleanupDb();

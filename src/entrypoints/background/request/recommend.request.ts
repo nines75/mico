@@ -5,7 +5,7 @@ import { filterVideo } from "../video-filter/filter-video";
 import { saveLog } from "../video-filter/save-log";
 import { filterResponse } from "./request";
 import { getTabData } from "@/utils/db";
-import { safeParseJson } from "./safe-parse-json";
+import { safeParseJson } from "@/utils/util";
 
 export function recommendRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

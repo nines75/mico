@@ -53,7 +53,7 @@ export async function addNgUserId(userIds: string[]) {
     if (userIds.length === 0) return;
 
     const filter = userIds.join("\n");
-    const func = async (): Promise<Partial<Settings>> => {
+    const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         return {
@@ -61,7 +61,7 @@ export async function addNgUserId(userIds: string[]) {
         };
     };
 
-    await setSettings(func);
+    await setSettings(transaction);
 }
 
 export async function removeNgUserId(
@@ -70,7 +70,7 @@ export async function removeNgUserId(
 ) {
     if (userIds.length === 0) return;
 
-    const func = async (): Promise<Partial<Settings>> => {
+    const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         const removeLines = parseNgUserId(settings, isRemoveSpecific)
@@ -113,11 +113,11 @@ export async function removeNgUserId(
         };
     };
 
-    await setSettings(func);
+    await setSettings(transaction);
 }
 
 export async function addNgId(id: string) {
-    const func = async (): Promise<Partial<Settings>> => {
+    const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         return {
@@ -125,11 +125,11 @@ export async function addNgId(id: string) {
         };
     };
 
-    await setSettings(func);
+    await setSettings(transaction);
 }
 
 export async function removeNgId(id: string) {
-    const func = async (): Promise<Partial<Settings>> => {
+    const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         const removeLines = parseFilter(settings.ngId, true)
@@ -158,7 +158,7 @@ export async function removeNgId(id: string) {
         };
     };
 
-    await setSettings(func);
+    await setSettings(transaction);
 }
 
 export async function addNgIdFromUrl(url: string | undefined) {

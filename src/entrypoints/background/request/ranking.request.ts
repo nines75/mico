@@ -6,7 +6,7 @@ import { filterResponse, spaFilter } from "./request";
 import type { RankingApi } from "@/types/api/ranking.types";
 import { rankingApiSchema } from "@/types/api/ranking.types";
 import { cleanupDb } from "@/utils/db";
-import { createLogId, tryMountLogId } from "@/utils/log";
+import { createLogId, mountLogId } from "@/utils/log";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -15,7 +15,7 @@ export function rankingRequest(
         const tabId = details.tabId;
         const logId = createLogId();
         if (details.type === "xmlhttprequest") {
-            await tryMountLogId(logId, tabId);
+            await mountLogId(logId, tabId);
         }
 
         const settings = await loadSettings();
@@ -37,7 +37,7 @@ export function rankingRequest(
         await Promise.all([
             saveLog(filteredData, logId, tabId),
             ...(details.type === "main_frame"
-                ? [tryMountLogId(logId, tabId)]
+                ? [mountLogId(logId, tabId)]
                 : []),
         ]);
         await cleanupDb();

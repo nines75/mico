@@ -1,4 +1,4 @@
-import { safeParseJson } from "@/entrypoints/background/request/safe-parse-json";
+import { safeParseJson } from "@/utils/util";
 import { commentApiSchema } from "@/types/api/comment.types";
 import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
 import { rankingApiSchema } from "@/types/api/ranking.types";

@@ -8,7 +8,7 @@ import { createCount, createFiltering, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
 
 beforeAll(() => {
-    vi.spyOn(util, "changeBadgeState").mockResolvedValue();
+    vi.spyOn(util, "setBadgeState").mockResolvedValue();
 });
 
 it(saveLog.name, () => {

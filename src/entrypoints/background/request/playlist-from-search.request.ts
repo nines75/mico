@@ -3,7 +3,7 @@ import { filterVideo } from "../video-filter/filter-video";
 import { filterResponse } from "./request";
 import type { PlaylistFromSearchApi } from "@/types/api/playlist-from-search.types";
 import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
-import { safeParseJson } from "./safe-parse-json";
+import { safeParseJson } from "@/utils/util";
 
 export function playlistFromSearchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

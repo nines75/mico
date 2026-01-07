@@ -11,13 +11,13 @@ import { colors } from "@/utils/config";
 import { setLog } from "@/utils/db";
 import { objectEntries } from "ts-extras";
 import { getRuleFilters } from "./rule-filter";
-import { changeBadgeState } from "@/utils/browser";
+import { setBadgeState } from "@/utils/browser";
 
 export async function saveLog(
     filteredData: FilteredData,
     logId: string,
     tabId: number,
-    isChangeBadge = true,
+    isSetBadge = true,
 ) {
     const start = performance.now();
 
@@ -26,8 +26,8 @@ export async function saveLog(
 
     await Promise.all([
         setLog({ videoFilterLog: { count, filtering } }, logId, tabId),
-        ...(isChangeBadge
-            ? [changeBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
+        ...(isSetBadge
+            ? [setBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
             : []),
     ]);
 

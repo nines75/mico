@@ -9,8 +9,8 @@ import type { CommentApi } from "@/types/api/comment.types";
 import { commentApiSchema } from "@/types/api/comment.types";
 import { cleanupDb, getTabData, setTabData } from "@/utils/db";
 import type { TabData } from "@/types/storage/tab.types";
-import { safeParseJson } from "./safe-parse-json";
 import { sendMessageToContent, sendNotification } from "@/utils/browser";
+import { safeParseJson } from "@/utils/util";
 
 export default function commentRequest(
     details: browser.webRequest._OnBeforeRequestDetails,

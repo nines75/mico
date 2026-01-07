@@ -13,7 +13,7 @@ import { objectEntries } from "ts-extras";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter";
 import { getRuleFilters } from "./rule-filter";
-import { changeBadgeState } from "@/utils/browser";
+import { setBadgeState } from "@/utils/browser";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -27,7 +27,7 @@ export async function saveLog(
 
     await Promise.all([
         setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
-        changeBadgeState(count.totalBlocked, colors.commentBadge, tabId),
+        setBadgeState(count.totalBlocked, colors.commentBadge, tabId),
     ]);
 
     const end = performance.now();

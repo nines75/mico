@@ -6,7 +6,7 @@ export function createLogId() {
     return crypto.randomUUID();
 }
 
-export async function tryMountLogId(logId: LogId, tabId: number) {
+export async function mountLogId(logId: LogId, tabId: number) {
     const mount = async () => {
         try {
             await sendMessageToContent(tabId, {

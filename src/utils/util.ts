@@ -1,6 +1,7 @@
 import type { DeepMergeLeafURI, DeepMergeNoFilteringURI } from "deepmerge-ts";
 import { deepmergeCustom } from "deepmerge-ts";
 import type { CommonLog } from "../types/storage/log.types";
+import type { z } from "./zod";
 
 export function isNiconicoPage(url: string | undefined) {
     if (url === undefined) return false;
@@ -85,3 +86,19 @@ export const customMerge = deepmergeCustom<
     // 値がundefinedでも上書きする
     filterValues: false,
 });
+
+export function safeParseJson<T>(
+    text: string | null | undefined,
+    schema: z.ZodType<T>,
+): T | undefined {
+    try {
+        if (text === null || text === undefined) return;
+
+        const data = JSON.parse(text) as string;
+        const result = schema.safeParse(data);
+
+        return result.success ? result.data : undefined;
+    } catch {
+        return;
+    }
+}

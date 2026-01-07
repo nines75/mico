@@ -6,7 +6,7 @@ import type { WatchApi } from "@/types/api/watch.types";
 import { watchApiSchema } from "@/types/api/watch.types";
 import { setLog, setTabData } from "@/utils/db";
 import type { SeriesData, TabData } from "@/types/storage/tab.types";
-import { createLogId, tryMountLogId } from "@/utils/log";
+import { createLogId, mountLogId } from "@/utils/log";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -17,7 +17,7 @@ export function watchRequest(
         // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
         const logId = createLogId();
         if (details.type === "xmlhttprequest") {
-            await tryMountLogId(logId, tabId);
+            await mountLogId(logId, tabId);
         }
 
         const settings = await loadSettings();
@@ -43,7 +43,7 @@ export function watchRequest(
         filter.disconnect();
 
         if (details.type === "main_frame") {
-            await tryMountLogId(logId, tabId);
+            await mountLogId(logId, tabId);
         }
 
         return false;

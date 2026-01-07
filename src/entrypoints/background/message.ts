@@ -18,12 +18,12 @@ import type { LogData } from "@/types/storage/log.types";
 import type { DropdownComment } from "../content/dropdown";
 import { formatNgUserId } from "./comment-filter/filter/user-id-filter";
 import {
-    changeBadgeState,
+    setBadgeState,
     sendMessageToContent,
     sendNotification,
     tryWithPermission,
 } from "@/utils/browser";
-import { getLogId, createLogId, tryMountLogId } from "@/utils/log";
+import { getLogId, createLogId, mountLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 
 type ExtractData<
@@ -300,7 +300,7 @@ async function filterOldSearch(
 
     await Promise.all([
         saveLog(filteredData, logId, tabId),
-        tryMountLogId(logId, tabId),
+        mountLogId(logId, tabId),
         sendMessageToContent(tabId, {
             type: "remove-old-search",
             data: filteredData.filteredIds,
@@ -325,7 +325,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     const count = log?.videoFilterLog?.count?.totalBlocked;
     if (count === undefined) return;
 
-    await changeBadgeState(count, colors.videoBadge, tabId);
+    await setBadgeState(count, colors.videoBadge, tabId);
 }
 
 // -------------------------------------------------------------------------------------------

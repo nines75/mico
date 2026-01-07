@@ -10,10 +10,10 @@ import { objectKeys } from "ts-extras";
 import type { Rule } from "../rule";
 
 export abstract class RuleFilter<T> extends Filter<T> {
-    protected rules: Rule[];
     private includeCount = 0;
     private excludeCount = 0;
     private invalidCount = 0;
+    protected rules: Rule[];
 
     constructor(settings: Settings, filter: string) {
         super(settings);

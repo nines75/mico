@@ -17,7 +17,7 @@ export async function sendMessageToContent(
     return await browser.tabs.sendMessage(tabId, message);
 }
 
-export async function changeBadgeState(
+export async function setBadgeState(
     value: number,
     color: string,
     tabId: number,
