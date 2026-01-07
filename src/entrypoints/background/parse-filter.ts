@@ -43,7 +43,7 @@ export function parseFilter(
 
     const parseArgs = (line: string) => {
         return line
-            .split(" ")
+            .split(/\s+/)
             .slice(1)
             .filter((arg) => arg !== "")
             .map((arg) => arg.toLowerCase());
@@ -61,7 +61,7 @@ export function parseFilter(
 
             // 引数あり
             for (const directive of argsDirectives) {
-                if (line.startsWith(`@${directive} `)) {
+                if (RegExp(`^@${directive}\\s`).test(line)) {
                     directives.push({
                         type: directive,
                         args: parseArgs(line),
@@ -69,7 +69,7 @@ export function parseFilter(
                     return;
                 }
             }
-            if (line.startsWith("@v ")) {
+            if (/^@v\s/.test(line)) {
                 videoIdsAlias = parseArgs(line);
                 return;
             }

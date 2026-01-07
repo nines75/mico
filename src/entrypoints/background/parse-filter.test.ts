@@ -1,4 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
 import { describe, it, expect } from "vitest";
 import { parseFilter } from "./parse-filter";
 import { mockToggle, mockRules } from "@/utils/test";
@@ -218,6 +217,30 @@ rule
                     include: mockToggle({ tags: [tags.slice(0, 2)] }),
                 }),
             },
+            /* eslint-disable no-irregular-whitespace */
+            {
+                name: "タグ間に複数の全角スペースを含む",
+                filter: `
+@include-tags　　　　tag0　　　　tag1　　　　
+rule
+@end
+`,
+                expected: mockRules({
+                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
+                }),
+            },
+            {
+                name: "タグ間に半角スペースと全角スペースを含む",
+                filter: `
+@include-tags 　 　tag0 　 　tag1 　 　
+rule
+@end
+`,
+                expected: mockRules({
+                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
+                }),
+            },
+            /* eslint-enable no-irregular-whitespace */
             {
                 // スペースのみの場合、引数は空の配列としてパースされる
                 // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
@@ -235,26 +258,6 @@ rule
 
         describe("異常系", () => {
             it.each([
-                {
-                    name: "タグ間に全角スペースを含む",
-                    filter: `
-@include-tags tag0　tag1
-rule
-@end
-`,
-                    expected: mockRules({
-                        include: mockToggle({ tags: [["tag0　tag1"]] }),
-                    }),
-                },
-                {
-                    name: "@includeの後が全角スペース",
-                    filter: `
-@include-tags　tag0 tag1
-rule
-@end
-`,
-                    expected: mockRules({}),
-                },
                 {
                     name: "@includes-tagss",
                     filter: `

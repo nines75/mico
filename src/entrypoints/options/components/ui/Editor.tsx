@@ -39,7 +39,7 @@ import { sendMessageToBackground } from "@/utils/browser";
 import { argsDirectives } from "@/entrypoints/background/parse-filter";
 
 const toggleDirectivesRegex = RegExp(
-    `^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v) `,
+    `^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v)\\s`,
     "g",
 );
 
