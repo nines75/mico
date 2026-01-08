@@ -39,7 +39,7 @@ const config = [
     {
         header: "コンタクト",
         items: [
-            { name: "要望/バグ報告", url: urls.issues },
+            { name: "要望・バグ報告", url: urls.issues },
             { name: "質問", url: urls.discussions },
             {
                 name: "メール",

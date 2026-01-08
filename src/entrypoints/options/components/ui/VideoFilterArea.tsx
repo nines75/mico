@@ -54,7 +54,7 @@ export default function VideoFilterArea() {
 export const videoFilterAreaConfig = [
     {
         id: "ngId",
-        name: "NGユーザーID/動画ID",
+        name: "NGユーザーID・NG動画ID",
     },
     {
         id: "ngUserName",
