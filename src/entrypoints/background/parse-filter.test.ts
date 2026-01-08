@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseFilter } from "./parse-filter";
+import { parseArgs, parseFilter } from "./parse-filter";
 import { mockToggle, mockRules } from "@/utils/test";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
@@ -133,203 +133,17 @@ rule
     });
 
     // -------------------------------------------------------------------------------------------
-    // strictルール
+    // @strict
     // -------------------------------------------------------------------------------------------
 
-    describe("strictルール", () => {
-        it.each([
-            {
-                name: "@strict",
-                filter: `
+    it("@strict", () => {
+        const filter = `
 @strict
 rule
 @end
-`,
-            },
-            {
-                name: "@s",
-                filter: `
-@s
-rule
-rule
-`,
-                expected: mockRules({ isStrict: true }, {}),
-            },
-            {
-                name: "@sの次の行にルールがない",
-                filter: `
-@s
-# comment
-@end
-rule
-`,
-            },
-            {
-                name: "@strictと@sが重複",
-                filter: `
-@strict
-@s
-rule
-@end
-`,
-            },
-            {
-                name: "@sが連続",
-                filter: `
-@s
-@s
-rule
-rule
-`,
-                expected: mockRules({ isStrict: true }, {}),
-            },
-        ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(
-                expected ?? mockRules({ isStrict: true }),
-            );
-        });
-    });
+`;
 
-    // -------------------------------------------------------------------------------------------
-    // @include-tags
-    // -------------------------------------------------------------------------------------------
-    describe("@include-tags", () => {
-        it.each([
-            {
-                name: "基本",
-                filter: `
-@include-tags tag0 TAG1
-rule
-@end
-`,
-                expected: mockRules({
-                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
-                }),
-            },
-            {
-                name: "タグ間に複数の半角スペースを含む",
-                filter: `
-@include-tags    tag0    tag1    
-rule
-@end
-`,
-                expected: mockRules({
-                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
-                }),
-            },
-            /* eslint-disable no-irregular-whitespace */
-            {
-                name: "タグ間に複数の全角スペースを含む",
-                filter: `
-@include-tags　　　　tag0　　　　tag1　　　　
-rule
-@end
-`,
-                expected: mockRules({
-                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
-                }),
-            },
-            {
-                name: "タグ間に半角スペースと全角スペースを含む",
-                filter: `
-@include-tags 　 　tag0 　 　tag1 　 　
-rule
-@end
-`,
-                expected: mockRules({
-                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
-                }),
-            },
-            /* eslint-enable no-irregular-whitespace */
-            {
-                // スペースのみの場合、引数は空の配列としてパースされる
-                // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
-                name: "ディレクティブの後にスペースのみ含む",
-                filter: `
-@include-tags 
-rule
-@end
-`,
-                expected: mockRules({}),
-            },
-        ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
-        });
-
-        describe("異常系", () => {
-            it.each([
-                {
-                    name: "@includes-tagss",
-                    filter: `
-@include-tagss tag0 tag1
-rule
-@end
-`,
-                    expected: mockRules({}),
-                },
-            ])("$name", ({ filter, expected }) => {
-                expect(parseFilter(filter)).toEqual(expected);
-            });
-        });
-    });
-
-    // -------------------------------------------------------------------------------------------
-    // @v
-    // -------------------------------------------------------------------------------------------
-    describe("@v", () => {
-        it.each([
-            {
-                name: "タグが単数",
-                filter: `
-@v sm1
-rule
-rule
-`,
-                expected: mockRules(
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
-            },
-            {
-                name: "タグが複数",
-                filter: `
-@v sm1 sm2
-rule
-rule
-`,
-                expected: mockRules(
-                    { include: mockToggle({ videoIds: [["sm1", "sm2"]] }) },
-                    {},
-                ),
-            },
-            {
-                name: "次の行にルールがない",
-                filter: `
-@v sm1
-# comment
-@end
-rule
-`,
-                expected: mockRules({
-                    include: mockToggle({ videoIds: [["sm1"]] }),
-                }),
-            },
-            {
-                name: "ディレクティブが連続",
-                filter: `
-@v sm1
-@v sm1
-rule
-rule
-`,
-                expected: mockRules(
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
-            },
-        ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
-        });
+        expect(parseFilter(filter)).toEqual(mockRules({ isStrict: true }));
     });
 
     // -------------------------------------------------------------------------------------------
@@ -344,6 +158,120 @@ rule
 `;
 
         expect(parseFilter(filter)).toEqual(mockRules({ isDisable: true }));
+    });
+
+    // -------------------------------------------------------------------------------------------
+    // @include/@exclude
+    // -------------------------------------------------------------------------------------------
+
+    describe("@include/@exclude", () => {
+        it.each([
+            {
+                name: "基本",
+                filter: `
+@include-tags tag0 tag1
+rule
+@end
+`,
+                expected: mockRules({
+                    include: mockToggle({ tags: [tags.slice(0, 2)] }),
+                }),
+            },
+        ])("$name", ({ filter, expected }) => {
+            expect(parseFilter(filter)).toEqual(expected);
+        });
+
+        describe("異常系", () => {
+            it.each([
+                {
+                    // スペースのみの場合、引数は空の配列としてパースされる
+                    // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
+                    name: "ディレクティブの後にスペースのみを含む",
+                    filter: `
+@include-tags 
+rule
+@end
+`,
+                    expected: mockRules({}),
+                },
+                {
+                    name: "ディレクティブの前方一致",
+                    filter: `
+@include-tagss tag0 tag1
+rule
+@end
+`,
+                    expected: mockRules({}),
+                },
+            ])("$name", ({ filter, expected }) => {
+                expect(parseFilter(filter)).toEqual(expected);
+            });
+        });
+    });
+
+    // -------------------------------------------------------------------------------------------
+    // エイリアス
+    // -------------------------------------------------------------------------------------------
+
+    describe("エイリアス", () => {
+        it.each([
+            {
+                name: "基本",
+                filter: `
+@s
+rule
+rule
+
+@v sm1
+rule
+rule
+`,
+                expected: mockRules(
+                    { isStrict: true },
+                    {},
+                    { include: mockToggle({ videoIds: [["sm1"]] }) },
+                    {},
+                ),
+            },
+            {
+                name: "直後の行にルールがない",
+                filter: `
+@s
+@end
+rule
+
+@v sm1
+@end
+rule
+`,
+                expected: mockRules(
+                    { isStrict: true },
+                    { include: mockToggle({ videoIds: [["sm1"]] }) },
+                ),
+            },
+            {
+                name: "ディレクティブが連続",
+                filter: `
+@s
+@s
+rule
+rule
+
+@v sm1
+@v sm1
+rule
+rule
+`,
+                expected: mockRules(
+                    { isStrict: true },
+                    {},
+                    { include: mockToggle({ videoIds: [["sm1"]] }) },
+                    {},
+                ),
+            },
+        ])("$name", ({ filter, expected }) => {
+            expect(parseFilter(filter)).toEqual(expected);
+        });
     });
 
     // -------------------------------------------------------------------------------------------
@@ -423,5 +351,32 @@ rule
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(filter)).toEqual(expected);
         });
+    });
+});
+
+describe(parseArgs.name, () => {
+    it.each([
+        {
+            name: "基本",
+            filter: "@v arg arg2",
+        },
+        {
+            name: "小文字に変換されているか",
+            filter: "@v ARG Arg2",
+        },
+        {
+            name: "間に複数の半角スペースを含む",
+            filter: "@v    arg    arg2    ",
+        },
+        {
+            name: "間に複数の全角スペースを含む",
+            filter: "@v　　　　arg　　　　arg2　　　　",
+        },
+        {
+            name: "間に半角スペースと全角スペースを含む",
+            filter: "@v 　 　arg 　 　arg2 　 　",
+        },
+    ])("$name", ({ filter }) => {
+        expect(parseArgs(filter)).toEqual(["arg", "arg2"]);
     });
 });

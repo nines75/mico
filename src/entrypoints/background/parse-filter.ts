@@ -41,14 +41,6 @@ export function parseFilter(
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
-    const parseArgs = (line: string) => {
-        return line
-            .split(/\s+/)
-            .slice(1)
-            .filter((arg) => arg !== "")
-            .map((arg) => arg.toLowerCase());
-    };
-
     filter
         .split("\n")
         .map((line, index) => ({ line, index }))
@@ -199,4 +191,12 @@ export function parseFilter(
         });
 
     return { rules, invalidCount };
+}
+
+export function parseArgs(line: string) {
+    return line
+        .split(/\s+/)
+        .slice(1)
+        .filter((arg) => arg !== "")
+        .map((arg) => arg.toLowerCase());
 }
