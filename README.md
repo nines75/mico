@@ -1,6 +1,6 @@
 # mico
 
-ニコニコ動画用のブラウザ拡張機能
+ニコニコ動画用のコンテンツブロッカー
 
 [![インストールページへのリンク](src/assets/amo-button.png)](https://addons.mozilla.org/addon/mico)
 
