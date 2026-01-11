@@ -1,5 +1,3 @@
-// TODO: 原因を調べる(eslint-plugin-react-hooks自体の不具合？)
-/* eslint-disable react-hooks/refs */
 import { defaultSettings, messages } from "@/utils/config";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
@@ -29,6 +27,12 @@ export default function General() {
         if (input.current !== null) input.current.click();
     };
 
+    const buttons = [
+        ["インポート", clickInput],
+        ["エクスポート", catchAsync(exportBackup)],
+        ["リセット", catchAsync(reset)],
+    ] as const;
+
     return (
         <div className="settings-container">
             <CheckboxSection groups={config.checkbox}>
@@ -38,21 +42,21 @@ export default function General() {
                     ))}
             </CheckboxSection>
             <H2 name="バックアップ">
-                {(
-                    [
-                        ["インポート", clickInput],
-                        ["エクスポート", catchAsync(exportBackup)],
-                        ["リセット", catchAsync(reset)],
-                    ] as const
-                ).map(([text, callback]) => (
-                    <button
-                        key={text}
-                        className="common-button"
-                        onClick={callback}
-                    >
-                        {text}
-                    </button>
-                ))}
+                {
+                    // eslint-plugin-react-hooksのバグにより誤った警告が出るため無効化
+                    // https://github.com/facebook/react/issues/34775
+
+                    // eslint-disable-next-line react-hooks/refs
+                    buttons.map(([text, callback]) => (
+                        <button
+                            key={text}
+                            className="common-button"
+                            onClick={callback}
+                        >
+                            {text}
+                        </button>
+                    ))
+                }
                 <input
                     type="file"
                     accept=".json"
