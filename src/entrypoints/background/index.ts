@@ -5,11 +5,10 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync, isNiconicoPage, isWatchPage } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { addNgIdFromUrl, removeData } from "@/utils/storage-write";
+import { addNgIdFromUrl } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
-import { getAllData } from "@/utils/storage";
 import { sendMessageToContent, tryWithPermission } from "@/utils/browser";
 
 export default defineBackground(() => {
@@ -150,24 +149,6 @@ export default defineBackground(() => {
             if (data.menuItemId === "add-ng") {
                 await addNgIdFromUrl(data.linkUrl);
             }
-        }),
-    );
-
-    // TODO: しばらくしたらgetAllData/removeDataも含めて消す
-    browser.runtime.onInstalled.addListener(
-        catchAsync(async (details) => {
-            if (details.reason !== "update") return;
-
-            const data = await getAllData();
-
-            const keys: string[] = [];
-            for (const key of Object.keys(data)) {
-                if (key.startsWith("log-")) {
-                    keys.push(key);
-                }
-            }
-
-            await removeData(keys);
         }),
     );
 });

@@ -27,14 +27,6 @@ export async function removeAllData() {
     ]);
 }
 
-export async function removeData(keys: string[]) {
-    await queue.add(async () => {
-        const target = keys.map((key) => `${storageArea}:${key}` as const);
-
-        await storage.removeItems(target);
-    });
-}
-
 export async function setSettings(
     value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
