@@ -24,8 +24,7 @@ h2 {
     margin-left: 20px;
     .setting {
         margin: 12px;
-        > label,
-        .color-picker {
+        > label {
             font-weight: bold;
         }
         .setting-details {
@@ -39,37 +38,6 @@ h2 {
             font-size: 13px;
             font-weight: normal;
         }
-    }
-}
-.color-picker {
-    display: flex;
-    align-items: center;
-    margin: 12px;
-    padding: 8px;
-    border: 2px gray solid;
-    border-radius: 20px;
-    width: fit-content;
-    button {
-        border: none;
-        font-size: 18px;
-        color: gray;
-        margin: 0 4px;
-    }
-    label {
-        width: auto;
-        margin: 0 10px;
-    }
-    input[type="color"] {
-        margin-right: 20px;
-    }
-}
-.nicoru-form {
-    margin: 10px;
-    input {
-        width: 200px;
-    }
-    label {
-        font-size: 13px;
     }
 }
 .link {
@@ -102,10 +70,6 @@ tab
 button
 ------------------------------------------------------------------------------------------- */
 
-.small-button {
-    padding: 2px 4px;
-    margin: 5px;
-}
 .common-button {
     font-weight: bold;
     padding: 10px 20px;

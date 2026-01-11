@@ -1,8 +1,5 @@
 import { mountToDropdown } from "./dropdown";
-import { renderComment } from "./comment";
 import { createContentMessageHandler } from "./message";
-import type { Settings } from "@/types/storage/settings.types";
-import { loadSettings } from "@/utils/storage";
 import { defineContentScript } from "#imports";
 import {
     catchAsync,
@@ -13,20 +10,11 @@ import {
 import { renderOldSearch } from "./search";
 import { sendMessageToBackground } from "@/utils/browser";
 
-export interface customObserver extends MutationObserver {
-    settings?: Settings;
-}
-
 export default defineContentScript({
     matches: ["https://www.nicovideo.jp/*"],
 
     async main(ctx) {
-        const observer: customObserver = new MutationObserver(
-            catchAsync(observerCallback),
-        );
-        const settings = await loadSettings();
-        observer.settings = settings;
-
+        const observer = new MutationObserver(catchAsync(observerCallback));
         observer.observe(document.body, {
             childList: true,
             subtree: true,
@@ -60,53 +48,19 @@ export default defineContentScript({
     },
 });
 
-async function observerCallback(
-    records: MutationRecord[],
-    observer: customObserver,
-) {
-    const settings = observer.settings;
-    if (settings === undefined) return;
-
-    // 探している要素であると確定するまで各関数内でreturnしない
+async function observerCallback(records: MutationRecord[]) {
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof Element)) continue;
 
             if (isWatchPage(location.href)) {
-                await watchPageObserver(node, settings);
+                // ドロップダウン
+                if (node.className === "z_dropdown") {
+                    await mountToDropdown(node);
+
+                    continue;
+                }
             }
-        }
-    }
-}
-
-async function watchPageObserver(element: Element, settings: Settings) {
-    // コメント(最上位要素)
-    {
-        if (element.hasAttribute("data-index")) {
-            if (!settings.isExpandNicoruEnabled) return;
-
-            renderComment(element, settings);
-            return;
-        }
-    }
-
-    // コメント(最上位要素の一つ下)
-    {
-        const parent = element.parentElement;
-        if (parent?.hasAttribute("data-index") === true) {
-            if (!settings.isExpandNicoruEnabled) return;
-
-            renderComment(parent, settings);
-            return;
-        }
-    }
-
-    // ドロップダウン
-    {
-        if (element.className === "z_dropdown") {
-            await mountToDropdown(element);
-
-            return;
         }
     }
 }

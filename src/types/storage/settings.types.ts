@@ -6,7 +6,6 @@ export type SettingsTab =
     | "general"
     | "commentFilter"
     | "videoFilter"
-    | "expandNicoru"
     | "support";
 
 export interface Settings {
@@ -88,17 +87,6 @@ export interface Settings {
 
     // その他
     isNgContextAppendedOnAdd: boolean;
-
-    // -------------------------------------------------------------------------------------------
-    // 拡張ニコる
-    // -------------------------------------------------------------------------------------------
-
-    isExpandNicoruEnabled: boolean;
-
-    // スタイル
-    isCommentBodyHighlighted: boolean;
-    nicoruCounts: number[];
-    nicoruColors: Record<string, NicoruColor>;
 
     // -------------------------------------------------------------------------------------------
     // その他

@@ -4,7 +4,6 @@ import { urls } from "@/utils/config";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
-import ExpandNicoru from "./components/tabs/ExpandNicoru";
 import General from "./components/tabs/General";
 import Support from "./components/tabs/Support";
 import VideoFilter from "./components/tabs/VideoFilter";
@@ -76,8 +75,6 @@ function Page() {
                         return <CommentFilter />;
                     case "videoFilter":
                         return <VideoFilter />;
-                    case "expandNicoru":
-                        return <ExpandNicoru />;
                     case "support":
                         return <Support />;
                 }
@@ -102,10 +99,6 @@ const config = [
     {
         id: "videoFilter",
         name: "動画フィルター",
-    },
-    {
-        id: "expandNicoru",
-        name: "拡張ニコる",
     },
     {
         id: "support",

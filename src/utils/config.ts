@@ -81,49 +81,6 @@ export const defaultSettings: Settings = {
     isNgContextAppendedOnAdd: false,
 
     // -------------------------------------------------------------------------------------------
-    // 拡張ニコる
-    // -------------------------------------------------------------------------------------------
-
-    isExpandNicoruEnabled: false,
-
-    // スタイル
-    isCommentBodyHighlighted: true,
-    nicoruCounts: [300, 200, 100, 50, 30, 15], // 降順である必要がある
-    nicoruColors: {
-        // 明示的に設定しないとリセット時に前の値を上書きできない
-        "15": {
-            primary: "#fcc442",
-            secondary: "",
-            isGradient: false,
-        },
-        "30": {
-            primary: "#fcb242",
-            secondary: "",
-            isGradient: false,
-        },
-        "50": {
-            primary: "#fc9f42",
-            secondary: "",
-            isGradient: false,
-        },
-        "100": {
-            primary: "#ffee9d",
-            secondary: "#d9a300",
-            isGradient: true,
-        },
-        "200": {
-            primary: "#ffcccc",
-            secondary: "#ff8080",
-            isGradient: true,
-        },
-        "300": {
-            primary: "#ff8080",
-            secondary: "#ff0000",
-            isGradient: true,
-        },
-    },
-
-    // -------------------------------------------------------------------------------------------
     // その他
     // -------------------------------------------------------------------------------------------
 
@@ -175,12 +132,6 @@ export const messages = {
         neverReset: "設定が一度も変更されていません",
         confirmReset:
             "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
-
-        // 拡張ニコる
-        numberTooBig: "入力された数値が大きすぎます",
-        valueAlreadyExists: "すでに存在する値です",
-        resetNicoruCounts:
-            "拡張ニコるの基準値や配色の設定がリセットされます。\n続行しますか？",
     },
     popup: {
         notWorking: "このページでは動作しません",

@@ -30,12 +30,6 @@
 
 対応状況は[こちら](https://github.com/nines75/mico/wiki/動画フィルター#対応状況)を参照してください
 
-### 拡張ニコる
-
-ニコるの数に応じてコメントの装飾を変えることができます
-
-基準となるニコるの数は変更することができます
-
 ## Development
 
 ### Requirements
@@ -52,7 +46,3 @@ pnpm install
 # Build and create a zip file (.output/firefox.xpi)
 pnpm zip
 ```
-
-## クレジット
-
-[nicoExpansion](https://addons.mozilla.org/addon/nicoexpansion/): 拡張ニコるのアイデアを参考にさせていただきました

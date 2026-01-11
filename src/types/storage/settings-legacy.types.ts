@@ -133,7 +133,6 @@ const keyMapToV2 = [
     ["isHideCommentPreview", "isCommentPreviewHidden"],
     ["isRenderTitleAsLink", "isTitleRenderedAsLink"],
     ["isAddNgContext", "isNgContextAppendedOnAdd"],
-    ["isHighlightCommentBody", "isCommentBodyHighlighted"],
     ["isOpenProcessingTime", "isProcessingTimeOpen"],
     ["isOpenCount", "isCountOpen"],
     ["isOpenVideoLog", "isLogOpen"],
