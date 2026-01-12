@@ -1,7 +1,7 @@
 {
     "name": "mico",
     "description": "ニコニコ動画用のブラウザ拡張機能",
-    "version": "5.6.0",
+    "version": "6.0.0",
     "type": "module",
     "scripts": {
         "dev": "wxt -b firefox --mv2",
