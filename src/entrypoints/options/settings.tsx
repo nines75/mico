@@ -51,6 +51,18 @@ function Page() {
                     <SiGithub size={38} color="var(--dim-white)" />
                 </a>
             </div>
+            {/* TODO: しばらくしたら消す */}
+            <span className="message-v6">
+                v6には多くの破壊的変更が含まれているため、
+                <a
+                    href="https://github.com/nines75/mico/releases/tag/v6.0.0"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    リリースノート
+                </a>
+                を一読することをお勧めします。
+            </span>
             <div className="tab-container">
                 {config.map((filter) => (
                     <button
