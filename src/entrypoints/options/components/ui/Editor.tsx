@@ -244,12 +244,14 @@ export default function Editor({ id, value, onChange }: EditorProps) {
         };
     }, [parent]);
 
+    // 外部での変更を反映
     useEffect(() => {
         const current = view.current;
         if (current === null) return;
 
+        // ユーザー入力による発火を弾く
         const currentValue = current.state.doc.toString();
-        if (currentValue === value) return; // これをチェックしないと挙動がおかしくなる
+        if (currentValue === value) return;
 
         current.dispatch({
             changes: {
