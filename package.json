@@ -1,6 +1,6 @@
 {
     "name": "mico",
-    "description": "ニコニコ動画用のブラウザ拡張機能",
+    "description": "ニコニコ動画用のコンテンツブロッカー",
     "version": "6.0.0",
     "type": "module",
     "scripts": {
