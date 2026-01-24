@@ -3,13 +3,8 @@
 body {
     background: var(--background);
     color: white;
-    padding: 50px;
+    padding: 0 50px 80px 50px;
     margin: 0;
-}
-h1 {
-    margin: 0;
-    color: lightgray;
-    font-weight: lighter;
 }
 h2 {
     border-bottom: 2px solid gray;
@@ -50,10 +45,21 @@ tab
 ------------------------------------------------------------------------------------------- */
 
 .tab-container {
-    margin: 30px 20px;
-    border-bottom: 2px solid gray;
-    width: fit-content;
+    margin: 0 0 30px 20px;
     white-space: nowrap; /* 折り返さない */
+
+    /* 上部への固定用 */
+    position: sticky;
+    top: 0;
+    background: var(--background); /* デフォルトは透明なので上書き */
+    padding-top: 20px; /* bodyで指定したりmarginを使うと上書きできない */
+    z-index: 1000;
+}
+/* tab-containerはスクロール時に上書きできるように右端まで伸ばす
+ただし下線はボタンの幅に合わせたいので中間にtab-innerを作り調整する */
+.tab-inner {
+    width: fit-content;
+    border-bottom: 2px solid gray;
 }
 .tab-button {
     border: none;
@@ -95,8 +101,8 @@ CodeMirror用
 ------------------------------------------------------------------------------------------- */
 
 .cm-editor {
-    width: 800px;
-    height: 600px;
+    width: 100%;
+    height: 700px;
     resize: both;
     overflow: auto; /* resizeを使うために必要 */
     .cm-vim-panel {

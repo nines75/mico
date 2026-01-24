@@ -18,6 +18,7 @@ export default function CommentFilter() {
 
 const config = [
     {
+        isChildren: true,
         items: [
             {
                 id: "isCommentFilterEnabled",
@@ -27,7 +28,6 @@ const config = [
     },
     {
         heading: "フィルタリング",
-        isChildren: true,
         items: [
             {
                 id: "isEasyCommentHidden",

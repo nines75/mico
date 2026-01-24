@@ -2,8 +2,8 @@
 
 body {
     background: rgba(10, 10, 10, 0.6);
+    padding: 0;
     height: 100vh; /* 100%にすると親要素を基準にするため余分な余白ができる */
-    box-sizing: border-box; /* paddingを考慮 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,5 +20,10 @@ body {
     padding: 15px;
 }
 .tab-container {
-    margin: 10px 15px;
+    margin: 0 0 10px 15px;
+    padding-top: 10px;
+}
+.cm-editor {
+    width: 800px;
+    height: 600px;
 }

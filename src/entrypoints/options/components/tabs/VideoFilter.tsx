@@ -18,6 +18,7 @@ export default function VideoFilter() {
 
 const config = [
     {
+        isChildren: true,
         items: [
             {
                 id: "isVideoFilterEnabled",
@@ -27,7 +28,6 @@ const config = [
     },
     {
         heading: "フィルタリング",
-        isChildren: true,
         items: [
             {
                 id: "isPaidVideoHidden",

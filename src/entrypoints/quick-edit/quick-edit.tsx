@@ -37,20 +37,23 @@ function Page() {
     return (
         <>
             <div className="tab-container">
-                {config.map((filter) => (
-                    <button
-                        key={filter.id}
-                        className={clsx(
-                            "tab-button",
-                            selectedTab === filter.id && "selected-tab-button",
-                        )}
-                        onClick={() => {
-                            save({ selectedQuickEditTab: filter.id });
-                        }}
-                    >
-                        <span>{filter.name}</span>
-                    </button>
-                ))}
+                <div className="tab-inner">
+                    {config.map((filter) => (
+                        <button
+                            key={filter.id}
+                            className={clsx(
+                                "tab-button",
+                                selectedTab === filter.id &&
+                                    "selected-tab-button",
+                            )}
+                            onClick={() => {
+                                save({ selectedQuickEditTab: filter.id });
+                            }}
+                        >
+                            <span>{filter.name}</span>
+                        </button>
+                    ))}
+                </div>
             </div>
             {(() => {
                 switch (selectedTab) {
