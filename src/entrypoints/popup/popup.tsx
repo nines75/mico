@@ -115,7 +115,7 @@ function Main() {
                                 save({ selectedPopupTab: filter.id });
                             }}
                         >
-                            <span>{filter.name}</span>
+                            {filter.name}
                         </button>
                     ))}
                 </div>

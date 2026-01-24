@@ -31,7 +31,7 @@ export default function VideoFilterArea() {
                             save({ selectedVideoFilter: filter.id });
                         }}
                     >
-                        <span>{filter.name}</span>
+                        {filter.name}
                     </button>
                 ))}
             </div>

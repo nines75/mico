@@ -31,7 +31,7 @@ export default function CommentFilterArea() {
                             save({ selectedCommentFilter: filter.id });
                         }}
                     >
-                        <span>{filter.name}</span>
+                        {filter.name}
                     </button>
                 ))}
             </div>
