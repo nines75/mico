@@ -26,7 +26,7 @@ const config = [
         ],
     },
     {
-        header: "フィルタリング",
+        heading: "フィルタリング",
         isChildren: true,
         items: [
             {
@@ -50,7 +50,7 @@ const config = [
         ],
     },
     {
-        header: "ログ",
+        heading: "ログ",
         items: [
             {
                 id: "isTitleRenderedAsLink",
@@ -61,7 +61,7 @@ const config = [
         ],
     },
     {
-        header: "通知",
+        heading: "通知",
         items: [
             {
                 id: "isNotifyAddNgId",
@@ -72,7 +72,7 @@ const config = [
         ],
     },
     {
-        header: "その他",
+        heading: "その他",
         items: [
             {
                 id: "isNgContextAppendedOnAdd",

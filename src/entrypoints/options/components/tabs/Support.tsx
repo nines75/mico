@@ -4,8 +4,8 @@ import H2 from "../ui/H2";
 export default function Support() {
     return (
         <div className="settings-container">
-            {config.map(({ header, items }) => (
-                <H2 key={header} name={header}>
+            {config.map(({ heading, items }) => (
+                <H2 key={heading} name={heading}>
                     {items.map(({ name, url }) => (
                         <a
                             key={name}
@@ -29,7 +29,7 @@ export default function Support() {
 
 const config = [
     {
-        header: "リンク",
+        heading: "リンク",
         items: [
             { name: "リポジトリ", url: urls.repository },
             { name: "変更履歴", url: urls.changeLog },
@@ -37,7 +37,7 @@ const config = [
         ],
     },
     {
-        header: "コンタクト",
+        heading: "コンタクト",
         items: [
             { name: "要望・バグ報告", url: urls.issues },
             { name: "質問", url: urls.discussions },
@@ -48,7 +48,7 @@ const config = [
         ],
     },
     {
-        header: "その他",
+        heading: "その他",
         items: [
             {
                 name: "サードパーティライセンス",
@@ -57,7 +57,7 @@ const config = [
         ],
     },
 ] satisfies {
-    header: string;
+    heading: string;
     items: {
         name: string;
         url: string;

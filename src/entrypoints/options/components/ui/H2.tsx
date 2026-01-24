@@ -8,7 +8,7 @@ export default function H2({ name, children }: H2props) {
         children
     ) : (
         <section>
-            <div className="header-container">
+            <div className="heading-container">
                 <h2>{name}</h2>
             </div>
             <div className="settings-container">{children}</div>

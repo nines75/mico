@@ -26,7 +26,7 @@ const config = [
         ],
     },
     {
-        header: "フィルタリング",
+        heading: "フィルタリング",
         isChildren: true,
         items: [
             {
@@ -62,7 +62,7 @@ const config = [
         ],
     },
     {
-        header: "ログ",
+        heading: "ログ",
         items: [
             {
                 id: "isNgScoreVisible",
@@ -89,7 +89,7 @@ const config = [
         ],
     },
     {
-        header: "通知",
+        heading: "通知",
         items: [
             {
                 id: "isNotifyAddNgUserId",
@@ -102,7 +102,7 @@ const config = [
         ],
     },
     {
-        header: "ドロップダウン",
+        heading: "ドロップダウン",
         items: [
             {
                 id: "isUserIdMountedToDropdown",
@@ -121,7 +121,7 @@ const config = [
         ],
     },
     {
-        header: "その他",
+        heading: "その他",
         items: [
             {
                 id: "isCommentNgContextAppended",

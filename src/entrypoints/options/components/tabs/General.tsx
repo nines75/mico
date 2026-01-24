@@ -148,7 +148,7 @@ async function reset() {
 const config = {
     checkbox: [
         {
-            header: "エディター",
+            heading: "エディター",
             items: [
                 {
                     id: "isCloseBrackets",
@@ -165,7 +165,7 @@ const config = {
             ],
         },
         {
-            header: "クイック編集",
+            heading: "クイック編集",
             items: [
                 {
                     id: "isConfirmCloseQuickEdit",
@@ -174,7 +174,7 @@ const config = {
             ],
         },
         {
-            header: "高度な機能",
+            heading: "高度な機能",
             isChildren: true,
             items: [
                 {
