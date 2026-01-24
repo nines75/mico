@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
-import { urls } from "@/utils/config";
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
 import General from "./components/tabs/General";
@@ -40,17 +38,6 @@ function Page() {
 
     return (
         <>
-            <div className="header-container">
-                <h1>設定</h1>
-                <a
-                    className="link"
-                    href={urls.repository}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <SiGithub size={38} color="var(--dim-white)" />
-                </a>
-            </div>
             <div className="tab-container">
                 {config.map((filter) => (
                     <button
