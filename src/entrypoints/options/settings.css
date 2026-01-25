@@ -76,6 +76,11 @@ tab
 button
 ------------------------------------------------------------------------------------------- */
 
+/* アイコンを含むボタンを中央に揃える */
+.button-container {
+    display: flex;
+    align-items: center;
+}
 .common-button {
     font-weight: bold;
     padding: 10px 20px;
@@ -94,6 +99,12 @@ button
     text-decoration: none;
     color: inherit;
     font-size: 14px;
+}
+.import-filter-button {
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
 }
 
 /* -------------------------------------------------------------------------------------------

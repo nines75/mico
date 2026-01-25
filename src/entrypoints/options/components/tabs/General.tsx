@@ -7,12 +7,14 @@ import type { BackupData } from "@/types/storage/backup.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { getSettingsData } from "@/utils/storage";
 import type { ValueOf } from "type-fest";
+import type { ChangeEvent } from "react";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
 import { sendMessageToBackground } from "@/utils/browser";
+import { objectKeys } from "ts-extras";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
@@ -72,12 +74,12 @@ export default function General() {
 }
 
 function importBackup(
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: ChangeEvent<HTMLInputElement>,
     saveSettings: (settings: Partial<Settings>) => void,
 ) {
     const reader = new FileReader();
-    reader.onload = (f) => {
-        const res = f.target?.result;
+    reader.onload = (e) => {
+        const res = e.target?.result;
 
         if (typeof res === "string") {
             const backup = JSON.parse(res) as BackupData;
@@ -89,9 +91,9 @@ function importBackup(
                 const keys = Object.keys(defaultSettings);
 
                 // defaultSettingsに存在するキーのみを抽出
-                Object.keys(backup.settings).forEach((key) => {
+                objectKeys(backup.settings).forEach((key) => {
                     if (keys.includes(key)) {
-                        const value = backup.settings?.[key as keyof Settings];
+                        const value = backup.settings?.[key];
 
                         if (value !== undefined) newSettings[key] = value;
                     }
@@ -102,8 +104,7 @@ function importBackup(
         }
     };
 
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
+    const file = event.target.files?.[0];
     if (file === undefined) return;
 
     reader.readAsText(file);

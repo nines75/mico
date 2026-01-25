@@ -2,6 +2,7 @@ import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store";
 import clsx from "clsx";
+import ImportFilterButton from "./ImportFilterButton";
 
 export type VideoFilterId = "ngId" | "ngTitle" | "ngUserName";
 
@@ -18,7 +19,7 @@ export default function VideoFilterArea() {
 
     return (
         <div className="setting">
-            <div>
+            <div className="button-container">
                 {videoFilterAreaConfig.map((filter) => (
                     <button
                         key={filter.id}
@@ -34,6 +35,7 @@ export default function VideoFilterArea() {
                         {filter.name}
                     </button>
                 ))}
+                <ImportFilterButton id={id} />
             </div>
             <Editor
                 key={id}
