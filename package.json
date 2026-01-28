@@ -25,7 +25,6 @@
         "@codemirror/state": "^6.5.2",
         "@codemirror/view": "^6.39.4",
         "@icons-pack/react-simple-icons": "^13.8.0",
-        "@replit/codemirror-vim": "^6.3.0",
         "clsx": "^2.1.1",
         "deepmerge-ts": "^7.1.5",
         "delay": "^7.0.0",

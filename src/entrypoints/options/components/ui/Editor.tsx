@@ -4,7 +4,6 @@ import { EditorState, Transaction } from "@codemirror/state";
 import type { ViewUpdate } from "@codemirror/view";
 import {
     Decoration,
-    drawSelection,
     dropCursor,
     EditorView,
     highlightActiveLine,
@@ -31,11 +30,8 @@ import {
     closeBrackets,
     completionKeymap,
 } from "@codemirror/autocomplete";
-import { getCM, vim } from "@replit/codemirror-vim";
 import type { Settings } from "@/types/storage/settings.types";
 import { useStorageStore } from "@/utils/store";
-import { catchAsync } from "@/utils/util";
-import { sendMessageToBackground } from "@/utils/browser";
 import { argsDirectives } from "@/entrypoints/background/parse-filter";
 
 const toggleDirectivesRegex = RegExp(
@@ -102,9 +98,6 @@ const theme = EditorView.theme(
             backgroundColor: "black",
         },
         ".cm-cursor, .cm-dropCursor": { borderLeftColor: "white" },
-        ".cm-cursorLayer > .cm-fat-cursor": {
-            backgroundColor: "darkred",
-        },
         "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection":
             { backgroundColor: "#223a5a" },
         ".cm-activeLine": { backgroundColor: "rgba(128, 128, 128, 0.3)" }, // gray 透明度30%
@@ -119,23 +112,6 @@ const theme = EditorView.theme(
     { dark: true },
 );
 
-// ノーマルモードやビジュアルモードで全角入力した後に挿入モードに入ると正しく入力できなくなる不具合を修正する拡張
-const vimImeIssueFixer = EditorView.domEventHandlers({
-    input(_, view) {
-        const vimState = getCM(view)?.state.vim;
-        if (vimState === undefined || vimState === null) return false;
-
-        if (!(vimState.insertMode || vimState.mode === "replace")) {
-            // IMEによる入力をキャンセル
-            view.contentDOM.blur();
-            view.contentDOM.focus();
-
-            return true;
-        }
-
-        return false;
-    },
-});
 const baseExtensions = [
     keymap.of([
         ...standardKeymap,
@@ -152,12 +128,6 @@ const baseExtensions = [
     highlightActiveLine(),
     highlightActiveLineGutter(),
     theme,
-];
-const vimExtensions = [
-    vim({ status: true }),
-    drawSelection({ cursorBlinkRate: 0 }),
-    EditorState.allowMultipleSelections.of(true),
-    vimImeIssueFixer,
 ];
 
 interface EditorProps {
@@ -191,7 +161,6 @@ export default function Editor({ id, value, onChange }: EditorProps) {
         ];
 
         return [
-            ...(settings.isVimModeEnabled ? vimExtensions : []), // Vim拡張は他のkeymapに関する拡張より前に配置する
             ...(settings.isCloseBrackets ? [closeBrackets()] : []),
             ...(settings.isHighlightTrailingWhitespace
                 ? [highlightTrailingWhitespace()]
@@ -214,29 +183,6 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             state: createEditorState(),
             parent: parent.current,
         });
-
-        // エディタはコンテンツスクリプト(クイック編集)でも使うのでメッセージ経由でIMEをオフにする
-        const settings = useStorageStore.getState().settings;
-        if (settings.isVimModeEnabled && settings.isImeDisabledByContext) {
-            // ノーマルモードに戻った時
-            const cm = getCM(view.current);
-            cm?.on(
-                "vim-mode-change",
-                catchAsync(async (obj: { mode: string }) => {
-                    if (obj.mode === "normal") {
-                        await sendMessageToBackground({ type: "disable-ime" });
-                    }
-                }),
-            );
-
-            // エディタにフォーカスした時
-            view.current.contentDOM.addEventListener(
-                "focus",
-                catchAsync(async () => {
-                    await sendMessageToBackground({ type: "disable-ime" });
-                }),
-            );
-        }
 
         // クリーンアップ処理
         return () => {

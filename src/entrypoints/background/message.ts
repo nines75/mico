@@ -21,7 +21,6 @@ import {
     setBadgeState,
     sendMessageToContent,
     sendNotification,
-    tryWithPermission,
 } from "@/utils/browser";
 import { getLogId, createLogId, mountLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
@@ -49,9 +48,6 @@ export type BackgroundMessage =
     | {
           type: "filter-old-search";
           data: NiconicoVideo[];
-      }
-    | {
-          type: "disable-ime";
       }
     | {
           type: "restore-badge";
@@ -123,10 +119,6 @@ export async function backgroundMessageHandler(
             }
             case "filter-old-search": {
                 await filterOldSearch(message.data, sender);
-                break;
-            }
-            case "disable-ime": {
-                await disableIme();
                 break;
             }
             case "restore-badge": {
@@ -307,13 +299,6 @@ async function filterOldSearch(
         }),
     ]);
     await cleanupDb();
-}
-
-async function disableIme() {
-    await tryWithPermission("nativeMessaging", () => {
-        const port = browser.runtime.connectNative("mico.ime");
-        port.disconnect();
-    });
 }
 
 async function restoreBadge(sender: browser.runtime.MessageSender) {

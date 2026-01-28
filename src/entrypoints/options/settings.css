@@ -122,19 +122,11 @@ CodeMirror用
     height: 700px;
     resize: both;
     overflow: auto; /* resizeを使うために必要 */
-    .cm-vim-panel {
-        font-family: var(--font);
-    }
     .cm-trailingSpace {
         background: transparent;
     }
     .cm-line:not(.cm-activeLine) .cm-trailingSpace {
         border: 1px solid white;
-    }
-}
-.cm-editor:not(.cm-focused) {
-    .cm-fat-cursor {
-        outline: none;
     }
 }
 .cm-content,

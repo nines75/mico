@@ -8,14 +8,9 @@ export const defaultSettings: Settings = {
     // エディター
     isCloseBrackets: true,
     isHighlightTrailingWhitespace: true,
-    isVimModeEnabled: false,
-
-    // クイック編集
-    isConfirmCloseQuickEdit: false,
 
     // 高度な機能
     isAdvancedFeaturesVisible: false,
-    isImeDisabledByContext: false,
     localFilterPath: "",
 
     // -------------------------------------------------------------------------------------------
@@ -140,9 +135,6 @@ export const messages = {
     popup: {
         notWorking: "このページでは動作しません",
         outdatedLog: "表示されているログは古いものである可能性があります",
-    },
-    quickEdit: {
-        confirmClose: "クイック編集を閉じますか？",
     },
     other: {
         permissionRequired: "以下の権限が必要です\n\n$1",

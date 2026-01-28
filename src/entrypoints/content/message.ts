@@ -1,8 +1,6 @@
 import type { ContentScriptContext } from "#imports";
 import { createIframeUi } from "#imports";
 import type { LogId } from "@/types/storage/log.types";
-import { loadSettings } from "@/utils/storage";
-import { messages } from "@/utils/config";
 import { sendMessageToBackground } from "@/utils/browser";
 
 type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
@@ -54,7 +52,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     break;
                 }
                 case "quick-edit": {
-                    await openQuickEdit(ctx);
+                    openQuickEdit(ctx);
                     break;
                 }
                 case "mount-to-dropdown": {
@@ -104,18 +102,12 @@ function setPlaybackTime(time: ExtractData<"set-playback-time">) {
     }, 10);
 }
 
-async function openQuickEdit(ctx: ContentScriptContext) {
-    const settings = await loadSettings();
+function openQuickEdit(ctx: ContentScriptContext) {
     const id = `${browser.runtime.getManifest().name}-quick-edit`;
     if (document.getElementById(id) !== null) return;
 
     const callback = (e: KeyboardEvent) => {
         if (e.key !== "Escape") return;
-        if (
-            settings.isConfirmCloseQuickEdit &&
-            !confirm(messages.quickEdit.confirmClose)
-        )
-            return;
 
         ui.remove();
     };

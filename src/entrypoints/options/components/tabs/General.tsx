@@ -1,6 +1,4 @@
 import { defaultSettings, messages } from "@/utils/config";
-import type { CheckboxProps } from "../ui/Checkbox";
-import Checkbox from "../ui/Checkbox";
 import H2 from "../ui/H2";
 import { useStorageStore } from "@/utils/store";
 import type { BackupData } from "@/types/storage/backup.types";
@@ -39,25 +37,23 @@ export default function General() {
 
     return (
         <div className="settings-container">
-            <CheckboxSection groups={config.checkbox}>
-                {isAdvancedFeaturesVisible &&
-                    config.advanced.map((props) => (
-                        <Checkbox key={props.id} {...props} />
-                    ))}
-                <div className="setting">
-                    <label>
-                        {"インポートするローカルフォルダのパス"}
-                        <input
-                            className="input"
-                            value={localFilterPath}
-                            onChange={(e) => {
-                                saveSettings({
-                                    localFilterPath: e.target.value,
-                                });
-                            }}
-                        />
-                    </label>
-                </div>
+            <CheckboxSection groups={config}>
+                {isAdvancedFeaturesVisible && (
+                    <div className="setting">
+                        <label>
+                            {"インポートするローカルフォルダのパス"}
+                            <input
+                                className="input"
+                                value={localFilterPath}
+                                onChange={(e) => {
+                                    saveSettings({
+                                        localFilterPath: e.target.value,
+                                    });
+                                }}
+                            />
+                        </label>
+                    </div>
+                )}
             </CheckboxSection>
             <H2 name="バックアップ">
                 {
@@ -162,54 +158,28 @@ async function reset() {
 // config
 // -------------------------------------------------------------------------------------------
 
-const config = {
-    checkbox: [
-        {
-            heading: "エディター",
-            items: [
-                {
-                    id: "isCloseBrackets",
-                    label: "括弧を自動で閉じる",
-                },
-                {
-                    id: "isHighlightTrailingWhitespace",
-                    label: "行末の空白文字をハイライトする",
-                },
-                {
-                    id: "isVimModeEnabled",
-                    label: "Vimモードを有効にする",
-                },
-            ],
-        },
-        {
-            heading: "クイック編集",
-            items: [
-                {
-                    id: "isConfirmCloseQuickEdit",
-                    label: "閉じる前に確認ダイアログを表示する",
-                },
-            ],
-        },
-        {
-            heading: "高度な機能",
-            isChildren: true,
-            items: [
-                {
-                    id: "isAdvancedFeaturesVisible",
-                    label: "高度な機能を表示する",
-                },
-            ],
-        },
-    ],
-    advanced: [
-        {
-            id: "isImeDisabledByContext",
-            label: "コンテキストに応じてIMEを無効化する",
-            details: `Vimモードでのみ有効となり、ノーマルモードに戻った際やエディターにフォーカスした際にIMEが無効化されます。
-            ネイティブメッセージング権限とバイナリのインストールが必要です。`,
-        },
-    ],
-} as const satisfies {
-    checkbox: CheckboxGroups;
-    advanced: CheckboxProps[];
-};
+const config = [
+    {
+        heading: "エディター",
+        items: [
+            {
+                id: "isCloseBrackets",
+                label: "括弧を自動で閉じる",
+            },
+            {
+                id: "isHighlightTrailingWhitespace",
+                label: "行末の空白文字をハイライトする",
+            },
+        ],
+    },
+    {
+        heading: "高度な機能",
+        isChildren: true,
+        items: [
+            {
+                id: "isAdvancedFeaturesVisible",
+                label: "高度な機能を表示する",
+            },
+        ],
+    },
+] satisfies CheckboxGroups;

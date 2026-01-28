@@ -16,14 +16,9 @@ export interface Settings {
     // エディター
     isCloseBrackets: boolean;
     isHighlightTrailingWhitespace: boolean;
-    isVimModeEnabled: boolean;
-
-    // クイック編集
-    isConfirmCloseQuickEdit: boolean;
 
     // 高度な機能
     isAdvancedFeaturesVisible: boolean;
-    isImeDisabledByContext: boolean;
     localFilterPath: string;
 
     // -------------------------------------------------------------------------------------------
