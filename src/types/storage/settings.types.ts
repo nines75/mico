@@ -24,6 +24,7 @@ export interface Settings {
     // 高度な機能
     isAdvancedFeaturesVisible: boolean;
     isImeDisabledByContext: boolean;
+    localFilterPath: string;
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター

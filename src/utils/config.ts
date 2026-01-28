@@ -16,6 +16,7 @@ export const defaultSettings: Settings = {
     // 高度な機能
     isAdvancedFeaturesVisible: false,
     isImeDisabledByContext: false,
+    localFilterPath: "",
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
@@ -132,6 +133,9 @@ export const messages = {
         neverReset: "設定が一度も変更されていません",
         confirmReset:
             "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
+        importSuccess: "ローカルファイルからフィルターをインポートしました",
+        pathNotSet: "パスが設定されていません",
+        localFileNotFound: "ローカルファイルが見つかりませんでした",
     },
     popup: {
         notWorking: "このページでは動作しません",

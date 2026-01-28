@@ -102,6 +102,14 @@ export default defineConfig({
                           }
                         : {},
                 },
+                "import-local-filter": {
+                    description: "ローカルファイルからフィルターをインポート",
+                    suggested_key: isDev
+                        ? {
+                              default: "Ctrl+Alt+N",
+                          }
+                        : {},
+                },
                 reload: {
                     description: "リロードして現在の再生時間を復元",
                     suggested_key: isDev

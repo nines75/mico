@@ -5,11 +5,18 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync, isNiconicoPage, isWatchPage } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { addNgIdFromUrl } from "@/utils/storage-write";
+import { addNgIdFromUrl, setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
-import { sendMessageToContent, tryWithPermission } from "@/utils/browser";
+import {
+    sendMessageToContent,
+    sendNotification,
+    tryWithPermission,
+} from "@/utils/browser";
+import type { Settings } from "@/types/storage/settings.types";
+import { loadSettings } from "@/utils/storage";
+import { messages } from "@/utils/config";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -117,6 +124,30 @@ export default defineBackground(() => {
                 await tryWithPermission("clipboardRead", async () => {
                     const text = await navigator.clipboard.readText();
                     await addNgIdFromUrl(text);
+                });
+            }
+
+            if (command === "import-local-filter") {
+                await tryWithPermission("nativeMessaging", async () => {
+                    const settings = await loadSettings();
+                    if (settings.localFilterPath === "") {
+                        await sendNotification(messages.settings.pathNotSet);
+                        return;
+                    }
+
+                    const res = (await browser.runtime.sendNativeMessage(
+                        "mico.native",
+                        { path: settings.localFilterPath },
+                    )) as Partial<Settings>;
+                    if (Object.keys(res).length === 0) {
+                        await sendNotification(
+                            messages.settings.localFileNotFound,
+                        );
+                        return;
+                    }
+
+                    await setSettings(res);
+                    await sendNotification(messages.settings.importSuccess);
                 });
             }
         }),

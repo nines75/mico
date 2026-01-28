@@ -18,12 +18,14 @@ import { objectKeys } from "ts-extras";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
-    const [isAdvancedFeaturesVisible, saveSettings] = useStorageStore(
-        useShallow((state) => [
-            state.settings.isAdvancedFeaturesVisible,
-            state.saveSettings,
-        ]),
-    );
+    const [isAdvancedFeaturesVisible, localFilterPath, saveSettings] =
+        useStorageStore(
+            useShallow((state) => [
+                state.settings.isAdvancedFeaturesVisible,
+                state.settings.localFilterPath,
+                state.saveSettings,
+            ]),
+        );
 
     const clickInput = () => {
         if (input.current !== null) input.current.click();
@@ -42,6 +44,20 @@ export default function General() {
                     config.advanced.map((props) => (
                         <Checkbox key={props.id} {...props} />
                     ))}
+                <div className="setting">
+                    <label>
+                        {"インポートするローカルフォルダのパス"}
+                        <input
+                            className="input"
+                            value={localFilterPath}
+                            onChange={(e) => {
+                                saveSettings({
+                                    localFilterPath: e.target.value,
+                                });
+                            }}
+                        />
+                    </label>
+                </div>
             </CheckboxSection>
             <H2 name="バックアップ">
                 {
