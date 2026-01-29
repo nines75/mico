@@ -4,7 +4,7 @@ import type { CommentLogViewerProps } from "./components/CommentLogViewer";
 import CommentLogViewer from "./components/CommentLogViewer";
 import ProcessingTime from "./components/ProcessingTime";
 import { messages, urls, titles } from "@/utils/config";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
+import { useStorageStore, storageChangeHandler } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
@@ -34,10 +34,10 @@ function Page() {
     const version = `v${browser.runtime.getManifest().version}`;
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(syncStorageChangeHandler);
+        browser.storage.onChanged.addListener(storageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
+            browser.storage.onChanged.removeListener(storageChangeHandler);
         };
     }, []);
 

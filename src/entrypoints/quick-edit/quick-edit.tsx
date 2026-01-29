@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
+import { useStorageStore, storageChangeHandler } from "@/utils/store";
 import CommentFilterArea from "../options/components/ui/CommentFilterArea";
 import { useShallow } from "zustand/shallow";
 import VideoFilterArea from "../options/components/ui/VideoFilterArea";
@@ -27,10 +27,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(syncStorageChangeHandler);
+        browser.storage.onChanged.addListener(storageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
+            browser.storage.onChanged.removeListener(storageChangeHandler);
         };
     }, []);
 

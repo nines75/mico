@@ -6,8 +6,8 @@ import { customMerge } from "./util";
 
 export const storageArea = "local";
 
-export async function loadSettings(settings?: Partial<Settings>) {
-    const data = settings ?? (await getSettingsData());
+export async function loadSettings() {
+    const data = await getSettingsData();
     if (data === null) return defaultSettings;
 
     return customMerge(defaultSettings, data) as Settings;

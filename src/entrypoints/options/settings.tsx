@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useStorageStore, syncStorageChangeHandler } from "@/utils/store";
+import { useStorageStore, storageChangeHandler } from "@/utils/store";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
 import General from "./components/tabs/General";
@@ -29,10 +29,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(syncStorageChangeHandler);
+        browser.storage.onChanged.addListener(storageChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(syncStorageChangeHandler);
+            browser.storage.onChanged.removeListener(storageChangeHandler);
         };
     }, []);
 

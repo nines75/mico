@@ -73,6 +73,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
             }
         } catch (e) {
             console.error(e);
+            throw e;
         }
     };
 }

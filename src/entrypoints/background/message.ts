@@ -173,6 +173,7 @@ export async function backgroundMessageHandler(
         }
     } catch (e) {
         console.error(e);
+        throw e;
     }
 }
 

@@ -4,7 +4,13 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { LogData } from "../types/storage/log.types";
-import { catchAsync, isRankingPage, isSearchPage, isWatchPage } from "./util";
+import {
+    catchAsync,
+    customMerge,
+    isRankingPage,
+    isSearchPage,
+    isWatchPage,
+} from "./util";
 import { sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
@@ -65,29 +71,50 @@ export const useStorageStore = create<StorageState>()(
             });
         }),
         saveSettings: catchAsync(async (settings) => {
-            await sendMessageToBackground({
-                type: "set-settings",
-                data: settings,
+            const currentSettings = useStorageStore.getState().settings;
+
+            // 書き込まれる予定の値を生成してstoreに反映
+            // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない
+            // そのためここで先にstoreに反映させ、書き込みが失敗した場合はロールバックする
+            set({
+                settings: customMerge(currentSettings, settings) as Settings,
             });
+
+            // 書き込む
+            try {
+                await sendMessageToBackground({
+                    type: "set-settings",
+                    data: settings,
+                });
+            } catch {
+                // ロールバック
+                set({ settings: currentSettings });
+            }
         }),
     })),
 );
 
-export async function storageChangeHandler(
+// 外部での変更を反映させるために必要
+export function storageChangeHandler(
     changes: Record<string, browser.storage.StorageChange>,
     area: string,
 ) {
     if (area !== "local") return;
 
     for (const [key, value] of Object.entries(changes)) {
-        if (key === "settings") {
-            useStorageStore.setState({
-                settings: await loadSettings(
-                    value.newValue as Partial<Settings>,
-                ),
-            });
-        }
+        if (key !== "settings") continue;
+
+        const oldSettings = useStorageStore.getState().settings;
+        const newSettings = customMerge(
+            defaultSettings,
+            value.newValue,
+        ) as Settings;
+
+        // ユーザー入力による発火を弾く
+        // settingsはjsonに変換可能なのでJSON.stringifyで比較
+        if (JSON.stringify(oldSettings) === JSON.stringify(newSettings))
+            continue;
+
+        useStorageStore.setState({ settings: newSettings });
     }
 }
-
-export const syncStorageChangeHandler = catchAsync(storageChangeHandler);
