@@ -20,7 +20,7 @@ export default function VideoFilterArea() {
     return (
         <div className="setting">
             <div className="button-container">
-                {videoFilterAreaConfig.map((filter) => (
+                {config.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -53,7 +53,7 @@ export default function VideoFilterArea() {
 // config
 // -------------------------------------------------------------------------------------------
 
-export const videoFilterAreaConfig = [
+const config = [
     {
         id: "ngId",
         name: "NGユーザーID・NG動画ID",

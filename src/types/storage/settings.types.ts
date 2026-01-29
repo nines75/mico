@@ -98,9 +98,3 @@ export interface Settings {
     isCountOpen: boolean;
     isLogOpen: boolean;
 }
-
-export interface NicoruColor {
-    primary?: string;
-    secondary?: string;
-    isGradient?: boolean;
-}

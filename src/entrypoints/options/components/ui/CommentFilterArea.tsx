@@ -20,7 +20,7 @@ export default function CommentFilterArea() {
     return (
         <div className="setting">
             <div className="button-container">
-                {commentFilterAreaConfig.map((filter) => (
+                {config.map((filter) => (
                     <button
                         key={filter.id}
                         className={clsx(
@@ -53,7 +53,7 @@ export default function CommentFilterArea() {
 // config
 // -------------------------------------------------------------------------------------------
 
-export const commentFilterAreaConfig = [
+const config = [
     {
         id: "ngUserId",
         name: "NGユーザーID",

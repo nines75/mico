@@ -16,14 +16,13 @@ import { objectKeys } from "ts-extras";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
-    const [isAdvancedFeaturesVisible, localFilterPath, saveSettings] =
-        useStorageStore(
-            useShallow((state) => [
-                state.settings.isAdvancedFeaturesVisible,
-                state.settings.localFilterPath,
-                state.saveSettings,
-            ]),
-        );
+    const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
+        useShallow((state) => [
+            state.settings.isAdvancedFeaturesVisible,
+            state.settings.localFilterPath,
+            state.saveSettings,
+        ]),
+    );
 
     const clickInput = () => {
         if (input.current !== null) input.current.click();
@@ -46,7 +45,7 @@ export default function General() {
                                 className="input"
                                 value={localFilterPath}
                                 onChange={(e) => {
-                                    saveSettings({
+                                    save({
                                         localFilterPath: e.target.value,
                                     });
                                 }}
@@ -77,7 +76,7 @@ export default function General() {
                     style={{ display: "none" }}
                     ref={input}
                     onChange={(e) => {
-                        importBackup(e, saveSettings);
+                        importBackup(e, save);
                     }}
                 />
             </H2>
