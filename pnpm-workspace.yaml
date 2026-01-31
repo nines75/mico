@@ -1,6 +1,3 @@
 onlyBuiltDependencies:
-  - dtrace-provider
   - esbuild
   - sharp
-  - spawn-sync
-  - unrs-resolver
