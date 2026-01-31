@@ -1,3 +1,8 @@
+# https://pnpm.io/supply-chain-security 
+
 onlyBuiltDependencies:
   - esbuild
   - sharp
+blockExoticSubdeps: true
+minimumReleaseAge: 4320 # 3日
+trustPolicy: no-downgrade
