@@ -6,3 +6,4 @@ onlyBuiltDependencies:
 blockExoticSubdeps: true
 minimumReleaseAge: 4320 # 3日
 trustPolicy: no-downgrade
+engineStrict: true
