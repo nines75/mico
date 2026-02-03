@@ -210,7 +210,7 @@ export function checkComment(
         }
     }
 
-    expect(actualIds.sort()).toEqual(expectedIds.sort());
+    expect(actualIds.toSorted()).toEqual(expectedIds.toSorted());
 }
 
 export function mockRules(

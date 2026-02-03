@@ -268,8 +268,8 @@ async function getCommentsFromDropdown(
 
     return log.commentFilterLog?.filtering?.renderedComments
         .filter((comment) => comment.userId === userId)
-        .sort((a, b) => a.body.localeCompare(b.body))
-        .sort((a, b) => a.score - b.score)
+        .toSorted((a, b) => a.body.localeCompare(b.body))
+        .toSorted((a, b) => a.score - b.score)
         .map(
             (comment) =>
                 `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,

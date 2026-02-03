@@ -49,7 +49,7 @@ export abstract class Filter<T> {
         const log: CommonLog = new Map();
 
         // 重複回数降順にソート
-        for (const [key, value] of [...currentLog].sort(
+        for (const [key, value] of [...currentLog].toSorted(
             (a, b) => b[1].length - a[1].length,
         )) {
             log.set(key, value);
