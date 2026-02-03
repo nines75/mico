@@ -51,10 +51,12 @@ export function sumNumbers(numbers: number[]) {
 }
 
 export function replace(text: string, placeholders: string[]) {
-    return placeholders.reduce(
-        (prev, current, index) => prev.replace(`$${index + 1}`, current),
-        text,
-    );
+    let result = text;
+    for (const [index, placeholder] of placeholders.entries()) {
+        result = result.replace(`$${index + 1}`, placeholder);
+    }
+
+    return result;
 }
 
 export function catchAsync<T extends unknown[]>(

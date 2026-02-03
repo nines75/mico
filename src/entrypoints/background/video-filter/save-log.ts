@@ -9,7 +9,6 @@ import type { FilteredData } from "./filter-video";
 import { sumNumbers } from "@/utils/util";
 import { colors } from "@/utils/config";
 import { setLog } from "@/utils/db";
-import { objectEntries } from "ts-extras";
 import { getRuleFilters } from "./rule-filter";
 import { setBadgeState } from "@/utils/browser";
 
@@ -50,19 +49,17 @@ function createCount(filteredData: FilteredData): VideoCount {
     const filters = filteredData.filters;
     const ruleFilters = getRuleFilters(filters);
 
-    const rule = objectEntries(ruleFilters).reduce<Partial<RuleCount>>(
-        (obj, [key, filter]) => {
-            obj[key] = filter.countRules();
-            return obj;
-        },
-        {},
+    const rule = Object.fromEntries(
+        Object.entries(ruleFilters).map(([key, filter]) => [
+            key,
+            filter.countRules(),
+        ]),
     ) as RuleCount;
-    const blocked = objectEntries(filters).reduce<Partial<BlockedCount>>(
-        (obj, [key, filter]) => {
-            obj[key] = filter.getBlockedCount();
-            return obj;
-        },
-        {},
+    const blocked = Object.fromEntries(
+        Object.entries(filters).map(([key, filter]) => [
+            key,
+            filter.getBlockedCount(),
+        ]),
     ) as BlockedCount;
 
     return {

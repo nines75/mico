@@ -32,15 +32,18 @@ function migrateFilter(
     filter: string,
     lineEditors: ((line: string) => string)[],
 ) {
-    return lineEditors.reduce((result, lineEditor) => {
-        return result
+    let result = filter;
+    for (const lineEditor of lineEditors) {
+        result = result
             .split("\n")
             .map((line) => {
                 if (line.startsWith("#")) return line;
                 return lineEditor(line);
             })
             .join("\n");
-    }, filter);
+    }
+
+    return result;
 }
 
 // -------------------------------------------------------------------------------------------
