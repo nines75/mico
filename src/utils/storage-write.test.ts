@@ -33,7 +33,6 @@ describe(removeNgUserId.name, () => {
     ])("$name", async ({ ids }) => {
         await setSettings({
             ...defaultSettings,
-
             ngUserId: ids.join("\n"),
         });
         await removeNgUserId(userIds);
@@ -47,7 +46,6 @@ describe(removeNgUserId.name, () => {
         const specificIds = userIds.map((id) => `@v sm1\n${id}`).join("\n");
         await setSettings({
             ...defaultSettings,
-
             ngUserId: `${ids}\n${specificIds}`,
         });
         await removeNgUserId(userIds, false);
