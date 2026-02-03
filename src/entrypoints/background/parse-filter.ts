@@ -91,14 +91,6 @@ export function parseFilter(
             // ルールに適用するディレクティブを決定
             // -------------------------------------------------------------------------------------------
 
-            const pushArgs = (
-                array: string[][],
-                directive: { args: string[] },
-            ) => {
-                const args = directive.args;
-                if (args.length > 0) array.push(args);
-            };
-
             let isStrict = false;
             let isDisable = false;
             const include = createDefaultToggle();
@@ -207,4 +199,9 @@ export function parseArgs(line: string) {
         .slice(1)
         .filter((arg) => arg !== "")
         .map((arg) => arg.toLowerCase());
+}
+
+function pushArgs(array: string[][], directive: { args: string[] }) {
+    const args = directive.args;
+    if (args.length > 0) array.push(args);
 }

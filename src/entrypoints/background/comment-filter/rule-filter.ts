@@ -37,10 +37,6 @@ export abstract class RuleFilter<T> extends Filter<T> {
         const { videoId, userId, seriesId } = tab;
         const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
-        const matches = (rules: string[][], pred: (arg: string) => boolean) => {
-            return rules.length > 0 && rules.every((args) => args.some(pred));
-        };
-
         this.rules = this.rules.filter(({ include, exclude }) => {
             // ルールを無効化するか判定
             if (
@@ -113,4 +109,8 @@ export function getRuleFilters(
         commandFilter: filters.commandFilter,
         wordFilter: filters.wordFilter,
     };
+}
+
+function matches(rules: string[][], pred: (arg: string) => boolean) {
+    return rules.length > 0 && rules.every((args) => args.some(pred));
 }
