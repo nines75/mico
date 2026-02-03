@@ -78,39 +78,39 @@ export function filterComment(
     const strictFilters = getStrictFilters(filters);
 
     // 適用するルールを決定
-    Object.values(ruleFilters).forEach((filter) => {
+    for (const filter of Object.values(ruleFilters)) {
         filter.filterRules(tab);
-    });
+    }
 
     // -------------------------------------------------------------------------------------------
     // フィルタリング
     // -------------------------------------------------------------------------------------------
 
     // strictルールのみでフィルタリング
-    Object.values(strictFilters).forEach((filter) => {
+    for (const filter of Object.values(strictFilters)) {
         filter.filtering(threads, true);
-    });
+    }
 
     const strictUserIds: string[] = [];
     const strictUserIdsWithContext: string[] = [];
-    Object.values(strictFilters).forEach((filter) => {
-        filter.getStrictData().forEach(({ userId, context }) => {
+    for (const filter of Object.values(strictFilters)) {
+        for (const { userId, context } of filter.getStrictData()) {
             if (!strictUserIds.includes(userId)) {
                 strictUserIds.push(userId);
                 strictUserIdsWithContext.push(
                     formatNgUserId(userId, context, settings),
                 );
             }
-        });
-    });
+        }
+    }
 
     // strictルールによってフィルタリングされたユーザーIDを反映
     userIdFilter.updateFilter(strictUserIds);
 
     // フィルタリング
-    Object.values(filters).forEach((filter) => {
+    for (const filter of Object.values(filters)) {
         filter.filtering(threads);
-    });
+    }
 
     const end = performance.now();
 

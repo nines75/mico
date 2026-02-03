@@ -20,12 +20,12 @@ export default defineConfig({
             );
 
             let data = "";
-            files.forEach((file) => {
+            for (const file of files) {
                 const text = readFileSync(file, "utf-8");
                 data += `${text}\n\n---\n\n`;
 
                 rmSync(file);
-            });
+            }
 
             writeFileSync(path.join(outDir, "third-party-notices.txt"), data);
         },

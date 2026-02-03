@@ -42,13 +42,13 @@ function importFilter(
     key: keyof Settings,
 ) {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.addEventListener("load", (e) => {
         const res = e.target?.result;
 
         if (typeof res === "string") {
             saveSettings({ [key]: res });
         }
-    };
+    });
 
     const file = event.target.files?.[0];
     if (file === undefined) return;

@@ -30,7 +30,7 @@ export abstract class Filter<T> {
         threads: Thread[],
         callback: (comment: NiconicoComment, thread: Thread) => boolean,
     ) {
-        threads.forEach((thread) => {
+        for (const thread of threads) {
             thread.comments = thread.comments.filter((comment): boolean => {
                 if (this.settings.isMyCommentIgnored && comment.isMyPost)
                     return true;
@@ -42,18 +42,18 @@ export abstract class Filter<T> {
 
                 return callback(comment, thread);
             });
-        });
+        }
     }
 
     sortDuplicateLog(currentLog: CommonLog): CommonLog {
         const log: CommonLog = new Map();
 
         // 重複回数降順にソート
-        [...currentLog]
-            .sort((a, b) => b[1].length - a[1].length)
-            .forEach(([key, value]) => {
-                log.set(key, value);
-            });
+        for (const [key, value] of [...currentLog].sort(
+            (a, b) => b[1].length - a[1].length,
+        )) {
+            log.set(key, value);
+        }
 
         return log;
     }

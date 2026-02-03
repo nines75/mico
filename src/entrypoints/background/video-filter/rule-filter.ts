@@ -35,18 +35,18 @@ export abstract class RuleFilter<T> extends Filter<T> {
         const log: CommonLog = new Map();
 
         // フィルター順にソート
-        keys.forEach((key) => {
+        for (const key of keys) {
             const keyStr = this.createKey(key);
             const value = currentLog.get(keyStr);
             if (value !== undefined) {
                 log.set(keyStr, value);
             }
-        });
+        }
 
         // 各キーの動画IDをソート
-        log.forEach((ids, key) => {
+        for (const [key, ids] of log) {
             log.set(key, sortVideoId(ids, this.filteredVideos));
-        });
+        }
 
         return log;
     }

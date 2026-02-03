@@ -18,21 +18,19 @@ export function mockComments(
 ): NiconicoComment[] {
     return comments.map((comment) => {
         return {
-            ...{
-                id: "1000",
-                no: 1,
-                vposMs: 0,
-                body: "test",
-                commands: ["184"],
-                isMyPost: false,
-                isPremium: false,
-                nicoruCount: 0,
-                nicoruId: null,
-                postedAt: "2025-05-07T15:00:00+09:00",
-                score: 0,
-                source: "trunk",
-                userId: "user-id-owner",
-            },
+            id: "1000",
+            no: 1,
+            vposMs: 0,
+            body: "test",
+            commands: ["184"],
+            isMyPost: false,
+            isPremium: false,
+            nicoruCount: 0,
+            nicoruId: null,
+            postedAt: "2025-05-07T15:00:00+09:00",
+            score: 0,
+            source: "trunk",
+            userId: "user-id-owner",
             ...comment,
         };
     });
@@ -113,11 +111,11 @@ function getComments(ids: string[]) {
             .flatMap((thread) => thread.comments)
             .find((comment) => comment.id === id) as NiconicoComment,
     ]);
-    comments.forEach(([_, comment]) => {
+    for (const [_, comment] of comments) {
         comment.commands.forEach(
             (command, i, commands) => (commands[i] = command.toLowerCase()),
         );
-    });
+    }
 
     return comments;
 }
@@ -204,13 +202,13 @@ export function checkComment(
 
     // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
     const expectedIds: string[] = [];
-    (baseThreads ?? testThreads).forEach((thread) => {
-        thread.comments.forEach(({ id }) => {
+    for (const thread of baseThreads ?? testThreads) {
+        for (const { id } of thread.comments) {
             if (!filteredIds.includes(id)) {
                 expectedIds.push(id);
             }
-        });
-    });
+        }
+    }
 
     expect(actualIds.sort()).toEqual(expectedIds.sort());
 }

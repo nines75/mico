@@ -34,8 +34,8 @@ import type { Settings } from "@/types/storage/settings.types";
 import { useStorageStore } from "@/utils/store";
 import { argsDirectives } from "@/entrypoints/background/parse-filter";
 
-const toggleDirectivesRegex = RegExp(
-    `^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v)\\s`,
+const toggleDirectivesRegex = new RegExp(
+    String.raw`^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v)\s`,
     "g",
 );
 
@@ -246,12 +246,15 @@ function getHighlights(id: keyof Settings): Extension {
 
     const customHighlights = (() => {
         switch (id) {
-            case "ngUserId":
+            case "ngUserId": {
                 return ngUserIdHighlights;
-            case "ngCommand":
+            }
+            case "ngCommand": {
                 return ngCommandHighlights;
-            case "ngWord":
+            }
+            case "ngWord": {
                 return ngWordHighlights;
+            }
         }
     })();
 
@@ -263,12 +266,15 @@ function getCompletions(id: keyof Settings): Extension {
 
     const options = (() => {
         switch (id) {
-            case "ngUserId":
+            case "ngUserId": {
                 return ngUserIdCompletions;
-            case "ngCommand":
+            }
+            case "ngCommand": {
                 return ngCommandCompletions;
-            case "ngWord":
+            }
+            case "ngWord": {
                 return ngWordCompletions;
+            }
         }
     })();
 

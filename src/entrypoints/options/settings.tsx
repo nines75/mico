@@ -59,14 +59,18 @@ function Page() {
             </div>
             {(() => {
                 switch (selectedTab) {
-                    case "general":
+                    case "general": {
                         return <General />;
-                    case "commentFilter":
+                    }
+                    case "commentFilter": {
                         return <CommentFilter />;
-                    case "videoFilter":
+                    }
+                    case "videoFilter": {
                         return <VideoFilter />;
-                    case "support":
+                    }
+                    case "support": {
                         return <Support />;
+                    }
                 }
             })()}
         </>

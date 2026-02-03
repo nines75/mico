@@ -46,17 +46,17 @@ rule
             {
                 name: "フラグなし",
                 filter: "/rule/",
-                expected: mockRules({ rule: RegExp("rule") }),
+                expected: mockRules({ rule: new RegExp("rule") }),
             },
             {
                 name: "フラグあり",
                 filter: "/rule/i",
-                expected: mockRules({ rule: RegExp("rule", "i") }),
+                expected: mockRules({ rule: new RegExp("rule", "i") }),
             },
             {
                 name: "複数のフラグ",
                 filter: "/rule/isum",
-                expected: mockRules({ rule: RegExp("rule", "isum") }),
+                expected: mockRules({ rule: new RegExp("rule", "isum") }),
             },
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(filter)).toEqual(expected);

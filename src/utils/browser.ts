@@ -54,11 +54,9 @@ export async function tryWithPermission(
         permissions: [permission],
     });
 
-    if (hasPermission) {
-        await callback();
-    } else {
-        await sendNotification(
-            replace(messages.other.permissionRequired, [permission]),
-        );
-    }
+    await (hasPermission
+        ? callback()
+        : sendNotification(
+              replace(messages.other.permissionRequired, [permission]),
+          ));
 }

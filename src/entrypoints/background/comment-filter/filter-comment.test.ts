@@ -17,12 +17,10 @@ describe(filterComment.name, () => {
             threads,
             {
                 ...defaultSettings,
-                ...{
-                    scoreFilterCount: -1001,
-                    ngUserId: "user-id-owner",
-                    ngCommand: "big",
-                    ngWord: "コメント",
-                },
+                scoreFilterCount: -1001,
+                ngUserId: "user-id-owner",
+                ngCommand: "big",
+                ngWord: "コメント",
                 ...settings,
             },
             testTabData,
@@ -110,9 +108,9 @@ device:switch
     });
 
     it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
-        threads.forEach((thread) => {
-            thread.comments.forEach((comment) => (comment.isMyPost = true));
-        });
+        for (const thread of threads) {
+            for (const comment of thread.comments) comment.isMyPost = true;
+        }
         filtering({ isMyCommentIgnored: true });
 
         checkComment(threads, []);

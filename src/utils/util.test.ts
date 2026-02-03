@@ -65,7 +65,9 @@ describe(isSearchPage.name, () => {
 });
 
 it(escapeNewline.name, () => {
-    expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
+    expect(escapeNewline("hello\nworld\n\n!")).toBe(
+        String.raw`hello\nworld\n\n!`,
+    );
 });
 
 describe(pushCommonLog.name, () => {

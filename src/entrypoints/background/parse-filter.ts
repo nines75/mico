@@ -53,7 +53,7 @@ export function parseFilter(
 
             // 引数あり
             for (const directive of argsDirectives) {
-                if (RegExp(`^@${directive}\\s`).test(line)) {
+                if (new RegExp(String.raw`^@${directive}\s`).test(line)) {
                     directives.push({
                         type: directive,
                         args: parseArgs(line),
@@ -104,45 +104,55 @@ export function parseFilter(
             const include = createDefaultToggle();
             const exclude = createDefaultToggle();
 
-            directives.forEach((directive) => {
+            for (const directive of directives) {
                 switch (directive.type) {
                     // include
-                    case "include-tags":
+                    case "include-tags": {
                         pushArgs(include.tags, directive);
                         break;
-                    case "include-video-ids":
+                    }
+                    case "include-video-ids": {
                         pushArgs(include.videoIds, directive);
                         break;
-                    case "include-user-ids":
+                    }
+                    case "include-user-ids": {
                         pushArgs(include.userIds, directive);
                         break;
-                    case "include-series-ids":
+                    }
+                    case "include-series-ids": {
                         pushArgs(include.seriesIds, directive);
                         break;
+                    }
 
                     // exclude
-                    case "exclude-tags":
+                    case "exclude-tags": {
                         pushArgs(exclude.tags, directive);
                         break;
-                    case "exclude-video-ids":
+                    }
+                    case "exclude-video-ids": {
                         pushArgs(exclude.videoIds, directive);
                         break;
-                    case "exclude-user-ids":
+                    }
+                    case "exclude-user-ids": {
                         pushArgs(exclude.userIds, directive);
                         break;
-                    case "exclude-series-ids":
+                    }
+                    case "exclude-series-ids": {
                         pushArgs(exclude.seriesIds, directive);
                         break;
+                    }
 
                     // その他
-                    case "strict":
+                    case "strict": {
                         isStrict = true;
                         break;
-                    case "disable":
+                    }
+                    case "disable": {
                         isDisable = true;
                         break;
+                    }
                 }
-            });
+            }
 
             // エイリアスの適用
             if (isStrictAlias) {
@@ -171,7 +181,7 @@ export function parseFilter(
                 }
 
                 try {
-                    regex = RegExp(regexStr, flags);
+                    regex = new RegExp(regexStr, flags);
                 } catch {
                     invalidCount++;
                     return;
@@ -179,13 +189,11 @@ export function parseFilter(
             }
 
             rules.push({
-                ...{
-                    rule: regex ?? line,
-                    isStrict,
-                    isDisable,
-                    include,
-                    exclude,
-                },
+                rule: regex ?? line,
+                isStrict,
+                isDisable,
+                include,
+                exclude,
                 ...(hasIndex ? { index } : {}),
             });
         });

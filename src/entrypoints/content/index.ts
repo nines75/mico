@@ -52,14 +52,11 @@ async function observerCallback(records: MutationRecord[]) {
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof Element)) continue;
+            // ドロップダウン
+            if (isWatchPage(location.href) && node.className === "z_dropdown") {
+                await mountToDropdown(node);
 
-            if (isWatchPage(location.href)) {
-                // ドロップダウン
-                if (node.className === "z_dropdown") {
-                    await mountToDropdown(node);
-
-                    continue;
-                }
+                continue;
             }
         }
     }

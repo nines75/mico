@@ -9,10 +9,12 @@ interface ProcessingTimeProps {
 export default function ProcessingTime({ selectedTab }: ProcessingTimeProps) {
     const processingTime = useStorageStore((state) => {
         switch (selectedTab) {
-            case "commentFilter":
+            case "commentFilter": {
                 return state.log?.commentFilterLog?.processingTime;
-            case "videoFilter":
+            }
+            case "videoFilter": {
                 return state.log?.videoFilterLog?.processingTime;
+            }
         }
     });
 

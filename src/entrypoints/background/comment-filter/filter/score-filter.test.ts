@@ -18,7 +18,8 @@ describe(ScoreFilter.name, () => {
     }) => {
         const scoreFilter = new ScoreFilter({
             ...defaultSettings,
-            ...{ isScoreFilterEnabled: true, scoreFilterCount: options.score },
+            isScoreFilterEnabled: true,
+            scoreFilterCount: options.score,
             ...options.settings,
         });
 
@@ -38,7 +39,7 @@ describe(ScoreFilter.name, () => {
             { score: -999, ids: ["1002", "1003", "1004"] },
             { score: -1000, ids: ["1002", "1003"] },
             { score: -1001, ids: ["1002"] },
-            { score: -10000, ids: [] },
+            { score: -10_000, ids: [] },
         ])("$score", ({ score, ids }) => {
             expect(filtering({ score }).getLog()).toEqual(ids);
             checkComment(threads, ids);

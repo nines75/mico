@@ -4,4 +4,4 @@ import * as z from "zod";
 // https://github.com/colinhacks/zod/issues/4461
 z.config({ jitless: true });
 
-export { z };
+export * as z from "zod";

@@ -57,10 +57,12 @@ function Page() {
             </div>
             {(() => {
                 switch (selectedTab) {
-                    case "commentFilter":
+                    case "commentFilter": {
                         return <CommentFilterArea />;
-                    case "videoFilter":
+                    }
+                    case "videoFilter": {
                         return <VideoFilterArea />;
+                    }
                 }
             })()}
         </>

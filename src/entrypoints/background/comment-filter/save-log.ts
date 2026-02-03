@@ -95,9 +95,9 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
         }),
     );
 
-    Object.values(filters).forEach((filter) => {
+    for (const filter of Object.values(filters)) {
         filter.sortLog();
-    });
+    }
 
     // ソート後にログを取得
     const logFilters = Object.fromEntries(

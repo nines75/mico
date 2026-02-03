@@ -87,43 +87,49 @@ function Log({ id, filtering, settings }: LogProps) {
     const comments = filtering.filteredComments;
 
     switch (id) {
-        case "userIdFilter":
+        case "userIdFilter": {
             return renderUserIdLog(
                 filtering.filters.userIdFilter,
                 comments,
                 settings,
                 filtering.strictUserIds,
             );
-        case "easyCommentFilter":
+        }
+        case "easyCommentFilter": {
             return renderDuplicateLog(
                 filtering.filters.easyCommentFilter,
                 comments,
                 settings,
             );
-        case "commentAssistFilter":
+        }
+        case "commentAssistFilter": {
             return renderDuplicateLog(
                 filtering.filters.commentAssistFilter,
                 comments,
                 settings,
             );
-        case "scoreFilter":
+        }
+        case "scoreFilter": {
             return renderScoreLog(
                 filtering.filters.scoreFilter,
                 comments,
                 settings,
             );
-        case "commandFilter":
+        }
+        case "commandFilter": {
             return renderCommandLog(
                 filtering.filters.commandFilter,
                 comments,
                 settings,
             );
-        case "wordFilter":
+        }
+        case "wordFilter": {
             return renderWordLog(
                 filtering.filters.wordFilter,
                 comments,
                 settings,
             );
+        }
     }
 }
 
@@ -176,7 +182,7 @@ function renderScoreLog(
     return renderComments(
         log,
         comments,
-        { ...settings, ...{ isNgScoreVisible: true } },
+        { ...settings, isNgScoreVisible: true },
         true,
     );
 }
@@ -214,10 +220,9 @@ function renderDuplicateLog(
 ) {
     return renderDuplicateComments(log, comments, {
         ...settings,
-        ...{
-            isDuplicateVisible: true,
-            duplicateVisibleCount: 2,
-        },
+
+        isDuplicateVisible: true,
+        duplicateVisibleCount: 2,
     });
 }
 

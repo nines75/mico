@@ -171,9 +171,9 @@ export async function backgroundMessageHandler(
                 break;
             }
         }
-    } catch (e) {
-        console.error(e);
-        throw e;
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 }
 

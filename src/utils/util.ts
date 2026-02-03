@@ -34,15 +34,15 @@ export function isSearchPage(url: string | undefined) {
 }
 
 export function escapeNewline(str: string) {
-    return str.replace(/\n/g, "\\n");
+    return str.replaceAll("\n", String.raw`\n`);
 }
 
 export function pushCommonLog(log: CommonLog, key: string, value: string) {
     const array = log.get(key);
-    if (array !== undefined) {
-        array.push(value);
-    } else {
+    if (array === undefined) {
         log.set(key, [value]);
+    } else {
+        array.push(value);
     }
 }
 

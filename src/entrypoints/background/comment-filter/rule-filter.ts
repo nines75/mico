@@ -35,7 +35,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
 
     filterRules(tab: TabData) {
         const { videoId, userId, seriesId } = tab;
-        const tags = tab.tags.map((tag) => tag.toLowerCase());
+        const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
         const matches = (rules: string[][], pred: (arg: string) => boolean) => {
             return rules.length > 0 && rules.every((args) => args.some(pred));
@@ -44,7 +44,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
         this.rules = this.rules.filter(({ include, exclude }) => {
             // ルールを無効化するか判定
             if (
-                matches(exclude.tags, (arg) => tags.includes(arg)) ||
+                matches(exclude.tags, (arg) => tags.has(arg)) ||
                 matches(exclude.videoIds, (arg) => arg === videoId) ||
                 matches(exclude.userIds, (arg) => arg === userId) ||
                 matches(exclude.seriesIds, (arg) => arg === seriesId)
@@ -55,7 +55,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
 
             // ルールを有効化するか判定
             if (
-                matches(include.tags, (arg) => tags.includes(arg)) ||
+                matches(include.tags, (arg) => tags.has(arg)) ||
                 matches(include.videoIds, (arg) => arg === videoId) ||
                 matches(include.userIds, (arg) => arg === userId) ||
                 matches(include.seriesIds, (arg) => arg === seriesId)
@@ -83,23 +83,23 @@ export abstract class RuleFilter<T> extends Filter<T> {
         const log: CommonLog = new Map();
 
         // フィルター順にソート
-        keys.forEach((key) => {
+        for (const key of keys) {
             const keyStr = this.createKey(key);
             const value = currentLog.get(keyStr);
             if (value !== undefined) {
                 log.set(keyStr, value);
             }
-        });
+        }
 
         // 各ルールのコメントをソート
-        log.forEach((ids, key) => {
+        for (const [key, ids] of log) {
             log.set(
                 key,
                 this.settings.isNgScoreVisible
                     ? sortCommentId(ids, this.filteredComments, true)
                     : sortCommentId(ids, this.filteredComments),
             );
-        });
+        }
 
         return log;
     }

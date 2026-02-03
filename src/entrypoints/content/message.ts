@@ -71,9 +71,9 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     return getLogId();
                 }
             }
-        } catch (e) {
-            console.error(e);
-            throw e;
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     };
 }
@@ -115,7 +115,7 @@ function openQuickEdit(ctx: ContentScriptContext) {
     const ui = createIframeUi(ctx, {
         page: "/quick-edit.html",
         position: "modal",
-        zIndex: 2147483647, // 最大値
+        zIndex: 2_147_483_647, // 最大値
         onMount: (_, iframe) => {
             iframe.id = id;
             iframe.style.width = "100%";
@@ -171,27 +171,28 @@ function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
     const buttons = parent.querySelector(":scope > div:last-of-type");
     if (sample === null || buttons === null) return;
 
-    texts.forEach((text) => {
+    for (const text of texts) {
         const div = document.createElement("div");
         div.textContent = `${text} (${browser.runtime.getManifest().name})`;
-        [...sample.attributes].forEach((attribute) => {
+        for (const attribute of sample.attributes) {
             div.setAttribute(attribute.name, attribute.value);
-        });
+        }
 
         buttons.before(div);
-    });
+    }
 }
 
 export function removeOldSearch(ids: ExtractData<"remove-old-search">) {
-    const elements = document.querySelectorAll("li[data-video-id]");
-    elements.forEach((element) => {
-        const videoId = element.getAttribute("data-video-id");
-        if (videoId === null) return;
+    const elements =
+        document.querySelectorAll<HTMLLIElement>("li[data-video-id]");
+    for (const element of elements) {
+        const videoId = element.dataset.videoId;
+        if (videoId === undefined) continue;
 
         if (ids.has(videoId) && element instanceof HTMLElement) {
             element.style.display = "none";
         }
-    });
+    }
 }
 
 function mountLogId(logId: ExtractData<"mount-log-id">) {
@@ -204,7 +205,7 @@ function mountLogId(logId: ExtractData<"mount-log-id">) {
         div.id = id;
         div.textContent = logId;
 
-        document.body.appendChild(div);
+        document.body.append(div);
     } else {
         current.textContent = logId;
     }

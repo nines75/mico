@@ -89,7 +89,7 @@ function importBackup(
     saveSettings: (settings: Partial<Settings>) => void,
 ) {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.addEventListener("load", (e) => {
         const res = e.target?.result;
 
         if (typeof res === "string") {
@@ -102,18 +102,18 @@ function importBackup(
                 const keys = Object.keys(defaultSettings);
 
                 // defaultSettingsに存在するキーのみを抽出
-                objectKeys(backup.settings).forEach((key) => {
+                for (const key of objectKeys(backup.settings)) {
                     if (keys.includes(key)) {
-                        const value = backup.settings?.[key];
+                        const value = backup.settings[key];
 
                         if (value !== undefined) newSettings[key] = value;
                     }
-                });
+                }
 
                 saveSettings(newSettings);
             }
         }
-    };
+    });
 
     const file = event.target.files?.[0];
     if (file === undefined) return;
