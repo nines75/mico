@@ -5,6 +5,7 @@ import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import { importX } from "eslint-plugin-import-x";
+import unicorn from "eslint-plugin-unicorn";
 
 const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
@@ -32,6 +33,9 @@ export default defineConfig(
 
     // https://github.com/un-ts/eslint-plugin-import-x
     importX.flatConfigs.typescript,
+
+    // https://github.com/sindresorhus/eslint-plugin-unicorn
+    unicorn.configs.recommended,
 
     // TypeScript
     {
