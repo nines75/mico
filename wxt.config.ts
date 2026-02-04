@@ -21,7 +21,7 @@ export default defineConfig({
 
             let data = "";
             for (const file of files) {
-                const text = readFileSync(file, "utf-8");
+                const text = readFileSync(file, "utf8");
                 data += `${text}\n\n---\n\n`;
 
                 rmSync(file);

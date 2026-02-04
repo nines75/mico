@@ -112,8 +112,8 @@ function getComments(ids: string[]) {
             .find((comment) => comment.id === id) as NiconicoComment,
     ]);
     for (const [_, comment] of comments) {
-        comment.commands.forEach(
-            (command, i, commands) => (commands[i] = command.toLowerCase()),
+        comment.commands = comment.commands.map((command) =>
+            command.toLowerCase(),
         );
     }
 

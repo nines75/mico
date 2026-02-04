@@ -112,5 +112,7 @@ export function getRuleFilters(
 }
 
 function matches(rules: string[][], pred: (arg: string) => boolean) {
-    return rules.length > 0 && rules.every((args) => args.some(pred));
+    return (
+        rules.length > 0 && rules.every((args) => args.some((arg) => pred(arg)))
+    );
 }

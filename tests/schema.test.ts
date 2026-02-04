@@ -101,7 +101,8 @@ for (const { title, url, schema } of [
     test(title, async ({ page }) => {
         const res = await page.goto(url);
         const text = await res?.text();
-        if (text === undefined) throw new Error();
+        if (text === undefined)
+            throw new Error("レスポンスが取得できませんでした");
 
         const content = await page.evaluate((str) => {
             const parser = new DOMParser();

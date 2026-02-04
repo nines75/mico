@@ -105,7 +105,7 @@ function setPlaybackTime(time: ExtractData<"set-playback-time">) {
 
 function openQuickEdit(ctx: ContentScriptContext) {
     const id = `${browser.runtime.getManifest().name}-quick-edit`;
-    if (document.getElementById(id) !== null) return;
+    if (document.querySelector(`#${id}`) !== null) return;
 
     const callback = (e: KeyboardEvent) => {
         if (e.key !== "Escape") return;
@@ -197,7 +197,7 @@ export function removeOldSearch(ids: ExtractData<"remove-old-search">) {
 
 function mountLogId(logId: ExtractData<"mount-log-id">) {
     const id = `${browser.runtime.getManifest().name}-log-id`;
-    const current = document.getElementById(id);
+    const current = document.querySelector(`#${id}`);
 
     if (current === null) {
         const div = document.createElement("div");
@@ -213,7 +213,7 @@ function mountLogId(logId: ExtractData<"mount-log-id">) {
 
 function getLogId() {
     const id = `${browser.runtime.getManifest().name}-log-id`;
-    const element = document.getElementById(id);
+    const element = document.querySelector(`#${id}`);
 
     return element?.textContent;
 }
