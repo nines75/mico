@@ -61,12 +61,12 @@ for (const { title, url, responseUrl, method, schema, selector } of [
             await page.locator(selector).first().click();
         }
 
-        const res = await page.waitForResponse(
+        const response = await page.waitForResponse(
             (data) =>
                 data.url().startsWith(responseUrl) &&
                 data.request().method() === method,
         );
-        const text = await res.text();
+        const text = await response.text();
 
         expect(safeParseJson(text, schema as z.ZodType)).not.toBeUndefined();
     });
@@ -99,8 +99,8 @@ for (const { title, url, schema } of [
     schema: z.ZodType;
 }[]) {
     test(title, async ({ page }) => {
-        const res = await page.goto(url);
-        const text = await res?.text();
+        const response = await page.goto(url);
+        const text = await response?.text();
         if (text === undefined)
             throw new Error("レスポンスが取得できませんでした");
 

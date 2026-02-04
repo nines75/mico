@@ -90,6 +90,7 @@ export default defineConfig(
 
             "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
             "react/prop-types": "off", // TypeScriptでは不要
+            "unicorn/prevent-abbreviations": "off", // 略語を禁止
 
             // -------------------------------------------------------------------------------------------
             // 有効化

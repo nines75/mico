@@ -33,8 +33,8 @@ export function isSearchPage(url: string | undefined) {
     );
 }
 
-export function escapeNewline(str: string) {
-    return str.replaceAll("\n", String.raw`\n`);
+export function escapeNewline(text: string) {
+    return text.replaceAll("\n", String.raw`\n`);
 }
 
 export function pushCommonLog(log: CommonLog, key: string, value: string) {

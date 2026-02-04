@@ -44,9 +44,9 @@ export default function General() {
                             <input
                                 className="input"
                                 value={localFilterPath}
-                                onChange={(e) => {
+                                onChange={(event) => {
                                     save({
-                                        localFilterPath: e.target.value,
+                                        localFilterPath: event.target.value,
                                     });
                                 }}
                             />
@@ -75,8 +75,8 @@ export default function General() {
                     accept=".json"
                     style={{ display: "none" }}
                     ref={input}
-                    onChange={catchAsync(async (e) => {
-                        await importBackup(e, save);
+                    onChange={catchAsync(async (event) => {
+                        await importBackup(event, save);
                     })}
                 />
             </H2>

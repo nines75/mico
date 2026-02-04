@@ -33,7 +33,7 @@ export type ContentMessage =
           type: "get-log-id";
       };
 
-export function createContentMessageHandler(ctx: ContentScriptContext) {
+export function createContentMessageHandler(context: ContentScriptContext) {
     return async (
         message: ContentMessage,
         sender: browser.runtime.MessageSender,
@@ -52,7 +52,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     break;
                 }
                 case "quick-edit": {
-                    openQuickEdit(ctx);
+                    openQuickEdit(context);
                     break;
                 }
                 case "mount-to-dropdown": {
@@ -103,16 +103,16 @@ function setPlaybackTime(time: ExtractData<"set-playback-time">) {
     }, 10);
 }
 
-function openQuickEdit(ctx: ContentScriptContext) {
+function openQuickEdit(context: ContentScriptContext) {
     const id = `${browser.runtime.getManifest().name}-quick-edit`;
     if (document.querySelector(`#${id}`) !== null) return;
 
-    const callback = (e: KeyboardEvent) => {
-        if (e.key !== "Escape") return;
+    const callback = (event: KeyboardEvent) => {
+        if (event.key !== "Escape") return;
 
         ui.remove();
     };
-    const ui = createIframeUi(ctx, {
+    const ui = createIframeUi(context, {
         page: "/quick-edit.html",
         position: "modal",
         zIndex: 2_147_483_647, // 最大値
@@ -128,9 +128,9 @@ function openQuickEdit(ctx: ContentScriptContext) {
                 // 背景をクリックしたらiframeを閉じる
                 const body = iframe.contentDocument?.body;
                 if (body !== undefined) {
-                    body.addEventListener("click", (e) => {
+                    body.addEventListener("click", (event) => {
                         // クリックしたのが背景要素自体か判定
-                        if (e.target === body) ui.remove();
+                        if (event.target === body) ui.remove();
                     });
                 }
 

@@ -135,18 +135,18 @@ export default defineBackground(() => {
                         return;
                     }
 
-                    const res = (await browser.runtime.sendNativeMessage(
+                    const response = (await browser.runtime.sendNativeMessage(
                         "mico.native",
                         { path: settings.localFilterPath },
                     )) as Partial<Settings>;
-                    if (Object.keys(res).length === 0) {
+                    if (Object.keys(response).length === 0) {
                         await sendNotification(
                             messages.settings.localFileNotFound,
                         );
                         return;
                     }
 
-                    await setSettings(res);
+                    await setSettings(response);
                     await sendNotification(messages.settings.importSuccess);
                 });
             }

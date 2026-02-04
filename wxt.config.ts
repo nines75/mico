@@ -31,12 +31,12 @@ export default defineConfig({
         },
     },
     vite: ({ mode }) => {
-        const isProd = mode === "production";
+        const isProduction = mode === "production";
 
         return {
             build: {
                 rollupOptions: {
-                    plugins: isProd
+                    plugins: isProduction
                         ? [
                               license({
                                   thirdParty: {
@@ -58,7 +58,7 @@ export default defineConfig({
         };
     },
     manifest: ({ mode }) => {
-        const isDev = mode === "development";
+        const isDevelopment = mode === "development";
 
         return {
             web_accessible_resources: [
@@ -80,7 +80,7 @@ export default defineConfig({
             commands: {
                 "open-settings": {
                     description: "設定ページを開く",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Alt+O",
                           }
@@ -88,7 +88,7 @@ export default defineConfig({
                 },
                 "quick-edit": {
                     description: "クイック編集を開く",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Alt+I",
                           }
@@ -96,7 +96,7 @@ export default defineConfig({
                 },
                 "add-ng-from-clipboard": {
                     description: "クリップボードからNG登録",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Alt+N",
                           }
@@ -104,7 +104,7 @@ export default defineConfig({
                 },
                 "import-local-filter": {
                     description: "ローカルファイルからフィルターをインポート",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Ctrl+Alt+N",
                           }
@@ -112,7 +112,7 @@ export default defineConfig({
                 },
                 reload: {
                     description: "リロードして現在の再生時間を復元",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Alt+R",
                           }
@@ -120,7 +120,7 @@ export default defineConfig({
                 },
                 _execute_browser_action: {
                     description: "ポップアップを開く",
-                    suggested_key: isDev
+                    suggested_key: isDevelopment
                         ? {
                               default: "Alt+L",
                           }

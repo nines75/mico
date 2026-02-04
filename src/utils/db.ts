@@ -31,15 +31,15 @@ db.version(1).stores({
 });
 
 export async function getLogData(id: string) {
-    const res = await db.log.get(id);
+    const result = await db.log.get(id);
 
-    return res?.log;
+    return result?.log;
 }
 
 export async function getTabData(tabId: number) {
-    const res = await db.tab.get(tabId);
+    const result = await db.tab.get(tabId);
 
-    return res?.data;
+    return result?.data;
 }
 
 export async function setLog(

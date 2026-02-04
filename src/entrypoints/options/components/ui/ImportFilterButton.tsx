@@ -29,8 +29,8 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
                 accept=".txt"
                 style={{ display: "none" }}
                 ref={input}
-                onChange={catchAsync(async (e) => {
-                    await importFilter(e, save, id);
+                onChange={catchAsync(async (event) => {
+                    await importFilter(event, save, id);
                 })}
             />
         </>

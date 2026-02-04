@@ -9,7 +9,7 @@ export async function renderOldSearch() {
 }
 
 function getVideos(): NiconicoVideo[] {
-    const res: NiconicoVideo[] = [];
+    const videos: NiconicoVideo[] = [];
 
     const elements =
         document.querySelectorAll<HTMLLIElement>("li[data-video-id]");
@@ -24,12 +24,12 @@ function getVideos(): NiconicoVideo[] {
 
         const paymentElement = element.querySelector(".iconPayment");
 
-        res.push({
+        videos.push({
             id: videoId,
             title,
             isPaymentRequired: paymentElement !== null,
         });
     }
 
-    return res;
+    return videos;
 }

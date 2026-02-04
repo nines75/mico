@@ -17,8 +17,8 @@ export default function Details({ id, summary, children }: DetailsProps) {
     return (
         <details
             open={useStorageStore.getState().settings[id]}
-            onToggle={(e) => {
-                const target = e.target as HTMLDetailsElement;
+            onToggle={(event) => {
+                const target = event.target as HTMLDetailsElement;
                 const isOpenCurrent = target.open;
 
                 if (isOpenCurrent === isOpen) return; // onToggleは初期値がtrueの場合も発火するのでここで弾く
