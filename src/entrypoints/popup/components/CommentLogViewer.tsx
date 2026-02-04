@@ -220,7 +220,6 @@ function renderDuplicateLog(
 ) {
     return renderDuplicateComments(log, comments, {
         ...settings,
-
         isDuplicateVisible: true,
         duplicateVisibleCount: 2,
     });
