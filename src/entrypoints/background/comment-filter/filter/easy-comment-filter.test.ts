@@ -16,7 +16,7 @@ describe(EasyCommentFilter.name, () => {
     const filtering = (options: { settings?: Partial<Settings> }) => {
         const easyCommentFilter = new EasyCommentFilter({
             ...defaultSettings,
-            ...{ isEasyCommentHidden: true },
+            isEasyCommentHidden: true,
             ...options.settings,
         });
 

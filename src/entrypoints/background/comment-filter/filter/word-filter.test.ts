@@ -17,7 +17,7 @@ describe(WordFilter.name, () => {
         ngUserIds?: Set<string>;
     }) => {
         const wordFilter = new WordFilter(
-            { ...defaultSettings, ...{ ngWord: options.filter } },
+            { ...defaultSettings, ngWord: options.filter },
             options.ngUserIds ?? new Set(),
         );
         wordFilter.filtering(threads, options.isStrictOnly ?? false);

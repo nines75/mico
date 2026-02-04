@@ -13,22 +13,24 @@ import { sendMessageToBackground } from "@/utils/browser";
 export default defineContentScript({
     matches: ["https://www.nicovideo.jp/*"],
 
-    async main(ctx) {
+    async main(context) {
         const observer = new MutationObserver(catchAsync(observerCallback));
         observer.observe(document.body, {
             childList: true,
             subtree: true,
         });
 
-        browser.runtime.onMessage.addListener(createContentMessageHandler(ctx));
+        browser.runtime.onMessage.addListener(
+            createContentMessageHandler(context),
+        );
 
         // ブラウザの進む/戻るで消えたバッジを復元
         if (isRankingPage(location.href) || isSearchPage(location.href)) {
             window.addEventListener(
                 "pageshow",
-                catchAsync(async (e) => {
+                catchAsync(async (event) => {
                     // キャッシュによる発火か判定
-                    if (!e.persisted) return;
+                    if (!event.persisted) return;
 
                     await sendMessageToBackground({
                         type: "restore-badge",
@@ -52,14 +54,11 @@ async function observerCallback(records: MutationRecord[]) {
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof Element)) continue;
+            // ドロップダウン
+            if (isWatchPage(location.href) && node.className === "z_dropdown") {
+                await mountToDropdown(node);
 
-            if (isWatchPage(location.href)) {
-                // ドロップダウン
-                if (node.className === "z_dropdown") {
-                    await mountToDropdown(node);
-
-                    continue;
-                }
+                continue;
             }
         }
     }

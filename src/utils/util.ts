@@ -33,16 +33,16 @@ export function isSearchPage(url: string | undefined) {
     );
 }
 
-export function escapeNewline(str: string) {
-    return str.replace(/\n/g, "\\n");
+export function escapeNewline(text: string) {
+    return text.replaceAll("\n", String.raw`\n`);
 }
 
 export function pushCommonLog(log: CommonLog, key: string, value: string) {
     const array = log.get(key);
-    if (array !== undefined) {
-        array.push(value);
-    } else {
+    if (array === undefined) {
         log.set(key, [value]);
+    } else {
+        array.push(value);
     }
 }
 
@@ -51,10 +51,12 @@ export function sumNumbers(numbers: number[]) {
 }
 
 export function replace(text: string, placeholders: string[]) {
-    return placeholders.reduce(
-        (prev, current, index) => prev.replace(`$${index + 1}`, current),
-        text,
-    );
+    let result = text;
+    for (const [index, placeholder] of placeholders.entries()) {
+        result = result.replace(`$${index + 1}`, placeholder);
+    }
+
+    return result;
 }
 
 export function catchAsync<T extends unknown[]>(

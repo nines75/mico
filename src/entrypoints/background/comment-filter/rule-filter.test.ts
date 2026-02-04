@@ -18,7 +18,7 @@ function filtering(options: { filter: string; tags?: string[] }) {
     const testFilter = new TestFilter(defaultSettings, options.filter);
     testFilter.filterRules({
         ...testTabData,
-        ...{ tags: options.tags ?? [] },
+        tags: options.tags ?? [],
     });
 
     return testFilter;

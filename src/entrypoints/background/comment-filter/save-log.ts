@@ -9,7 +9,6 @@ import type {
 } from "@/types/storage/log-comment.types";
 import { colors } from "@/utils/config";
 import { setLog } from "@/utils/db";
-import { objectEntries } from "ts-extras";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter";
 import { getRuleFilters } from "./rule-filter";
@@ -49,19 +48,17 @@ export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
     const ruleFilters = getRuleFilters(filters);
 
-    const rule = objectEntries(ruleFilters).reduce<Partial<RuleCount>>(
-        (obj, [key, filter]) => {
-            obj[key] = filter.countRules();
-            return obj;
-        },
-        {},
+    const rule = Object.fromEntries(
+        Object.entries(ruleFilters).map(([key, filter]) => [
+            key,
+            filter.countRules(),
+        ]),
     ) as RuleCount;
-    const blocked = objectEntries(filters).reduce<Partial<BlockedCount>>(
-        (obj, [key, filter]) => {
-            obj[key] = filter.getBlockedCount();
-            return obj;
-        },
-        {},
+    const blocked = Object.fromEntries(
+        Object.entries(filters).map(([key, filter]) => [
+            key,
+            filter.getBlockedCount(),
+        ]),
     ) as BlockedCount;
 
     const calc = (key: ConditionalKeys<RuleFilter<unknown>, () => number>) => {
@@ -95,9 +92,9 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
         }),
     );
 
-    Object.values(filters).forEach((filter) => {
+    for (const filter of Object.values(filters)) {
         filter.sortLog();
-    });
+    }
 
     // ソート後にログを取得
     const logFilters = Object.fromEntries(

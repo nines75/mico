@@ -21,16 +21,16 @@ export function watchRequest(
         }
 
         const settings = await loadSettings();
-        const res = spaFilter(
+        const result = spaFilter(
             details,
             buf,
             settings,
             watchApiSchema,
             watchApiFilter,
         );
-        if (res === undefined) return true;
+        if (result === undefined) return true;
 
-        const { filteredBuf, filteredData: tabData } = res;
+        const { filteredBuf, filteredData: tabData } = result;
 
         tabData.logId = logId;
 

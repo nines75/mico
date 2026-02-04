@@ -9,10 +9,12 @@ interface CountProps {
 export default function Count({ selectedTab }: CountProps) {
     const count = useStorageStore((state) => {
         switch (selectedTab) {
-            case "commentFilter":
+            case "commentFilter": {
                 return state.log?.commentFilterLog?.count;
-            case "videoFilter":
+            }
+            case "videoFilter": {
                 return state.log?.videoFilterLog?.count;
+            }
         }
     });
 

@@ -65,7 +65,9 @@ describe(isSearchPage.name, () => {
 });
 
 it(escapeNewline.name, () => {
-    expect(escapeNewline("hello\nworld\n\n!")).toBe("hello\\nworld\\n\\n!");
+    expect(escapeNewline("hello\nworld\n\n!")).toBe(
+        String.raw`hello\nworld\n\n!`,
+    );
 });
 
 describe(pushCommonLog.name, () => {
@@ -135,7 +137,7 @@ describe(replace.name, () => {
 });
 
 it("customMerge", () => {
-    const oldObj = {
+    const oldObject = {
         nest: {
             a: true,
         },
@@ -144,7 +146,7 @@ it("customMerge", () => {
         set: new Set([1]),
         undefined: true,
     };
-    const newObj = {
+    const newObject = {
         nest: {
             b: false,
         },
@@ -154,7 +156,7 @@ it("customMerge", () => {
         undefined: undefined,
     };
 
-    expect(customMerge(oldObj, newObj)).toStrictEqual({
+    expect(customMerge(oldObject, newObject)).toStrictEqual({
         nest: {
             a: true,
             b: false,

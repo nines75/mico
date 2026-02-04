@@ -5,6 +5,7 @@ import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import { importX } from "eslint-plugin-import-x";
+import unicorn from "eslint-plugin-unicorn";
 
 const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
@@ -32,6 +33,9 @@ export default defineConfig(
 
     // https://github.com/un-ts/eslint-plugin-import-x
     importX.flatConfigs.typescript,
+
+    // https://github.com/sindresorhus/eslint-plugin-unicorn
+    unicorn.configs.recommended,
 
     // TypeScript
     {
@@ -79,6 +83,15 @@ export default defineConfig(
                     allowRegExp: false,
                 },
             ],
+            "unicorn/filename-case": [
+                "error",
+                {
+                    cases: {
+                        kebabCase: true,
+                        pascalCase: true,
+                    },
+                },
+            ],
 
             // -------------------------------------------------------------------------------------------
             // 無効化
@@ -86,6 +99,8 @@ export default defineConfig(
 
             "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
             "react/prop-types": "off", // TypeScriptでは不要
+            "unicorn/prevent-abbreviations": "off", // 略語を禁止
+            "unicorn/no-null": "off",
 
             // -------------------------------------------------------------------------------------------
             // 有効化

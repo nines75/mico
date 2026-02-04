@@ -41,8 +41,8 @@ export default function CommentFilterArea() {
                 key={id} // idが変わった際に再マウントさせるために必要
                 {...{ id }}
                 value={text}
-                onChange={(str) => {
-                    save({ [id]: str });
+                onChange={(value) => {
+                    save({ [id]: value });
                 }}
             />
         </div>

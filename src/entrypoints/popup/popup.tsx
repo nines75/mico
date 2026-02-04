@@ -129,14 +129,16 @@ function Main() {
             <Details id={"isLogOpen"} summary="フィルタリングログ">
                 {(() => {
                     switch (selectedTab) {
-                        case "commentFilter":
+                        case "commentFilter": {
                             return config.commentFilter.log.map((log) => (
                                 <CommentLogViewer key={log.id} {...log} />
                             ));
-                        case "videoFilter":
+                        }
+                        case "videoFilter": {
                             return config.videoFilter.log.map((log) => (
                                 <VideoLogViewer key={log.id} {...log} />
                             ));
+                        }
                     }
                 })()}
             </Details>

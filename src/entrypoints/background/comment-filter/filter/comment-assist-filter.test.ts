@@ -55,7 +55,7 @@ describe(CommentAssistFilter.name, () => {
     const filtering = (options: { settings?: Partial<Settings> }) => {
         const commentAssistFilter = new CommentAssistFilter({
             ...defaultSettings,
-            ...{ isCommentAssistFilterEnabled: true },
+            isCommentAssistFilterEnabled: true,
             ...options.settings,
         });
 

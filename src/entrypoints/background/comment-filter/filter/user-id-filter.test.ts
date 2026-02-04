@@ -14,7 +14,7 @@ describe(UserIdFilter.name, () => {
     const filtering = (options: { filter: string }) => {
         const userIdFilter = new UserIdFilter({
             ...defaultSettings,
-            ...{ ngUserId: options.filter },
+            ngUserId: options.filter,
         });
         userIdFilter.filtering(threads);
 

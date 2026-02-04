@@ -44,9 +44,9 @@ export default function General() {
                             <input
                                 className="input"
                                 value={localFilterPath}
-                                onChange={(e) => {
+                                onChange={(event) => {
                                     save({
-                                        localFilterPath: e.target.value,
+                                        localFilterPath: event.target.value,
                                     });
                                 }}
                             />
@@ -75,50 +75,38 @@ export default function General() {
                     accept=".json"
                     style={{ display: "none" }}
                     ref={input}
-                    onChange={(e) => {
-                        importBackup(e, save);
-                    }}
+                    onChange={catchAsync(async (event) => {
+                        await importBackup(event, save);
+                    })}
                 />
             </H2>
         </div>
     );
 }
 
-function importBackup(
+async function importBackup(
     event: ChangeEvent<HTMLInputElement>,
     saveSettings: (settings: Partial<Settings>) => void,
 ) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const res = e.target?.result;
+    const text = await event.target.files?.[0]?.text();
+    if (text === undefined) return;
 
-        if (typeof res === "string") {
-            const backup = JSON.parse(res) as BackupData;
+    const backup = JSON.parse(text) as BackupData;
+    if (backup.settings === undefined) return;
 
-            if (backup.settings !== undefined) {
-                type valuesType = ValueOf<typeof defaultSettings>;
+    const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
+    const keys = Object.keys(defaultSettings);
 
-                const newSettings: Record<string, valuesType> = {};
-                const keys = Object.keys(defaultSettings);
+    // defaultSettingsに存在するキーのみを抽出
+    for (const key of objectKeys(backup.settings)) {
+        if (keys.includes(key)) {
+            const value = backup.settings[key];
 
-                // defaultSettingsに存在するキーのみを抽出
-                objectKeys(backup.settings).forEach((key) => {
-                    if (keys.includes(key)) {
-                        const value = backup.settings?.[key];
-
-                        if (value !== undefined) newSettings[key] = value;
-                    }
-                });
-
-                saveSettings(newSettings);
-            }
+            if (value !== undefined) newSettings[key] = value;
         }
-    };
+    }
 
-    const file = event.target.files?.[0];
-    if (file === undefined) return;
-
-    reader.readAsText(file);
+    saveSettings(newSettings);
 }
 
 async function exportBackup() {

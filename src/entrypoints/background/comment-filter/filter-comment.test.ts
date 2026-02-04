@@ -17,12 +17,10 @@ describe(filterComment.name, () => {
             threads,
             {
                 ...defaultSettings,
-                ...{
-                    scoreFilterCount: -1001,
-                    ngUserId: "user-id-owner",
-                    ngCommand: "big",
-                    ngWord: "コメント",
-                },
+                scoreFilterCount: -1001,
+                ngUserId: "user-id-owner",
+                ngCommand: "big",
+                ngWord: "コメント",
                 ...settings,
             },
             testTabData,
@@ -30,25 +28,25 @@ describe(filterComment.name, () => {
     };
 
     it("基本", () => {
-        const res = filtering();
+        const result = filtering();
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
-        expect(res?.filters.easyCommentFilter.getLog()).toEqual(new Map());
-        expect(res?.filters.commentAssistFilter.getLog()).toEqual(new Map());
-        expect(res?.filters.scoreFilter.getLog()).toEqual([]);
-        expect(res?.filters.userIdFilter.getLog()).toEqual(
+        expect(result?.filters.easyCommentFilter.getLog()).toEqual(new Map());
+        expect(result?.filters.commentAssistFilter.getLog()).toEqual(new Map());
+        expect(result?.filters.scoreFilter.getLog()).toEqual([]);
+        expect(result?.filters.userIdFilter.getLog()).toEqual(
             new Map([["user-id-owner", ["1000", "1001"]]]),
         );
-        expect(res?.filters.commandFilter.getLog()).toEqual(
+        expect(result?.filters.commandFilter.getLog()).toEqual(
             new Map([["big", ["1002", "1004"]]]),
         );
-        expect(res?.filters.wordFilter.getLog()).toEqual(
+        expect(result?.filters.wordFilter.getLog()).toEqual(
             new Map([["コメント", new Map([["テストコメント", ["1003"]]])]]),
         );
     });
 
     it("strictルールの先行適用", () => {
-        const res = filtering({
+        const result = filtering({
             ngUserId: "",
             ngCommand: `
 big
@@ -64,24 +62,24 @@ device:Switch
         });
 
         checkComment(threads, ["1002", "1003", "1004"]);
-        expect(res?.strictUserIds).toEqual([
+        expect(result?.strictUserIds).toEqual([
             "user-id-main-1",
             "user-id-main-3",
             "user-id-main-2",
         ]);
-        expect(res?.filters.userIdFilter.getLog()).toEqual(
+        expect(result?.filters.userIdFilter.getLog()).toEqual(
             new Map([
                 ["user-id-main-1", ["1002"]],
                 ["user-id-main-2", ["1003"]],
                 ["user-id-main-3", ["1004"]],
             ]),
         );
-        expect(res?.filters.commandFilter.getLog()).toEqual(new Map());
-        expect(res?.filters.wordFilter.getLog()).toEqual(new Map());
+        expect(result?.filters.commandFilter.getLog()).toEqual(new Map());
+        expect(result?.filters.wordFilter.getLog()).toEqual(new Map());
     });
 
     it("strictルールによるフィルタリングの重複", () => {
-        const res = filtering({
+        const result = filtering({
             ngUserId: "",
             ngCommand: `
 # 1003と1004に一致
@@ -96,7 +94,7 @@ device:switch
         });
 
         // 重複がないことを確認
-        expect(res?.strictUserIds).toEqual([
+        expect(result?.strictUserIds).toEqual([
             "user-id-main-2",
             "user-id-main-3",
         ]);
@@ -110,9 +108,9 @@ device:switch
     });
 
     it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
-        threads.forEach((thread) => {
-            thread.comments.forEach((comment) => (comment.isMyPost = true));
-        });
+        for (const thread of threads) {
+            for (const comment of thread.comments) comment.isMyPost = true;
+        }
         filtering({ isMyCommentIgnored: true });
 
         checkComment(threads, []);

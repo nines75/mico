@@ -20,16 +20,16 @@ export function searchRequest(
         }
 
         const settings = await loadSettings();
-        const res = spaFilter(
+        const result = spaFilter(
             details,
             buf,
             settings,
             searchApiSchema,
             searchApiFilter,
         );
-        if (res === undefined) return true;
+        if (result === undefined) return true;
 
-        const { filteredBuf, filteredData } = res;
+        const { filteredBuf, filteredData } = result;
         if (filteredData === undefined) return true;
 
         filter.write(encoder.encode(filteredBuf));

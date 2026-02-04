@@ -1,5 +1,6 @@
 import type { Settings } from "@/types/storage/settings.types";
 import { useStorageStore } from "@/utils/store";
+import { catchAsync } from "@/utils/util";
 import { Import } from "lucide-react";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
@@ -28,30 +29,21 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
                 accept=".txt"
                 style={{ display: "none" }}
                 ref={input}
-                onChange={(e) => {
-                    importFilter(e, save, id);
-                }}
+                onChange={catchAsync(async (event) => {
+                    await importFilter(event, save, id);
+                })}
             />
         </>
     );
 }
 
-function importFilter(
+async function importFilter(
     event: ChangeEvent<HTMLInputElement>,
     saveSettings: (settings: Partial<Settings>) => void,
     key: keyof Settings,
 ) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const res = e.target?.result;
+    const text = await event.target.files?.[0]?.text();
+    if (text === undefined) return;
 
-        if (typeof res === "string") {
-            saveSettings({ [key]: res });
-        }
-    };
-
-    const file = event.target.files?.[0];
-    if (file === undefined) return;
-
-    reader.readAsText(file);
+    saveSettings({ [key]: text });
 }

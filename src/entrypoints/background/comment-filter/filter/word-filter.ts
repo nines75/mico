@@ -39,10 +39,10 @@ export class WordFilter extends StrictFilter<WordLog> {
 
                 const key = this.createKey(rule);
                 const map = this.log.get(key);
-                if (map !== undefined) {
-                    pushCommonLog(map, body, id);
-                } else {
+                if (map === undefined) {
                     this.log.set(key, new Map([[body, [id]]]));
+                } else {
+                    pushCommonLog(map, body, id);
                 }
 
                 this.filteredComments.set(id, comment);
@@ -60,15 +60,15 @@ export class WordFilter extends StrictFilter<WordLog> {
         const keys = this.rules.map(({ rule }) => this.createKey(rule));
 
         // フィルター順にソート
-        keys.forEach((key) => {
+        for (const key of keys) {
             const map = this.log.get(key);
             if (map !== undefined) {
                 log.set(key, map);
             }
-        });
+        }
 
         // 各ルールのコメントをソート
-        log.forEach((map, key) => {
+        for (const [key, map] of log) {
             const sampleIds = [...map.values()].map((ids) => ids[0] as string); // コメントIDは必ず一つ以上存在する
             const sortedMap = new Map(
                 sortCommentId(sampleIds, this.filteredComments).map((id) => {
@@ -82,7 +82,7 @@ export class WordFilter extends StrictFilter<WordLog> {
             );
 
             log.set(key, sortedMap);
-        });
+        }
 
         this.log = log;
     }

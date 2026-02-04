@@ -33,7 +33,7 @@ export type ContentMessage =
           type: "get-log-id";
       };
 
-export function createContentMessageHandler(ctx: ContentScriptContext) {
+export function createContentMessageHandler(context: ContentScriptContext) {
     return async (
         message: ContentMessage,
         sender: browser.runtime.MessageSender,
@@ -52,7 +52,7 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     break;
                 }
                 case "quick-edit": {
-                    openQuickEdit(ctx);
+                    openQuickEdit(context);
                     break;
                 }
                 case "mount-to-dropdown": {
@@ -71,9 +71,9 @@ export function createContentMessageHandler(ctx: ContentScriptContext) {
                     return getLogId();
                 }
             }
-        } catch (e) {
-            console.error(e);
-            throw e;
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     };
 }
@@ -103,19 +103,19 @@ function setPlaybackTime(time: ExtractData<"set-playback-time">) {
     }, 10);
 }
 
-function openQuickEdit(ctx: ContentScriptContext) {
+function openQuickEdit(context: ContentScriptContext) {
     const id = `${browser.runtime.getManifest().name}-quick-edit`;
-    if (document.getElementById(id) !== null) return;
+    if (document.querySelector(`#${id}`) !== null) return;
 
-    const callback = (e: KeyboardEvent) => {
-        if (e.key !== "Escape") return;
+    const callback = (event: KeyboardEvent) => {
+        if (event.key !== "Escape") return;
 
         ui.remove();
     };
-    const ui = createIframeUi(ctx, {
+    const ui = createIframeUi(context, {
         page: "/quick-edit.html",
         position: "modal",
-        zIndex: 2147483647, // 最大値
+        zIndex: 2_147_483_647, // 最大値
         onMount: (_, iframe) => {
             iframe.id = id;
             iframe.style.width = "100%";
@@ -128,9 +128,9 @@ function openQuickEdit(ctx: ContentScriptContext) {
                 // 背景をクリックしたらiframeを閉じる
                 const body = iframe.contentDocument?.body;
                 if (body !== undefined) {
-                    body.addEventListener("click", (e) => {
+                    body.addEventListener("click", (event) => {
                         // クリックしたのが背景要素自体か判定
-                        if (e.target === body) ui.remove();
+                        if (event.target === body) ui.remove();
                     });
                 }
 
@@ -171,32 +171,33 @@ function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
     const buttons = parent.querySelector(":scope > div:last-of-type");
     if (sample === null || buttons === null) return;
 
-    texts.forEach((text) => {
+    for (const text of texts) {
         const div = document.createElement("div");
         div.textContent = `${text} (${browser.runtime.getManifest().name})`;
-        [...sample.attributes].forEach((attribute) => {
+        for (const attribute of sample.attributes) {
             div.setAttribute(attribute.name, attribute.value);
-        });
+        }
 
         buttons.before(div);
-    });
+    }
 }
 
 export function removeOldSearch(ids: ExtractData<"remove-old-search">) {
-    const elements = document.querySelectorAll("li[data-video-id]");
-    elements.forEach((element) => {
-        const videoId = element.getAttribute("data-video-id");
-        if (videoId === null) return;
+    const elements =
+        document.querySelectorAll<HTMLLIElement>("li[data-video-id]");
+    for (const element of elements) {
+        const videoId = element.dataset.videoId;
+        if (videoId === undefined) continue;
 
         if (ids.has(videoId) && element instanceof HTMLElement) {
             element.style.display = "none";
         }
-    });
+    }
 }
 
 function mountLogId(logId: ExtractData<"mount-log-id">) {
     const id = `${browser.runtime.getManifest().name}-log-id`;
-    const current = document.getElementById(id);
+    const current = document.querySelector(`#${id}`);
 
     if (current === null) {
         const div = document.createElement("div");
@@ -204,7 +205,7 @@ function mountLogId(logId: ExtractData<"mount-log-id">) {
         div.id = id;
         div.textContent = logId;
 
-        document.body.appendChild(div);
+        document.body.append(div);
     } else {
         current.textContent = logId;
     }
@@ -212,7 +213,7 @@ function mountLogId(logId: ExtractData<"mount-log-id">) {
 
 function getLogId() {
     const id = `${browser.runtime.getManifest().name}-log-id`;
-    const element = document.getElementById(id);
+    const element = document.querySelector(`#${id}`);
 
     return element?.textContent;
 }

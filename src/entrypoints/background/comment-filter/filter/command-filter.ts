@@ -31,7 +31,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
             : this.rules
                   .filter((rule) => !this.isStrict(rule))
                   // 無効化ルールを後から適用するためにソート
-                  .sort((a, b) => {
+                  .toSorted((a, b) => {
                       if (a.isDisable === b.isDisable) return 0;
                       return a.isDisable ? 1 : -1;
                   });

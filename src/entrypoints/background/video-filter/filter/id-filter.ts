@@ -22,21 +22,19 @@ export class IdFilter extends RuleFilter<IdLog> {
         const videoIds = new Set<string>();
         const regexes: RegExp[] = [];
 
-        this.rules
-            .map(({ rule }) => rule)
-            .forEach((rule) => {
-                if (isString(rule)) {
-                    if (/^(?:ch)?\d+$/.test(rule)) {
-                        userIds.add(rule);
-                    } else if (/^(?:sm|so|nl|nm)\d+$/.test(rule)) {
-                        videoIds.add(rule);
-                    } else {
-                        this.invalidCount++;
-                    }
+        for (const rule of this.rules.map((item) => item.rule)) {
+            if (isString(rule)) {
+                if (/^(?:ch)?\d+$/.test(rule)) {
+                    userIds.add(rule);
+                } else if (/^(?:sm|so|nl|nm)\d+$/.test(rule)) {
+                    videoIds.add(rule);
                 } else {
-                    regexes.push(rule);
+                    this.invalidCount++;
                 }
-            });
+            } else {
+                regexes.push(rule);
+            }
+        }
 
         this.userIds = userIds;
         this.videoIds = videoIds;

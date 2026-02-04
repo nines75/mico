@@ -41,8 +41,8 @@ export default function VideoFilterArea() {
                 key={id}
                 {...{ id }}
                 value={text}
-                onChange={(str) => {
-                    save({ [id]: str });
+                onChange={(value) => {
+                    save({ [id]: value });
                 }}
             />
         </div>

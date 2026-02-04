@@ -17,7 +17,7 @@ describe(CommandFilter.name, () => {
         ngUserIds?: Set<string>;
     }) => {
         const commandFilter = new CommandFilter(
-            { ...defaultSettings, ...{ ngCommand: options.filter } },
+            { ...defaultSettings, ngCommand: options.filter },
             options.ngUserIds ?? new Set(),
         );
         commandFilter.filtering(threads, options.isStrictOnly ?? false);

@@ -72,7 +72,7 @@ export async function removeNgUserId(
 
         // 自動追加された行の削除判定
         // ループ内で変更するため新しい配列を作る
-        removeLines.forEach((index) => {
+        for (const index of removeLines) {
             const before1 = index - 1;
             const before2 = index - 2;
             const after = index + 1;
@@ -96,7 +96,7 @@ export async function removeNgUserId(
             else if (lines[before1]?.startsWith("@v ") === true) {
                 removeLines.push(before1);
             }
-        });
+        }
 
         return {
             ngUserId: lines
@@ -130,7 +130,7 @@ export async function removeNgId(id: string) {
         const lines = settings.ngId.split("\n");
 
         // ループ内で変更するため新しい配列を作る
-        removeLines.forEach((index) => {
+        for (const index of removeLines) {
             const before = index - 1;
             const after = index + 1;
 
@@ -141,7 +141,7 @@ export async function removeNgId(id: string) {
             ) {
                 removeLines.push(before, after);
             }
-        });
+        }
 
         return {
             ngId: lines

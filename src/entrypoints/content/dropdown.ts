@@ -76,11 +76,11 @@ function appendButton(
     button.textContent = replace(textContent, [
         browser.runtime.getManifest().name,
     ]);
-    [...dropdownContent.sampleButtonElement.attributes].forEach((attribute) => {
+    for (const attribute of dropdownContent.sampleButtonElement.attributes) {
         button.setAttribute(attribute.name, attribute.value);
-    });
+    }
 
-    dropdownContent.buttonsParentElement.appendChild(button);
+    dropdownContent.buttonsParentElement.append(button);
 }
 
 function getNgButtonCallback(

@@ -62,14 +62,17 @@ function Log({ id, filtering }: LogProps) {
     const videos = filtering.filteredVideos;
 
     switch (id) {
-        case "idFilter":
+        case "idFilter": {
             return renderIdLog(filtering.filters.idFilter, videos);
+        }
         case "paidFilter":
-        case "viewsFilter":
+        case "viewsFilter": {
             return renderVideos(filtering.filters[id], videos, getTitleElement);
+        }
         case "userNameFilter":
-        case "titleFilter":
+        case "titleFilter": {
             return renderCommonLog(filtering.filters[id], videos);
+        }
     }
 }
 
@@ -216,10 +219,12 @@ function getTitleElement(video: NiconicoVideo) {
 async function onClickId(id: string, type: "user" | "video") {
     const text = (() => {
         switch (type) {
-            case "user":
+            case "user": {
                 return messages.ngUserId.confirmRemoval;
-            case "video":
+            }
+            case "video": {
                 return messages.ngVideoId.confirmRemoval;
+            }
         }
     })();
     if (!confirm(replace(text, [id]))) return;

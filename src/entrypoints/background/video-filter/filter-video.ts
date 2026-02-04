@@ -46,9 +46,9 @@ export function filterVideo(
 
     // フィルタリングの重複を避けるためにオブジェクトを作って渡す
     const data = { videos };
-    Object.values(filters).forEach((filter) => {
+    for (const filter of Object.values(filters)) {
         filter.filtering(data);
-    });
+    }
 
     const filteredIds = new Set(
         Object.values(filters).flatMap((filter) => [
@@ -57,7 +57,7 @@ export function filterVideo(
     );
 
     if (settings.isCommentPreviewHidden) {
-        data.videos.forEach((video) => (video.latestCommentSummary = ""));
+        for (const video of data.videos) video.latestCommentSummary = "";
     }
 
     const end = performance.now();
