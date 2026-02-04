@@ -83,6 +83,15 @@ export default defineConfig(
                     allowRegExp: false,
                 },
             ],
+            "unicorn/filename-case": [
+                "error",
+                {
+                    cases: {
+                        kebabCase: true,
+                        pascalCase: true,
+                    },
+                },
+            ],
 
             // -------------------------------------------------------------------------------------------
             // 無効化
