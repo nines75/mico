@@ -1,9 +1,9 @@
-interface H2props {
+interface H2Props {
     name: string | undefined;
     children: React.ReactNode;
 }
 
-export default function H2({ name, children }: H2props) {
+export default function H2({ name, children }: H2Props) {
     return name === undefined ? (
         children
     ) : (

@@ -46,16 +46,10 @@ export abstract class Filter<T> {
     }
 
     sortDuplicateLog(currentLog: CommonLog): CommonLog {
-        const log: CommonLog = new Map();
-
         // 重複回数降順にソート
-        for (const [key, value] of [...currentLog].toSorted(
-            (a, b) => b[1].length - a[1].length,
-        )) {
-            log.set(key, value);
-        }
-
-        return log;
+        return new Map(
+            [...currentLog].toSorted((a, b) => b[1].length - a[1].length),
+        );
     }
 }
 
