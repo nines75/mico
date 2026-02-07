@@ -4,13 +4,7 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { LogData } from "../types/storage/log.types";
-import {
-    catchAsync,
-    customMerge,
-    isRankingPage,
-    isSearchPage,
-    isWatchPage,
-} from "./util";
+import { catchAsync, isRankingPage, isSearchPage, isWatchPage } from "./util";
 import { sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
@@ -77,7 +71,7 @@ export const useStorageStore = create<StorageState>()(
             // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない
             // そのためここで先にstoreに反映させ、書き込みが失敗した場合はロールバックする
             set({
-                settings: customMerge(currentSettings, settings) as Settings,
+                settings: { ...currentSettings, ...settings },
             });
 
             // 書き込む
@@ -105,10 +99,10 @@ export function storageChangeHandler(
         if (key !== "settings") continue;
 
         const oldSettings = useStorageStore.getState().settings;
-        const newSettings = customMerge(
-            defaultSettings,
-            value.newValue,
-        ) as Settings;
+        const newSettings = {
+            ...defaultSettings,
+            ...(value.newValue as Partial<Settings>),
+        };
 
         // ユーザー入力による発火を弾く
         // settingsはjsonに変換可能なのでJSON.stringifyで比較

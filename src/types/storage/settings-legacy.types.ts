@@ -1,5 +1,4 @@
 import type { Settings } from "./settings.types";
-import { customMerge } from "@/utils/util";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
 
 export function migrateSettingsToV3(v2: Partial<Settings>) {
@@ -25,7 +24,7 @@ export function migrateSettingsToV3(v2: Partial<Settings>) {
         ngTitle: migrateFilter(v2.ngTitle ?? "", [migrateMiddleComment]),
     } satisfies Partial<Settings>;
 
-    return customMerge(v2 as unknown, v3);
+    return { ...v2, ...v3 };
 }
 
 function migrateFilter(

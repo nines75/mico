@@ -10,7 +10,7 @@ import { getSettingsData, storageArea, loadSettings } from "./storage";
 import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
 import { messages } from "./config";
-import { customMerge, replace } from "./util";
+import { replace } from "./util";
 import { clearDb } from "./db";
 import { sendNotification } from "./browser";
 
@@ -32,10 +32,10 @@ export async function setSettings(
 ) {
     await queue.add(async () => {
         const settings = await getSettingsData();
-        const newSettings = customMerge(
-            settings,
-            typeof value === "function" ? await value() : value,
-        );
+        const newSettings = {
+            ...settings,
+            ...(typeof value === "function" ? await value() : value),
+        };
 
         await storage.setItem(`${storageArea}:settings`, newSettings);
     });

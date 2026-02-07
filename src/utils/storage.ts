@@ -2,15 +2,14 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { storage } from "#imports";
 import { migrateSettingsToV3 } from "@/types/storage/settings-legacy.types";
-import { customMerge } from "./util";
 
 export const storageArea = "local";
 
 export async function loadSettings() {
-    const data = await getSettingsData();
-    if (data === null) return defaultSettings;
+    const settings = await getSettingsData();
+    if (settings === null) return defaultSettings;
 
-    return customMerge(defaultSettings, data) as Settings;
+    return { ...defaultSettings, ...settings };
 }
 
 const settingsStorage = storage.defineItem<Partial<Settings>>(
