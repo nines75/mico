@@ -26,7 +26,7 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
             </button>
             <input
                 type="file"
-                accept=".txt"
+                accept=".txt, .mico"
                 style={{ display: "none" }}
                 ref={input}
                 onChange={catchAsync(async (event) => {
