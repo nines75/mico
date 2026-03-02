@@ -33,7 +33,8 @@ export class WordFilter extends StrictFilter<WordLog> {
                         });
                     }
 
-                    // strictルールにマッチした場合はNGユーザーIDによるフィルタリングログに表示されるようにしたいので、ここではフィルタリングしない
+                    // strictルールにマッチしたコメントはNGユーザーIDによるフィルタリングログに表示させる
+                    // そのためここではフィルタリングしない
                     return true;
                 }
 

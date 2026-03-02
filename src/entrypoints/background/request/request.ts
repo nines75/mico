@@ -47,17 +47,20 @@ export function spaFilter<T, U>(
         const data = safeParseJson(content, schema);
         if (data === undefined) return;
 
-        // callbackではdataを変更するのでfilteredBufで参照される前に呼び出す
+        // callbackではhtmlを変更するため先に呼び出す
         const filteredData = callback(data, settings, meta);
 
         return {
             filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
             filteredData,
         };
-    } else if (details.type === "xmlhttprequest") {
+    }
+
+    if (details.type === "xmlhttprequest") {
         const data = safeParseJson(buf, schema);
         if (data === undefined) return;
 
+        // callbackではdataを変更するため先に呼び出す
         const filteredData = callback(data, settings);
 
         return {
