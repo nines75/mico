@@ -35,7 +35,7 @@ import { useStorageStore } from "@/utils/store";
 import { argsDirectives } from "@/entrypoints/background/parse-filter";
 
 const toggleDirectivesRegex = new RegExp(
-    String.raw`^(?:${argsDirectives.map((directive) => `@${directive}`).join("|")}|@v)\s`,
+    String.raw`^@(?:${argsDirectives.join("|")}|v)\s`,
     "g",
 );
 
@@ -49,7 +49,7 @@ const ngUserIdHighlights = createHighlights([
 ]);
 const ngWordHighlights = [
     ...createHighlights([
-        { regex: /^(?:@strict|@s)\s*$/g, style: "color: coral" },
+        { regex: /^@(?:strict|s)\s*$/g, style: "color: coral" },
     ]),
     ...ngUserIdHighlights,
 ];
