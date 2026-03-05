@@ -1,9 +1,11 @@
 import type { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea";
+import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
 import type { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea";
 
 export type FilterTab = "commentFilter" | "videoFilter";
 export type SettingsTab =
     | "general"
+    | "filter"
     | "commentFilter"
     | "videoFilter"
     | "support";
@@ -20,6 +22,12 @@ export interface Settings {
     // 高度な機能
     isAdvancedFeaturesVisible: boolean;
     localFilterPath: string;
+
+    // -------------------------------------------------------------------------------------------
+    // フィルター
+    // -------------------------------------------------------------------------------------------
+
+    selectedFilter: FilterId;
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター

@@ -1,13 +1,10 @@
-import CommentFilterArea from "../ui/CommentFilterArea";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 
 export default function CommentFilter() {
     return (
-        <div className="settings-container">
-            <CheckboxSection groups={config}>
-                <CommentFilterArea />
-            </CheckboxSection>
+        <div className="tab-content">
+            <CheckboxSection groups={config} />
         </div>
     );
 }

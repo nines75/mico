@@ -1,13 +1,10 @@
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
-import VideoFilterArea from "../ui/VideoFilterArea";
 
 export default function VideoFilter() {
     return (
-        <div className="settings-container">
-            <CheckboxSection groups={config}>
-                <VideoFilterArea />
-            </CheckboxSection>
+        <div className="tab-content">
+            <CheckboxSection groups={config} />
         </div>
     );
 }

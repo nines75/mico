@@ -35,7 +35,7 @@ export default function General() {
     ] as const;
 
     return (
-        <div className="settings-container">
+        <div className="tab-content">
             <CheckboxSection groups={config}>
                 {isAdvancedFeaturesVisible && (
                     <div className="setting">

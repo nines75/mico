@@ -3,7 +3,7 @@ import H2 from "../ui/H2";
 
 export default function Support() {
     return (
-        <div className="settings-container">
+        <div className="tab-content">
             {config.map(({ heading, items }) => (
                 <H2 key={heading} name={heading}>
                     {items.map(({ name, url }) => (

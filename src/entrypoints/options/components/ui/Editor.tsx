@@ -208,7 +208,7 @@ export default function Editor({ id, value, onChange }: EditorProps) {
         });
     }, [value]);
 
-    return <div ref={parent} />;
+    return <div ref={parent} className="editor-container" />;
 }
 
 function createHighlights(data: { regex: RegExp; style: string }[]) {

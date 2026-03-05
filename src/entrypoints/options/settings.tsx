@@ -7,6 +7,7 @@ import Support from "./components/tabs/Support";
 import VideoFilter from "./components/tabs/VideoFilter";
 import clsx from "clsx";
 import type { SettingsTab } from "@/types/storage/settings.types";
+import FilterArea from "./components/ui/FilterArea";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
@@ -62,6 +63,9 @@ function Page() {
                     case "general": {
                         return <General />;
                     }
+                    case "filter": {
+                        return <FilterArea />;
+                    }
                     case "commentFilter": {
                         return <CommentFilter />;
                     }
@@ -85,6 +89,10 @@ const config = [
     {
         id: "general",
         name: "一般設定",
+    },
+    {
+        id: "filter",
+        name: "フィルター",
     },
     {
         id: "commentFilter",
