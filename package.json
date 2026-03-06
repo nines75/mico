@@ -1,7 +1,7 @@
 {
     "name": "mico",
     "description": "ニコニコ動画用のコンテンツブロッカー",
-    "version": "6.1.2",
+    "version": "6.2.0",
     "type": "module",
     "scripts": {
         "dev": "wxt -b firefox --mv2",
