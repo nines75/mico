@@ -92,6 +92,19 @@ export const defaultSettings: Settings = {
     isProcessingTimeOpen: false,
     isCountOpen: true,
     isLogOpen: true,
+
+    // 表示
+    isUserIdFilterVisible: true,
+    isEasyCommentFilterVisible: true,
+    isCommentAssistFilterVisible: true,
+    isScoreFilterVisible: true,
+    isCommandFilterVisible: true,
+    isWordFilterVisible: true,
+    isIdFilterVisible: true,
+    isPaidFilterVisible: true,
+    isViewsFilterVisible: true,
+    isUserNameFilterVisible: true,
+    isTitleFilterVisible: true,
 } as const;
 
 export const buttons = {
@@ -160,6 +173,8 @@ export const titles = {
     nicoruCount: "ニコるの数",
     duplicateComments: "本文が重複したコメントの数",
     strictSymbol: "strictルールによってNG登録されたユーザーID",
+    showLog: "クリックしてログを表示",
+    hideLog: "クリックしてログを非表示",
 
     undoStrict: "strictルールによってNG登録されたユーザーIDを削除します",
 } as const;

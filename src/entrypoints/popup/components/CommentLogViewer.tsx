@@ -17,19 +17,26 @@ import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer";
 import type { Filters } from "@/entrypoints/background/comment-filter/filter-comment";
 import { sendMessageToBackground } from "@/utils/browser";
+import type { ConditionalPick } from "type-fest";
 
 type LogId = keyof Filters;
 
 export interface CommentLogViewerProps {
     id: LogId;
+    visibleKey: keyof ConditionalPick<Settings, boolean>;
     name: string;
 }
 
-export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
-    const [filtering, count] = useStorageStore(
+export default function CommentLogViewer({
+    id,
+    visibleKey,
+    name,
+}: CommentLogViewerProps) {
+    const [filtering, count, isVisible] = useStorageStore(
         useShallow((state) => [
             state.log?.commentFilterLog?.filtering,
             state.log?.commentFilterLog?.count,
+            state.settings[visibleKey],
         ]),
     );
 
@@ -54,7 +61,7 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                 keyIn(count.rule, id) &&
                 count.rule[id]
             }
-            {...{ name, blocked }}
+            {...{ name, visibleKey, blocked }}
         >
             {id === "userIdFilter" &&
                 (filtering?.strictUserIds.length ?? 0) > 0 && (
@@ -68,9 +75,11 @@ export default function CommentLogViewer({ id, name }: CommentLogViewerProps) {
                         </button>
                     </div>
                 )}
-            <div className="log">
-                <Log {...{ id, filtering, settings }} />
-            </div>
+            {isVisible && (
+                <div className="log">
+                    <Log {...{ id, filtering, settings }} />
+                </div>
+            )}
         </LogFrame>
     );
 }

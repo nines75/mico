@@ -16,19 +16,27 @@ import { keyIn } from "ts-extras";
 import { Line, Block, Clickable } from "./LogViewer";
 import type { Filters } from "@/entrypoints/background/video-filter/filter-video";
 import { sendMessageToBackground } from "@/utils/browser";
+import type { ConditionalPick } from "type-fest";
+import type { Settings } from "@/types/storage/settings.types";
 
 type LogId = keyof Filters;
 
 export interface VideoLogViewerProps {
     id: LogId;
+    visibleKey: keyof ConditionalPick<Settings, boolean>;
     name: string;
 }
 
-export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
-    const [filtering, count] = useStorageStore(
+export default function VideoLogViewer({
+    id,
+    visibleKey,
+    name,
+}: VideoLogViewerProps) {
+    const [filtering, count, isVisible] = useStorageStore(
         useShallow((state) => [
             state.log?.videoFilterLog?.filtering,
             state.log?.videoFilterLog?.count,
+            state.settings[visibleKey],
         ]),
     );
 
@@ -42,11 +50,13 @@ export default function VideoLogViewer({ id, name }: VideoLogViewerProps) {
                 keyIn(count.rule, id) &&
                 count.rule[id]
             }
-            {...{ name, blocked }}
+            {...{ name, visibleKey, blocked }}
         >
-            <div className="log">
-                <Log {...{ id, filtering }} />
-            </div>
+            {isVisible && (
+                <div className="log">
+                    <Log {...{ id, filtering }} />
+                </div>
+            )}
         </LogFrame>
     );
 }

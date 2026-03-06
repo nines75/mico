@@ -31,8 +31,15 @@ summary {
 .filtering-type {
     font-size: 20px;
     font-weight: bold;
-    margin: 0;
-    padding: 0;
+
+    /* アイコンを揃えて中央寄せ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+.svg-container {
+    display: flex;
 }
 .info {
     font-size: 15px;

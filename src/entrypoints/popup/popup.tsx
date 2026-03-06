@@ -214,26 +214,32 @@ const config = {
         log: [
             {
                 id: "userIdFilter",
+                visibleKey: "isUserIdFilterVisible",
                 name: "NGユーザーID",
             },
             {
                 id: "easyCommentFilter",
+                visibleKey: "isEasyCommentFilterVisible",
                 name: "かんたんコメント",
             },
             {
                 id: "commentAssistFilter",
+                visibleKey: "isCommentAssistFilterVisible",
                 name: "コメントアシスト",
             },
             {
                 id: "scoreFilter",
+                visibleKey: "isScoreFilterVisible",
                 name: "NGスコア",
             },
             {
                 id: "commandFilter",
+                visibleKey: "isCommandFilterVisible",
                 name: "NGコマンド",
             },
             {
                 id: "wordFilter",
+                visibleKey: "isWordFilterVisible",
                 name: "NGワード",
             },
         ],
@@ -242,22 +248,27 @@ const config = {
         log: [
             {
                 id: "idFilter",
+                visibleKey: "isIdFilterVisible",
                 name: "NGユーザーID/動画ID",
             },
             {
                 id: "paidFilter",
+                visibleKey: "isPaidFilterVisible",
                 name: "有料動画",
             },
             {
                 id: "viewsFilter",
+                visibleKey: "isViewsFilterVisible",
                 name: "再生回数",
             },
             {
                 id: "userNameFilter",
+                visibleKey: "isUserNameFilterVisible",
                 name: "NGユーザー名",
             },
             {
                 id: "titleFilter",
+                visibleKey: "isTitleFilterVisible",
                 name: "NGタイトル",
             },
         ],

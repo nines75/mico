@@ -100,4 +100,17 @@ export interface Settings {
     isProcessingTimeOpen: boolean;
     isCountOpen: boolean;
     isLogOpen: boolean;
+
+    // 表示
+    isUserIdFilterVisible: boolean;
+    isEasyCommentFilterVisible: boolean;
+    isCommentAssistFilterVisible: boolean;
+    isScoreFilterVisible: boolean;
+    isCommandFilterVisible: boolean;
+    isWordFilterVisible: boolean;
+    isIdFilterVisible: boolean;
+    isPaidFilterVisible: boolean;
+    isViewsFilterVisible: boolean;
+    isUserNameFilterVisible: boolean;
+    isTitleFilterVisible: boolean;
 }
