@@ -33,7 +33,6 @@ export const defaultSettings: Settings = {
     isMyCommentIgnored: true,
     isIgnoreByNicoru: false,
     ignoreByNicoruCount: 30,
-    selectedCommentFilter: "ngUserId",
     ngUserId: "",
     ngCommand: "",
     ngWord: "",
@@ -68,7 +67,6 @@ export const defaultSettings: Settings = {
     isCommentPreviewHidden: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
-    selectedVideoFilter: "ngId",
     ngId: "",
     ngTitle: "",
     ngUserName: "",
@@ -89,7 +87,6 @@ export const defaultSettings: Settings = {
     // タブ
     selectedSettingsTab: "general",
     selectedPopupTab: "commentFilter",
-    selectedQuickEditTab: "commentFilter",
 
     // 開閉
     isProcessingTimeOpen: false,

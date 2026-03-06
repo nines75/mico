@@ -61,11 +61,6 @@ export default defineConfig({
         const isDevelopment = mode === "development";
 
         return {
-            web_accessible_resources: [
-                {
-                    resources: ["quick-edit.html"],
-                },
-            ],
             permissions: [
                 "contextMenus",
                 "notifications",
@@ -83,14 +78,6 @@ export default defineConfig({
                     suggested_key: isDevelopment
                         ? {
                               default: "Alt+O",
-                          }
-                        : {},
-                },
-                "quick-edit": {
-                    description: "クイック編集を開く",
-                    suggested_key: isDevelopment
-                        ? {
-                              default: "Alt+I",
                           }
                         : {},
                 },

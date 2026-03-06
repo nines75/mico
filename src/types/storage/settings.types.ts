@@ -1,6 +1,4 @@
-import type { CommentFilterId } from "@/entrypoints/options/components/ui/CommentFilterArea";
 import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
-import type { VideoFilterId } from "@/entrypoints/options/components/ui/VideoFilterArea";
 
 export type FilterTab = "commentFilter" | "videoFilter";
 export type SettingsTab =
@@ -43,7 +41,6 @@ export interface Settings {
     isMyCommentIgnored: boolean;
     isIgnoreByNicoru: boolean;
     ignoreByNicoruCount: number;
-    selectedCommentFilter: CommentFilterId;
     ngUserId: string;
     ngCommand: string;
     ngWord: string;
@@ -78,7 +75,6 @@ export interface Settings {
     isCommentPreviewHidden: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
-    selectedVideoFilter: VideoFilterId;
     ngId: string;
     ngUserName: string;
     ngTitle: string;
@@ -99,7 +95,6 @@ export interface Settings {
     // タブ
     selectedSettingsTab: SettingsTab;
     selectedPopupTab: FilterTab;
-    selectedQuickEditTab: FilterTab;
 
     // 開閉
     isProcessingTimeOpen: boolean;

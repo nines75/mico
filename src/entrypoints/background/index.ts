@@ -2,7 +2,7 @@ import { backgroundMessageHandler } from "./message";
 import commentRequest from "./request/comment.request";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/recommend.request";
-import { catchAsync, isNiconicoPage, isWatchPage } from "@/utils/util";
+import { catchAsync, isWatchPage } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
 import { addNgIdFromUrl, setSettings } from "@/utils/storage-write";
@@ -88,7 +88,7 @@ export default defineBackground(() => {
     // ショートカットキーが押された際の処理
     browser.commands.onCommand.addListener(
         catchAsync(async (command) => {
-            if (command === "quick-edit" || command === "reload") {
+            if (command === "reload") {
                 const tabs = await browser.tabs.query({
                     active: true,
                     currentWindow: true,
@@ -96,20 +96,7 @@ export default defineBackground(() => {
                 const tab = tabs[0];
                 const tabId = tab?.id;
                 const url = tab?.url;
-                if (tabId === undefined) return;
-
-                switch (command) {
-                    case "quick-edit": {
-                        if (!isNiconicoPage(url)) return;
-
-                        break;
-                    }
-                    case "reload": {
-                        if (!isWatchPage(url)) return;
-
-                        break;
-                    }
-                }
+                if (tabId === undefined || !isWatchPage(url)) return;
 
                 await sendMessageToContent(tabId, { type: command });
             }

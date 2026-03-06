@@ -1,5 +1,5 @@
 import { mountToDropdown } from "./dropdown";
-import { createContentMessageHandler } from "./message";
+import { contentMessageHandler } from "./message";
 import { defineContentScript } from "#imports";
 import {
     catchAsync,
@@ -13,16 +13,14 @@ import { sendMessageToBackground } from "@/utils/browser";
 export default defineContentScript({
     matches: ["https://www.nicovideo.jp/*"],
 
-    async main(context) {
+    async main() {
         const observer = new MutationObserver(catchAsync(observerCallback));
         observer.observe(document.body, {
             childList: true,
             subtree: true,
         });
 
-        browser.runtime.onMessage.addListener(
-            createContentMessageHandler(context),
-        );
+        browser.runtime.onMessage.addListener(contentMessageHandler);
 
         // ブラウザの進む/戻るで消えたバッジを復元
         if (isRankingPage(location.href) || isSearchPage(location.href)) {
