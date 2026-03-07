@@ -5,18 +5,11 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync, isWatchPage } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { addNgIdFromUrl, setSettings } from "@/utils/storage-write";
+import { addNgIdFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
-import {
-    sendMessageToContent,
-    sendNotification,
-    tryWithPermission,
-} from "@/utils/browser";
-import type { Settings } from "@/types/storage/settings.types";
-import { loadSettings } from "@/utils/storage";
-import { messages } from "@/utils/config";
+import { sendMessageToContent, tryWithPermission } from "@/utils/browser";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -115,27 +108,7 @@ export default defineBackground(() => {
             }
 
             if (command === "import-local-filter") {
-                await tryWithPermission("nativeMessaging", async () => {
-                    const settings = await loadSettings();
-                    if (settings.localFilterPath === "") {
-                        await sendNotification(messages.settings.pathNotSet);
-                        return;
-                    }
-
-                    const response = (await browser.runtime.sendNativeMessage(
-                        "mico.native",
-                        { path: settings.localFilterPath },
-                    )) as Partial<Settings>;
-                    if (Object.keys(response).length === 0) {
-                        await sendNotification(
-                            messages.settings.localFileNotFound,
-                        );
-                        return;
-                    }
-
-                    await setSettings(response);
-                    await sendNotification(messages.settings.importSuccess);
-                });
+                await importLocalFilter(true);
             }
         }),
     );

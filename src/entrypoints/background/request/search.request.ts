@@ -7,6 +7,7 @@ import type { SearchApi } from "@/types/api/search.types";
 import { searchApiSchema } from "@/types/api/search.types";
 import { cleanupDb } from "@/utils/db";
 import { createLogId, mountLogId } from "@/utils/log";
+import { importLocalFilter } from "@/utils/storage-write";
 
 export function searchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -18,6 +19,8 @@ export function searchRequest(
             // XHRでないとmountできない
             await mountLogId(logId, tabId);
         }
+
+        await importLocalFilter();
 
         const settings = await loadSettings();
         const result = spaFilter(

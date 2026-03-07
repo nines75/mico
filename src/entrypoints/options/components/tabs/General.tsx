@@ -13,6 +13,8 @@ import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
 import { sendMessageToBackground } from "@/utils/browser";
 import { objectKeys } from "ts-extras";
+import type { CheckboxProps } from "../ui/Checkbox";
+import Checkbox from "../ui/Checkbox";
 
 export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
@@ -38,20 +40,25 @@ export default function General() {
         <div className="tab-content">
             <CheckboxSection groups={config}>
                 {isAdvancedFeaturesVisible && (
-                    <div className="setting">
-                        <label>
-                            {"インポートするローカルフォルダのパス"}
-                            <input
-                                className="input"
-                                value={localFilterPath}
-                                onChange={(event) => {
-                                    save({
-                                        localFilterPath: event.target.value,
-                                    });
-                                }}
-                            />
-                        </label>
-                    </div>
+                    <>
+                        {advancedFeaturesConfig.map((props) => (
+                            <Checkbox key={props.id} {...props} />
+                        ))}
+                        <div className="setting">
+                            <label>
+                                {"インポートするローカルフィルターのパス"}
+                                <input
+                                    className="input"
+                                    value={localFilterPath}
+                                    onChange={(event) => {
+                                        save({
+                                            localFilterPath: event.target.value,
+                                        });
+                                    }}
+                                />
+                            </label>
+                        </div>
+                    </>
                 )}
             </CheckboxSection>
             <H2 name="バックアップ">
@@ -170,3 +177,10 @@ const config = [
         ],
     },
 ] satisfies CheckboxGroups;
+
+const advancedFeaturesConfig = [
+    {
+        id: "shouldImportLocalFilterOnLoad",
+        label: "ページ読み込み時にローカルフィルターをインポートする",
+    },
+] satisfies CheckboxProps[];

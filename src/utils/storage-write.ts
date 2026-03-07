@@ -12,7 +12,7 @@ import { parseFilter } from "@/entrypoints/background/parse-filter";
 import { messages } from "./config";
 import { replace } from "./util";
 import { clearDb } from "./db";
-import { sendNotification } from "./browser";
+import { sendNotification, tryWithPermission } from "./browser";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
@@ -169,4 +169,33 @@ export async function addNgIdFromUrl(url: string | undefined) {
     if (settings.isNotifyAddNgId) {
         await sendNotification(replace(messages.ngId.additionSuccess, [id]));
     }
+}
+
+export async function importLocalFilter(isManual = false) {
+    // 権限があるか確認する前に設定を確認
+    // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
+    const settings = await loadSettings();
+    if (!isManual && !settings.shouldImportLocalFilterOnLoad) return;
+
+    await tryWithPermission("nativeMessaging", async () => {
+        if (settings.localFilterPath === "") {
+            await sendNotification(messages.settings.pathNotSet);
+            return;
+        }
+
+        const response = (await browser.runtime.sendNativeMessage(
+            "mico.native",
+            { path: settings.localFilterPath },
+        )) as Partial<Settings>;
+        if (Object.keys(response).length === 0) {
+            await sendNotification(messages.settings.localFileNotFound);
+            return;
+        }
+
+        await setSettings(response);
+
+        if (isManual) {
+            await sendNotification(messages.settings.importSuccess);
+        }
+    });
 }

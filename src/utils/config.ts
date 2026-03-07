@@ -11,6 +11,7 @@ export const defaultSettings: Settings = {
 
     // 高度な機能
     isAdvancedFeaturesVisible: false,
+    shouldImportLocalFilterOnLoad: false,
     localFilterPath: "",
 
     // -------------------------------------------------------------------------------------------

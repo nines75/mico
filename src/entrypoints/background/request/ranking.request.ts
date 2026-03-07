@@ -7,6 +7,7 @@ import type { RankingApi } from "@/types/api/ranking.types";
 import { rankingApiSchema } from "@/types/api/ranking.types";
 import { cleanupDb } from "@/utils/db";
 import { createLogId, mountLogId } from "@/utils/log";
+import { importLocalFilter } from "@/utils/storage-write";
 
 export function rankingRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -17,6 +18,8 @@ export function rankingRequest(
         if (details.type === "xmlhttprequest") {
             await mountLogId(logId, tabId);
         }
+
+        await importLocalFilter();
 
         const settings = await loadSettings();
         const result = spaFilter(

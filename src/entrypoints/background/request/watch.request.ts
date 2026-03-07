@@ -7,6 +7,7 @@ import { watchApiSchema } from "@/types/api/watch.types";
 import { setLog, setTabData } from "@/utils/db";
 import type { SeriesData, TabData } from "@/types/storage/tab.types";
 import { createLogId, mountLogId } from "@/utils/log";
+import { importLocalFilter } from "@/utils/storage-write";
 
 export function watchRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
@@ -19,6 +20,8 @@ export function watchRequest(
         if (details.type === "xmlhttprequest") {
             await mountLogId(logId, tabId);
         }
+
+        await importLocalFilter();
 
         const settings = await loadSettings();
         const result = spaFilter(
