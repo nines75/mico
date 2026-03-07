@@ -30,7 +30,7 @@ export const argsDirectives = [
 
 export function parseFilter(
     filter: string,
-    hasIndex = false,
+    hasIndex = false, // テストが複雑になるためindexはデフォルトで含めない
 ): {
     rules: Rule[];
     invalidCount: number;
