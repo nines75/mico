@@ -99,24 +99,24 @@ button
     display: flex;
     align-items: center;
 }
-.common-button {
+.button {
     font-weight: bold;
     padding: 10px 20px;
     margin: 10px;
     border: gray 3px solid;
     border-radius: 10px;
+    font-size: 14px;
 }
 .filter-button {
     padding: 7px 12px;
 }
-.selected-filter-button {
+.selected-button {
     border-color: lightskyblue;
 }
 .support-button {
     display: inline-block; /* anchorをbuttonのように扱う */
     text-decoration: none;
     color: inherit;
-    font-size: 14px;
 }
 .import-filter-button {
     padding: 7px 12px;

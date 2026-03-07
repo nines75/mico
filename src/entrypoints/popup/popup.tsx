@@ -108,7 +108,7 @@ function Main() {
                         <button
                             key={filter.id}
                             className={clsx(
-                                "common-button",
+                                "button",
                                 selectedTab === filter.id && "selected-button",
                             )}
                             onClick={() => {

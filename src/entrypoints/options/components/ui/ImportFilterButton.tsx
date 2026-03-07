@@ -16,7 +16,7 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
     return (
         <>
             <button
-                className="common-button import-filter-button"
+                className="button import-filter-button"
                 onClick={() => {
                     if (input.current !== null) input.current.click();
                 }}

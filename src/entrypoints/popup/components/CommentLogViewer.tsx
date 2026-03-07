@@ -68,7 +68,7 @@ export default function CommentLogViewer({
                     <div>
                         <button
                             title={titles.undoStrict}
-                            className="common-button"
+                            className="button"
                             onClick={catchAsync(() => undoStrict(filtering))}
                         >
                             undo

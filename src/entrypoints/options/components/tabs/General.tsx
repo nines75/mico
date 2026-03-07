@@ -70,7 +70,7 @@ export default function General() {
                     buttons.map(([text, callback]) => (
                         <button
                             key={text}
-                            className="common-button"
+                            className="button"
                             onClick={callback}
                         >
                             {text}
