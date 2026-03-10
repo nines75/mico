@@ -7,13 +7,12 @@ import {
     isSearchPage,
     isWatchPage,
 } from "@/utils/util";
-import { renderOldSearch } from "./search";
 import { sendMessageToBackground } from "@/utils/browser";
 
 export default defineContentScript({
     matches: ["https://www.nicovideo.jp/*"],
 
-    async main() {
+    main() {
         const observer = new MutationObserver(catchAsync(observerCallback));
         observer.observe(document.body, {
             childList: true,
@@ -35,15 +34,6 @@ export default defineContentScript({
                     });
                 }),
             );
-        }
-
-        if (isSearchPage(location.href)) {
-            const id = document.body.querySelector(":scope > div")?.id;
-
-            // 新検索ページでは実行しない
-            if (id !== "root") {
-                await renderOldSearch();
-            }
         }
     },
 });

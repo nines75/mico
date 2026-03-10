@@ -17,9 +17,7 @@ export class ViewsFilter extends Filter<ViewsLog> {
         if (!this.isEnabled || !this.settings.isViewsFilterEnabled) return;
 
         data.videos = data.videos.filter((video) => {
-            const views = video.count?.view;
-            if (views === undefined) return true;
-
+            const views = video.count.view;
             if (views <= this.settings.viewsFilterCount) {
                 this.log.push(video.id);
                 this.filteredVideos.set(video.id, video);
@@ -36,8 +34,7 @@ export class ViewsFilter extends Filter<ViewsLog> {
         if (!this.isEnabled || !this.settings.isViewsFilterEnabled)
             return false;
 
-        const views = video.count?.view;
-        if (views === undefined) return false;
+        const views = video.count.view;
 
         return views <= this.settings.viewsFilterCount;
     }

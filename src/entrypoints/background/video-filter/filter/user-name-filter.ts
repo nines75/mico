@@ -8,6 +8,6 @@ export class UserNameFilter extends PartialFilter {
     }
 
     protected override pickTarget(video: NiconicoVideo): string | null {
-        return video.owner?.name ?? null;
+        return video.owner.name;
     }
 }

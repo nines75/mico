@@ -17,10 +17,6 @@ export type ContentMessage =
           data: string[];
       }
     | {
-          type: "remove-old-search";
-          data: Set<string>;
-      }
-    | {
           type: "mount-log-id";
           data: LogId;
       }
@@ -47,10 +43,6 @@ export async function contentMessageHandler(
             }
             case "mount-to-dropdown": {
                 mountToDropdown(message.data);
-                break;
-            }
-            case "remove-old-search": {
-                removeOldSearch(message.data);
                 break;
             }
             case "mount-log-id": {
@@ -108,19 +100,6 @@ function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
         }
 
         buttons.before(div);
-    }
-}
-
-export function removeOldSearch(ids: ExtractData<"remove-old-search">) {
-    const elements =
-        document.querySelectorAll<HTMLLIElement>("li[data-video-id]");
-    for (const element of elements) {
-        const videoId = element.dataset.videoId;
-        if (videoId === undefined) continue;
-
-        if (ids.has(videoId) && element instanceof HTMLElement) {
-            element.style.display = "none";
-        }
     }
 }
 

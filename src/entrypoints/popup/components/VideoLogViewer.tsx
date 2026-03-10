@@ -102,7 +102,7 @@ function renderIdLog(log: IdLog, videos: VideoMap) {
     };
     const renderUserIdLog = (key: string) => {
         const videoId = log.userId.get(key)?.[0] as string;
-        const userName = videos.get(videoId)?.owner?.name;
+        const userName = videos.get(videoId)?.owner.name;
 
         return (
             <Block
@@ -207,12 +207,10 @@ function renderVideoLink(video: NiconicoVideo) {
 }
 
 function getTitleElement(video: NiconicoVideo) {
-    const userId = video.owner?.id;
+    const userId = video.owner.id;
     const escapedTitle = escapeNewline(video.title);
 
-    return userId === undefined ? (
-        escapedTitle
-    ) : (
+    return (
         <Clickable
             title={titles.addNgUserIdByVideo}
             onClick={catchAsync(() => onClickVideoTitle(userId, video))}
@@ -249,7 +247,7 @@ async function onClickVideoTitle(userId: string, video: NiconicoVideo) {
     if (!confirm(replace(messages.ngUserId.confirmAddition, [userId]))) return;
 
     const settings = useStorageStore.getState().settings;
-    const userName = video.owner?.name;
+    const userName = video.owner.name;
 
     await sendMessageToBackground({
         type: "add-ng-id",

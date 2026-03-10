@@ -44,8 +44,7 @@ export class IdFilter extends RuleFilter<IdLog> {
     override filtering(data: { videos: NiconicoVideo[] }): void {
         data.videos = data.videos.filter((video) => {
             const videoId = video.id;
-            const userId = video.owner?.id;
-            if (userId === undefined) return true;
+            const userId = video.owner.id;
 
             const recordVideo = () => {
                 this.filteredVideos.set(videoId, video);
@@ -91,8 +90,7 @@ export class IdFilter extends RuleFilter<IdLog> {
 
     override isNgVideo(video: NiconicoVideo): boolean {
         const videoId = video.id;
-        const userId = video.owner?.id;
-        if (userId === undefined) return false;
+        const userId = video.owner.id;
 
         if (
             this.userIds.has(userId) ||

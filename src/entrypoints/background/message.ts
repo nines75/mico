@@ -1,8 +1,5 @@
 import { colors, messages } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
-import { filterVideo } from "./video-filter/filter-video";
-import { saveLog } from "./video-filter/save-log";
 import type { Settings } from "@/types/storage/settings.types";
 import {
     setSettings,
@@ -12,7 +9,7 @@ import {
     addNgId,
     removeNgId,
 } from "@/utils/storage-write";
-import { cleanupDb, getLogData, setTabData } from "@/utils/db";
+import { getLogData, setTabData } from "@/utils/db";
 import type { TabData } from "@/types/storage/tab.types";
 import type { LogData } from "@/types/storage/log.types";
 import type { DropdownComment } from "../content/dropdown";
@@ -22,7 +19,7 @@ import {
     sendMessageToContent,
     sendNotification,
 } from "@/utils/browser";
-import { getLogId, createLogId, mountLogId } from "@/utils/log";
+import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 
 type ExtractData<
@@ -44,10 +41,6 @@ export type BackgroundMessage =
     | {
           type: "get-comments-from-dropdown";
           data: DropdownComment;
-      }
-    | {
-          type: "filter-old-search";
-          data: NiconicoVideo[];
       }
     | {
           type: "restore-badge";
@@ -116,10 +109,6 @@ export async function backgroundMessageHandler(
             }
             case "get-comments-from-dropdown": {
                 return await getCommentsFromDropdown(message.data, sender);
-            }
-            case "filter-old-search": {
-                await filterOldSearch(message.data, sender);
-                break;
             }
             case "restore-badge": {
                 await restoreBadge(sender);
@@ -275,31 +264,6 @@ async function getCommentsFromDropdown(
                 `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,
         )
         .join("\n");
-}
-
-async function filterOldSearch(
-    videos: ExtractData<"filter-old-search">,
-    sender: browser.runtime.MessageSender,
-) {
-    const settings = await loadSettings();
-
-    const tabId = sender.tab?.id;
-    if (tabId === undefined) return;
-
-    const filteredData = filterVideo(videos, settings);
-    if (filteredData === undefined) return;
-
-    const logId = createLogId();
-
-    await Promise.all([
-        saveLog(filteredData, logId, tabId),
-        mountLogId(logId, tabId),
-        sendMessageToContent(tabId, {
-            type: "remove-old-search",
-            data: filteredData.filteredIds,
-        }),
-    ]);
-    await cleanupDb();
 }
 
 async function restoreBadge(sender: browser.runtime.MessageSender) {
