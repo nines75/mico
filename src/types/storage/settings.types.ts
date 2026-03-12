@@ -20,6 +20,7 @@ export interface Settings {
     // 高度な機能
     isAdvancedFeaturesVisible: boolean;
     shouldImportLocalFilterOnLoad: boolean;
+    shouldImportOnlyWhenWslRunning: boolean;
     localFilterPath: string;
 
     // -------------------------------------------------------------------------------------------

@@ -185,14 +185,23 @@ export async function importLocalFilter(isManual = false) {
 
         const response = (await browser.runtime.sendNativeMessage(
             "mico.native",
-            { path: settings.localFilterPath },
-        )) as Partial<Settings>;
-        if (Object.keys(response).length === 0) {
+            {
+                path: settings.localFilterPath,
+                shouldCheckWsl:
+                    !isManual && settings.shouldImportOnlyWhenWslRunning,
+            },
+        )) as { settings?: Partial<Settings> };
+
+        // キャンセルされた場合
+        if (response.settings === undefined) return;
+
+        // ファイルが見つからなかった場合
+        if (Object.keys(response.settings).length === 0) {
             await sendNotification(messages.settings.localFileNotFound);
             return;
         }
 
-        await setSettings(response);
+        await setSettings(response.settings);
 
         if (isManual) {
             await sendNotification(messages.settings.importSuccess);

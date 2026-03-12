@@ -182,5 +182,11 @@ const advancedFeaturesConfig = [
     {
         id: "shouldImportLocalFilterOnLoad",
         label: "ページ読み込み時にローカルフィルターをインポートする",
+        childrenProps: [
+            {
+                id: "shouldImportOnlyWhenWslRunning",
+                label: "WSL起動時のみインポートする",
+            },
+        ],
     },
 ] satisfies CheckboxProps[];
