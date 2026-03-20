@@ -64,6 +64,7 @@ export default defineConfig({
             permissions: [
                 "contextMenus",
                 "notifications",
+                "scripting",
                 "storage",
                 "webRequest",
                 "webRequestBlocking",

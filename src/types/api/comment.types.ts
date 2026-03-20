@@ -4,13 +4,14 @@
 
 import { z } from "@/utils/zod";
 
-const niconicoCommentSchema = z.looseObject({
+export const niconicoCommentSchema = z.looseObject({
     id: z.string(),
     body: z.string(),
     commands: z.array(z.string()),
     userId: z.string(),
     postedAt: z.string(),
     nicoruId: z.string().nullable(), // ユーザーがこのコメントをニコっていない場合はnull
+    $videoId: z.string().exactOptional(), // レンダリング後のみ存在
 
     no: z.number().int(), // 動画内での投稿順
     vposMs: z.number().int(),
@@ -41,7 +42,5 @@ export type CommentApi = z.infer<typeof commentApiSchema>;
 export interface RenderedComment {
     body: string;
     userId: string;
-    no: number;
     score: number;
-    fork: Thread["fork"];
 }

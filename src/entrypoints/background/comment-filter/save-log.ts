@@ -87,8 +87,8 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
         ]),
     );
     const renderedComments = filteredData.threads.flatMap((thread) =>
-        thread.comments.map(({ body, userId, no, score }) => {
-            return { body, userId, no, score, fork: thread.fork };
+        thread.comments.map(({ body, userId, score }) => {
+            return { body, userId, score };
         }),
     );
 
