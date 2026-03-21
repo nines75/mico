@@ -1,6 +1,6 @@
 import { sortVideoId } from "../filter";
 import type { Settings } from "@/types/storage/settings.types";
-import { isString, pushCommonLog } from "@/utils/util";
+import { isString, printInvalidRule, pushCommonLog } from "@/utils/util";
 import type { IdLog } from "@/types/storage/log-video.types";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import { RuleFilter } from "../rule-filter";
@@ -30,6 +30,7 @@ export class IdFilter extends RuleFilter<IdLog> {
                     videoIds.add(rule);
                 } else {
                     this.invalidCount++;
+                    printInvalidRule(rule);
                 }
             } else {
                 regexes.push(rule);

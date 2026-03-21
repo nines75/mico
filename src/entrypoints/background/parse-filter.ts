@@ -1,3 +1,4 @@
+import { printInvalidRule } from "@/utils/util";
 import { createDefaultToggle, type Rule } from "./rule";
 
 export type Directive =
@@ -170,6 +171,7 @@ export function parseFilter(
             // 想定外のフラグが含まれている場合はルールとして解釈しない
             if (!/^[isuvm]*$/.test(flags)) {
                 invalidCount++;
+                printInvalidRule(line);
                 continue;
             }
 
@@ -177,6 +179,7 @@ export function parseFilter(
                 regex = new RegExp(regexStr, flags);
             } catch {
                 invalidCount++;
+                printInvalidRule(line);
                 continue;
             }
         }
