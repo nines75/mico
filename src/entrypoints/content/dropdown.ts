@@ -34,7 +34,7 @@ export async function mountToDropdown(element: Element) {
             text: buttons.showComments,
             callback: async () => {
                 const comments = (await sendMessageToBackground({
-                    type: "get-comments-from-dropdown",
+                    type: "get-comments-for-dropdown",
                 })) as string | undefined;
                 if (comments === undefined) {
                     await sendMessageToBackground({

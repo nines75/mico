@@ -37,7 +37,7 @@ export type BackgroundMessage =
           data: { isSpecific: boolean };
       }
     | {
-          type: "get-comments-from-dropdown";
+          type: "get-comments-for-dropdown";
       }
     | {
           type: "restore-badge";
@@ -104,8 +104,8 @@ export async function backgroundMessageHandler(
                 await addNgUserIdFromDropdown(message.data, sender);
                 break;
             }
-            case "get-comments-from-dropdown": {
-                return await getCommentsFromDropdown(sender);
+            case "get-comments-for-dropdown": {
+                return await getCommentsForDropdown(sender);
             }
             case "restore-badge": {
                 await restoreBadge(sender);
@@ -218,7 +218,7 @@ async function addNgUserIdFromDropdown(
     await Promise.all(tasks);
 }
 
-async function getCommentsFromDropdown(sender: browser.runtime.MessageSender) {
+async function getCommentsForDropdown(sender: browser.runtime.MessageSender) {
     const tabId = sender.tab?.id;
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
