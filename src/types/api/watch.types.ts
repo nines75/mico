@@ -15,7 +15,7 @@ export const watchApiSchema = z.looseObject({
                             name: z.string(),
                             url: z.string(),
                         })
-                        .optional(), // jsonLds配列の中でauthorプロパティが存在するのは一部
+                        .exactOptional(), // jsonLds配列の中でauthorプロパティが存在するのは一部
                 }),
             ),
         }),
