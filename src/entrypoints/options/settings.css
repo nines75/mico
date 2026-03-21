@@ -2,11 +2,16 @@
 
 body {
     background: var(--background);
-    color: white;
+    color: var(--dim-white);
 }
 h2 {
     border-bottom: 2px solid gray;
     font-size: 18px;
+}
+/* デフォルトではcolorを継承しない */
+input,
+button {
+    color: inherit;
 }
 input[type="checkbox"] {
     margin: 3px;
@@ -25,7 +30,6 @@ input[type="checkbox"] {
         font-weight: bold;
     }
     .setting-details {
-        color: var(--dim-white);
         font-size: 12px;
         margin-left: 25px;
         padding: 4px;
