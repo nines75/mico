@@ -1,6 +1,8 @@
+@import "node_modules/modern-normalize/modern-normalize.css";
+
 :root {
     --background: #292a2d;
     --dim-white: #e8eaed;
     --lighter-gray: #c0c0c0;
-    --font: Consolas;
+    --font: Consolas, monospace;
 }

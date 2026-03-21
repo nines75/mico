@@ -1,9 +1,5 @@
 @import "../../assets/global.css";
 
-body {
-    margin: 0;
-    padding: 0;
-}
 header {
     background: #3b3c4a;
     width: 100%;
@@ -41,8 +37,10 @@ summary {
 .svg-container {
     display: flex;
 }
+.info-container {
+    margin-block: 5px;
+}
 .info {
-    font-size: 15px;
     color: var(--lighter-gray);
     margin: 0px 5px;
     .value {
@@ -97,7 +95,6 @@ summary {
     border: gray 2px solid;
     border-radius: 8px;
     color: var(--lighter-gray);
-    font-size: 15px;
 }
 .selected-button {
     border-color: lightskyblue;
@@ -107,6 +104,7 @@ summary {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    margin-block: 5px;
     .ng-button {
         padding: 0;
         margin: 0;
@@ -115,21 +113,16 @@ summary {
     }
 }
 #video-id {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     color: var(--lighter-gray);
 }
 #version {
-    font-size: 15px;
+    font-size: 17px;
     color: var(--lighter-gray);
     margin: 0 8px;
 }
 #message {
     margin: 20px;
     font-weight: bold;
-}
-#disabled-message {
-    color: var(--lighter-gray);
-    font-size: 13px;
-    color: red;
 }

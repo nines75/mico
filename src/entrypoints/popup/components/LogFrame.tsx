@@ -43,7 +43,7 @@ export function LogFrame({
                 )}
                 {name}
             </div>
-            <div>
+            <div className="info-container">
                 {rule !== false && (
                     <InfoContent name="ルール数:" value={rule} />
                 )}
