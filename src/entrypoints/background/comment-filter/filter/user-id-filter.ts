@@ -12,7 +12,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     protected override log: CommonLog = new Map();
 
     constructor(settings: Settings) {
-        super(settings, settings.ngUserId);
+        super(settings, "commentUserId");
     }
 
     override filtering(threads: Thread[]): void {

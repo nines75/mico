@@ -8,6 +8,15 @@ export interface Rule {
     isDisable: boolean;
     include: Toggle;
     exclude: Toggle;
+    target: {
+        commentUserId: boolean;
+        commentCommands: boolean;
+        commentBody: boolean;
+        videoId: boolean;
+        videoOwnerId: boolean;
+        videoOwnerName: boolean;
+        videoTitle: boolean;
+    };
 }
 
 export interface Toggle {
@@ -23,6 +32,15 @@ export function createDefaultRule(): SetOptional<Rule, "rule"> {
         isDisable: false,
         include: createDefaultToggle(),
         exclude: createDefaultToggle(),
+        target: {
+            commentUserId: false,
+            commentCommands: false,
+            commentBody: false,
+            videoId: false,
+            videoOwnerId: false,
+            videoOwnerName: false,
+            videoTitle: false,
+        },
     };
 }
 

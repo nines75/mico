@@ -9,7 +9,7 @@ export class WordFilter extends StrictFilter<WordLog> {
     protected override log: WordLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, settings.ngWord);
+        super(settings, ngUserIds, "commentBody");
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {

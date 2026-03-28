@@ -1,5 +1,6 @@
 import { printInvalidRule } from "@/utils/util";
 import { createDefaultToggle, type Rule } from "./rule";
+import type { Settings } from "@/types/storage/settings.types";
 
 export type Directive =
     | {
@@ -15,7 +16,16 @@ export type Directive =
           args: string[];
       }
     | {
-          type: "strict" | "disable";
+          type:
+              | "strict"
+              | "disable"
+              | "comment-user-id"
+              | "comment-commands"
+              | "comment-body"
+              | "video-id"
+              | "video-owner-id"
+              | "video-owner-name"
+              | "video-title";
       };
 
 export const argsDirectives = [
@@ -29,8 +39,20 @@ export const argsDirectives = [
     "exclude-series-ids",
 ] as const satisfies Extract<Directive, { args: string[] }>["type"][];
 
+const noArgsDirectives = [
+    "strict",
+    "disable",
+    "comment-user-id",
+    "comment-commands",
+    "comment-body",
+    "video-id",
+    "video-owner-id",
+    "video-owner-name",
+    "video-title",
+] as const satisfies Exclude<Directive, { args: string[] }>["type"][];
+
 export function parseFilter(
-    filter: string,
+    settings: Settings,
     hasIndex = false, // テストが複雑になるためindexはデフォルトで含めない
 ): {
     rules: Rule[];
@@ -42,7 +64,7 @@ export function parseFilter(
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
-    const lines = filter
+    const lines = settings.manualFilter
         .split("\n")
         .map((line, index) => ({ line, index }))
         .filter(({ line }) => line !== "" && !line.startsWith("#"));
@@ -69,13 +91,12 @@ export function parseFilter(
         }
 
         // 引数なし
-        if (trimmedRule === "@strict") {
-            directives.push({ type: "strict" });
-            continue;
-        }
-        if (trimmedRule === "@disable") {
-            directives.push({ type: "disable" });
-            continue;
+
+        for (const directive of noArgsDirectives) {
+            if (trimmedRule === `@${directive}`) {
+                directives.push({ type: directive });
+                continue lineLoop;
+            }
         }
         if (trimmedRule === "@end") {
             directives.pop();
@@ -93,14 +114,25 @@ export function parseFilter(
         // ルールに適用するディレクティブを決定
         // -------------------------------------------------------------------------------------------
 
-        let isStrict = false;
-        let isDisable = false;
         const include = createDefaultToggle();
         const exclude = createDefaultToggle();
+        const other: Pick<Rule, "isStrict" | "isDisable" | "target"> = {
+            isStrict: false,
+            isDisable: false,
+            target: {
+                commentUserId: false,
+                commentCommands: false,
+                commentBody: false,
+                videoId: false,
+                videoOwnerId: false,
+                videoOwnerName: false,
+                videoTitle: false,
+            },
+        };
 
         for (const directive of directives) {
             switch (directive.type) {
-                // include
+                // 引数あり(include)
                 case "include-tags": {
                     pushArgs(include.tags, directive);
                     break;
@@ -118,7 +150,7 @@ export function parseFilter(
                     break;
                 }
 
-                // exclude
+                // 引数あり(exclude)
                 case "exclude-tags": {
                     pushArgs(exclude.tags, directive);
                     break;
@@ -136,13 +168,43 @@ export function parseFilter(
                     break;
                 }
 
-                // その他
+                // 引数なし
                 case "strict": {
-                    isStrict = true;
+                    other.isStrict = true;
                     break;
                 }
                 case "disable": {
-                    isDisable = true;
+                    other.isDisable = true;
+                    break;
+                }
+
+                // 引数なし(target)
+                case "comment-user-id": {
+                    other.target.commentUserId = true;
+                    break;
+                }
+                case "comment-commands": {
+                    other.target.commentCommands = true;
+                    break;
+                }
+                case "comment-body": {
+                    other.target.commentBody = true;
+                    break;
+                }
+                case "video-id": {
+                    other.target.videoId = true;
+                    break;
+                }
+                case "video-owner-id": {
+                    other.target.videoOwnerId = true;
+                    break;
+                }
+                case "video-owner-name": {
+                    other.target.videoOwnerName = true;
+                    break;
+                }
+                case "video-title": {
+                    other.target.videoTitle = true;
                     break;
                 }
             }
@@ -150,7 +212,7 @@ export function parseFilter(
 
         // エイリアスの適用
         if (isStrictAlias) {
-            isStrict = true;
+            other.isStrict = true;
             isStrictAlias = false;
         }
         if (videoIdsAlias.length > 0) {
@@ -186,10 +248,9 @@ export function parseFilter(
 
         rules.push({
             rule: regex ?? line,
-            isStrict,
-            isDisable,
             include,
             exclude,
+            ...other,
             ...(hasIndex ? { index } : {}),
         });
     }

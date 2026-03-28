@@ -10,7 +10,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     protected override log: CommonLog = new Map();
 
     constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, settings.ngCommand);
+        super(settings, ngUserIds, "commentCommands");
 
         this.rules = this.rules.map((data) => {
             const rule = data.rule;

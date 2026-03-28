@@ -11,11 +11,11 @@ export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];
     protected invalidCount = 0;
 
-    constructor(settings: Settings, filter: string) {
+    constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(filter);
-        this.rules = rules;
+        const { rules, invalidCount } = parseFilter(settings);
+        this.rules = rules.filter((rule) => rule.target[target]);
         this.invalidCount += invalidCount;
     }
 
@@ -56,7 +56,8 @@ export function getRuleFilters(
     filters: Filters,
 ): ConditionalPick<Filters, RuleFilter<unknown>> {
     return {
-        idFilter: filters.idFilter,
+        videoIdFilter: filters.videoIdFilter,
+        videoOwnerIdFilter: filters.videoOwnerIdFilter,
         userNameFilter: filters.userNameFilter,
         titleFilter: filters.titleFilter,
     };

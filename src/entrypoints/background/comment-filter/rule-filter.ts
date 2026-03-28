@@ -15,11 +15,11 @@ export abstract class RuleFilter<T> extends Filter<T> {
     private invalidCount = 0;
     protected rules: Rule[];
 
-    constructor(settings: Settings, filter: string) {
+    constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(filter);
-        this.rules = rules;
+        const { rules, invalidCount } = parseFilter(settings);
+        this.rules = rules.filter((rule) => rule.target[target]);
         this.invalidCount += invalidCount;
     }
 

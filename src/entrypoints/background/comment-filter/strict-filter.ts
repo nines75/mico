@@ -3,13 +3,18 @@ import type { ConditionalPick } from "type-fest";
 import type { Filters } from "./filter-comment";
 import { RuleFilter } from "./rule-filter";
 import type { Thread } from "@/types/api/comment.types";
+import type { Rule } from "../rule";
 
 export abstract class StrictFilter<T> extends RuleFilter<T> {
     protected ngUserIds: Set<string>;
     protected strictData: { userId: string; context: string }[] = [];
 
-    constructor(settings: Settings, ngUserIds: Set<string>, filter: string) {
-        super(settings, filter);
+    constructor(
+        settings: Settings,
+        ngUserIds: Set<string>,
+        target: keyof Rule["target"],
+    ) {
+        super(settings, target);
 
         this.ngUserIds = ngUserIds;
     }

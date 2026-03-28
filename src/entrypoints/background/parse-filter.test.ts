@@ -1,8 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockToggle, mockRules } from "@/utils/test";
+import { defaultSettings } from "@/utils/config";
+import type { Settings } from "@/types/storage/settings.types";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
+
+function createSettings(filter: string): Settings {
+    return { ...defaultSettings, manualFilter: filter };
+}
 
 describe(parseFilter.name, () => {
     // -------------------------------------------------------------------------------------------
@@ -36,7 +42,7 @@ rule
             expected: mockRules({}),
         },
     ])("$name", ({ filter, hasIndex, expected }) => {
-        expect(parseFilter(filter, hasIndex ?? false)).toEqual(
+        expect(parseFilter(createSettings(filter), hasIndex ?? false)).toEqual(
             expected ?? mockRules(),
         );
     });
@@ -59,7 +65,7 @@ rule
                 expected: mockRules({ rule: new RegExp("rule", "isum") }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
 
         describe("異常系", () => {
@@ -86,7 +92,7 @@ rule
                     filter: "/(rule/",
                 },
             ])("$name", ({ filter, expected }) => {
-                expect(parseFilter(filter)).toEqual(
+                expect(parseFilter(createSettings(filter))).toEqual(
                     expected ?? { rules: [], invalidCount: 1 },
                 );
             });
@@ -128,7 +134,7 @@ rule
                 expected: mockRules({ isStrict: true }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 
@@ -143,7 +149,9 @@ rule
 @end
 `;
 
-        expect(parseFilter(filter)).toEqual(mockRules({ isStrict: true }));
+        expect(parseFilter(createSettings(filter))).toEqual(
+            mockRules({ isStrict: true }),
+        );
     });
 
     // -------------------------------------------------------------------------------------------
@@ -157,7 +165,9 @@ rule
 @end
 `;
 
-        expect(parseFilter(filter)).toEqual(mockRules({ isDisable: true }));
+        expect(parseFilter(createSettings(filter))).toEqual(
+            mockRules({ isDisable: true }),
+        );
     });
 
     // -------------------------------------------------------------------------------------------
@@ -178,7 +188,7 @@ rule
                 }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
 
         describe("異常系", () => {
@@ -204,7 +214,7 @@ rule
                     expected: mockRules({}),
                 },
             ])("$name", ({ filter, expected }) => {
-                expect(parseFilter(filter)).toEqual(expected);
+                expect(parseFilter(createSettings(filter))).toEqual(expected);
             });
         });
     });
@@ -270,7 +280,7 @@ rule
                 ),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 
@@ -349,7 +359,7 @@ rule
                 ),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 });
