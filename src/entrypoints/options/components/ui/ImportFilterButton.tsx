@@ -5,11 +5,8 @@ import { Import } from "lucide-react";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
 
-interface ImportFilterButtonProps {
-    id: keyof Settings;
-}
-
-export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
+// TODO: フィルターの種類でインポートするものを変える？
+export default function ImportFilterButton() {
     const input = useRef<HTMLInputElement | null>(null);
     const save = useStorageStore((state) => state.saveSettings);
 
@@ -30,7 +27,7 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
                 style={{ display: "none" }}
                 ref={input}
                 onChange={catchAsync(async (event) => {
-                    await importFilter(event, save, id);
+                    await importFilter(event, save, "manualFilter");
                 })}
             />
         </>
