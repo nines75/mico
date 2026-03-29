@@ -31,20 +31,29 @@ import {
     completionKeymap,
 } from "@codemirror/autocomplete";
 import { useStorageStore } from "@/utils/store";
-import { argsDirectives } from "@/entrypoints/background/parse-filter";
+import {
+    argsDirectives,
+    noArgsDirectives,
+} from "@/entrypoints/background/parse-filter";
 
+const directiveStyle = "color: lime";
 const highlights = createHighlights([
     { regex: /^#.*$/g, style: "color: gray" },
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
-    { regex: /^@end\s*$/g, style: "color: cyan" },
-    { regex: /^@(?:strict|s)\s*$/g, style: "color: coral" },
-    { regex: /^@disable\s*$/g, style: "color: yellow" },
+    { regex: /^@(?:end|s)\s*$/g, style: directiveStyle },
     {
         regex: new RegExp(
             String.raw`^@(?:${argsDirectives.join("|")}|v)\s`,
             "g",
         ),
-        style: "color: lime",
+        style: directiveStyle,
+    },
+    {
+        regex: new RegExp(
+            String.raw`^@(?:${noArgsDirectives.join("|")})\s*$`,
+            "g",
+        ),
+        style: directiveStyle,
     },
 ]);
 
@@ -58,19 +67,15 @@ const completions = createCompletions([
         type: "keyword",
     },
     {
-        label: "@strict",
-        type: "keyword",
-    },
-    {
         label: "@s",
-        type: "keyword",
-    },
-    {
-        label: "@disable",
         type: "keyword",
     },
     ...argsDirectives.map((directive) => ({
         label: `@${directive} `,
+        type: "keyword",
+    })),
+    ...noArgsDirectives.map((directive) => ({
+        label: `@${directive}`,
         type: "keyword",
     })),
 ]);

@@ -39,7 +39,7 @@ export const argsDirectives = [
     "exclude-series-ids",
 ] as const satisfies Extract<Directive, { args: string[] }>["type"][];
 
-const noArgsDirectives = [
+export const noArgsDirectives = [
     "strict",
     "disable",
     "comment-user-id",
