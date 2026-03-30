@@ -1,18 +1,18 @@
 import { defaultSettings } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
-import { setSettings, addNgUserId, removeNgUserId } from "./storage-write";
+import { setSettings, addAutoRule, removeAutoRule } from "./storage-write";
 
 const userIds = ["user-id-owner", "user-id-main-1"];
 
-it(addNgUserId.name, async () => {
-    await addNgUserId(userIds);
+it(addAutoRule.name, async () => {
+    await addAutoRule(userIds);
 
     const settings = await loadSettings();
     expect(settings.ngUserId).toBe(`${userIds.join("\n")}\n`);
 });
 
-describe(removeNgUserId.name, () => {
+describe(removeAutoRule.name, () => {
     it.each([
         {
             name: "基本",
@@ -35,7 +35,7 @@ describe(removeNgUserId.name, () => {
             ...defaultSettings,
             ngUserId: ids.join("\n"),
         });
-        await removeNgUserId(userIds);
+        await removeAutoRule(userIds);
 
         const settings = await loadSettings();
         expect(settings.ngUserId).toBe("");
@@ -48,7 +48,7 @@ describe(removeNgUserId.name, () => {
             ...defaultSettings,
             ngUserId: `${ids}\n${specificIds}`,
         });
-        await removeNgUserId(userIds, false);
+        await removeAutoRule(userIds, false);
 
         const settings = await loadSettings();
         expect(settings.ngUserId).toBe(specificIds);

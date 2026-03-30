@@ -8,8 +8,8 @@ import { StrictFilter } from "../strict-filter";
 export class WordFilter extends StrictFilter<WordLog> {
     protected override log: WordLog = new Map();
 
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, "commentBody");
+    constructor(settings: Settings) {
+        super(settings, "commentBody");
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
@@ -29,7 +29,7 @@ export class WordFilter extends StrictFilter<WordLog> {
                     if (!this.ngUserIds.has(userId)) {
                         this.strictData.push({
                             userId,
-                            context: `body(strict): ${body}`,
+                            context: `comment-body: ${body}`,
                         });
                     }
 

@@ -1,4 +1,6 @@
+import type { AutoRule } from "@/entrypoints/background/rule";
 import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
+import type { PartialDeep } from "type-fest";
 
 export type FilterTab = "commentFilter" | "videoFilter";
 export type SettingsTab =
@@ -29,6 +31,7 @@ export interface Settings {
 
     selectedFilter: FilterId;
     manualFilter: string;
+    autoFilter: PartialDeep<AutoRule>[];
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター

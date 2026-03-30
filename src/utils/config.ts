@@ -21,6 +21,7 @@ export const defaultSettings: Settings = {
 
     selectedFilter: "manual",
     manualFilter: "",
+    autoFilter: [],
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター

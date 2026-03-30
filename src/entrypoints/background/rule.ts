@@ -19,6 +19,15 @@ export interface Rule {
     };
 }
 
+// 特有のプロパティを取り出したいのでRuleを継承しない
+export interface AutoRuleOnly {
+    id: string;
+    source: "dropdown" | "strict" | "contextMenu";
+    context?: string;
+}
+
+export type AutoRule = AutoRuleOnly & Rule;
+
 export interface Toggle {
     tags: string[][];
     videoIds: string[][];

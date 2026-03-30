@@ -4,14 +4,11 @@ import type { Settings } from "@/types/storage/settings.types";
 import {
     setSettings,
     removeAllData,
-    addNgUserId,
-    removeNgUserId,
-    addNgId,
-    removeNgId,
+    addAutoRule,
+    removeAutoRule,
 } from "@/utils/storage-write";
 import { getLogData, setTabData } from "@/utils/db";
 import type { TabData } from "@/types/storage/tab.types";
-import { formatNgUserId } from "./comment-filter/filter/user-id-filter";
 import {
     setBadgeState,
     sendMessageToContent,
@@ -130,12 +127,13 @@ export async function backgroundMessageHandler(
                 await removeAllData();
                 break;
             }
+            // TODO: 以下の4つのcaseはログ用なので#70で修正
             case "add-ng-user-id": {
-                await addNgUserId(message.data);
+                await addAutoRule(message.data);
                 break;
             }
             case "remove-ng-user-id": {
-                await removeNgUserId(
+                await removeAutoRule(
                     message.data.userIds,
                     message.data.isRemoveSpecific,
                 );
@@ -199,14 +197,16 @@ async function addNgUserIdFromDropdown(
     }
 
     const settings = await loadSettings();
-    await addNgUserId([
-        formatNgUserId(
-            data.isSpecific
-                ? `@v ${comment.$videoId}\n${comment.userId}`
-                : comment.userId,
-            `body(dropdown): ${comment.body}`,
-            settings,
-        ),
+    await addAutoRule([
+        {
+            rule: comment.userId,
+            context: `comment-body: ${comment.body}`,
+            source: "dropdown",
+            target: { commentUserId: true },
+            ...(data.isSpecific && {
+                include: { videoIds: [[comment.$videoId]] },
+            }),
+        },
     ]);
 
     const tasks: Promise<unknown>[] = [];

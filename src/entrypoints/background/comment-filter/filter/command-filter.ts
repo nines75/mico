@@ -9,8 +9,8 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     private disableCount = 0;
     protected override log: CommonLog = new Map();
 
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, "commentCommands");
+    constructor(settings: Settings) {
+        super(settings, "commentCommands");
 
         this.rules = this.rules.map((data) => {
             const rule = data.rule;
@@ -58,7 +58,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                         if (!this.ngUserIds.has(userId)) {
                             this.strictData.push({
                                 userId,
-                                context: `command(strict): ${command}`,
+                                context: `comment-commands: ${command}`,
                             });
                         }
 

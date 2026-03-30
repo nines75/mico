@@ -1,16 +1,13 @@
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { WordFilter } from "./filter/word-filter";
-import {
-    formatNgUserId,
-    getBasicNgUserIdSet,
-    UserIdFilter,
-} from "./filter/user-id-filter";
+import { UserIdFilter } from "./filter/user-id-filter";
 import { ScoreFilter } from "./filter/score-filter";
 import { CommandFilter } from "./filter/command-filter";
 import { CommentAssistFilter } from "./filter/comment-assist-filter";
 import { EasyCommentFilter } from "./filter/easy-comment-filter";
 import { getRuleFilters } from "./rule-filter";
+import type { StrictData } from "./strict-filter";
 import { getStrictFilters } from "./strict-filter";
 import type { TabData } from "@/types/storage/tab.types";
 
@@ -28,7 +25,7 @@ export interface FilteredData {
     loadedCommentCount: number;
     filteringTime: number;
     strictUserIds: string[];
-    strictUserIdsWithContext: string[];
+    strictData: StrictData[];
     threads: Thread[];
 }
 
@@ -55,16 +52,13 @@ export function filterComment(
     // フィルタリングの前処理
     // -------------------------------------------------------------------------------------------
 
-    // strictルールによってNG登録されるユーザーIDが既にフィルターに存在するか確認するために使う
-    const ngUserIds = getBasicNgUserIdSet(settings);
-
     // フィルター初期化
     const userIdFilter = new UserIdFilter(settings);
     const easyCommentFilter = new EasyCommentFilter(settings);
     const commentAssistFilter = new CommentAssistFilter(settings);
     const scoreFilter = new ScoreFilter(settings);
-    const commandFilter = new CommandFilter(settings, ngUserIds);
-    const wordFilter = new WordFilter(settings, ngUserIds);
+    const commandFilter = new CommandFilter(settings);
+    const wordFilter = new WordFilter(settings);
 
     const filters: Filters = {
         userIdFilter,
@@ -92,14 +86,12 @@ export function filterComment(
     }
 
     const strictUserIds: string[] = [];
-    const strictUserIdsWithContext: string[] = [];
+    const strictData: StrictData[] = [];
     for (const filter of Object.values(strictFilters)) {
-        for (const { userId, context } of filter.getStrictData()) {
-            if (!strictUserIds.includes(userId)) {
-                strictUserIds.push(userId);
-                strictUserIdsWithContext.push(
-                    formatNgUserId(userId, context, settings),
-                );
+        for (const data of filter.getStrictData()) {
+            if (!strictUserIds.includes(data.userId)) {
+                strictUserIds.push(data.userId);
+                strictData.push(data);
             }
         }
     }
@@ -119,7 +111,7 @@ export function filterComment(
         loadedCommentCount,
         filteringTime: end - start,
         strictUserIds,
-        strictUserIdsWithContext,
+        strictData,
         threads,
     };
 }

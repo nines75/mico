@@ -4,7 +4,7 @@ import { messages } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
 import { isWatchPage, replace } from "@/utils/util";
 import { filterResponse } from "./request";
-import { addNgUserId } from "@/utils/storage-write";
+import { addAutoRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment.types";
 import { commentApiSchema } from "@/types/api/comment.types";
 import { cleanupDb, getTabData, setTabData } from "@/utils/db";
@@ -49,25 +49,36 @@ export default function commentRequest(
         filter.disconnect();
 
         const tasks: Promise<void>[] = [];
-        const strictUserIds = filteredData.strictUserIdsWithContext;
+        const strictData = filteredData.strictData;
 
         // ログを保存
         tasks.push(saveLog(filteredData, logId, tabId));
 
         // 通知を送信
-        if (strictUserIds.length > 0 && settings.isNotifyAutoAddNgUserId) {
+        if (strictData.length > 0 && settings.isNotifyAutoAddNgUserId) {
             tasks.push(
                 sendNotification(
                     replace(messages.ngUserId.notifyAddition, [
-                        strictUserIds.length.toString(),
+                        strictData.length.toString(),
                     ]),
                 ),
             );
         }
 
         // strictルールによってフィルタリングされたユーザーIDをNG登録
-        if (strictUserIds.length > 0) {
-            tasks.push(addNgUserId(strictUserIds));
+        if (strictData.length > 0) {
+            tasks.push(
+                addAutoRule(
+                    strictData.map((data) => {
+                        return {
+                            rule: data.userId,
+                            context: data.context,
+                            source: "strict",
+                            target: { commentUserId: true },
+                        };
+                    }),
+                ),
+            );
         }
 
         await Promise.all(tasks);

@@ -7,12 +7,11 @@ import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
 import { getSettingsData, storageArea, loadSettings } from "./storage";
-import { parseNgUserId } from "@/entrypoints/background/comment-filter/filter/user-id-filter";
-import { parseFilter } from "@/entrypoints/background/parse-filter";
 import { messages } from "./config";
-import { replace } from "./util";
 import { clearDb } from "./db";
 import { sendNotification, tryWithPermission } from "./browser";
+import type { AutoRuleOnly, Rule } from "@/entrypoints/background/rule";
+import type { Except, PartialDeep, SetRequired } from "type-fest";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
@@ -41,112 +40,38 @@ export async function setSettings(
     });
 }
 
-export async function addNgUserId(userIds: string[]) {
-    if (userIds.length === 0) return;
-
-    const filter = userIds.join("\n");
-    const transaction = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        return {
-            ngUserId: `${filter}\n${settings.ngUserId}`,
-        };
-    };
-
-    await setSettings(transaction);
-}
-
-export async function removeNgUserId(
-    userIds: string[],
-    isRemoveSpecific = true,
+export async function addAutoRule(
+    rules: (Except<AutoRuleOnly, "id"> &
+        SetRequired<PartialDeep<Rule>, "rule">)[],
 ) {
-    if (userIds.length === 0) return;
+    if (rules.length === 0) return;
 
     const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
-        const removeLines = parseNgUserId(settings, isRemoveSpecific)
-            .filter(({ rule }) => userIds.includes(rule.toString()))
-            .map(({ index }) => index as number);
-        const lines = settings.ngUserId.split("\n");
-
-        // 自動追加された行の削除判定
-        // ループ内で変更するため新しい配列を作る
-        for (const index of removeLines) {
-            const before1 = index - 1;
-            const before2 = index - 2;
-            const after = index + 1;
-
-            // コンテキスト
-            if (
-                lines[before1]?.startsWith("# ") === true &&
-                lines[after] === ""
-            ) {
-                removeLines.push(before1, after);
-            }
-            // コンテキスト + @v
-            else if (
-                lines[before2]?.startsWith("# ") === true &&
-                lines[before1]?.startsWith("@v ") === true &&
-                lines[after] === ""
-            ) {
-                removeLines.push(before2, before1, after);
-            }
-            // @v
-            else if (lines[before1]?.startsWith("@v ") === true) {
-                removeLines.push(before1);
-            }
-        }
-
         return {
-            ngUserId: lines
-                .filter((_, index) => !removeLines.includes(index))
-                .join("\n"),
+            autoFilter: [
+                ...rules.map((rule) => {
+                    return { ...rule, id: crypto.randomUUID() };
+                }),
+                ...settings.autoFilter,
+            ],
         };
     };
 
     await setSettings(transaction);
 }
 
-export async function addNgId(id: string) {
+export async function removeAutoRule(ids: string[]) {
+    if (ids.length === 0) return;
+
     const transaction = async (): Promise<Partial<Settings>> => {
         const settings = await loadSettings();
 
         return {
-            ngId: `${id}\n${settings.ngId}`,
-        };
-    };
-
-    await setSettings(transaction);
-}
-
-export async function removeNgId(id: string) {
-    const transaction = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
-
-        const removeLines = parseFilter(settings.ngId, true)
-            .rules.filter(({ rule }) => rule === id)
-            .map(({ index }) => index as number);
-        const lines = settings.ngId.split("\n");
-
-        // ループ内で変更するため新しい配列を作る
-        for (const index of removeLines) {
-            const before = index - 1;
-            const after = index + 1;
-
-            // コンテキスト
-            if (
-                lines[before]?.startsWith("# ") === true &&
-                lines[after] === ""
-            ) {
-                removeLines.push(before, after);
-            }
-        }
-
-        return {
-            ngId: lines
-                .filter((_, index) => !removeLines.includes(index))
-                .join("\n"),
+            autoFilter: settings.autoFilter.filter(
+                ({ id }) => id !== undefined && !ids.includes(id),
+            ),
         };
     };
 
@@ -155,20 +80,50 @@ export async function removeNgId(id: string) {
 
 export async function addNgIdFromUrl(url: string | undefined) {
     const settings = await loadSettings();
-    const id = url?.match(
-        /^https:\/\/(?:www\.nicovideo\.jp\/user|www\.nicovideo\.jp\/watch|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
-    )?.[1];
 
-    if (id === undefined) {
-        await sendNotification(messages.ngId.extractionFailed);
+    const videoId = url?.match(
+        /^https:\/\/www\.nicovideo\.jp\/watch\/([^?]+)/,
+    )?.[1];
+    if (videoId !== undefined) {
+        await addAutoRule([
+            {
+                rule: videoId,
+                source: "contextMenu",
+                target: { videoId: true },
+            },
+        ]);
+
+        if (settings.isNotifyAddNgId) {
+            await sendNotification(
+                `以下の動画IDをNG登録しました\n\n${videoId}`,
+            );
+        }
+
         return;
     }
 
-    await addNgId(id);
+    const userId = url?.match(
+        /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
+    )?.[1];
+    if (userId !== undefined) {
+        await addAutoRule([
+            {
+                rule: userId,
+                source: "contextMenu",
+                target: { videoOwnerId: true },
+            },
+        ]);
 
-    if (settings.isNotifyAddNgId) {
-        await sendNotification(replace(messages.ngId.additionSuccess, [id]));
+        if (settings.isNotifyAddNgId) {
+            await sendNotification(
+                `以下のユーザーIDをNG登録しました\n\n${userId}`,
+            );
+        }
+
+        return;
     }
+
+    await sendNotification(messages.ngId.extractionFailed);
 }
 
 export async function importLocalFilter(isManual = false) {

@@ -100,11 +100,3 @@ export function getBasicNgUserIdSet(settings: Settings) {
             .filter((rule) => isString(rule)),
     );
 }
-
-export function formatNgUserId(
-    id: string,
-    context: string,
-    settings: Settings,
-) {
-    return settings.isCommentNgContextAppended ? `# ${context}\n${id}\n` : id;
-}
