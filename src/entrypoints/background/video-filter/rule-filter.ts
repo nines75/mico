@@ -3,7 +3,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
-import type { Rule } from "../rule";
+import { createRules, type Rule } from "../rule";
 import type { Filters } from "./filter-video";
 import { Filter, sortVideoId } from "./filter";
 
@@ -15,7 +15,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
         super(settings);
 
         const { rules, invalidCount } = parseFilter(settings);
-        this.rules = rules.filter((rule) => rule.target[target]);
+        this.rules = createRules(settings, target, rules);
         this.invalidCount += invalidCount;
     }
 

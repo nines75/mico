@@ -1,3 +1,5 @@
+import type { Settings } from "@/types/storage/settings.types";
+import { customMerge } from "@/utils/util";
 import type { SetOptional } from "type-fest";
 
 export interface Rule {
@@ -60,4 +62,18 @@ export function createDefaultToggle(): Toggle {
         userIds: [],
         seriesIds: [],
     };
+}
+
+export function createRules(
+    settings: Settings,
+    target: keyof Rule["target"],
+    manualRules: Rule[],
+) {
+    // manualルールを優先して評価するために先に展開
+    return [
+        ...manualRules.filter((rule) => rule.target[target]),
+        ...settings.autoFilter
+            .map((rule) => customMerge(createDefaultRule(), rule) as Rule)
+            .filter((rule) => rule.target[target]),
+    ];
 }
