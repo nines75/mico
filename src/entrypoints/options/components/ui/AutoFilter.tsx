@@ -2,7 +2,6 @@ import type { AutoRule } from "@/entrypoints/background/rule";
 import { useStorageStore } from "@/utils/store";
 import decamelize from "decamelize";
 import { X } from "lucide-react";
-import type { PartialDeep } from "type-fest";
 import { useShallow } from "zustand/shallow";
 
 export default function AutoFilter() {
@@ -20,7 +19,7 @@ export default function AutoFilter() {
 }
 
 interface RuleProps {
-    rule: PartialDeep<AutoRule>;
+    rule: Partial<AutoRule>;
 }
 
 function Rule({ rule }: RuleProps) {
@@ -39,7 +38,7 @@ function Rule({ rule }: RuleProps) {
                     onClick={() => {
                         if (
                             !confirm(
-                                `以下のルールを削除しますか？\n\n${pattern.toString()}`,
+                                `以下のルールを削除しますか？\n\n${pattern}`,
                             )
                         )
                             return;
@@ -53,7 +52,7 @@ function Rule({ rule }: RuleProps) {
                 >
                     <X size={30} />
                 </button>
-                {pattern.toString()}
+                {pattern}
             </div>
             <div className="rule-details">
                 {rule.target !== undefined &&

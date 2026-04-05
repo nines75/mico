@@ -1,6 +1,6 @@
 import type { Settings } from "@/types/storage/settings.types";
 import { customMerge } from "@/utils/util";
-import type { SetOptional } from "type-fest";
+import type { Merge, PartialDeep, SetOptional } from "type-fest";
 
 export interface Rule {
     /** 元のフィルターを改行区切りで配列にしたときのインデックス */
@@ -21,14 +21,14 @@ export interface Rule {
     };
 }
 
-// 特有のプロパティを取り出したいのでRuleを継承しない
-export interface AutoRuleOnly {
+interface AutoRuleOnly {
     id: string;
+    pattern: string; // 正規表現には対応しない
     source: "dropdown" | "strict" | "contextMenu";
     context?: string;
 }
 
-export type AutoRule = AutoRuleOnly & Rule;
+export type AutoRule = Merge<PartialDeep<Rule>, AutoRuleOnly>;
 
 export interface Toggle {
     tags: string[][];

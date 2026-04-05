@@ -10,8 +10,8 @@ import { getSettingsData, storageArea, loadSettings } from "./storage";
 import { messages } from "./config";
 import { clearDb } from "./db";
 import { sendNotification, tryWithPermission } from "./browser";
-import type { AutoRuleOnly, Rule } from "@/entrypoints/background/rule";
-import type { Except, PartialDeep, SetRequired } from "type-fest";
+import type { AutoRule } from "@/entrypoints/background/rule";
+import type { Except } from "type-fest";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
@@ -40,10 +40,7 @@ export async function setSettings(
     });
 }
 
-export async function addAutoRule(
-    rules: (Except<AutoRuleOnly, "id"> &
-        SetRequired<PartialDeep<Rule>, "pattern">)[],
-) {
+export async function addAutoRule(rules: Except<AutoRule, "id">[]) {
     if (rules.length === 0) return;
 
     const transaction = async (): Promise<Partial<Settings>> => {
@@ -52,7 +49,10 @@ export async function addAutoRule(
         return {
             autoFilter: [
                 ...rules.map((rule) => {
-                    return { ...rule, id: crypto.randomUUID() };
+                    return {
+                        ...rule,
+                        id: crypto.randomUUID(),
+                    } satisfies AutoRule;
                 }),
                 ...settings.autoFilter,
             ],
