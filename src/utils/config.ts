@@ -57,9 +57,6 @@ export const defaultSettings: Settings = {
     isUserIdMountedToDropdown: false,
     isNgScoreMountedToDropdown: false,
 
-    // その他
-    isCommentNgContextAppended: false,
-
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
@@ -80,9 +77,6 @@ export const defaultSettings: Settings = {
 
     // 通知
     isNotifyAddNgId: true,
-
-    // その他
-    isNgContextAppendedOnAdd: false,
 
     // -------------------------------------------------------------------------------------------
     // その他

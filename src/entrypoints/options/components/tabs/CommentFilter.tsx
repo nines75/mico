@@ -117,13 +117,4 @@ const config = [
             },
         ],
     },
-    {
-        heading: "その他",
-        items: [
-            {
-                id: "isCommentNgContextAppended",
-                label: "NG登録時にコンテキスト情報を付与する",
-            },
-        ],
-    },
 ] satisfies CheckboxGroups;
