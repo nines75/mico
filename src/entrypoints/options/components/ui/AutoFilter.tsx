@@ -26,7 +26,7 @@ function Rule({ rule }: RuleProps) {
         useShallow((state) => [state.settings.autoFilter, state.saveSettings]),
     );
 
-    const pattern = rule.rule;
+    const pattern = rule.pattern;
     if (pattern === undefined) return null;
 
     return (

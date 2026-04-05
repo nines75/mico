@@ -199,7 +199,7 @@ async function addNgUserIdFromDropdown(
     const settings = await loadSettings();
     await addAutoRule([
         {
-            rule: comment.userId,
+            pattern: comment.userId,
             context: `comment-body: ${comment.body}`,
             source: "dropdown",
             target: { commentUserId: true },

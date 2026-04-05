@@ -52,17 +52,17 @@ rule
             {
                 name: "フラグなし",
                 filter: "/rule/",
-                expected: mockRules({ rule: new RegExp("rule") }),
+                expected: mockRules({ pattern: new RegExp("rule") }),
             },
             {
                 name: "フラグあり",
                 filter: "/rule/i",
-                expected: mockRules({ rule: new RegExp("rule", "i") }),
+                expected: mockRules({ pattern: new RegExp("rule", "i") }),
             },
             {
                 name: "複数のフラグ",
                 filter: "/rule/isum",
-                expected: mockRules({ rule: new RegExp("rule", "isum") }),
+                expected: mockRules({ pattern: new RegExp("rule", "isum") }),
             },
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(createSettings(filter))).toEqual(expected);
@@ -73,7 +73,7 @@ rule
                 {
                     name: "先頭に空白文字を含む",
                     filter: " /rule/",
-                    expected: mockRules({ rule: " /rule/" }),
+                    expected: mockRules({ pattern: " /rule/" }),
                 },
                 {
                     name: "末尾に空白文字を含む",

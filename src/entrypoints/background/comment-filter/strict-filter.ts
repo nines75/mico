@@ -26,8 +26,8 @@ export abstract class StrictFilter<T> extends RuleFilter<T> {
                         rule.include === undefined &&
                         rule.exclude === undefined,
                 )
-                .map(({ rule }) => rule)
-                .filter((rule) => isString(rule)),
+                .map(({ pattern }) => pattern)
+                .filter((pattern) => isString(pattern)),
         );
     }
 

@@ -71,7 +71,7 @@ export default function commentRequest(
                 addAutoRule(
                     strictData.map((data) => {
                         return {
-                            rule: data.userId,
+                            pattern: data.userId,
                             context: data.context,
                             source: "strict",
                             target: { commentUserId: true },

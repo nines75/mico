@@ -12,11 +12,11 @@ export abstract class ExactFilter<T> extends RuleFilter<T> {
         super(settings, target);
 
         // Setを複数箇所で使うため予め生成
-        for (const rule of this.rules.map((item) => item.rule)) {
-            if (isString(rule)) {
-                this.ids.add(rule);
+        for (const { pattern } of this.rules) {
+            if (isString(pattern)) {
+                this.ids.add(pattern);
             } else {
-                this.regexes.push(rule);
+                this.regexes.push(pattern);
             }
         }
     }

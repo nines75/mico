@@ -247,7 +247,7 @@ export function parseFilter(
         }
 
         rules.push({
-            rule: regex ?? line,
+            pattern: regex ?? line,
             include,
             exclude,
             ...other,

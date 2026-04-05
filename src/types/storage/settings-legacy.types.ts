@@ -94,7 +94,9 @@ function migrateAllRule(filter: string) {
     // 無効化ルールであるか判定する必要があるのでparseが必要
     const allRuleLines = new Set(
         parseFilter(filter, true)
-            .rules.filter(({ rule, isDisable }) => rule === "all" && isDisable)
+            .rules.filter(
+                ({ pattern, isDisable }) => pattern === "all" && isDisable,
+            )
             .map(({ index }) => index as number),
     );
 

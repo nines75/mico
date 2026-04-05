@@ -5,7 +5,7 @@ import type { SetOptional } from "type-fest";
 export interface Rule {
     /** 元のフィルターを改行区切りで配列にしたときのインデックス */
     index?: number;
-    rule: string | RegExp;
+    pattern: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
     include: Toggle;
@@ -37,7 +37,7 @@ export interface Toggle {
     seriesIds: string[][];
 }
 
-export function createDefaultRule(): SetOptional<Rule, "rule"> {
+export function createDefaultRule(): SetOptional<Rule, "pattern"> {
     return {
         isStrict: false,
         isDisable: false,

@@ -27,8 +27,8 @@ export abstract class RuleFilter<T> extends Filter<T> {
         return this.rules.length;
     }
 
-    createKey(rule: string | RegExp): string {
-        return isString(rule) ? rule : rule.toString();
+    createKey(pattern: string | RegExp): string {
+        return isString(pattern) ? pattern : pattern.toString();
     }
 
     sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {

@@ -42,7 +42,7 @@ export async function setSettings(
 
 export async function addAutoRule(
     rules: (Except<AutoRuleOnly, "id"> &
-        SetRequired<PartialDeep<Rule>, "rule">)[],
+        SetRequired<PartialDeep<Rule>, "pattern">)[],
 ) {
     if (rules.length === 0) return;
 
@@ -87,7 +87,7 @@ export async function addNgIdFromUrl(url: string | undefined) {
     if (videoId !== undefined) {
         await addAutoRule([
             {
-                rule: videoId,
+                pattern: videoId,
                 source: "contextMenu",
                 target: { videoId: true },
             },
@@ -108,7 +108,7 @@ export async function addNgIdFromUrl(url: string | undefined) {
     if (userId !== undefined) {
         await addAutoRule([
             {
-                rule: userId,
+                pattern: userId,
                 source: "contextMenu",
                 target: { videoOwnerId: true },
             },
