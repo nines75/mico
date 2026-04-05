@@ -50,6 +50,39 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
 }
+.rule {
+    font-size: 25px;
+    padding: 10px 20px;
+    margin: 10px;
+    border: gray 3px solid;
+    border-radius: 10px;
+}
+.rule-pattern {
+    /* アイコンを揃える */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.rule-details {
+    color: silver;
+    font-size: 15px;
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    .value {
+        margin-left: 5px;
+        border: gray 1px solid;
+        border-radius: 5px;
+        padding-inline: 4px;
+    }
+}
+.rule-delete-button {
+    border: none;
+    color: gray;
+
+    /* アイコンを揃える */
+    display: flex;
+}
 #root {
     padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
 
