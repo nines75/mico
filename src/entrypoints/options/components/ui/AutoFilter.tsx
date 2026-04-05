@@ -10,9 +10,11 @@ export default function AutoFilter() {
 
     return (
         <div className="tab-content">
-            {autoFilter.map((rule) => (
-                <Rule rule={rule} key={rule.id} />
-            ))}
+            {autoFilter.map((rule) => {
+                if (rule.id === undefined) return null;
+
+                return <Rule rule={rule} key={rule.id} />;
+            })}
         </div>
     );
 }
@@ -56,7 +58,7 @@ function Rule({ rule }: RuleProps) {
             <div className="rule-details">
                 {rule.target !== undefined &&
                     Object.entries(rule.target).map(([key, value]) => {
-                        if (!value) return;
+                        if (!value) return null;
 
                         return (
                             <Detail name="ターゲット" key={key}>
