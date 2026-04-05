@@ -42,10 +42,7 @@ const highlights = createHighlights([
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
     { regex: /^@(?:end|s)\s*$/g, style: directiveStyle },
     {
-        regex: new RegExp(
-            String.raw`^@(?:${argsDirectives.join("|")}|v)\s`,
-            "g",
-        ),
+        regex: new RegExp(String.raw`^@(?:${argsDirectives.join("|")})\s`, "g"),
         style: directiveStyle,
     },
     {
@@ -58,10 +55,6 @@ const highlights = createHighlights([
 ]);
 
 const completions = createCompletions([
-    {
-        label: "@v ",
-        type: "keyword",
-    },
     {
         label: "@end",
         type: "keyword",

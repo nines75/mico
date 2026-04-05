@@ -231,17 +231,8 @@ rule
 @s
 rule
 rule
-
-@v sm1
-rule
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    {},
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
+                expected: mockRules({ isStrict: true }, {}),
             },
             {
                 name: "直後の行にルールがない",
@@ -249,15 +240,8 @@ rule
 @s
 @end
 rule
-
-@v sm1
-@end
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                ),
+                expected: mockRules({ isStrict: true }),
             },
             {
                 name: "ディレクティブが連続",
@@ -266,18 +250,8 @@ rule
 @s
 rule
 rule
-
-@v sm1
-@v sm1
-rule
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    {},
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
+                expected: mockRules({ isStrict: true }, {}),
             },
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(createSettings(filter))).toEqual(expected);
@@ -368,23 +342,23 @@ describe(parseArgs.name, () => {
     it.each([
         {
             name: "基本",
-            filter: "@v arg arg2",
+            filter: "@include-tags arg arg2",
         },
         {
             name: "小文字に変換されているか",
-            filter: "@v ARG Arg2",
+            filter: "@include-tags ARG Arg2",
         },
         {
             name: "間に複数の半角スペースを含む",
-            filter: "@v    arg    arg2    ",
+            filter: "@include-tags    arg    arg2    ",
         },
         {
             name: "間に複数の全角スペースを含む",
-            filter: "@v　　　　arg　　　　arg2　　　　",
+            filter: "@include-tags　　　　arg　　　　arg2　　　　",
         },
         {
             name: "間に半角スペースと全角スペースを含む",
-            filter: "@v 　 　arg 　 　arg2 　 　",
+            filter: "@include-tags 　 　arg 　 　arg2 　 　",
         },
     ])("$name", ({ filter }) => {
         expect(parseArgs(filter)).toEqual(["arg", "arg2"]);

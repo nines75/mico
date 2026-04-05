@@ -60,7 +60,6 @@ export function parseFilter(
 } {
     let invalidCount = 0;
     let isStrictAlias = false;
-    let videoIdsAlias: string[] = [];
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
@@ -73,7 +72,7 @@ export function parseFilter(
         // -------------------------------------------------------------------------------------------
         // ディレクティブのパース
         // -------------------------------------------------------------------------------------------
-        const trimmedRule = line.trimEnd();
+        const trimmedLine = line.trimEnd();
 
         // 引数あり
         for (const directive of argsDirectives) {
@@ -85,24 +84,19 @@ export function parseFilter(
                 continue lineLoop;
             }
         }
-        if (/^@v\s/.test(line)) {
-            videoIdsAlias = parseArgs(line);
-            continue;
-        }
 
         // 引数なし
-
         for (const directive of noArgsDirectives) {
-            if (trimmedRule === `@${directive}`) {
+            if (trimmedLine === `@${directive}`) {
                 directives.push({ type: directive });
                 continue lineLoop;
             }
         }
-        if (trimmedRule === "@end") {
+        if (trimmedLine === "@end") {
             directives.pop();
             continue;
         }
-        if (trimmedRule === "@s") {
+        if (trimmedLine === "@s") {
             isStrictAlias = true;
             continue;
         }
@@ -214,10 +208,6 @@ export function parseFilter(
         if (isStrictAlias) {
             other.isStrict = true;
             isStrictAlias = false;
-        }
-        if (videoIdsAlias.length > 0) {
-            include.videoIds.push(videoIdsAlias);
-            videoIdsAlias = [];
         }
 
         // -------------------------------------------------------------------------------------------
