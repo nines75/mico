@@ -36,7 +36,7 @@ export default function FilterArea() {
                         {name}
                     </button>
                 ))}
-                <ImportFilterButton />
+                {selectedFilter === "manual" && <ImportFilterButton />}
             </div>
             {selectedFilter === "manual" && (
                 <Editor
