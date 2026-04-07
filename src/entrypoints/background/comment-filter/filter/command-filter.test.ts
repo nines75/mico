@@ -3,6 +3,7 @@ import { CommandFilter } from "./command-filter";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
+import type { Settings } from "@/types/storage/settings.types";
 
 describe(CommandFilter.name, () => {
     let threads: Thread[];
@@ -14,12 +15,13 @@ describe(CommandFilter.name, () => {
     const filtering = (options: {
         filter: string;
         isStrictOnly?: boolean;
-        ngUserIds?: Set<string>;
+        settings?: Partial<Settings>;
     }) => {
-        const commandFilter = new CommandFilter(
-            { ...defaultSettings, ngCommand: options.filter },
-            options.ngUserIds ?? new Set(),
-        );
+        const commandFilter = new CommandFilter({
+            ...defaultSettings,
+            ...options.settings,
+            manualFilter: `@comment-commands\n${options.filter}`,
+        });
         commandFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return commandFilter;
@@ -79,12 +81,19 @@ big
         const commandFilter = filtering({
             filter,
             isStrictOnly: true,
-            ngUserIds: new Set(["user-id-main-3"]),
+            settings: {
+                autoFilter: [
+                    {
+                        pattern: "user-id-main-3",
+                        target: { commentUserId: true },
+                    },
+                ],
+            },
         });
 
         expect(commandFilter.getLog()).toEqual(new Map());
         expect(commandFilter.getStrictData()).toEqual([
-            { userId: "user-id-main-1", context: "command(strict): big" },
+            { userId: "user-id-main-1", context: "comment-commands: big" },
         ]);
     });
 

@@ -3,6 +3,7 @@ import { defaultSettings } from "@/utils/config";
 import { checkComment, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import { WordFilter } from "./word-filter";
+import type { Settings } from "@/types/storage/settings.types";
 
 describe(WordFilter.name, () => {
     let threads: Thread[];
@@ -14,12 +15,13 @@ describe(WordFilter.name, () => {
     const filtering = (options: {
         filter: string;
         isStrictOnly?: boolean;
-        ngUserIds?: Set<string>;
+        settings?: Partial<Settings>;
     }) => {
-        const wordFilter = new WordFilter(
-            { ...defaultSettings, ngWord: options.filter },
-            options.ngUserIds ?? new Set(),
-        );
+        const wordFilter = new WordFilter({
+            ...defaultSettings,
+            ...options.settings,
+            manualFilter: `@comment-body\n${options.filter}`,
+        });
         wordFilter.filtering(threads, options.isStrictOnly ?? false);
 
         return wordFilter;
@@ -79,14 +81,21 @@ describe(WordFilter.name, () => {
         const wordFilter = filtering({
             filter,
             isStrictOnly: true,
-            ngUserIds: new Set(["user-id-main-2"]),
+            settings: {
+                autoFilter: [
+                    {
+                        pattern: "user-id-main-2",
+                        target: { commentUserId: true },
+                    },
+                ],
+            },
         });
 
         expect(wordFilter.getLog()).toEqual(new Map());
         expect(wordFilter.getStrictData()).toEqual([
             {
                 userId: "user-id-main-1",
-                context: "body(strict): テスト",
+                context: "comment-body: テスト",
             },
         ]);
     });

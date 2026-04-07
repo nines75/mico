@@ -1,56 +1,96 @@
-import { defaultSettings } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
-import { setSettings, addAutoRule, removeAutoRule } from "./storage-write";
+import { addAutoRule, removeAutoRule, setSettings } from "./storage-write";
+import type { AutoRule } from "@/entrypoints/background/rule";
+import type { Except } from "type-fest";
 
-const userIds = ["user-id-owner", "user-id-main-1"];
+const expectString = expect.any(String) as string;
 
-it(addAutoRule.name, async () => {
-    await addAutoRule(userIds);
+describe(addAutoRule.name, () => {
+    it.each([
+        {
+            name: "0",
+            rules: [],
+        },
+        {
+            name: "1",
+            rules: [
+                {
+                    pattern: "rule",
+                    source: "dropdown",
+                },
+            ],
+        },
+        {
+            name: "複数",
+            rules: [
+                {
+                    pattern: "rule",
+                    source: "dropdown",
+                },
+                {
+                    pattern: "rule",
+                    source: "contextMenu",
+                    target: { commentBody: true },
+                },
+            ],
+        },
+    ] satisfies { name: string; rules: Except<AutoRule, "id">[] }[])(
+        "ルール数: $name",
+        async ({ rules }) => {
+            await addAutoRule(rules);
 
-    const settings = await loadSettings();
-    expect(settings.ngUserId).toBe(`${userIds.join("\n")}\n`);
+            const settings = await loadSettings();
+            expect(settings.autoFilter).toEqual(
+                rules.map((rule) => ({
+                    id: expectString,
+                    ...rule,
+                })),
+            );
+        },
+    );
 });
 
 describe(removeAutoRule.name, () => {
     it.each([
         {
-            name: "基本",
-            ids: userIds,
+            name: "0",
+            rules: [],
         },
         {
-            name: "コンテキスト",
-            ids: userIds.map((id) => `# context\n${id}\n`),
+            name: "1",
+            rules: [
+                {
+                    id: "id",
+                    pattern: "rule",
+                    source: "dropdown",
+                },
+            ],
         },
         {
-            name: "@v",
-            ids: userIds.map((id) => `@v sm1\n${id}`),
+            name: "複数",
+            rules: [
+                {
+                    id: "id",
+                    pattern: "rule",
+                    source: "dropdown",
+                },
+                {
+                    id: "id2",
+                    pattern: "rule",
+                    source: "contextMenu",
+                    target: { commentBody: true },
+                },
+            ],
         },
-        {
-            name: "@v + コンテキスト",
-            ids: userIds.map((id) => `# context\n@v sm1\n${id}\n`),
+    ] satisfies { name: string; rules: AutoRule[] }[])(
+        "ルール数: $name",
+        async ({ rules }) => {
+            await setSettings({ autoFilter: rules });
+            await removeAutoRule(rules.map(({ id }) => id));
+
+            const settings = await loadSettings();
+            expect(settings.autoFilter).toEqual([]);
         },
-    ])("$name", async ({ ids }) => {
-        await setSettings({
-            ...defaultSettings,
-            ngUserId: ids.join("\n"),
-        });
-        await removeAutoRule(userIds);
-
-        const settings = await loadSettings();
-        expect(settings.ngUserId).toBe("");
-    });
-
-    it("コンテキストに応じて無効化されるルールを削除しない", async () => {
-        const ids = userIds.join("\n");
-        const specificIds = userIds.map((id) => `@v sm1\n${id}`).join("\n");
-        await setSettings({
-            ...defaultSettings,
-            ngUserId: `${ids}\n${specificIds}`,
-        });
-        await removeAutoRule(userIds, false);
-
-        const settings = await loadSettings();
-        expect(settings.ngUserId).toBe(specificIds);
-    });
+    );
 });
