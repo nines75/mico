@@ -56,7 +56,7 @@ input[type="checkbox"] {
 
     /* 仮想スクロールする要素の高さをウインドウサイズに応じて変える */
     flex: 1; /* 指定しなくても同じ挙動だが、明示的に残りの領域を割り当てる */
-    min-height: 0;/* 枠が伸びないようにする保険 */
+    min-height: 0; /* 枠が伸びないようにする保険 */
 }
 .rule {
     font-size: 25px;
@@ -155,6 +155,7 @@ button
 }
 .filter-button {
     padding: 7px 12px;
+    height: 40px; /* import-filter-buttonの有無で位置がずれないようにする */
 }
 .selected-button {
     border-color: lightskyblue;
