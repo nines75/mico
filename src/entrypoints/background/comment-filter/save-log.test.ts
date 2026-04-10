@@ -29,7 +29,7 @@ big
 
 @comment-body
 コメント
-`
+`,
     } satisfies Partial<Settings>;
 
     const filteredData = filterComment(

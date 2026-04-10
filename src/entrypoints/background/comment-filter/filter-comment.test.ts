@@ -69,7 +69,7 @@ device:Switch
 コメント
 @s
 コメント
-`
+`,
         });
 
         checkComment(threads, ["1002", "1003", "1004"]);
