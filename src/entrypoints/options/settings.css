@@ -50,6 +50,14 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
 }
+.rule-container {
+    border: gray 1px solid;
+    border-radius: 10px;
+
+    /* 仮想スクロールする要素の高さをウインドウサイズに応じて変える */
+    flex: 1; /* 指定しなくても同じ挙動だが、明示的に残りの領域を割り当てる */
+    min-height: 0;/* 枠が伸びないようにする保険 */
+}
 .rule {
     font-size: 25px;
     padding: 10px 20px;

@@ -3,18 +3,19 @@ import { useStorageStore } from "@/utils/store";
 import decamelize from "decamelize";
 import { X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
+import { VList } from "virtua";
 
 export default function AutoFilter() {
     const autoFilter = useStorageStore((state) => state.settings.autoFilter);
 
     return (
-        <div className="tab-content">
+        <VList className="rule-container">
             {autoFilter.map((rule) => {
                 if (rule.id === undefined) return null;
 
                 return <Rule rule={rule} key={rule.id} />;
             })}
-        </div>
+        </VList>
     );
 }
 
