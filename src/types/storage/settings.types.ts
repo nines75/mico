@@ -46,9 +46,6 @@ export interface Settings {
     isMyCommentIgnored: boolean;
     isIgnoreByNicoru: boolean;
     ignoreByNicoruCount: number;
-    ngUserId: string;
-    ngCommand: string;
-    ngWord: string;
 
     // ログ
     isNgScoreVisible: boolean;
@@ -77,9 +74,6 @@ export interface Settings {
     isCommentPreviewHidden: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
-    ngId: string;
-    ngUserName: string;
-    ngTitle: string;
 
     // ログ
     isTitleRenderedAsLink: boolean;

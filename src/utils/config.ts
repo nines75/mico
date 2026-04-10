@@ -70,9 +70,6 @@ export const defaultSettings: Settings = {
     isMyCommentIgnored: true,
     isIgnoreByNicoru: false,
     ignoreByNicoruCount: 30,
-    ngUserId: "",
-    ngCommand: "",
-    ngWord: "",
 
     // ログ
     isNgScoreVisible: true,
@@ -101,9 +98,6 @@ export const defaultSettings: Settings = {
     isCommentPreviewHidden: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
-    ngId: "",
-    ngTitle: "",
-    ngUserName: "",
 
     // ログ
     isTitleRenderedAsLink: false,
