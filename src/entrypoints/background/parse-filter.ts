@@ -1,6 +1,7 @@
 import { printInvalidRule } from "@/utils/util";
 import { createDefaultToggle, type Rule } from "./rule";
 import type { Settings } from "@/types/storage/settings.types";
+import type { Except } from "type-fest";
 
 export type Directive =
     | {
@@ -108,11 +109,11 @@ export function parseFilter(
         // ルールに適用するディレクティブを決定
         // -------------------------------------------------------------------------------------------
 
-        const include = createDefaultToggle();
-        const exclude = createDefaultToggle();
-        const other: Pick<Rule, "isStrict" | "isDisable" | "target"> = {
+        const rule: Except<Rule, "pattern"> = {
             isStrict: false,
             isDisable: false,
+            include: createDefaultToggle(),
+            exclude: createDefaultToggle(),
             target: {
                 commentUserId: false,
                 commentCommands: false,
@@ -128,77 +129,77 @@ export function parseFilter(
             switch (directive.type) {
                 // 引数あり(include)
                 case "include-tags": {
-                    pushArgs(include.tags, directive);
+                    pushArgs(rule.include.tags, directive);
                     break;
                 }
                 case "include-video-ids": {
-                    pushArgs(include.videoIds, directive);
+                    pushArgs(rule.include.videoIds, directive);
                     break;
                 }
                 case "include-user-ids": {
-                    pushArgs(include.userIds, directive);
+                    pushArgs(rule.include.userIds, directive);
                     break;
                 }
                 case "include-series-ids": {
-                    pushArgs(include.seriesIds, directive);
+                    pushArgs(rule.include.seriesIds, directive);
                     break;
                 }
 
                 // 引数あり(exclude)
                 case "exclude-tags": {
-                    pushArgs(exclude.tags, directive);
+                    pushArgs(rule.exclude.tags, directive);
                     break;
                 }
                 case "exclude-video-ids": {
-                    pushArgs(exclude.videoIds, directive);
+                    pushArgs(rule.exclude.videoIds, directive);
                     break;
                 }
                 case "exclude-user-ids": {
-                    pushArgs(exclude.userIds, directive);
+                    pushArgs(rule.exclude.userIds, directive);
                     break;
                 }
                 case "exclude-series-ids": {
-                    pushArgs(exclude.seriesIds, directive);
+                    pushArgs(rule.exclude.seriesIds, directive);
                     break;
                 }
 
                 // 引数なし
                 case "strict": {
-                    other.isStrict = true;
+                    rule.isStrict = true;
                     break;
                 }
                 case "disable": {
-                    other.isDisable = true;
+                    rule.isDisable = true;
                     break;
                 }
 
                 // 引数なし(target)
                 case "comment-user-id": {
-                    other.target.commentUserId = true;
+                    rule.target.commentUserId = true;
                     break;
                 }
                 case "comment-commands": {
-                    other.target.commentCommands = true;
+                    rule.target.commentCommands = true;
                     break;
                 }
                 case "comment-body": {
-                    other.target.commentBody = true;
+                    rule.target.commentBody = true;
                     break;
                 }
                 case "video-id": {
-                    other.target.videoId = true;
+                    rule.target.videoId = true;
                     break;
                 }
                 case "video-owner-id": {
-                    other.target.videoOwnerId = true;
+                    rule.target.videoOwnerId = true;
                     break;
                 }
                 case "video-owner-name": {
-                    other.target.videoOwnerName = true;
+                    rule.target.videoOwnerName = true;
                     break;
                 }
                 case "video-title": {
-                    other.target.videoTitle = true;
+                    rule.target.videoTitle = true;
                     break;
                 }
             }
@@ -206,7 +207,7 @@ export function parseFilter(
 
         // エイリアスの適用
         if (isStrictAlias) {
-            other.isStrict = true;
+            rule.isStrict = true;
             isStrictAlias = false;
         }
 
@@ -238,9 +239,7 @@ export function parseFilter(
 
         rules.push({
             pattern: regex ?? line,
-            include,
-            exclude,
-            ...other,
+            ...rule,
             ...(hasIndex ? { index } : {}),
         });
     }
