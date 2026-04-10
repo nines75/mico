@@ -1,4 +1,4 @@
-import type { Settings } from "./settings.types";
+import type { Settings } from "@/types/storage/settings.types";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
 
 export function migrateSettingsToV3(v2: Partial<Settings>) {

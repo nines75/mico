@@ -1,7 +1,8 @@
 import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { storage } from "#imports";
-import { migrateSettingsToV3 } from "@/types/storage/settings-legacy.types";
+import { migrateSettingsToV3 } from "./settings-legacy-v2";
+import { migrateSettingsToV4 } from "./settings-legacy";
 
 export const storageArea = "local";
 
@@ -15,10 +16,11 @@ export async function loadSettings() {
 const settingsStorage = storage.defineItem<Partial<Settings>>(
     `${storageArea}:settings`,
     {
-        version: 3,
+        version: 4,
         // TODO: しばらくしたら消す
         migrations: {
             3: migrateSettingsToV3,
+            4: migrateSettingsToV4,
         },
     },
 );
