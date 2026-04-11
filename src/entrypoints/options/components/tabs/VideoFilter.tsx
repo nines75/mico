@@ -68,15 +68,4 @@ const config = [
             },
         ],
     },
-    {
-        heading: "その他",
-        items: [
-            {
-                id: "isNgContextAppendedOnAdd",
-                label: "NG登録時にコンテキスト情報を付与する",
-                details:
-                    "コンテキストメニューからNG登録した場合は付与されません。",
-            },
-        ],
-    },
 ] satisfies CheckboxGroups;

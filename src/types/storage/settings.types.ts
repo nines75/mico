@@ -1,3 +1,4 @@
+import type { AutoRule } from "@/entrypoints/background/rule";
 import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
 
 export type FilterTab = "commentFilter" | "videoFilter";
@@ -28,6 +29,8 @@ export interface Settings {
     // -------------------------------------------------------------------------------------------
 
     selectedFilter: FilterId;
+    manualFilter: string;
+    autoFilter: Partial<AutoRule>[];
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
@@ -43,9 +46,6 @@ export interface Settings {
     isMyCommentIgnored: boolean;
     isIgnoreByNicoru: boolean;
     ignoreByNicoruCount: number;
-    ngUserId: string;
-    ngCommand: string;
-    ngWord: string;
 
     // ログ
     isNgScoreVisible: boolean;
@@ -63,9 +63,6 @@ export interface Settings {
     isUserIdMountedToDropdown: boolean;
     isNgScoreMountedToDropdown: boolean;
 
-    // その他
-    isCommentNgContextAppended: boolean;
-
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
@@ -77,18 +74,12 @@ export interface Settings {
     isCommentPreviewHidden: boolean;
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
-    ngId: string;
-    ngUserName: string;
-    ngTitle: string;
 
     // ログ
     isTitleRenderedAsLink: boolean;
 
     // 通知
     isNotifyAddNgId: boolean;
-
-    // その他
-    isNgContextAppendedOnAdd: boolean;
 
     // -------------------------------------------------------------------------------------------
     // その他

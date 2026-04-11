@@ -4,7 +4,7 @@ import { PartialFilter } from "../partial-filter";
 
 export class UserNameFilter extends PartialFilter {
     constructor(settings: Settings) {
-        super(settings, settings.ngUserName);
+        super(settings, "videoOwnerName");
     }
 
     protected override pickTarget(video: NiconicoVideo): string | null {

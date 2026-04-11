@@ -9,14 +9,14 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     private disableCount = 0;
     protected override log: CommonLog = new Map();
 
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, settings.ngCommand);
+    constructor(settings: Settings) {
+        super(settings, "commentCommands");
 
-        this.rules = this.rules.map((data) => {
-            const rule = data.rule;
+        this.rules = this.rules.map((rule) => {
+            const pattern = rule.pattern;
             return {
-                ...data,
-                rule: isString(rule) ? rule.toLowerCase() : rule,
+                ...rule,
+                pattern: isString(pattern) ? pattern.toLowerCase() : pattern,
             };
         });
     }
@@ -49,16 +49,20 @@ export class CommandFilter extends StrictFilter<CommonLog> {
             const { id, commands, userId } = comment;
             const disableCommands = new Set<string>();
 
-            for (const { rule, isDisable } of rules) {
+            for (const { pattern, isDisable } of rules) {
                 for (const command of commands) {
-                    if (isString(rule) ? rule !== command : !rule.test(command))
+                    if (
+                        isString(pattern)
+                            ? pattern !== command
+                            : !pattern.test(command)
+                    )
                         continue;
 
                     if (isStrictOnly) {
                         if (!this.ngUserIds.has(userId)) {
                             this.strictData.push({
                                 userId,
-                                context: `command(strict): ${command}`,
+                                context: `comment-commands: ${command}`,
                             });
                         }
 
@@ -71,7 +75,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                         continue;
                     }
 
-                    pushCommonLog(this.log, this.createKey(rule), id);
+                    pushCommonLog(this.log, this.createKey(pattern), id);
                     this.filteredComments.set(id, comment);
                     this.blockedCount++;
 
@@ -98,7 +102,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
     override sortLog(): void {
         this.log = this.sortCommonLog(
             this.log,
-            this.rules.map(({ rule }) => rule),
+            this.rules.map(({ pattern }) => pattern),
         );
     }
 

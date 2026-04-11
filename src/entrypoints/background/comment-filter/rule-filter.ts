@@ -7,7 +7,7 @@ import { Filter, sortCommentId } from "./filter";
 import type { CommonLog } from "@/types/storage/log.types";
 import type { TabData } from "@/types/storage/tab.types";
 import { objectKeys } from "ts-extras";
-import type { Rule } from "../rule";
+import { createRules, type Rule } from "../rule";
 
 export abstract class RuleFilter<T> extends Filter<T> {
     private includeCount = 0;
@@ -15,11 +15,11 @@ export abstract class RuleFilter<T> extends Filter<T> {
     private invalidCount = 0;
     protected rules: Rule[];
 
-    constructor(settings: Settings, filter: string) {
+    constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(filter);
-        this.rules = rules;
+        const { rules, invalidCount } = parseFilter(settings);
+        this.rules = createRules(settings, target, rules);
         this.invalidCount += invalidCount;
     }
 
@@ -71,8 +71,8 @@ export abstract class RuleFilter<T> extends Filter<T> {
         return this.rules.length;
     }
 
-    createKey(rule: string | RegExp): string {
-        return isString(rule) ? rule : rule.toString();
+    createKey(pattern: string | RegExp): string {
+        return isString(pattern) ? pattern : pattern.toString();
     }
 
     sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {

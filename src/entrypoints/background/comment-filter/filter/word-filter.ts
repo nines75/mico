@@ -8,8 +8,8 @@ import { StrictFilter } from "../strict-filter";
 export class WordFilter extends StrictFilter<WordLog> {
     protected override log: WordLog = new Map();
 
-    constructor(settings: Settings, ngUserIds: Set<string>) {
-        super(settings, ngUserIds, settings.ngWord);
+    constructor(settings: Settings) {
+        super(settings, "commentBody");
     }
 
     override filtering(threads: Thread[], isStrictOnly = false): void {
@@ -21,15 +21,19 @@ export class WordFilter extends StrictFilter<WordLog> {
         this.traverseThreads(threads, (comment) => {
             const { id, body, userId } = comment;
 
-            for (const { rule } of rules) {
-                if (isString(rule) ? !body.includes(rule) : !rule.test(body))
+            for (const { pattern } of rules) {
+                if (
+                    isString(pattern)
+                        ? !body.includes(pattern)
+                        : !pattern.test(body)
+                )
                     continue;
 
                 if (isStrictOnly) {
                     if (!this.ngUserIds.has(userId)) {
                         this.strictData.push({
                             userId,
-                            context: `body(strict): ${body}`,
+                            context: `comment-body: ${body}`,
                         });
                     }
 
@@ -38,7 +42,7 @@ export class WordFilter extends StrictFilter<WordLog> {
                     return true;
                 }
 
-                const key = this.createKey(rule);
+                const key = this.createKey(pattern);
                 const map = this.log.get(key);
                 if (map === undefined) {
                     this.log.set(key, new Map([[body, [id]]]));
@@ -58,7 +62,7 @@ export class WordFilter extends StrictFilter<WordLog> {
 
     override sortLog(): void {
         const log: WordLog = new Map();
-        const keys = this.rules.map(({ rule }) => this.createKey(rule));
+        const keys = this.rules.map(({ pattern }) => this.createKey(pattern));
 
         // フィルター順にソート
         for (const key of keys) {

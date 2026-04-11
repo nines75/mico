@@ -1,5 +1,7 @@
 import { printInvalidRule } from "@/utils/util";
 import { createDefaultToggle, type Rule } from "./rule";
+import type { Settings } from "@/types/storage/settings.types";
+import type { Except } from "type-fest";
 
 export type Directive =
     | {
@@ -15,7 +17,16 @@ export type Directive =
           args: string[];
       }
     | {
-          type: "strict" | "disable";
+          type:
+              | "strict"
+              | "disable"
+              | "comment-user-id"
+              | "comment-commands"
+              | "comment-body"
+              | "video-id"
+              | "video-owner-id"
+              | "video-owner-name"
+              | "video-title";
       };
 
 export const argsDirectives = [
@@ -29,8 +40,20 @@ export const argsDirectives = [
     "exclude-series-ids",
 ] as const satisfies Extract<Directive, { args: string[] }>["type"][];
 
+export const noArgsDirectives = [
+    "strict",
+    "disable",
+    "comment-user-id",
+    "comment-commands",
+    "comment-body",
+    "video-id",
+    "video-owner-id",
+    "video-owner-name",
+    "video-title",
+] as const satisfies Exclude<Directive, { args: string[] }>["type"][];
+
 export function parseFilter(
-    filter: string,
+    settings: Settings,
     hasIndex = false, // テストが複雑になるためindexはデフォルトで含めない
 ): {
     rules: Rule[];
@@ -38,11 +61,10 @@ export function parseFilter(
 } {
     let invalidCount = 0;
     let isStrictAlias = false;
-    let videoIdsAlias: string[] = [];
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
-    const lines = filter
+    const lines = settings.manualFilter
         .split("\n")
         .map((line, index) => ({ line, index }))
         .filter(({ line }) => line !== "" && !line.startsWith("#"));
@@ -51,7 +73,7 @@ export function parseFilter(
         // -------------------------------------------------------------------------------------------
         // ディレクティブのパース
         // -------------------------------------------------------------------------------------------
-        const trimmedRule = line.trimEnd();
+        const trimmedLine = line.trimEnd();
 
         // 引数あり
         for (const directive of argsDirectives) {
@@ -63,25 +85,19 @@ export function parseFilter(
                 continue lineLoop;
             }
         }
-        if (/^@v\s/.test(line)) {
-            videoIdsAlias = parseArgs(line);
-            continue;
-        }
 
         // 引数なし
-        if (trimmedRule === "@strict") {
-            directives.push({ type: "strict" });
-            continue;
+        for (const directive of noArgsDirectives) {
+            if (trimmedLine === `@${directive}`) {
+                directives.push({ type: directive });
+                continue lineLoop;
+            }
         }
-        if (trimmedRule === "@disable") {
-            directives.push({ type: "disable" });
-            continue;
-        }
-        if (trimmedRule === "@end") {
+        if (trimmedLine === "@end") {
             directives.pop();
             continue;
         }
-        if (trimmedRule === "@s") {
+        if (trimmedLine === "@s") {
             isStrictAlias = true;
             continue;
         }
@@ -93,56 +109,97 @@ export function parseFilter(
         // ルールに適用するディレクティブを決定
         // -------------------------------------------------------------------------------------------
 
-        let isStrict = false;
-        let isDisable = false;
-        const include = createDefaultToggle();
-        const exclude = createDefaultToggle();
+        const rule: Except<Rule, "pattern"> = {
+            isStrict: false,
+            isDisable: false,
+            include: createDefaultToggle(),
+            exclude: createDefaultToggle(),
+            target: {
+                commentUserId: false,
+                commentCommands: false,
+                commentBody: false,
+                videoId: false,
+                videoOwnerId: false,
+                videoOwnerName: false,
+                videoTitle: false,
+            },
+        };
 
         for (const directive of directives) {
             switch (directive.type) {
-                // include
+                // 引数あり(include)
                 case "include-tags": {
-                    pushArgs(include.tags, directive);
+                    pushArgs(rule.include.tags, directive);
                     break;
                 }
                 case "include-video-ids": {
-                    pushArgs(include.videoIds, directive);
+                    pushArgs(rule.include.videoIds, directive);
                     break;
                 }
                 case "include-user-ids": {
-                    pushArgs(include.userIds, directive);
+                    pushArgs(rule.include.userIds, directive);
                     break;
                 }
                 case "include-series-ids": {
-                    pushArgs(include.seriesIds, directive);
+                    pushArgs(rule.include.seriesIds, directive);
                     break;
                 }
 
-                // exclude
+                // 引数あり(exclude)
                 case "exclude-tags": {
-                    pushArgs(exclude.tags, directive);
+                    pushArgs(rule.exclude.tags, directive);
                     break;
                 }
                 case "exclude-video-ids": {
-                    pushArgs(exclude.videoIds, directive);
+                    pushArgs(rule.exclude.videoIds, directive);
                     break;
                 }
                 case "exclude-user-ids": {
-                    pushArgs(exclude.userIds, directive);
+                    pushArgs(rule.exclude.userIds, directive);
                     break;
                 }
                 case "exclude-series-ids": {
-                    pushArgs(exclude.seriesIds, directive);
+                    pushArgs(rule.exclude.seriesIds, directive);
                     break;
                 }
 
-                // その他
+                // 引数なし
                 case "strict": {
-                    isStrict = true;
+                    rule.isStrict = true;
                     break;
                 }
                 case "disable": {
-                    isDisable = true;
+                    rule.isDisable = true;
+                    break;
+                }
+
+                // 引数なし(target)
+                case "comment-user-id": {
+                    rule.target.commentUserId = true;
+                    break;
+                }
+                case "comment-commands": {
+                    rule.target.commentCommands = true;
+                    break;
+                }
+                case "comment-body": {
+                    rule.target.commentBody = true;
+                    break;
+                }
+                case "video-id": {
+                    rule.target.videoId = true;
+                    break;
+                }
+                case "video-owner-id": {
+                    rule.target.videoOwnerId = true;
+                    break;
+                }
+                case "video-owner-name": {
+                    rule.target.videoOwnerName = true;
+                    break;
+                }
+                case "video-title": {
+                    rule.target.videoTitle = true;
                     break;
                 }
             }
@@ -150,12 +207,8 @@ export function parseFilter(
 
         // エイリアスの適用
         if (isStrictAlias) {
-            isStrict = true;
+            rule.isStrict = true;
             isStrictAlias = false;
-        }
-        if (videoIdsAlias.length > 0) {
-            include.videoIds.push(videoIdsAlias);
-            videoIdsAlias = [];
         }
 
         // -------------------------------------------------------------------------------------------
@@ -185,11 +238,8 @@ export function parseFilter(
         }
 
         rules.push({
-            rule: regex ?? line,
-            isStrict,
-            isDisable,
-            include,
-            exclude,
+            pattern: regex ?? line,
+            ...rule,
             ...(hasIndex ? { index } : {}),
         });
     }

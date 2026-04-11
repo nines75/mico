@@ -19,7 +19,66 @@ export const defaultSettings: Settings = {
     // フィルター
     // -------------------------------------------------------------------------------------------
 
-    selectedFilter: "ngUserId",
+    selectedFilter: "manual",
+    manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
+
+#============================================================
+
+@comment-user-id
+
+# ここに非表示にしたいコメントのユーザーIDを入力
+
+@end
+
+#============================================================
+
+@comment-commands
+
+# ここに非表示にしたいコメントのコマンドを入力
+
+@end
+
+#============================================================
+
+@comment-body
+
+# ここに非表示にしたいコメントの本文を入力
+
+@end
+
+#============================================================
+
+@video-id
+
+# ここに非表示にしたい動画のIDを入力
+
+@end
+
+#============================================================
+
+@video-owner-id
+
+# ここに非表示にしたい動画の投稿者IDを入力
+
+@end
+
+#============================================================
+
+@video-owner-name
+
+# ここに非表示にしたい動画の投稿者名を入力
+
+@end
+
+#============================================================
+
+@video-title
+
+# ここに非表示にしたい動画のタイトルを入力
+
+@end
+`,
+    autoFilter: [],
 
     // -------------------------------------------------------------------------------------------
     // コメントフィルター
@@ -35,9 +94,6 @@ export const defaultSettings: Settings = {
     isMyCommentIgnored: true,
     isIgnoreByNicoru: false,
     ignoreByNicoruCount: 30,
-    ngUserId: "",
-    ngCommand: "",
-    ngWord: "",
 
     // ログ
     isNgScoreVisible: true,
@@ -55,9 +111,6 @@ export const defaultSettings: Settings = {
     isUserIdMountedToDropdown: false,
     isNgScoreMountedToDropdown: false,
 
-    // その他
-    isCommentNgContextAppended: false,
-
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
@@ -69,18 +122,12 @@ export const defaultSettings: Settings = {
     isCommentPreviewHidden: false,
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
-    ngId: "",
-    ngTitle: "",
-    ngUserName: "",
 
     // ログ
     isTitleRenderedAsLink: false,
 
     // 通知
     isNotifyAddNgId: true,
-
-    // その他
-    isNgContextAppendedOnAdd: false,
 
     // -------------------------------------------------------------------------------------------
     // その他

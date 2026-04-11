@@ -1,16 +1,18 @@
-import { IdFilter } from "./filter/id-filter";
 import { UserNameFilter } from "./filter/user-name-filter";
 import { TitleFilter } from "./filter/title-filter";
 import type { Settings } from "@/types/storage/settings.types";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import { PaidFilter } from "./filter/paid-filter";
 import { ViewsFilter } from "./filter/views-filter";
+import { VideoIdFilter } from "./filter/video-id-filter";
+import { VideoOwnerIdFilter } from "./filter/video-owner-id-filter";
 
 export type Filters = FilteredData["filters"];
 
 export interface FilteredData {
     filters: {
-        idFilter: IdFilter;
+        videoIdFilter: VideoIdFilter;
+        videoOwnerIdFilter: VideoOwnerIdFilter;
         paidFilter: PaidFilter;
         viewsFilter: ViewsFilter;
         userNameFilter: UserNameFilter;
@@ -30,14 +32,16 @@ export function filterVideo(
 
     const start = performance.now();
 
-    const idFilter = new IdFilter(settings);
+    const videoIdFilter = new VideoIdFilter(settings);
+    const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
     const paidFilter = new PaidFilter(settings);
     const viewsFilter = new ViewsFilter(settings, isRecommend);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: Filters = {
-        idFilter,
+        videoIdFilter,
+        videoOwnerIdFilter,
         paidFilter,
         viewsFilter,
         userNameFilter,
@@ -71,14 +75,16 @@ export function filterVideo(
 }
 
 export function isNgVideo(video: NiconicoVideo, settings: Settings): boolean {
-    const idFilter = new IdFilter(settings);
+    const videoIdFilter = new VideoIdFilter(settings);
+    const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
     const paidFilter = new PaidFilter(settings);
     const viewsFilter = new ViewsFilter(settings, true);
     const userNameFilter = new UserNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: Filters = {
-        idFilter,
+        videoIdFilter,
+        videoOwnerIdFilter,
         paidFilter,
         viewsFilter,
         userNameFilter,

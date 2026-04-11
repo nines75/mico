@@ -2,9 +2,18 @@ import { describe, expect, it, vi } from "vitest";
 import { mockRules, mockToggle, testTabData } from "@/utils/test";
 import { RuleFilter } from "./rule-filter";
 import { defaultSettings } from "@/utils/config";
+import type { Settings } from "@/types/storage/settings.types";
+import { parseFilter } from "../parse-filter";
 
 class TestFilter extends RuleFilter<unknown> {
     protected override log: unknown;
+
+    constructor(settings: Settings) {
+        super(settings, "commentBody");
+
+        // targetの指定なしでルールを上書き
+        this.rules = parseFilter(settings).rules;
+    }
 
     override filtering = vi.fn();
     override sortLog = vi.fn();
@@ -15,7 +24,10 @@ class TestFilter extends RuleFilter<unknown> {
 }
 
 function filtering(options: { filter: string; tags?: string[] }) {
-    const testFilter = new TestFilter(defaultSettings, options.filter);
+    const testFilter = new TestFilter({
+        ...defaultSettings,
+        manualFilter: options.filter,
+    });
     testFilter.filterRules({
         ...testTabData,
         tags: options.tags ?? [],

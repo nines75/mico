@@ -1,15 +1,9 @@
-import type { Settings } from "@/types/storage/settings.types";
 import { useStorageStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
 import { Import } from "lucide-react";
-import type { ChangeEvent } from "react";
 import { useRef } from "react";
 
-interface ImportFilterButtonProps {
-    id: keyof Settings;
-}
-
-export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
+export default function ImportFilterButton() {
     const input = useRef<HTMLInputElement | null>(null);
     const save = useStorageStore((state) => state.saveSettings);
 
@@ -30,20 +24,12 @@ export default function ImportFilterButton({ id }: ImportFilterButtonProps) {
                 style={{ display: "none" }}
                 ref={input}
                 onChange={catchAsync(async (event) => {
-                    await importFilter(event, save, id);
+                    const text = await event.target.files?.[0]?.text();
+                    if (text === undefined) return;
+
+                    save({ manualFilter: text });
                 })}
             />
         </>
     );
-}
-
-async function importFilter(
-    event: ChangeEvent<HTMLInputElement>,
-    saveSettings: (settings: Partial<Settings>) => void,
-    key: keyof Settings,
-) {
-    const text = await event.target.files?.[0]?.text();
-    if (text === undefined) return;
-
-    saveSettings({ [key]: text });
 }

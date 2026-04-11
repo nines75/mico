@@ -219,7 +219,7 @@ export function mockRules(
     return {
         rules: rules.map((rule): Rule => {
             return {
-                rule: "rule",
+                pattern: "rule",
                 ...createDefaultRule(),
                 ...rule,
             };

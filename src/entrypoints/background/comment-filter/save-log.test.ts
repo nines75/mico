@@ -18,9 +18,18 @@ it(saveLog.name, () => {
         isEasyCommentHidden: true,
         isScoreFilterEnabled: true,
         scoreFilterCount: -1001,
-        ngUserId: "user-id-owner",
-        ngCommand: "big",
-        ngWord: "コメント",
+        manualFilter: `
+@comment-user-id
+user-id-owner
+@end
+
+@comment-commands
+big
+@end
+
+@comment-body
+コメント
+`,
     } satisfies Partial<Settings>;
 
     const filteredData = filterComment(

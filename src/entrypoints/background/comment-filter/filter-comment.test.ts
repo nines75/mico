@@ -18,9 +18,19 @@ describe(filterComment.name, () => {
             {
                 ...defaultSettings,
                 scoreFilterCount: -1001,
-                ngUserId: "user-id-owner",
-                ngCommand: "big",
-                ngWord: "コメント",
+                manualFilter: `
+@comment-user-id
+user-id-owner
+@end
+
+@comment-commands
+big
+@end
+
+@comment-body
+コメント
+@end
+`,
                 ...settings,
             },
             testTabData,
@@ -47,14 +57,15 @@ describe(filterComment.name, () => {
 
     it("strictルールの先行適用", () => {
         const result = filtering({
-            ngUserId: "",
-            ngCommand: `
+            manualFilter: `
+@comment-commands
 big
 @s
 big
 device:Switch
-`,
-            ngWord: `
+@end
+
+@comment-body
 コメント
 @s
 コメント
@@ -80,13 +91,14 @@ device:Switch
 
     it("strictルールによるフィルタリングの重複", () => {
         const result = filtering({
-            ngUserId: "",
-            ngCommand: `
+            manualFilter: `
+@comment-commands
 # 1003と1004に一致
 @s
 device:switch
-`,
-            ngWord: `
+@end
+
+@comment-body
 # 1003に一致
 @s
 テストコメント

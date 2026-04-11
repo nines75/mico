@@ -1,8 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockToggle, mockRules } from "@/utils/test";
+import { defaultSettings } from "@/utils/config";
+import type { Settings } from "@/types/storage/settings.types";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
+
+function createSettings(filter: string): Settings {
+    return { ...defaultSettings, manualFilter: filter };
+}
 
 describe(parseFilter.name, () => {
     // -------------------------------------------------------------------------------------------
@@ -36,7 +42,7 @@ rule
             expected: mockRules({}),
         },
     ])("$name", ({ filter, hasIndex, expected }) => {
-        expect(parseFilter(filter, hasIndex ?? false)).toEqual(
+        expect(parseFilter(createSettings(filter), hasIndex ?? false)).toEqual(
             expected ?? mockRules(),
         );
     });
@@ -46,20 +52,20 @@ rule
             {
                 name: "フラグなし",
                 filter: "/rule/",
-                expected: mockRules({ rule: new RegExp("rule") }),
+                expected: mockRules({ pattern: new RegExp("rule") }),
             },
             {
                 name: "フラグあり",
                 filter: "/rule/i",
-                expected: mockRules({ rule: new RegExp("rule", "i") }),
+                expected: mockRules({ pattern: new RegExp("rule", "i") }),
             },
             {
                 name: "複数のフラグ",
                 filter: "/rule/isum",
-                expected: mockRules({ rule: new RegExp("rule", "isum") }),
+                expected: mockRules({ pattern: new RegExp("rule", "isum") }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
 
         describe("異常系", () => {
@@ -67,7 +73,7 @@ rule
                 {
                     name: "先頭に空白文字を含む",
                     filter: " /rule/",
-                    expected: mockRules({ rule: " /rule/" }),
+                    expected: mockRules({ pattern: " /rule/" }),
                 },
                 {
                     name: "末尾に空白文字を含む",
@@ -86,7 +92,7 @@ rule
                     filter: "/(rule/",
                 },
             ])("$name", ({ filter, expected }) => {
-                expect(parseFilter(filter)).toEqual(
+                expect(parseFilter(createSettings(filter))).toEqual(
                     expected ?? { rules: [], invalidCount: 1 },
                 );
             });
@@ -128,7 +134,7 @@ rule
                 expected: mockRules({ isStrict: true }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 
@@ -143,7 +149,9 @@ rule
 @end
 `;
 
-        expect(parseFilter(filter)).toEqual(mockRules({ isStrict: true }));
+        expect(parseFilter(createSettings(filter))).toEqual(
+            mockRules({ isStrict: true }),
+        );
     });
 
     // -------------------------------------------------------------------------------------------
@@ -157,7 +165,9 @@ rule
 @end
 `;
 
-        expect(parseFilter(filter)).toEqual(mockRules({ isDisable: true }));
+        expect(parseFilter(createSettings(filter))).toEqual(
+            mockRules({ isDisable: true }),
+        );
     });
 
     // -------------------------------------------------------------------------------------------
@@ -178,7 +188,7 @@ rule
                 }),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
 
         describe("異常系", () => {
@@ -204,7 +214,7 @@ rule
                     expected: mockRules({}),
                 },
             ])("$name", ({ filter, expected }) => {
-                expect(parseFilter(filter)).toEqual(expected);
+                expect(parseFilter(createSettings(filter))).toEqual(expected);
             });
         });
     });
@@ -221,17 +231,8 @@ rule
 @s
 rule
 rule
-
-@v sm1
-rule
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    {},
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
+                expected: mockRules({ isStrict: true }, {}),
             },
             {
                 name: "直後の行にルールがない",
@@ -239,15 +240,8 @@ rule
 @s
 @end
 rule
-
-@v sm1
-@end
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                ),
+                expected: mockRules({ isStrict: true }),
             },
             {
                 name: "ディレクティブが連続",
@@ -256,21 +250,11 @@ rule
 @s
 rule
 rule
-
-@v sm1
-@v sm1
-rule
-rule
 `,
-                expected: mockRules(
-                    { isStrict: true },
-                    {},
-                    { include: mockToggle({ videoIds: [["sm1"]] }) },
-                    {},
-                ),
+                expected: mockRules({ isStrict: true }, {}),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 
@@ -349,7 +333,7 @@ rule
                 ),
             },
         ])("$name", ({ filter, expected }) => {
-            expect(parseFilter(filter)).toEqual(expected);
+            expect(parseFilter(createSettings(filter))).toEqual(expected);
         });
     });
 });
@@ -358,23 +342,23 @@ describe(parseArgs.name, () => {
     it.each([
         {
             name: "基本",
-            filter: "@v arg arg2",
+            filter: "@include-tags arg arg2",
         },
         {
             name: "小文字に変換されているか",
-            filter: "@v ARG Arg2",
+            filter: "@include-tags ARG Arg2",
         },
         {
             name: "間に複数の半角スペースを含む",
-            filter: "@v    arg    arg2    ",
+            filter: "@include-tags    arg    arg2    ",
         },
         {
             name: "間に複数の全角スペースを含む",
-            filter: "@v　　　　arg　　　　arg2　　　　",
+            filter: "@include-tags　　　　arg　　　　arg2　　　　",
         },
         {
             name: "間に半角スペースと全角スペースを含む",
-            filter: "@v 　 　arg 　 　arg2 　 　",
+            filter: "@include-tags 　 　arg 　 　arg2 　 　",
         },
     ])("$name", ({ filter }) => {
         expect(parseArgs(filter)).toEqual(["arg", "arg2"]);

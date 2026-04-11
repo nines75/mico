@@ -3,7 +3,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
-import type { Rule } from "../rule";
+import { createRules, type Rule } from "../rule";
 import type { Filters } from "./filter-video";
 import { Filter, sortVideoId } from "./filter";
 
@@ -11,11 +11,11 @@ export abstract class RuleFilter<T> extends Filter<T> {
     protected rules: Rule[];
     protected invalidCount = 0;
 
-    constructor(settings: Settings, filter: string) {
+    constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(filter);
-        this.rules = rules;
+        const { rules, invalidCount } = parseFilter(settings);
+        this.rules = createRules(settings, target, rules);
         this.invalidCount += invalidCount;
     }
 
@@ -27,8 +27,8 @@ export abstract class RuleFilter<T> extends Filter<T> {
         return this.rules.length;
     }
 
-    createKey(rule: string | RegExp): string {
-        return isString(rule) ? rule : rule.toString();
+    createKey(pattern: string | RegExp): string {
+        return isString(pattern) ? pattern : pattern.toString();
     }
 
     sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
@@ -56,7 +56,8 @@ export function getRuleFilters(
     filters: Filters,
 ): ConditionalPick<Filters, RuleFilter<unknown>> {
     return {
-        idFilter: filters.idFilter,
+        videoIdFilter: filters.videoIdFilter,
+        videoOwnerIdFilter: filters.videoOwnerIdFilter,
         userNameFilter: filters.userNameFilter,
         titleFilter: filters.titleFilter,
     };

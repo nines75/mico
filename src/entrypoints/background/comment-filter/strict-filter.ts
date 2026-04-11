@@ -3,15 +3,32 @@ import type { ConditionalPick } from "type-fest";
 import type { Filters } from "./filter-comment";
 import { RuleFilter } from "./rule-filter";
 import type { Thread } from "@/types/api/comment.types";
+import type { Rule } from "../rule";
+import { isString } from "@/utils/util";
+
+export interface StrictData {
+    userId: string;
+    context: string;
+}
 
 export abstract class StrictFilter<T> extends RuleFilter<T> {
     protected ngUserIds: Set<string>;
-    protected strictData: { userId: string; context: string }[] = [];
+    protected strictData: StrictData[] = [];
 
-    constructor(settings: Settings, ngUserIds: Set<string>, filter: string) {
-        super(settings, filter);
+    constructor(settings: Settings, target: keyof Rule["target"]) {
+        super(settings, target);
 
-        this.ngUserIds = ngUserIds;
+        this.ngUserIds = new Set(
+            settings.autoFilter
+                .filter(
+                    (rule) =>
+                        rule.target?.commentUserId === true &&
+                        rule.include === undefined &&
+                        rule.exclude === undefined,
+                )
+                .map(({ pattern }) => pattern)
+                .filter((pattern) => isString(pattern)),
+        );
     }
 
     abstract override filtering(

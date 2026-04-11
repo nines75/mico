@@ -4,7 +4,7 @@ import { PartialFilter } from "../partial-filter";
 
 export class TitleFilter extends PartialFilter {
     constructor(settings: Settings) {
-        super(settings, settings.ngTitle);
+        super(settings, "videoTitle");
     }
 
     protected override pickTarget(video: NiconicoVideo): string {

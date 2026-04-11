@@ -12,7 +12,7 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     protected override log: CommonLog = new Map();
 
     constructor(settings: Settings) {
-        super(settings, settings.ngUserId);
+        super(settings, "commentUserId");
     }
 
     override filtering(threads: Thread[]): void {
@@ -21,11 +21,11 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
 
         const userIdSet = new Set<string>();
         const regexes: RegExp[] = [];
-        for (const { rule } of rules) {
-            if (isString(rule)) {
-                userIdSet.add(rule);
+        for (const { pattern } of rules) {
+            if (isString(pattern)) {
+                userIdSet.add(pattern);
             } else {
-                regexes.push(rule);
+                regexes.push(pattern);
             }
         }
 
@@ -59,14 +59,14 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
     override sortLog(): void {
         this.log = this.sortCommonLog(
             this.log,
-            this.rules.map(({ rule }) => rule),
+            this.rules.map(({ pattern }) => pattern),
         );
     }
 
     updateFilter(userIds: string[]) {
         const newUserIds = userIds.map((id): Rule => {
             return {
-                rule: id,
+                pattern: id,
                 ...createDefaultRule(),
             };
         });
@@ -96,15 +96,7 @@ export function parseNgUserId(settings: Settings, hasSpecific = true) {
 export function getBasicNgUserIdSet(settings: Settings) {
     return new Set(
         parseNgUserId(settings, false)
-            .map(({ rule }) => rule)
-            .filter((rule) => isString(rule)),
+            .map(({ pattern }) => pattern)
+            .filter((pattern) => isString(pattern)),
     );
-}
-
-export function formatNgUserId(
-    id: string,
-    context: string,
-    settings: Settings,
-) {
-    return settings.isCommentNgContextAppended ? `# ${context}\n${id}\n` : id;
 }

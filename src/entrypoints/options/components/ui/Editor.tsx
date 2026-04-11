@@ -30,66 +30,48 @@ import {
     closeBrackets,
     completionKeymap,
 } from "@codemirror/autocomplete";
-import type { Settings } from "@/types/storage/settings.types";
 import { useStorageStore } from "@/utils/store";
-import { argsDirectives } from "@/entrypoints/background/parse-filter";
+import {
+    argsDirectives,
+    noArgsDirectives,
+} from "@/entrypoints/background/parse-filter";
 
-const toggleDirectivesRegex = new RegExp(
-    String.raw`^@(?:${argsDirectives.join("|")}|v)\s`,
-    "g",
-);
-
-const generalHighlights = createHighlights([
+const directiveStyle = "color: lime";
+const highlights = createHighlights([
     { regex: /^#.*$/g, style: "color: gray" },
     { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
-]);
-const ngUserIdHighlights = createHighlights([
-    { regex: toggleDirectivesRegex, style: "color: lime" },
-    { regex: /^@end\s*$/g, style: "color: cyan" },
-]);
-const ngWordHighlights = [
-    ...createHighlights([
-        { regex: /^@(?:strict|s)\s*$/g, style: "color: coral" },
-    ]),
-    ...ngUserIdHighlights,
-];
-const ngCommandHighlights = [
-    ...createHighlights([{ regex: /^@disable\s*$/g, style: "color: yellow" }]),
-    ...ngWordHighlights,
-];
-
-const ngUserIdCompletions: Completion[] = [
-    ...argsDirectives.map((directive) => ({
-        label: `@${directive} `,
-        type: "keyword",
-    })),
+    { regex: /^@(?:end|s)\s*$/g, style: directiveStyle },
     {
-        label: "@v ",
-        type: "keyword",
+        regex: new RegExp(String.raw`^@(?:${argsDirectives.join("|")})\s`, "g"),
+        style: directiveStyle,
     },
+    {
+        regex: new RegExp(
+            String.raw`^@(?:${noArgsDirectives.join("|")})\s*$`,
+            "g",
+        ),
+        style: directiveStyle,
+    },
+]);
+
+const completions = createCompletions([
     {
         label: "@end",
-        type: "keyword",
-    },
-];
-const ngWordCompletions: Completion[] = [
-    {
-        label: "@strict",
         type: "keyword",
     },
     {
         label: "@s",
         type: "keyword",
     },
-    ...ngUserIdCompletions,
-];
-const ngCommandCompletions: Completion[] = [
-    {
-        label: "@disable",
+    ...argsDirectives.map((directive) => ({
+        label: `@${directive} `,
         type: "keyword",
-    },
-    ...ngWordCompletions,
-];
+    })),
+    ...noArgsDirectives.map((directive) => ({
+        label: `@${directive}`,
+        type: "keyword",
+    })),
+]);
 
 const theme = EditorView.theme(
     {
@@ -112,7 +94,7 @@ const theme = EditorView.theme(
     { dark: true },
 );
 
-const baseExtensions = [
+const extensions = [
     keymap.of([
         ...standardKeymap,
         ...historyKeymap,
@@ -127,16 +109,17 @@ const baseExtensions = [
     dropCursor(),
     highlightActiveLine(),
     highlightActiveLineGutter(),
+    highlights,
+    completions,
     theme,
 ];
 
 interface EditorProps {
-    id: keyof Settings;
     value: string;
     onChange: (text: string) => void;
 }
 
-export default function Editor({ id, value, onChange }: EditorProps) {
+export default function Editor({ value, onChange }: EditorProps) {
     const view = useRef<EditorView | null>(null);
     const parent = useRef<HTMLDivElement | null>(null);
 
@@ -154,19 +137,14 @@ export default function Editor({ id, value, onChange }: EditorProps) {
             )
                 onChange(update.state.doc.toString());
         });
-        const dynamicExtensions = [
-            updateCallback,
-            getHighlights(id),
-            getCompletions(id),
-        ];
 
         return [
             ...(settings.isCloseBrackets ? [closeBrackets()] : []),
             ...(settings.isHighlightTrailingWhitespace
                 ? [highlightTrailingWhitespace()]
                 : []),
-            ...baseExtensions,
-            ...dynamicExtensions,
+            ...extensions,
+            updateCallback,
         ];
     };
     const createEditorState = useEffectEvent(() => {
@@ -240,44 +218,7 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
     });
 }
 
-function getHighlights(id: keyof Settings): Extension {
-    if (id !== "ngUserId" && id !== "ngCommand" && id !== "ngWord")
-        return generalHighlights;
-
-    const customHighlights = (() => {
-        switch (id) {
-            case "ngUserId": {
-                return ngUserIdHighlights;
-            }
-            case "ngCommand": {
-                return ngCommandHighlights;
-            }
-            case "ngWord": {
-                return ngWordHighlights;
-            }
-        }
-    })();
-
-    return [...generalHighlights, ...customHighlights];
-}
-
-function getCompletions(id: keyof Settings): Extension {
-    if (id !== "ngUserId" && id !== "ngCommand" && id !== "ngWord") return [];
-
-    const options = (() => {
-        switch (id) {
-            case "ngUserId": {
-                return ngUserIdCompletions;
-            }
-            case "ngCommand": {
-                return ngCommandCompletions;
-            }
-            case "ngWord": {
-                return ngWordCompletions;
-            }
-        }
-    })();
-
+function createCompletions(options: Completion[]): Extension {
     return autocompletion({
         override: [
             (context: CompletionContext): CompletionResult | null => {
