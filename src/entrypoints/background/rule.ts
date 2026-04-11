@@ -69,7 +69,7 @@ export function createRules(
     target: keyof Rule["target"],
     manualRules: Rule[],
 ) {
-    // manualルールを優先して評価するために先に展開
+    // Manualフィルターを優先して評価するために先に展開
     return [
         ...manualRules.filter((rule) => rule.target[target]),
         ...settings.autoFilter

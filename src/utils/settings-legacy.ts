@@ -126,7 +126,7 @@ interface SettingsV3 {
 
 export function migrateSettingsToV4(v3: Partial<SettingsV3>) {
     // v3のフィルターでAutoフィルター対象外のものはそのままManualフィルターに結合する
-    // Autoフィルター対象の場合は移行できるルールを判定し、移行可能なルールをAutoフィルターに追加したうえで
+    // Autoフィルター対象の場合は、ルールの中から移行可能なものをAutoフィルターに追加したうえで
     // 元のフィルターから除去し、その後元のフィルターをManualフィルターに結合する
 
     const autoFilter: Except<AutoRule, "source">[] = [];
@@ -263,12 +263,14 @@ function migrateNgUserId(
             return true;
         };
 
-        const before1 = lines[(rule.index as number) - 1];
-        const before2 = lines[(rule.index as number) - 2];
+        const index = rule.index as number;
+
+        const before1 = lines[index - 1];
+        const before2 = lines[index - 2];
 
         const success1 = extractContext(before1);
         const success2 =
-            before1?.startsWith("@include-video-ids ") === true &&
+            before1?.startsWith("@include-video-ids ") === true && // ここで抽出したいのは自動追加されたコメントなので、末尾は空白文字ではなく半角スペースでいい
             extractContext(before2);
 
         if (!success1 && !success2 && before1?.startsWith("#") === true)
@@ -286,7 +288,7 @@ function migrateNgUserId(
                 ? { include: { videoIds: rule.include.videoIds } }
                 : {}),
         });
-        lines[rule.index as number] = "";
+        lines[index] = "";
         autoRuleCount++;
     }
 
@@ -321,7 +323,8 @@ function migrateNgId(
         }
 
         let context: string | undefined;
-        const before = lines[(rule.index as number) - 1];
+        const index = rule.index as number;
+        const before = lines[index - 1];
         if (before?.startsWith("#") === true)
             context = before.replace(/^# ?/, "");
 
@@ -333,7 +336,7 @@ function migrateNgId(
             },
             ...(context === undefined ? {} : { context }),
         });
-        lines[rule.index as number] = "";
+        lines[index] = "";
         autoRuleCount++;
     }
 
@@ -344,7 +347,7 @@ function migrateNgId(
 }
 
 function migrateVAlias(filter: string) {
-    // @vを見つけたら、@vを@include-video-idsに置換しそれ以降の行でルールだと評価できる最も手前の行の次の行に@endを挿入する
+    // @vを見つけたら@include-video-idsに置換し、それ以降の行でルールだと評価できる最も手前の行の次の行に@endを挿入する
     // lines配列を変更するためこの操作を@vを見つけるたびに最初から繰り返し、見つからなくなったら終了
 
     let result = filter;

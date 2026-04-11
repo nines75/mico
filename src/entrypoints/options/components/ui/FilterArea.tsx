@@ -8,11 +8,9 @@ import AutoFilter from "./AutoFilter";
 export type FilterId = "manual" | "auto";
 
 export default function FilterArea() {
-    const selectedFilter = useStorageStore(
-        (state) => state.settings.selectedFilter,
-    );
-    const [manualFilter, save] = useStorageStore(
+    const [selectedFilter, manualFilter, save] = useStorageStore(
         useShallow((state) => [
+            state.settings.selectedFilter,
             state.settings.manualFilter,
             state.saveSettings,
         ]),
