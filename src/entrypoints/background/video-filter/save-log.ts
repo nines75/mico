@@ -15,8 +15,6 @@ export async function saveLog(
     tabId: number,
     isSetBadge = true,
 ) {
-    const start = performance.now();
-
     const count = createCount(filteredData);
     const filtering = createFiltering(filteredData);
 
@@ -26,20 +24,6 @@ export async function saveLog(
             ? [setBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
             : []),
     ]);
-
-    const end = performance.now();
-    await setLog(
-        {
-            videoFilterLog: {
-                processingTime: {
-                    filtering: filteredData.filteringTime,
-                    saveLog: end - start,
-                },
-            },
-        },
-        logId,
-        tabId,
-    );
 }
 
 function createCount(filteredData: FilteredData): VideoCount {
@@ -66,6 +50,5 @@ function createFiltering(filteredData: FilteredData): VideoFiltering {
         (filter) => filter.getFilteredVideos(),
     );
 
-    return { filteredVideos,
-    };
+    return { filteredVideos };
 }

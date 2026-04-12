@@ -47,13 +47,6 @@ export interface Settings {
     isIgnoreByNicoru: boolean;
     ignoreByNicoruCount: number;
 
-    // ログ
-    isNgScoreVisible: boolean;
-    isNicoruVisible: boolean;
-    nicoruVisibleCount: number;
-    isDuplicateVisible: boolean;
-    duplicateVisibleCount: number;
-
     // 通知
     isNotifyAddNgUserId: boolean;
     isNotifyAutoAddNgUserId: boolean;
@@ -88,22 +81,4 @@ export interface Settings {
     // タブ
     selectedSettingsTab: SettingsTab;
     selectedPopupTab: FilterTab;
-
-    // 開閉
-    isProcessingTimeOpen: boolean;
-    isCountOpen: boolean;
-    isLogOpen: boolean;
-
-    // 表示
-    isUserIdFilterVisible: boolean;
-    isEasyCommentFilterVisible: boolean;
-    isCommentAssistFilterVisible: boolean;
-    isScoreFilterVisible: boolean;
-    isCommandFilterVisible: boolean;
-    isWordFilterVisible: boolean;
-    isIdFilterVisible: boolean;
-    isPaidFilterVisible: boolean;
-    isViewsFilterVisible: boolean;
-    isUserNameFilterVisible: boolean;
-    isTitleFilterVisible: boolean;
 }

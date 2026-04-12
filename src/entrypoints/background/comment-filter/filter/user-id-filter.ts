@@ -1,9 +1,7 @@
 import type { Settings } from "@/types/storage/settings.types";
 import type { Thread } from "@/types/api/comment.types";
 import { isString } from "@/utils/util";
-import { parseFilter } from "../../parse-filter";
 import { RuleFilter } from "../rule-filter";
-import { objectKeys } from "ts-extras";
 import type { Rule } from "../../rule";
 import { createDefaultRule } from "../../rule";
 
@@ -52,29 +50,4 @@ export class UserIdFilter extends RuleFilter {
         // フィルターと同じ順序になるように先頭に追加する
         this.rules = [...newUserIds, ...this.rules];
     }
-}
-
-export function parseNgUserId(settings: Settings, hasSpecific = true) {
-    return parseFilter(settings.ngUserId, true).rules.filter(
-        ({ include, exclude }) => {
-            if (hasSpecific) return true;
-
-            // コンテキストに応じて無効化されないルールのみを返す
-            return (
-                objectKeys(include).every((key) => include[key].length === 0) &&
-                objectKeys(exclude).every((key) => exclude[key].length === 0)
-            );
-        },
-    );
-}
-
-/**
- * @returns 文字列かつコンテキストに応じて無効化されないNGユーザーIDのSet
- */
-export function getBasicNgUserIdSet(settings: Settings) {
-    return new Set(
-        parseNgUserId(settings, false)
-            .map(({ pattern }) => pattern)
-            .filter((pattern) => isString(pattern)),
-    );
 }

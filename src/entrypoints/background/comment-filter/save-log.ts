@@ -16,8 +16,6 @@ export async function saveLog(
     logId: string,
     tabId: number,
 ) {
-    const start = performance.now();
-
     const count = createCount(filteredData);
     const filtering = createFiltering(filteredData);
 
@@ -25,20 +23,6 @@ export async function saveLog(
         setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
         setBadgeState(count.totalBlocked, colors.commentBadge, tabId),
     ]);
-
-    const end = performance.now();
-    await setLog(
-        {
-            commentFilterLog: {
-                processingTime: {
-                    filtering: filteredData.filteringTime,
-                    saveLog: end - start,
-                },
-            },
-        },
-        logId,
-        tabId,
-    );
 }
 
 export function createCount(filteredData: FilteredData): CommentCount {

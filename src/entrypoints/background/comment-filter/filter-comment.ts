@@ -23,7 +23,6 @@ export interface FilteredData {
         wordFilter: WordFilter;
     };
     loadedCommentCount: number;
-    filteringTime: number;
     strictUserIds: string[];
     strictData: StrictData[];
     threads: Thread[];
@@ -35,8 +34,6 @@ export function filterComment(
     tab: TabData,
 ): FilteredData | undefined {
     if (!settings.isCommentFilterEnabled) return;
-
-    const start = performance.now();
 
     // -------------------------------------------------------------------------------------------
     // フィルタリングと関係ない処理
@@ -104,12 +101,9 @@ export function filterComment(
         filter.filtering(threads);
     }
 
-    const end = performance.now();
-
     return {
         filters,
         loadedCommentCount,
-        filteringTime: end - start,
         strictUserIds,
         strictData,
         threads,

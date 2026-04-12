@@ -19,7 +19,6 @@ export interface FilteredData {
         titleFilter: TitleFilter;
     };
     loadedVideoCount: number;
-    filteringTime: number;
     filteredIds: Set<string>;
 }
 
@@ -29,8 +28,6 @@ export function filterVideo(
     isRecommend = false,
 ): FilteredData | undefined {
     if (!settings.isVideoFilterEnabled) return;
-
-    const start = performance.now();
 
     const videoIdFilter = new VideoIdFilter(settings);
     const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
@@ -64,12 +61,9 @@ export function filterVideo(
         for (const video of data.videos) video.latestCommentSummary = "";
     }
 
-    const end = performance.now();
-
     return {
         filters,
         loadedVideoCount: videos.length,
-        filteringTime: end - start,
         filteredIds,
     };
 }

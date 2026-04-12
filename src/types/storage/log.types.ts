@@ -3,7 +3,6 @@ import type { VideoFilterLog } from "./log-video.types";
 import type { TabData } from "./tab.types";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
-export type CommonLog = Map<string, string[]>;
 
 export interface LogData {
     // フィルタリングログ
@@ -11,9 +10,4 @@ export interface LogData {
     videoFilterLog?: VideoFilterLog;
 
     tab?: TabData;
-}
-
-export interface ProcessingTimeData {
-    filtering?: number;
-    saveLog?: number;
 }

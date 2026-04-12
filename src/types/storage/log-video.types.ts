@@ -1,10 +1,8 @@
 import type { NiconicoVideo } from "../api/niconico-video.types";
-import type { ProcessingTimeData } from "./log.types";
 
 export interface VideoFilterLog {
     count?: VideoCount;
     filtering?: VideoFiltering;
-    processingTime?: ProcessingTimeData;
 }
 
 export interface VideoCount {

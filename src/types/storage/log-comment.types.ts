@@ -1,10 +1,8 @@
 import type { NiconicoComment, RenderedComment } from "../api/comment.types";
-import type { ProcessingTimeData } from "./log.types";
 
 export interface CommentFilterLog {
     count?: CommentCount;
     filtering?: CommentFiltering;
-    processingTime?: ProcessingTimeData;
 }
 
 export interface CommentCount {

@@ -6,16 +6,10 @@ interface InfoProps {
 export function Info({ name, value }: InfoProps) {
     return (
         <section>
-            <InfoContent name={name} value={value} />
+            <span className="info">
+                <span>{name}</span>
+                <span className="value">{value}</span>
+            </span>
         </section>
-    );
-}
-
-export function InfoContent({ name, value }: InfoProps) {
-    return (
-        <span className="info">
-            <span>{name}</span>
-            <span className="value">{value}</span>
-        </span>
     );
 }

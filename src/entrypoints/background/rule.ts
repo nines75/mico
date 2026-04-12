@@ -25,7 +25,7 @@ export interface Rule {
 interface AutoRuleOnly {
     id: string;
     pattern: string; // 正規表現には対応しない
-    source: "dropdown" | "strict" | "contextMenu";
+    source: "dropdown" | "strict" | "contextMenu" | "popup";
     context?: string;
 }
 

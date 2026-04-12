@@ -1,22 +1,26 @@
 import { useStorageStore } from "@/utils/store";
 import { Info } from "./Info";
 import type { FilterTab } from "@/types/storage/settings.types";
+import type { CommentCount } from "@/types/storage/log-comment.types";
+import type { VideoCount } from "@/types/storage/log-video.types";
 
 interface CountProps {
     selectedTab: FilterTab;
 }
 
 export default function Count({ selectedTab }: CountProps) {
-    const count = useStorageStore((state) => {
-        switch (selectedTab) {
-            case "commentFilter": {
-                return state.log?.commentFilterLog?.count;
+    const count = useStorageStore<CommentCount | VideoCount | undefined>(
+        (state) => {
+            switch (selectedTab) {
+                case "commentFilter": {
+                    return state.log?.commentFilterLog?.count;
+                }
+                case "videoFilter": {
+                    return state.log?.videoFilterLog?.count;
+                }
             }
-            case "videoFilter": {
-                return state.log?.videoFilterLog?.count;
-            }
-        }
-    });
+        },
+    );
 
     const blocked = count?.totalBlocked ?? 0;
     const loaded = count?.loaded ?? 0;

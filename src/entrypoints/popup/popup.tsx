@@ -1,18 +1,11 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
-import type { CommentLogViewerProps } from "./components/CommentLogViewer";
-import CommentLogViewer from "./components/CommentLogViewer";
-import ProcessingTime from "./components/ProcessingTime";
 import { messages, urls, titles } from "@/utils/config";
 import { useStorageStore, storageChangeHandler } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { useShallow } from "zustand/shallow";
-import type { VideoLogViewerProps } from "./components/VideoLogViewer";
-import VideoLogViewer from "./components/VideoLogViewer";
-import Details from "./components/Details";
 import type { FilterTab } from "@/types/storage/settings.types";
-import { formatNgId } from "../background/video-filter/filter/id-filter";
 import clsx from "clsx";
 import { catchAsync, replace } from "@/utils/util";
 import { sendMessageToBackground } from "@/utils/browser";
@@ -88,14 +81,14 @@ function Main() {
                         <button
                             className="ng-button"
                             title={titles.addNgVideo}
-                            onClick={catchAsync(onClickNgVideoButton)}
+                            onClick={catchAsync(onClickNgVideo)}
                         >
                             <ScreenShareOff size={28} />
                         </button>
                         <button
                             className="ng-button"
                             title={titles.addNgUserIdByVideo}
-                            onClick={catchAsync(onClickNgUserButton)}
+                            onClick={catchAsync(onClickNgOwner)}
                         >
                             <UserX size={28} />
                         </button>
@@ -120,34 +113,12 @@ function Main() {
                     ))}
                 </div>
             )}
-            <Details id={"isProcessingTimeOpen"} summary="処理時間">
-                <ProcessingTime {...{ selectedTab }} />
-            </Details>
-            <Details id={"isCountOpen"} summary="カウント情報">
-                <Count {...{ selectedTab }} />
-            </Details>
-            <Details id={"isLogOpen"} summary="フィルタリングログ">
-                {(() => {
-                    switch (selectedTab) {
-                        case "commentFilter": {
-                            return config.commentFilter.log.map((log) => (
-                                <CommentLogViewer key={log.id} {...log} />
-                            ));
-                        }
-                        case "videoFilter": {
-                            return config.videoFilter.log.map((log) => (
-                                <VideoLogViewer key={log.id} {...log} />
-                            ));
-                        }
-                    }
-                })()}
-            </Details>
+            <Count {...{ selectedTab }} />
         </main>
     );
 }
 
-async function onClickNgVideoButton() {
-    const settings = useStorageStore.getState().settings;
+async function onClickNgVideo() {
     const videoId = useStorageStore.getState().log?.tab?.videoId;
     const title = useStorageStore.getState().log?.tab?.title;
 
@@ -165,33 +136,46 @@ async function onClickNgVideoButton() {
         return;
 
     await sendMessageToBackground({
-        type: "add-ng-id",
-        data: formatNgId(videoId, title, settings),
+        type: "add-auto-rule",
+        data: [
+            {
+                pattern: videoId,
+                context: `video-title: ${title}`,
+                source: "popup",
+                target: { videoId: true },
+            },
+        ],
     });
 }
 
-async function onClickNgUserButton() {
-    const settings = useStorageStore.getState().settings;
-    const userId = useStorageStore.getState().log?.tab?.userId;
-    const userName = useStorageStore.getState().log?.tab?.userName;
+async function onClickNgOwner() {
+    const ownerId = useStorageStore.getState().log?.tab?.userId;
+    const ownerName = useStorageStore.getState().log?.tab?.userName;
 
     // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
-    if (userId === undefined || userName === undefined) {
+    if (ownerId === undefined || ownerName === undefined) {
         alert(messages.ngUserId.getInfoFailed);
         return;
     }
     if (
         !confirm(
             replace(messages.ngUserId.confirmAddition, [
-                `${userId} (${userName})`,
+                `${ownerId} (${ownerName})`,
             ]),
         )
     )
         return;
 
     await sendMessageToBackground({
-        type: "add-ng-id",
-        data: formatNgId(userId, userName, settings),
+        type: "add-auto-rule",
+        data: [
+            {
+                pattern: ownerId,
+                context: `owner-name: ${ownerName}`,
+                source: "popup",
+                target: { videoOwnerId: true },
+            },
+        ],
     });
 }
 
@@ -210,78 +194,9 @@ const config = {
             name: "動画フィルター",
         },
     ],
-    commentFilter: {
-        log: [
-            {
-                id: "userIdFilter",
-                visibleKey: "isUserIdFilterVisible",
-                name: "NGユーザーID",
-            },
-            {
-                id: "easyCommentFilter",
-                visibleKey: "isEasyCommentFilterVisible",
-                name: "かんたんコメント",
-            },
-            {
-                id: "commentAssistFilter",
-                visibleKey: "isCommentAssistFilterVisible",
-                name: "コメントアシスト",
-            },
-            {
-                id: "scoreFilter",
-                visibleKey: "isScoreFilterVisible",
-                name: "NGスコア",
-            },
-            {
-                id: "commandFilter",
-                visibleKey: "isCommandFilterVisible",
-                name: "NGコマンド",
-            },
-            {
-                id: "wordFilter",
-                visibleKey: "isWordFilterVisible",
-                name: "NGワード",
-            },
-        ],
-    },
-    videoFilter: {
-        log: [
-            {
-                id: "idFilter",
-                visibleKey: "isIdFilterVisible",
-                name: "NGユーザーID/動画ID",
-            },
-            {
-                id: "paidFilter",
-                visibleKey: "isPaidFilterVisible",
-                name: "有料動画",
-            },
-            {
-                id: "viewsFilter",
-                visibleKey: "isViewsFilterVisible",
-                name: "再生回数",
-            },
-            {
-                id: "userNameFilter",
-                visibleKey: "isUserNameFilterVisible",
-                name: "NGユーザー名",
-            },
-            {
-                id: "titleFilter",
-                visibleKey: "isTitleFilterVisible",
-                name: "NGタイトル",
-            },
-        ],
-    },
 } as const satisfies {
     tab: {
         id: FilterTab;
         name: string;
     }[];
-    commentFilter: {
-        log: CommentLogViewerProps[];
-    };
-    videoFilter: {
-        log: VideoLogViewerProps[];
-    };
 };

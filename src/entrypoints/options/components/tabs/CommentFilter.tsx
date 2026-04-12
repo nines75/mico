@@ -59,33 +59,6 @@ const config = [
         ],
     },
     {
-        heading: "ログ",
-        items: [
-            {
-                id: "isNgScoreVisible",
-                label: "NGスコアを表示する",
-            },
-            {
-                id: "isNicoruVisible",
-                label: "ニコるの数を表示する",
-                input: {
-                    id: "nicoruVisibleCount",
-                    label: "回以上ニコられていた場合に表示",
-                    min: 0,
-                },
-            },
-            {
-                id: "isDuplicateVisible",
-                label: "本文が重複したコメントの数を表示する",
-                input: {
-                    id: "duplicateVisibleCount",
-                    label: "回以上重複していた場合に表示",
-                    min: 1,
-                },
-            },
-        ],
-    },
-    {
         heading: "通知",
         items: [
             {
