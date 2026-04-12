@@ -1,5 +1,4 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import { createRules, type Rule } from "../rule";
@@ -28,10 +27,6 @@ export abstract class RuleFilter extends Filter {
 
     getInvalidCount(): number {
         return this.invalidCount;
-    }
-
-    createKey(pattern: string | RegExp): string {
-        return isString(pattern) ? pattern : pattern.toString();
     }
 }
 

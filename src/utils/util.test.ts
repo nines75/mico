@@ -6,11 +6,9 @@ import {
     isRankingPage,
     isSearchPage,
     isWatchPage,
-    pushCommonLog,
     replace,
     sumNumbers,
 } from "./util";
-import type { CommonLog } from "@/types/storage/log.types";
 
 describe(isNiconicoPage.name, () => {
     it.each([
@@ -67,28 +65,6 @@ describe(isSearchPage.name, () => {
 it(escapeNewline.name, () => {
     expect(escapeNewline("hello\nworld\n\n!")).toBe(
         String.raw`hello\nworld\n\n!`,
-    );
-});
-
-describe(pushCommonLog.name, () => {
-    it.each([
-        {
-            name: "キーが存在しない",
-            log: new Map<string, string[]>(),
-            expected: new Map([["a", ["1"]]]),
-        },
-        {
-            name: "キーが存在する",
-            log: new Map([["a", ["0"]]]),
-            expected: new Map([["a", ["0", "1"]]]),
-        },
-    ] satisfies { name: string; log: CommonLog; expected: CommonLog }[])(
-        `$name`,
-        ({ log, expected }) => {
-            pushCommonLog(log, "a", "1");
-
-            expect(log).toEqual(expected);
-        },
     );
 });
 

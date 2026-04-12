@@ -1,5 +1,4 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import type { Filters } from "./filter-comment";
@@ -64,10 +63,6 @@ export abstract class RuleFilter extends Filter {
 
             return false;
         });
-    }
-
-    createKey(pattern: string | RegExp): string {
-        return isString(pattern) ? pattern : pattern.toString();
     }
 }
 
