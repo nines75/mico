@@ -3,13 +3,18 @@ import { isString } from "@/utils/util";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import { RuleFilter } from "../rule-filter";
 import type { Rule } from "../../rule";
+import type { FilteredVideo } from "@/types/storage/log-video.types";
 
-export abstract class ExactFilter<T> extends RuleFilter<T> {
+export abstract class ExactFilter extends RuleFilter {
     private ids = new Set<string>();
     private regexes: RegExp[] = [];
 
-    constructor(settings: Settings, target: keyof Rule["target"]) {
-        super(settings, target);
+    constructor(
+        settings: Settings,
+        target: keyof Rule["target"],
+        logTarget: FilteredVideo["target"],
+    ) {
+        super(settings, target, logTarget);
 
         // Setを複数箇所で使うため予め生成
         for (const { pattern } of this.rules) {
@@ -27,12 +32,20 @@ export abstract class ExactFilter<T> extends RuleFilter<T> {
         data.videos = data.videos.filter((video) => {
             const target = this.pickTarget(video);
 
-            // TODO: comment-user-idと同様に正規表現ルールの評価は後から行うように変更する
-            const regexRule = this.regexes.find((regex) => regex.test(target));
-            if (this.ids.has(target) || regexRule !== undefined) {
-                // TODO: ログは#70で実装
-                this.filteredVideos.set(video.id, video);
-                this.blockedCount++;
+            for (const { pattern, id } of this.rules) {
+                if (
+                    isString(pattern)
+                        ? target !== pattern
+                        : !pattern.test(target)
+                )
+                    continue;
+
+                this.filteredVideos.push({
+                    video,
+                    pattern,
+                    target: this.target,
+                    ...(id !== undefined && { id }),
+                });
 
                 return false;
             }
@@ -52,9 +65,5 @@ export abstract class ExactFilter<T> extends RuleFilter<T> {
         }
 
         return false;
-    }
-
-    override sortLog(): void {
-        // TODO: #70で廃止
     }
 }

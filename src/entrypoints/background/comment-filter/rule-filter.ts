@@ -3,13 +3,12 @@ import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import type { Filters } from "./filter-comment";
-import { Filter, sortCommentId } from "./filter";
-import type { CommonLog } from "@/types/storage/log.types";
+import { Filter } from "./filter";
 import type { TabData } from "@/types/storage/tab.types";
 import { objectKeys } from "ts-extras";
 import { createRules, type Rule } from "../rule";
 
-export abstract class RuleFilter<T> extends Filter<T> {
+export abstract class RuleFilter extends Filter {
     private includeCount = 0;
     private excludeCount = 0;
     private invalidCount = 0;
@@ -67,43 +66,14 @@ export abstract class RuleFilter<T> extends Filter<T> {
         });
     }
 
-    countRules(): number {
-        return this.rules.length;
-    }
-
     createKey(pattern: string | RegExp): string {
         return isString(pattern) ? pattern : pattern.toString();
-    }
-
-    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        for (const key of keys) {
-            const keyStr = this.createKey(key);
-            const value = currentLog.get(keyStr);
-            if (value !== undefined) {
-                log.set(keyStr, value);
-            }
-        }
-
-        // 各ルールのコメントをソート
-        for (const [key, ids] of log) {
-            log.set(
-                key,
-                this.settings.isNgScoreVisible
-                    ? sortCommentId(ids, this.filteredComments, true)
-                    : sortCommentId(ids, this.filteredComments),
-            );
-        }
-
-        return log;
     }
 }
 
 export function getRuleFilters(
     filters: Filters,
-): ConditionalPick<Filters, RuleFilter<unknown>> {
+): ConditionalPick<Filters, RuleFilter> {
     return {
         userIdFilter: filters.userIdFilter,
         commandFilter: filters.commandFilter,

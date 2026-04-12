@@ -1,19 +1,18 @@
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { isString, pushCommonLog } from "@/utils/util";
-import type { CommonLog } from "@/types/storage/log.types";
+import { isString } from "@/utils/util";
 import { StrictFilter } from "../strict-filter";
 import type { Rule } from "../../rule";
 
-export class CommandFilter extends StrictFilter<CommonLog> {
+export class CommandFilter extends StrictFilter {
     private disableCount = 0;
-    protected override log: CommonLog = new Map();
 
     constructor(settings: Settings) {
         super(settings, "commentCommands");
 
         this.rules = this.rules.map((rule) => {
             const pattern = rule.pattern;
+
             return {
                 ...rule,
                 pattern: isString(pattern) ? pattern.toLowerCase() : pattern,
@@ -46,7 +45,7 @@ export class CommandFilter extends StrictFilter<CommonLog> {
             ];
 
             // 前の参照を持たないようコマンドを置き換えた後に定義する
-            const { id, commands, userId } = comment;
+            const { commands, userId } = comment;
             const disableCommands = new Set<string>();
 
             for (const { pattern, isDisable } of rules) {
@@ -75,9 +74,11 @@ export class CommandFilter extends StrictFilter<CommonLog> {
                         continue;
                     }
 
-                    pushCommonLog(this.log, this.createKey(pattern), id);
-                    this.filteredComments.set(id, comment);
-                    this.blockedCount++;
+                    this.filteredComments.push({
+                        comment,
+                        pattern,
+                        target: "commands",
+                    });
 
                     return false;
                 }
@@ -97,13 +98,6 @@ export class CommandFilter extends StrictFilter<CommonLog> {
 
             return true;
         });
-    }
-
-    override sortLog(): void {
-        this.log = this.sortCommonLog(
-            this.log,
-            this.rules.map(({ pattern }) => pattern),
-        );
     }
 
     isStrict(rule: Rule): boolean {

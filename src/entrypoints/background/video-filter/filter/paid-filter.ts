@@ -1,18 +1,16 @@
-import type { PaidLog } from "@/types/storage/log-video.types";
-import { Filter, sortVideoId } from "../filter";
+import { Filter } from "../filter";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 
-export class PaidFilter extends Filter<PaidLog> {
-    protected override log: PaidLog = [];
-
+export class PaidFilter extends Filter {
     override filtering(data: { videos: NiconicoVideo[] }): void {
         if (!this.settings.isPaidVideoHidden) return;
 
         data.videos = data.videos.filter((video) => {
             if (video.isPaymentRequired) {
-                this.log.push(video.id);
-                this.filteredVideos.set(video.id, video);
-                this.blockedCount++;
+                this.filteredVideos.push({
+                    video,
+                    target: "paid",
+                });
 
                 return false;
             }
@@ -25,9 +23,5 @@ export class PaidFilter extends Filter<PaidLog> {
         if (!this.settings.isPaidVideoHidden) return false;
 
         return video.isPaymentRequired;
-    }
-
-    override sortLog(): void {
-        this.log = sortVideoId(this.log, this.filteredVideos);
     }
 }

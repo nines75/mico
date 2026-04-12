@@ -1,9 +1,6 @@
 import type {
     VideoFiltering,
     VideoCount,
-    RuleCount,
-    BlockedCount,
-    LogFilters,
 } from "@/types/storage/log-video.types";
 import type { FilteredData } from "./filter-video";
 import { sumNumbers } from "@/utils/util";
@@ -49,23 +46,12 @@ function createCount(filteredData: FilteredData): VideoCount {
     const filters = filteredData.filters;
     const ruleFilters = getRuleFilters(filters);
 
-    const rule = Object.fromEntries(
-        Object.entries(ruleFilters).map(([key, filter]) => [
-            key,
-            filter.countRules(),
-        ]),
-    ) as RuleCount;
-    const blocked = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [
-            key,
-            filter.getBlockedCount(),
-        ]),
-    ) as BlockedCount;
-
     return {
-        rule,
-        blocked,
-        totalBlocked: sumNumbers(Object.values(blocked)),
+        totalBlocked: sumNumbers(
+            Object.values(filters).map(
+                (filter) => filter.getFilteredVideos().length,
+            ),
+        ),
         loaded: filteredData.loadedVideoCount,
         invalid: sumNumbers(
             Object.values(ruleFilters).map((filter) =>
@@ -76,24 +62,10 @@ function createCount(filteredData: FilteredData): VideoCount {
 }
 
 function createFiltering(filteredData: FilteredData): VideoFiltering {
-    const filters = filteredData.filters;
-    const filteredVideos = new Map(
-        Object.values(filters).flatMap((filter) => [
-            ...filter.getFilteredVideos(),
-        ]),
+    const filteredVideos = Object.values(filteredData.filters).flatMap(
+        (filter) => filter.getFilteredVideos(),
     );
 
-    for (const filter of Object.values(filters)) {
-        filter.sortLog();
-    }
-
-    // ソート後にログを取得
-    const logFilters = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [key, filter.getLog()]),
-    ) as LogFilters;
-
-    return {
-        filters: logFilters,
-        filteredVideos,
+    return { filteredVideos,
     };
 }

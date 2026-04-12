@@ -1,16 +1,13 @@
 import type { Settings } from "@/types/storage/settings.types";
 import type { Thread } from "@/types/api/comment.types";
-import { isString, pushCommonLog } from "@/utils/util";
-import type { CommonLog } from "@/types/storage/log.types";
+import { isString } from "@/utils/util";
 import { parseFilter } from "../../parse-filter";
 import { RuleFilter } from "../rule-filter";
 import { objectKeys } from "ts-extras";
 import type { Rule } from "../../rule";
 import { createDefaultRule } from "../../rule";
 
-export class UserIdFilter extends RuleFilter<CommonLog> {
-    protected override log: CommonLog = new Map();
-
+export class UserIdFilter extends RuleFilter {
     constructor(settings: Settings) {
         super(settings, "commentUserId");
     }
@@ -19,48 +16,29 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         const rules = this.rules;
         if (rules.length === 0) return;
 
-        const userIdSet = new Set<string>();
-        const regexes: RegExp[] = [];
-        for (const { pattern } of rules) {
-            if (isString(pattern)) {
-                userIdSet.add(pattern);
-            } else {
-                regexes.push(pattern);
-            }
-        }
-
         this.traverseThreads(threads, (comment) => {
-            let key: string | undefined;
-            const { id, userId } = comment;
+            const { userId } = comment;
 
-            if (
-                userIdSet.has(userId) ||
-                regexes.some((regex) => {
-                    const isMatch = regex.test(userId);
-                    if (isMatch) {
-                        // 正規表現ルールではそれ自体をkeyにする
-                        key = this.createKey(regex);
-                    }
+            for (const { pattern, id } of rules) {
+                if (
+                    isString(pattern)
+                        ? userId !== pattern
+                        : !pattern.test(userId)
+                )
+                    continue;
 
-                    return isMatch;
-                })
-            ) {
-                pushCommonLog(this.log, key ?? userId, id);
-                this.filteredComments.set(id, comment);
-                this.blockedCount++;
+                this.filteredComments.push({
+                    comment,
+                    pattern,
+                    target: "user-id",
+                    ...(id !== undefined && { id }),
+                });
 
                 return false;
             }
 
             return true;
         });
-    }
-
-    override sortLog(): void {
-        this.log = this.sortCommonLog(
-            this.log,
-            this.rules.map(({ pattern }) => pattern),
-        );
     }
 
     updateFilter(userIds: string[]) {

@@ -1,11 +1,8 @@
 import type { FilteredData } from "./filter-comment";
 import { sumNumbers } from "@/utils/util";
 import type {
-    BlockedCount,
     CommentCount,
     CommentFiltering,
-    LogFilters,
-    RuleCount,
 } from "@/types/storage/log-comment.types";
 import { colors } from "@/utils/config";
 import { setLog } from "@/utils/db";
@@ -48,29 +45,18 @@ export function createCount(filteredData: FilteredData): CommentCount {
     const filters = filteredData.filters;
     const ruleFilters = getRuleFilters(filters);
 
-    const rule = Object.fromEntries(
-        Object.entries(ruleFilters).map(([key, filter]) => [
-            key,
-            filter.countRules(),
-        ]),
-    ) as RuleCount;
-    const blocked = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [
-            key,
-            filter.getBlockedCount(),
-        ]),
-    ) as BlockedCount;
-
-    const calc = (key: ConditionalKeys<RuleFilter<unknown>, () => number>) => {
+    const calc = (key: ConditionalKeys<RuleFilter, () => number>) => {
         return sumNumbers(
             Object.values(ruleFilters).map((filter) => filter[key]()),
         );
     };
 
     return {
-        rule,
-        blocked,
-        totalBlocked: sumNumbers(Object.values(blocked)),
+        totalBlocked: sumNumbers(
+            Object.values(filters).map(
+                (filter) => filter.getFilteredComments().length,
+            ),
+        ),
         loaded: filteredData.loadedCommentCount,
         include: calc("getIncludeCount"),
         exclude: calc("getExcludeCount"),
@@ -80,11 +66,8 @@ export function createCount(filteredData: FilteredData): CommentCount {
 }
 
 export function createFiltering(filteredData: FilteredData): CommentFiltering {
-    const filters = filteredData.filters;
-    const filteredComments = new Map(
-        Object.values(filters).flatMap((filter) => [
-            ...filter.getFilteredComments(),
-        ]),
+    const filteredComments = Object.values(filteredData.filters).flatMap(
+        (filter) => filter.getFilteredComments(),
     );
     const renderedComments = filteredData.threads.flatMap((thread) =>
         thread.comments.map(({ body, userId, score }) => {
@@ -92,18 +75,8 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
         }),
     );
 
-    for (const filter of Object.values(filters)) {
-        filter.sortLog();
-    }
-
-    // ソート後にログを取得
-    const logFilters = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [key, filter.getLog()]),
-    ) as LogFilters;
-
     return {
         strictUserIds: filteredData.strictUserIds,
-        filters: logFilters,
         filteredComments,
         renderedComments,
     };

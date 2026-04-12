@@ -11,7 +11,7 @@ export interface StrictData {
     context: string;
 }
 
-export abstract class StrictFilter<T> extends RuleFilter<T> {
+export abstract class StrictFilter extends RuleFilter {
     protected ngUserIds: Set<string>;
     protected strictData: StrictData[] = [];
 
@@ -43,7 +43,7 @@ export abstract class StrictFilter<T> extends RuleFilter<T> {
 
 export function getStrictFilters(
     filters: Filters,
-): ConditionalPick<Filters, StrictFilter<unknown>> {
+): ConditionalPick<Filters, StrictFilter> {
     return {
         commandFilter: filters.commandFilter,
         wordFilter: filters.wordFilter,

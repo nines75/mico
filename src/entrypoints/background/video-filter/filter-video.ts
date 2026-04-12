@@ -55,9 +55,9 @@ export function filterVideo(
     }
 
     const filteredIds = new Set(
-        Object.values(filters).flatMap((filter) => [
-            ...filter.getFilteredVideos().keys(),
-        ]),
+        Object.values(filters).flatMap((filter) =>
+            filter.getFilteredVideos().map(({ video }) => video.id),
+        ),
     );
 
     if (settings.isCommentPreviewHidden) {

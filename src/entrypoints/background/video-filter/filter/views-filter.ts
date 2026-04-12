@@ -1,11 +1,9 @@
-import type { ViewsLog } from "@/types/storage/log-video.types";
-import { Filter, sortVideoId } from "../filter";
+import { Filter } from "../filter";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import type { Settings } from "@/types/storage/settings.types";
 
-export class ViewsFilter extends Filter<ViewsLog> {
+export class ViewsFilter extends Filter {
     private isEnabled: boolean;
-    protected override log: ViewsLog = [];
 
     constructor(settings: Settings, isEnabled: boolean) {
         super(settings);
@@ -19,9 +17,7 @@ export class ViewsFilter extends Filter<ViewsLog> {
         data.videos = data.videos.filter((video) => {
             const views = video.count.view;
             if (views <= this.settings.viewsFilterCount) {
-                this.log.push(video.id);
-                this.filteredVideos.set(video.id, video);
-                this.blockedCount++;
+                this.filteredVideos.push({ video, target: "views" });
 
                 return false;
             }
@@ -37,9 +33,5 @@ export class ViewsFilter extends Filter<ViewsLog> {
         const views = video.count.view;
 
         return views <= this.settings.viewsFilterCount;
-    }
-
-    override sortLog(): void {
-        this.log = sortVideoId(this.log, this.filteredVideos);
     }
 }
