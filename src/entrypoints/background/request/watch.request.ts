@@ -1,4 +1,4 @@
-import { isNgVideo } from "../video-filter/filter-video";
+import { filterVideo } from "../video-filter/filter-video";
 import { loadSettings } from "@/utils/storage";
 import type { Settings } from "@/types/storage/settings.types";
 import { filterResponse, spaFilter } from "./request";
@@ -66,17 +66,11 @@ function watchApiFilter(
         const video = series?.next;
 
         if (series !== undefined && video !== null && video !== undefined) {
-            if (settings.isVideoFilterEnabled) {
-                if (isNgVideo(video, settings)) {
-                    series.next = null;
-                }
-
-                if (settings.isCommentPreviewHidden && series.next !== null) {
-                    series.next.latestCommentSummary = "";
-                }
-
-                meta?.setAttribute("content", JSON.stringify(watchApi));
+            if ((filterVideo([video], settings)?.filteredIds.size ?? 0) > 0) {
+                series.next = null;
             }
+
+            meta?.setAttribute("content", JSON.stringify(watchApi));
 
             return { hasNext: true, data: video };
         } else {

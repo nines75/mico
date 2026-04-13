@@ -25,13 +25,4 @@ export class ViewsFilter extends Filter {
             return true;
         });
     }
-
-    override isNgVideo(video: NiconicoVideo): boolean {
-        if (!this.isEnabled || !this.settings.isViewsFilterEnabled)
-            return false;
-
-        const views = video.count.view;
-
-        return views <= this.settings.viewsFilterCount;
-    }
 }

@@ -18,10 +18,4 @@ export class PaidFilter extends Filter {
             return true;
         });
     }
-
-    override isNgVideo(video: NiconicoVideo): boolean {
-        if (!this.settings.isPaidVideoHidden) return false;
-
-        return video.isPaymentRequired;
-    }
 }

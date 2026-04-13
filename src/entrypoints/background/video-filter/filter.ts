@@ -11,7 +11,6 @@ export abstract class Filter {
     }
 
     abstract filtering(data: { videos: NiconicoVideo[] }): void;
-    abstract isNgVideo(video: NiconicoVideo): boolean;
 
     getFilteredVideos() {
         return this.filteredVideos;

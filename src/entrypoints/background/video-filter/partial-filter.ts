@@ -29,13 +29,4 @@ export abstract class PartialFilter extends RuleFilter {
             return true;
         });
     }
-
-    override isNgVideo(video: NiconicoVideo): boolean {
-        const target = this.pickTarget(video);
-        if (target === null) return false;
-
-        return this.rules.some(({ pattern }) =>
-            isString(pattern) ? target.includes(pattern) : pattern.test(target),
-        );
-    }
 }
