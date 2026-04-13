@@ -1,17 +1,7 @@
 import type { NiconicoComment, RenderedComment } from "../api/comment.types";
 
 export interface CommentFilterLog {
-    count?: CommentCount;
     filtering?: CommentFiltering;
-}
-
-export interface CommentCount {
-    totalBlocked: number;
-    loaded: number;
-    include: number;
-    exclude: number;
-    disable: number;
-    invalid: number;
 }
 
 export interface CommentFiltering {

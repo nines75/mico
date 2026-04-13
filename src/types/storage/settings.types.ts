@@ -1,7 +1,6 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
 import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
 
-export type FilterTab = "commentFilter" | "videoFilter";
 export type SettingsTab =
     | "general"
     | "filter"
@@ -80,5 +79,4 @@ export interface Settings {
 
     // タブ
     selectedSettingsTab: SettingsTab;
-    selectedPopupTab: FilterTab;
 }

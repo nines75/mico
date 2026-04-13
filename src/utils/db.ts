@@ -3,10 +3,11 @@
 // https://github.com/nines75/mico/issues/40
 // -------------------------------------------------------------------------------------------
 
-import type { LogData } from "@/types/storage/log.types";
+import type { Count, LogData } from "@/types/storage/log.types";
 import Dexie, { type EntityTable } from "dexie";
 import type { TabData } from "@/types/storage/tab.types";
 import { customMerge } from "./util";
+import { objectEntries } from "ts-extras";
 
 interface LogDb {
     id: string;
@@ -43,15 +44,18 @@ export async function getTabData(tabId: number) {
 }
 
 export async function setLog(
-    value: Partial<LogData>,
+    value: Partial<LogData> | (() => Promise<Partial<LogData>>),
     id: string,
     tabId: number,
 ) {
     await db.transaction("rw", db.log, async () => {
         const logDb = await db.log.get(id);
-        const newLog = customMerge(logDb?.log, value) as LogData;
+        const newLog = customMerge(
+            logDb?.log,
+            typeof value === "function" ? await value() : value,
+        ) as LogData;
 
-        await db.log.put({ id: id, tabId, log: newLog });
+        await db.log.put({ id, tabId, log: newLog });
     });
 }
 
@@ -87,4 +91,16 @@ export async function cleanupDb() {
 
 export async function clearDb() {
     await Promise.all([db.log.clear(), db.tab.clear()]);
+}
+
+// 現在はコメントフィルターと動画フィルターでプロパティを共有していないが、将来的には一部共有する予定なのでマージ関数を用意しておく
+export async function mergeCount(count: Count, logId: string): Promise<Count> {
+    const log = await getLogData(logId);
+
+    return Object.fromEntries(
+        objectEntries(count).map(([key, value]) => [
+            key,
+            value + (log?.count?.[key] ?? 0),
+        ]),
+    );
 }

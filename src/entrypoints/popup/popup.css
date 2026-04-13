@@ -11,14 +11,6 @@ header {
 section {
     margin: 10px 30px;
 }
-.container {
-    background: #292a2d;
-    color: var(--dim-white);
-    width: auto;
-    height: auto;
-    text-align: center;
-    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
-}
 .info {
     color: var(--lighter-gray);
     margin: 0px 5px;
@@ -35,16 +27,6 @@ section {
         align-items: center;
     }
 }
-.button {
-    padding: 3px 10px;
-    margin: 5px;
-    border: gray 2px solid;
-    border-radius: 8px;
-    color: var(--lighter-gray);
-}
-.selected-button {
-    border-color: lightskyblue;
-}
 .ng-button-container {
     display: flex;
     justify-content: center;
@@ -58,10 +40,13 @@ section {
         color: var(--dim-white);
     }
 }
-#video-id {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--lighter-gray);
+#root {
+    background: #292a2d;
+    color: var(--dim-white);
+    width: auto;
+    height: auto;
+    text-align: center;
+    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
 }
 #version {
     font-size: 17px;

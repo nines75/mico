@@ -10,4 +10,15 @@ export interface LogData {
     videoFilterLog?: VideoFilterLog;
 
     tab?: TabData;
+    count?: Count;
+}
+
+export interface Count {
+    blockedComment?: number;
+    loadedComment?: number;
+    blockedVideo?: number;
+    loadedVideo?: number;
+    include?: number;
+    exclude?: number;
+    disable?: number;
 }

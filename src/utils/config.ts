@@ -128,7 +128,6 @@ export const defaultSettings: Settings = {
 
     // タブ
     selectedSettingsTab: "general",
-    selectedPopupTab: "commentFilter",
 } as const;
 
 export const buttons = {

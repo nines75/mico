@@ -10,15 +10,13 @@ import { createRules, type Rule } from "../rule";
 export abstract class RuleFilter extends Filter {
     private includeCount = 0;
     private excludeCount = 0;
-    private invalidCount = 0;
     protected rules: Rule[];
 
     constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(settings);
+        const { rules } = parseFilter(settings);
         this.rules = createRules(settings, target, rules);
-        this.invalidCount += invalidCount;
     }
 
     getIncludeCount(): number {
@@ -26,9 +24,6 @@ export abstract class RuleFilter extends Filter {
     }
     getExcludeCount(): number {
         return this.excludeCount;
-    }
-    getInvalidCount(): number {
-        return this.invalidCount;
     }
 
     filterRules(tab: TabData) {

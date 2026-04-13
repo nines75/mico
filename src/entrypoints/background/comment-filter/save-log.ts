@@ -1,15 +1,13 @@
 import type { FilteredData } from "./filter-comment";
 import { sumNumbers } from "@/utils/util";
-import type {
-    CommentCount,
-    CommentFiltering,
-} from "@/types/storage/log-comment.types";
+import type { CommentFiltering } from "@/types/storage/log-comment.types";
 import { colors } from "@/utils/config";
-import { setLog } from "@/utils/db";
+import { mergeCount, setLog } from "@/utils/db";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter";
 import { getRuleFilters } from "./rule-filter";
 import { setBadgeState } from "@/utils/browser";
+import type { Count } from "@/types/storage/log.types";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -20,12 +18,21 @@ export async function saveLog(
     const filtering = createFiltering(filteredData);
 
     await Promise.all([
-        setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
-        setBadgeState(count.totalBlocked, colors.commentBadge, tabId),
+        setLog(
+            async () => {
+                return {
+                    commentFilterLog: { filtering },
+                    count: await mergeCount(count, logId),
+                };
+            },
+            logId,
+            tabId,
+        ),
+        setBadgeState(count.blockedComment, colors.commentBadge, tabId),
     ]);
 }
 
-export function createCount(filteredData: FilteredData): CommentCount {
+export function createCount(filteredData: FilteredData) {
     const filters = filteredData.filters;
     const ruleFilters = getRuleFilters(filters);
 
@@ -36,17 +43,16 @@ export function createCount(filteredData: FilteredData): CommentCount {
     };
 
     return {
-        totalBlocked: sumNumbers(
+        blockedComment: sumNumbers(
             Object.values(filters).map(
                 (filter) => filter.getFilteredComments().length,
             ),
         ),
-        loaded: filteredData.loadedCommentCount,
+        loadedComment: filteredData.loadedCommentCount,
         include: calc("getIncludeCount"),
         exclude: calc("getExcludeCount"),
-        invalid: calc("getInvalidCount"),
         disable: filters.commandFilter.getDisableCount(),
-    };
+    } satisfies Count;
 }
 
 export function createFiltering(filteredData: FilteredData): CommentFiltering {

@@ -8,7 +8,6 @@ import type { FilteredVideo } from "@/types/storage/log-video.types";
 
 export abstract class RuleFilter extends Filter {
     protected rules: Rule[];
-    protected invalidCount = 0;
     protected target: FilteredVideo["target"];
 
     constructor(
@@ -18,15 +17,10 @@ export abstract class RuleFilter extends Filter {
     ) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(settings);
+        const { rules } = parseFilter(settings);
         this.rules = createRules(settings, target, rules);
-        this.invalidCount += invalidCount;
 
         this.target = logTarget;
-    }
-
-    getInvalidCount(): number {
-        return this.invalidCount;
     }
 }
 

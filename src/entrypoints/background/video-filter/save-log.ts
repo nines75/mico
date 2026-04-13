@@ -1,13 +1,10 @@
-import type {
-    VideoFiltering,
-    VideoCount,
-} from "@/types/storage/log-video.types";
+import type { VideoFiltering } from "@/types/storage/log-video.types";
 import type { FilteredData } from "./filter-video";
 import { sumNumbers } from "@/utils/util";
 import { colors } from "@/utils/config";
-import { setLog } from "@/utils/db";
-import { getRuleFilters } from "./rule-filter";
+import { mergeCount, setLog } from "@/utils/db";
 import { setBadgeState } from "@/utils/browser";
+import type { Count } from "@/types/storage/log.types";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -19,30 +16,31 @@ export async function saveLog(
     const filtering = createFiltering(filteredData);
 
     await Promise.all([
-        setLog({ videoFilterLog: { count, filtering } }, logId, tabId),
+        setLog(
+            async () => {
+                return {
+                    videoFilterLog: { filtering },
+                    count: await mergeCount(count, logId),
+                };
+            },
+            logId,
+            tabId,
+        ),
         ...(isSetBadge
-            ? [setBadgeState(count.totalBlocked, colors.videoBadge, tabId)]
+            ? [setBadgeState(count.blockedVideo, colors.videoBadge, tabId)]
             : []),
     ]);
 }
 
-function createCount(filteredData: FilteredData): VideoCount {
-    const filters = filteredData.filters;
-    const ruleFilters = getRuleFilters(filters);
-
+function createCount(filteredData: FilteredData) {
     return {
-        totalBlocked: sumNumbers(
-            Object.values(filters).map(
+        blockedVideo: sumNumbers(
+            Object.values(filteredData.filters).map(
                 (filter) => filter.getFilteredVideos().length,
             ),
         ),
-        loaded: filteredData.loadedVideoCount,
-        invalid: sumNumbers(
-            Object.values(ruleFilters).map((filter) =>
-                filter.getInvalidCount(),
-            ),
-        ),
-    };
+        loadedVideo: filteredData.loadedVideoCount,
+    } satisfies Count;
 }
 
 function createFiltering(filteredData: FilteredData): VideoFiltering {

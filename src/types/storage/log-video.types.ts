@@ -1,14 +1,7 @@
 import type { NiconicoVideo } from "../api/niconico-video.types";
 
 export interface VideoFilterLog {
-    count?: VideoCount;
     filtering?: VideoFiltering;
-}
-
-export interface VideoCount {
-    totalBlocked: number;
-    loaded: number;
-    invalid: number;
 }
 
 export interface VideoFiltering {

@@ -226,7 +226,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     if (tabId === undefined || logId === undefined) return;
 
     const log = await getLogData(logId);
-    const count = log?.videoFilterLog?.count?.totalBlocked;
+    const count = log?.count?.blockedVideo;
     if (count === undefined) return;
 
     await setBadgeState(count, colors.videoBadge, tabId);
