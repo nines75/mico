@@ -27,7 +27,7 @@ export abstract class RuleFilter extends Filter {
     }
 
     filterRules(tab: TabData) {
-        const { videoId, userId, seriesId } = tab;
+        const { videoId, ownerId, seriesId } = tab;
         const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
         this.rules = this.rules.filter(({ include, exclude }) => {
@@ -35,7 +35,7 @@ export abstract class RuleFilter extends Filter {
             if (
                 matches(exclude.tags, (arg) => tags.has(arg)) ||
                 matches(exclude.videoIds, (arg) => arg === videoId) ||
-                matches(exclude.userIds, (arg) => arg === userId) ||
+                matches(exclude.userIds, (arg) => arg === ownerId) ||
                 matches(exclude.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.excludeCount++;
@@ -46,7 +46,7 @@ export abstract class RuleFilter extends Filter {
             if (
                 matches(include.tags, (arg) => tags.has(arg)) ||
                 matches(include.videoIds, (arg) => arg === videoId) ||
-                matches(include.userIds, (arg) => arg === userId) ||
+                matches(include.userIds, (arg) => arg === ownerId) ||
                 matches(include.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.includeCount++;

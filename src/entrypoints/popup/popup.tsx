@@ -93,8 +93,8 @@ async function onClickNgVideo() {
 }
 
 async function onClickNgOwner() {
-    const ownerId = useStorageStore.getState().log?.tab?.userId;
-    const ownerName = useStorageStore.getState().log?.tab?.userName;
+    const ownerId = useStorageStore.getState().log?.tab?.ownerId;
+    const ownerName = useStorageStore.getState().log?.tab?.ownerName;
 
     // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
     if (ownerId === undefined || ownerName === undefined) {

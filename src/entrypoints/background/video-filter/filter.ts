@@ -1,6 +1,6 @@
 import type { Settings } from "@/types/storage/settings.types";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
-import type { FilteredVideo } from "@/types/storage/log-video.types";
+import type { FilteredVideo } from "@/types/storage/log.types";
 
 export abstract class Filter {
     protected settings: Settings;

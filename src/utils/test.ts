@@ -185,8 +185,8 @@ export const testTabData = {
     videoId: "sm1",
     seriesId: "1",
     title: "title",
-    userId: "1",
-    userName: "user-name",
+    ownerId: "1",
+    ownerName: "user-name",
     tags: [],
 } as const satisfies TabData;
 

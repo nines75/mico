@@ -4,7 +4,7 @@ import { parseFilter } from "../parse-filter";
 import { createRules, type Rule } from "../rule";
 import type { Filters } from "./filter-video";
 import { Filter } from "./filter";
-import type { FilteredVideo } from "@/types/storage/log-video.types";
+import type { FilteredVideo } from "@/types/storage/log.types";
 
 export abstract class RuleFilter extends Filter {
     protected rules: Rule[];

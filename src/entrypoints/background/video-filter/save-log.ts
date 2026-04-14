@@ -1,10 +1,9 @@
-import type { VideoFiltering } from "@/types/storage/log-video.types";
 import type { FilteredData } from "./filter-video";
 import { sumNumbers } from "@/utils/util";
 import { colors } from "@/utils/config";
 import { mergeCount, setLog } from "@/utils/db";
 import { setBadgeState } from "@/utils/browser";
-import type { Count } from "@/types/storage/log.types";
+import type { Count, LogData } from "@/types/storage/log.types";
 
 export async function saveLog(
     filteredData: FilteredData,
@@ -12,14 +11,14 @@ export async function saveLog(
     tabId: number,
     isSetBadge = true,
 ) {
+    const video = createVideoLog(filteredData);
     const count = createCount(filteredData);
-    const filtering = createFiltering(filteredData);
 
     await Promise.all([
         setLog(
             async () => {
                 return {
-                    videoFilterLog: { filtering },
+                    video,
                     count: await mergeCount(count, logId),
                 };
             },
@@ -32,6 +31,16 @@ export async function saveLog(
     ]);
 }
 
+function createVideoLog(
+    filteredData: FilteredData,
+): NonNullable<LogData["video"]> {
+    const filteredVideos = Object.values(filteredData.filters).flatMap(
+        (filter) => filter.getFilteredVideos(),
+    );
+
+    return { filteredVideos };
+}
+
 function createCount(filteredData: FilteredData) {
     return {
         blockedVideo: sumNumbers(
@@ -41,12 +50,4 @@ function createCount(filteredData: FilteredData) {
         ),
         loadedVideo: filteredData.loadedVideoCount,
     } satisfies Count;
-}
-
-function createFiltering(filteredData: FilteredData): VideoFiltering {
-    const filteredVideos = Object.values(filteredData.filters).flatMap(
-        (filter) => filter.getFilteredVideos(),
-    );
-
-    return { filteredVideos };
 }

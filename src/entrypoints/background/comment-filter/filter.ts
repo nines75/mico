@@ -1,6 +1,6 @@
 import type { NiconicoComment, Thread } from "@/types/api/comment.types";
+import type { FilteredComment } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
-import type { FilteredComment } from "@/types/storage/log-comment.types";
 
 export abstract class Filter {
     protected settings: Settings;

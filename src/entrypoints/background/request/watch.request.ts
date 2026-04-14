@@ -78,7 +78,7 @@ function watchApiFilter(
         }
     })();
 
-    const userId = (
+    const ownerId = (
         response.owner?.id ?? // 通常のユーザー
         response.channel?.id ?? // チャンネル
         // ユーザーが退会済み
@@ -86,7 +86,7 @@ function watchApiFilter(
             /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
         )?.[1]
     )?.toString();
-    const userName =
+    const ownerName =
         response.owner?.nickname ??
         response.channel?.name ??
         metadata.jsonLds[0]?.author?.name;
@@ -97,8 +97,8 @@ function watchApiFilter(
         seriesId: response.series?.id.toString(),
         videoId: response.video.id,
         title: response.video.title,
-        userId,
-        userName,
+        ownerId,
+        ownerName,
         tags,
     };
 }

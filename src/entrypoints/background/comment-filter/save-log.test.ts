@@ -4,7 +4,7 @@ import { beforeAll, expect, it, vi } from "vitest";
 import type { FilteredData } from "./filter-comment";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
-import { createCount, createFiltering, saveLog } from "./save-log";
+import { createCount, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
 
 beforeAll(() => {
@@ -40,5 +40,5 @@ big
 
     // 処理時間のログは不定なのでそれ以外を確認
     expect(createCount(filteredData)).toEqual(testLog.count);
-    expect(createFiltering(filteredData)).toEqual(testLog.filtering);
+    expect(createCommentLog(filteredData)).toEqual(testLog.filtering);
 });
