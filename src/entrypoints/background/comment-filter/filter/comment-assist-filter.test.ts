@@ -1,11 +1,10 @@
 import type { Thread } from "@/types/api/comment.types";
-import { checkComment } from "@/utils/test";
+import { checkComment, getFilteredIds } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 import { CommentAssistFilter } from "./comment-assist-filter";
 import { mockComments } from "@/utils/test";
-import type { CommonLog } from "@/types/storage/log.types";
 
 // コメントアシストは既存のコメントデータでテストできないので別で用意
 export const commentAssistThreads = [
@@ -71,38 +70,20 @@ describe(CommentAssistFilter.name, () => {
             {
                 isEnabled: true,
                 ids: ["1001", "1003", "1004"],
-                expected: new Map([
-                    ["test", ["1001"]],
-                    ["test2", ["1003", "1004"]],
-                ]),
             },
             {
                 isEnabled: false,
                 ids: [],
-                expected: new Map(),
             },
-        ] satisfies {
-            isEnabled: boolean;
-            ids: string[];
-            expected: CommonLog;
-        }[])("$isEnabled", ({ isEnabled, ids, expected }) => {
+        ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
-                filtering({
-                    settings: { isCommentAssistFilterEnabled: isEnabled },
-                }).getLog(),
-            ).toEqual(expected);
+                getFilteredIds(
+                    filtering({
+                        settings: { isCommentAssistFilterEnabled: isEnabled },
+                    }),
+                ),
+            ).toEqual(ids);
             checkComment(threads, ids, commentAssistThreads);
         });
-    });
-
-    it(CommentAssistFilter.prototype.sortLog.name, () => {
-        const commentAssistFilter = filtering({});
-        commentAssistFilter.sortLog();
-
-        // 順序を調べるために配列に変換
-        expect([...commentAssistFilter.getLog()]).toEqual([
-            ["test2", ["1003", "1004"]],
-            ["test", ["1001"]],
-        ]);
     });
 });
