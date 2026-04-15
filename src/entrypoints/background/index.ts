@@ -9,7 +9,11 @@ import { addNgIdFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
-import { sendMessageToContent, tryWithPermission } from "@/utils/browser";
+import {
+    getActiveTab,
+    sendMessageToContent,
+    tryWithPermission,
+} from "@/utils/browser";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -82,14 +86,9 @@ export default defineBackground(() => {
     browser.commands.onCommand.addListener(
         catchAsync(async (command) => {
             if (command === "reload") {
-                const tabs = await browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
-                const tab = tabs[0];
+                const tab = await getActiveTab();
                 const tabId = tab?.id;
-                const url = tab?.url;
-                if (tabId === undefined || !isWatchPage(url)) return;
+                if (tabId === undefined || !isWatchPage(tab?.url)) return;
 
                 await sendMessageToContent(tabId, { type: command });
             }
@@ -97,6 +96,16 @@ export default defineBackground(() => {
             if (command === "open-settings") {
                 await browser.tabs.create({
                     url: browser.runtime.getURL("/options.html"),
+                });
+            }
+
+            if (command === "open-log") {
+                await browser.windows.create({
+                    url: ["log.html"],
+                    type: "popup",
+                    titlePreface: "ログ",
+                    height: 800,
+                    width: 1200,
                 });
             }
 

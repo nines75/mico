@@ -5,7 +5,7 @@ import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { LogData } from "../types/storage/log.types";
 import { catchAsync, isWatchPage, isWorkingPage } from "./util";
-import { sendMessageToBackground } from "./browser";
+import { getActiveTab, sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
 interface StorageState {
@@ -16,6 +16,7 @@ interface StorageState {
     isWorkingPage: boolean;
     loadSettingsPageData: () => void;
     loadPopupPageData: () => void;
+    loadLog: () => void;
     saveSettings: (settings: Partial<Settings>) => void;
 }
 
@@ -32,19 +33,11 @@ export const useStorageStore = create<StorageState>()(
             set({ settings, isLoading: false });
         }),
         loadPopupPageData: catchAsync(async () => {
-            const tabs = await browser.tabs.query({
-                active: true,
-                currentWindow: true,
-            });
-            const tab = tabs[0];
-            const logId = await getLogId(tab?.id);
-            const log =
-                logId === undefined
-                    ? undefined
-                    : ((await sendMessageToBackground({
-                          type: "get-log-data",
-                          data: logId,
-                      })) as LogData | undefined);
+            const tab = await getActiveTab();
+            const log = (await sendMessageToBackground({
+                type: "get-log-data",
+                data: await getLogId(tab?.id),
+            })) as LogData | undefined;
 
             set({
                 log,
@@ -52,6 +45,15 @@ export const useStorageStore = create<StorageState>()(
                 isWorkingPage: isWorkingPage(tab?.url),
                 isLoading: false,
             });
+        }),
+        loadLog: catchAsync(async () => {
+            const tab = await getActiveTab();
+            const log = (await sendMessageToBackground({
+                type: "get-log-data",
+                data: await getLogId(tab?.id),
+            })) as LogData | undefined;
+
+            set({ log, isLoading: false });
         }),
         saveSettings: catchAsync(async (settings) => {
             const currentSettings = useStorageStore.getState().settings;

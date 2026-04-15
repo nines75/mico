@@ -1,0 +1,6 @@
+@import "../../assets/global.css";
+
+#root {
+    background: var(--background);
+    color: var(--dim-white);
+}
