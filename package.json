@@ -20,11 +20,14 @@
         "pw:install": "playwright install firefox"
     },
     "dependencies": {
+        "@ag-grid-community/locale": "^35.2.1",
         "@codemirror/autocomplete": "^6.20.1",
         "@codemirror/commands": "^6.10.3",
         "@codemirror/state": "^6.6.0",
         "@codemirror/view": "^6.40.0",
         "@icons-pack/react-simple-icons": "^13.13.0",
+        "ag-grid-community": "^35.2.1",
+        "ag-grid-react": "^35.2.1",
         "clsx": "^2.1.1",
         "decamelize": "^6.0.1",
         "deepmerge-ts": "^7.1.5",

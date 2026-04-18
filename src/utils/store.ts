@@ -47,10 +47,12 @@ export const useStorageStore = create<StorageState>()(
             });
         }),
         loadLog: catchAsync(async () => {
-            const tab = await getActiveTab();
+            const params = new URLSearchParams(location.search);
+            const id = params.get("id");
+
             const log = (await sendMessageToBackground({
                 type: "get-log-data",
-                data: await getLogId(tab?.id),
+                data: id,
             })) as LogData | undefined;
 
             set({ log, isLoading: false });

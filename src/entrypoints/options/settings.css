@@ -8,11 +8,6 @@ h2 {
     border-bottom: 2px solid gray;
     font-size: 18px;
 }
-/* デフォルトではcolorを継承しない */
-input,
-button {
-    color: inherit;
-}
 input[type="checkbox"] {
     margin: 3px;
 }

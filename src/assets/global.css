@@ -6,3 +6,10 @@
     --lighter-gray: #c0c0c0;
     --font: Consolas, monospace;
 }
+
+/* colorを継承させる */
+input,
+button,
+select {
+    color: inherit;
+}

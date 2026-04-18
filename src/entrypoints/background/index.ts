@@ -12,8 +12,10 @@ import { clearDb } from "@/utils/db";
 import {
     getActiveTab,
     sendMessageToContent,
+    sendNotification,
     tryWithPermission,
 } from "@/utils/browser";
+import { getLogId } from "@/utils/log";
 
 export default defineBackground(() => {
     // 視聴ページのメインリクエストを監視
@@ -100,8 +102,15 @@ export default defineBackground(() => {
             }
 
             if (command === "open-log") {
+                const tab = await getActiveTab();
+                const logId = await getLogId(tab?.id);
+                if (logId === undefined) {
+                    await sendNotification("ログIDが抽出できませんでした");
+                    return;
+                }
+
                 await browser.windows.create({
-                    url: ["log.html"],
+                    url: [`log.html?id=${logId}`],
                     type: "popup",
                     titlePreface: "ログ",
                     height: 800,

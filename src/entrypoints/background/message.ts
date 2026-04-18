@@ -65,7 +65,7 @@ export type BackgroundMessage =
       }
     | {
           type: "get-log-data";
-          data: string | undefined;
+          data: string | undefined | null;
       }
     | {
           type: "send-notification";
@@ -127,7 +127,7 @@ export async function backgroundMessageHandler(
                 break;
             }
             case "get-log-data": {
-                if (message.data === undefined) return;
+                if (message.data === undefined || message.data === null) return;
 
                 return await getLogData(message.data);
             }
