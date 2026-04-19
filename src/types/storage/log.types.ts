@@ -3,6 +3,7 @@ import type { NiconicoVideo } from "../api/niconico-video.types";
 import type { TabData } from "./tab.types";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
+export type LogTab = "commentFilter" | "videoFilter";
 
 export interface LogData {
     comment?: {

@@ -28,3 +28,16 @@
 .remove-rule-button {
     border: none;
 }
+.tab {
+    border-bottom: 2px solid gray;
+}
+.tab-button {
+    border: none;
+    font-size: 18px;
+    padding: 12px;
+}
+.selected-tab-button {
+    color: lightskyblue;
+    border-bottom: 2px solid lightskyblue;
+    margin-bottom: -2px; /* 親のボーダーに重ねる */
+}

@@ -116,9 +116,6 @@ export const defaultSettings: Settings = {
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
 
-    // ログ
-    isTitleRenderedAsLink: false,
-
     // 通知
     isNotifyAddNgId: true,
 

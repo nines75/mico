@@ -47,17 +47,6 @@ const config = [
         ],
     },
     {
-        heading: "ログ",
-        items: [
-            {
-                id: "isTitleRenderedAsLink",
-                label: "動画タイトルをリンクとして表示する",
-                details:
-                    "動画タイトルをクリックしてNG登録や削除することは出来なくなります。",
-            },
-        ],
-    },
-    {
         heading: "通知",
         items: [
             {

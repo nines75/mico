@@ -67,9 +67,6 @@ export interface Settings {
     isViewsFilterEnabled: boolean;
     viewsFilterCount: number;
 
-    // ログ
-    isTitleRenderedAsLink: boolean;
-
     // 通知
     isNotifyAddNgId: boolean;
 
