@@ -6,6 +6,7 @@ import type {
     ColDef,
     ICellRendererParams,
     LocaleText,
+    Theme,
 } from "ag-grid-community";
 import { themeQuartz, colorSchemeDark } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
@@ -28,8 +29,8 @@ export function Viewer<T>({
 }: ViewerProps<T>) {
     // コンポーネントに渡すプロパティのうちobjectであるものにはuseMemoを使う
     // https://www.ag-grid.com/react-data-grid/react-hooks/#object-properties
-    const defaultColDef = useMemo(() => ({ filter: true }), []);
-    const theme = useMemo(
+    const defaultColDef = useMemo<ColDef>(() => ({ filter: true }), []);
+    const theme = useMemo<Theme>(
         () =>
             themeQuartz.withPart(colorSchemeDark).withParams({
                 fontFamily: "Consolas, monospace",
