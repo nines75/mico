@@ -2,7 +2,11 @@ import { useMemo } from "#imports";
 import { sendMessageToBackground } from "@/utils/browser";
 import { isString, catchAsync } from "@/utils/util";
 import { AG_GRID_LOCALE_JP } from "@ag-grid-community/locale";
-import type { ColDef, ICellRendererParams } from "ag-grid-community";
+import type {
+    ColDef,
+    ICellRendererParams,
+    LocaleText,
+} from "ag-grid-community";
 import { themeQuartz, colorSchemeDark } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { Trash } from "lucide-react";
@@ -22,6 +26,8 @@ export function Viewer<T>({
     rows,
     cols,
 }: ViewerProps<T>) {
+    // コンポーネントに渡すプロパティのうちobjectであるものにはuseMemoを使う
+    // https://www.ag-grid.com/react-data-grid/react-hooks/#object-properties
     const defaultColDef = useMemo(() => ({ filter: true }), []);
     const theme = useMemo(
         () =>
@@ -31,6 +37,9 @@ export function Viewer<T>({
             }),
         [],
     );
+    const localeText = useMemo<LocaleText>(() => {
+        return AG_GRID_LOCALE_JP;
+    }, []);
 
     return (
         <>
@@ -56,7 +65,7 @@ export function Viewer<T>({
                     columnDefs={cols}
                     defaultColDef={defaultColDef}
                     theme={theme}
-                    localeText={AG_GRID_LOCALE_JP}
+                    localeText={localeText}
                     // テキストの選択を有効化
                     enableCellTextSelection={true}
                     // セルの値が同じ場合に結合する
