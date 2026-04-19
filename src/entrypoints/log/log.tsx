@@ -59,6 +59,7 @@ function Page() {
                     return {
                         ...comment,
                         strict:
+                            comment.target === "user-id" &&
                             isString(pattern) &&
                             strictUserIds?.includes(pattern) === true,
                     };
