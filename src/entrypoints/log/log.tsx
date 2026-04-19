@@ -18,7 +18,12 @@ export function Init() {
 }
 
 function Page() {
-    const [tab, setTab] = useState<LogTab>("commentFilter");
+    const log = useStorageStore.getState().log;
+    const [tab, setTab] = useState<LogTab>(
+        log?.comment === undefined && log?.video !== undefined
+            ? "videoFilter"
+            : "commentFilter",
+    );
 
     return (
         <>
