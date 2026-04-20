@@ -34,6 +34,11 @@ export async function saveLog(
 export function createCommentLog(
     filteredData: FilteredData,
 ): NonNullable<LogData["comment"]> {
+    const strictRuleIds: string[] = [];
+    for (const { ruleId } of filteredData.strictData) {
+        if (ruleId !== undefined) strictRuleIds.push(ruleId);
+    }
+
     const filteredComments = Object.values(filteredData.filters).flatMap(
         (filter) => filter.getFilteredComments(),
     );
@@ -44,7 +49,7 @@ export function createCommentLog(
     );
 
     return {
-        strictUserIds: filteredData.strictUserIds,
+        strictRuleIds,
         filteredComments,
         renderedComments,
     };

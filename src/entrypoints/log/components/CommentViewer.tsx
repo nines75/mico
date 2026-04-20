@@ -1,5 +1,5 @@
 import { useMemo, useState } from "#imports";
-import { isString, escapeNewline } from "@/utils/util";
+import { escapeNewline } from "@/utils/util";
 import type { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
 import { useStorageStore } from "@/utils/store";
@@ -33,15 +33,13 @@ export function CommentViewer() {
             log?.comment?.filteredComments
                 .filter(({ target }) => target === filter)
                 .map((comment) => {
-                    const pattern = comment.pattern;
-                    const strictUserIds = log.comment?.strictUserIds;
+                    const id = comment.id;
+                    const ruleIds = log.comment?.strictRuleIds;
 
                     return {
                         ...comment,
                         strict:
-                            comment.target === "user-id" &&
-                            isString(pattern) &&
-                            strictUserIds?.includes(pattern) === true,
+                            id !== undefined && ruleIds?.includes(id) === true,
                     };
                 }) ?? [],
         [log, filter],

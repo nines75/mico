@@ -65,7 +65,7 @@ device:Switch
 `,
         });
 
-        expect(result?.strictUserIds).toEqual([
+        expect(result?.strictData.map(({ userId }) => userId)).toEqual([
             "user-id-main-1",
             "user-id-main-3",
             "user-id-main-2",
@@ -95,7 +95,7 @@ device:switch
         });
 
         // 重複がないことを確認
-        expect(result?.strictUserIds).toEqual([
+        expect(result?.strictData.map(({ userId }) => userId)).toEqual([
             "user-id-main-2",
             "user-id-main-3",
         ]);

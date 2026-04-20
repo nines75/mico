@@ -23,7 +23,6 @@ export interface FilteredData {
         wordFilter: WordFilter;
     };
     loadedCommentCount: number;
-    strictUserIds: string[];
     strictData: StrictData[];
     threads: Thread[];
 }
@@ -82,19 +81,18 @@ export function filterComment(
         filter.filtering(threads, true);
     }
 
-    const strictUserIds: string[] = [];
     const strictData: StrictData[] = [];
     for (const filter of Object.values(strictFilters)) {
         for (const data of filter.getStrictData()) {
-            if (!strictUserIds.includes(data.userId)) {
-                strictUserIds.push(data.userId);
-                strictData.push(data);
-            }
+            if (strictData.some(({ userId }) => userId === data.userId))
+                continue;
+
+            strictData.push(data);
         }
     }
 
     // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
-    const ruleIds = userIdFilter.updateFilter(strictUserIds);
+    const ruleIds = userIdFilter.updateFilter(strictData);
 
     // 生成されたルールIDをstrictDataに反映
     for (const [index, ruleId] of ruleIds.entries()) {
@@ -112,7 +110,6 @@ export function filterComment(
     return {
         filters,
         loadedCommentCount,
-        strictUserIds,
         strictData,
         threads,
     };

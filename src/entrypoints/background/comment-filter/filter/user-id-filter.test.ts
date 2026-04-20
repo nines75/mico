@@ -55,7 +55,7 @@ describe(UserIdFilter.name, () => {
 
     it(UserIdFilter.prototype.updateFilter.name, () => {
         const userIdFilter = filtering({ filter: "user-id-main-1" });
-        userIdFilter.updateFilter(["user-id-main-2"]);
+        userIdFilter.updateFilter([{ userId: "user-id-main-2", context: "" }]);
         userIdFilter.filtering(threads);
 
         expect(getFilteredIds(userIdFilter)).toEqual(["1002", "1003"]);

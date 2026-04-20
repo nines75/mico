@@ -22,7 +22,7 @@ const log = {
         disable: 0,
     },
     comment: {
-        strictUserIds: [],
+        strictRuleIds: [],
         filteredComments: [
             ...getComments(["1000", "1001"], "user-id", "user-id-owner"),
             ...getComments(["1005", "1006"], "easy-comment"),

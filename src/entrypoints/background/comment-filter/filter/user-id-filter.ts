@@ -4,6 +4,7 @@ import { isString } from "@/utils/util";
 import { RuleFilter } from "../rule-filter";
 import type { Rule } from "../../rule";
 import { createDefaultRule } from "../../rule";
+import type { StrictData } from "../strict-filter";
 
 export class UserIdFilter extends RuleFilter {
     constructor(settings: Settings) {
@@ -39,12 +40,12 @@ export class UserIdFilter extends RuleFilter {
         });
     }
 
-    updateFilter(userIds: string[]) {
+    updateFilter(strictData: StrictData[]) {
         const ruleIds: string[] = [];
 
         this.rules = [
             // フィルターと同じ順序になるように先頭に追加する
-            ...userIds.map((userId): Rule => {
+            ...strictData.map(({ userId }): Rule => {
                 const ruleId = crypto.randomUUID();
                 ruleIds.push(ruleId);
 

@@ -7,7 +7,7 @@ export type LogTab = "commentFilter" | "videoFilter";
 
 export interface LogData {
     comment?: {
-        strictUserIds: string[];
+        strictRuleIds: string[];
         filteredComments: FilteredComment[];
         renderedComments: RenderedComment[];
     };
