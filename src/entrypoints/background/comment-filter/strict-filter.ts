@@ -7,6 +7,7 @@ import type { Rule } from "../rule";
 import { isString } from "@/utils/util";
 
 export interface StrictData {
+    ruleId?: string;
     userId: string;
     context: string;
 }

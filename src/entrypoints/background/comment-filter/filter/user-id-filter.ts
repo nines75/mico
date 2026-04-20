@@ -40,14 +40,23 @@ export class UserIdFilter extends RuleFilter {
     }
 
     updateFilter(userIds: string[]) {
-        const newUserIds = userIds.map((id): Rule => {
-            return {
-                pattern: id,
-                ...createDefaultRule(),
-            };
-        });
+        const ruleIds: string[] = [];
 
-        // フィルターと同じ順序になるように先頭に追加する
-        this.rules = [...newUserIds, ...this.rules];
+        this.rules = [
+            // フィルターと同じ順序になるように先頭に追加する
+            ...userIds.map((userId): Rule => {
+                const ruleId = crypto.randomUUID();
+                ruleIds.push(ruleId);
+
+                return {
+                    ...createDefaultRule(),
+                    id: ruleId,
+                    pattern: userId,
+                };
+            }),
+            ...this.rules,
+        ];
+
+        return ruleIds;
     }
 }

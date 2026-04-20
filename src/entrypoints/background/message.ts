@@ -17,7 +17,7 @@ import {
 import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 import { getDropdownComment } from "./scripting";
-import type { Except } from "type-fest";
+import type { SetOptional } from "type-fest";
 import type { AutoRule } from "./rule";
 
 type ExtractData<
@@ -57,7 +57,7 @@ export type BackgroundMessage =
       }
     | {
           type: "add-auto-rule";
-          data: Except<AutoRule, "id">[];
+          data: SetOptional<AutoRule, "id">[];
       }
     | {
           type: "remove-auto-rule";

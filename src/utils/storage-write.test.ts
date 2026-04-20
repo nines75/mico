@@ -2,7 +2,7 @@ import { loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
 import { addAutoRule, removeAutoRule, setSettings } from "./storage-write";
 import type { AutoRule } from "@/entrypoints/background/rule";
-import type { Except } from "type-fest";
+import type { SetOptional } from "type-fest";
 
 const expectString = expect.any(String) as string;
 
@@ -35,7 +35,7 @@ describe(addAutoRule.name, () => {
                 },
             ],
         },
-    ] satisfies { name: string; rules: Except<AutoRule, "id">[] }[])(
+    ] satisfies { name: string; rules: SetOptional<AutoRule, "id">[] }[])(
         "ルール数: $name",
         async ({ rules }) => {
             await addAutoRule(rules);

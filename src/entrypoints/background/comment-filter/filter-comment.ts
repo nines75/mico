@@ -93,8 +93,16 @@ export function filterComment(
         }
     }
 
-    // strictルールによってフィルタリングされたユーザーIDを反映
-    userIdFilter.updateFilter(strictUserIds);
+    // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
+    const ruleIds = userIdFilter.updateFilter(strictUserIds);
+
+    // 生成されたルールIDをstrictDataに反映
+    for (const [index, ruleId] of ruleIds.entries()) {
+        const data = strictData[index];
+        if (data === undefined) continue;
+
+        data.ruleId = ruleId;
+    }
 
     // フィルタリング
     for (const filter of Object.values(filters)) {

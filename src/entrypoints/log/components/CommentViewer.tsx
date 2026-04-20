@@ -59,6 +59,7 @@ export function CommentViewer() {
                 sortable: false,
                 cellRenderer: RuleCell,
             },
+            // ルールの左に置くとspanRowsの影響で横スクロールバーが途切れるので右に置く
             {
                 field: "strict",
                 headerName: "strict",
