@@ -49,12 +49,6 @@ export function CommentViewer() {
     const cols = useMemo<ColDef<Row>[]>(
         () => [
             {
-                field: "strict",
-                headerName: "strict",
-                width: 150,
-                hide: rows.every((row) => !row.strict),
-            },
-            {
                 // ルール列はセルを自前でレンダリングしているためツールチップが正しく動かない
                 // そのためツールチップは使わない
                 field: "pattern",
@@ -64,6 +58,13 @@ export function CommentViewer() {
                 sort: "asc",
                 sortable: false,
                 cellRenderer: RuleCell,
+            },
+            {
+                field: "strict",
+                headerName: "strict",
+                sortable: false, // ルールでソート済みなのでソートしても変わらない
+                width: 100,
+                hide: rows.every((row) => !row.strict),
             },
             {
                 field: "comment.body",

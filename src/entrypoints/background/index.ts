@@ -114,7 +114,7 @@ export default defineBackground(() => {
                     type: "popup",
                     titlePreface: "ログ",
                     height: 800,
-                    width: 1200,
+                    width: 1300,
                 });
             }
 
