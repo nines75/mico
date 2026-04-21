@@ -36,33 +36,29 @@ function Page() {
                     </a>
                 </div>
             </header>
-            {useStorageStore.getState().isWorkingPage ? (
-                <main>
-                    {useStorageStore.getState().isWatchPage && (
-                        <section>
-                            <div className="ng-button-container">
-                                <button
-                                    className="ng-button"
-                                    title={titles.addNgVideo}
-                                    onClick={catchAsync(onClickNgVideo)}
-                                >
-                                    <ScreenShareOff size={28} />
-                                </button>
-                                <button
-                                    className="ng-button"
-                                    title={titles.addNgUserIdByVideo}
-                                    onClick={catchAsync(onClickNgOwner)}
-                                >
-                                    <UserX size={28} />
-                                </button>
-                            </div>
-                        </section>
-                    )}
-                    <Count />
-                </main>
-            ) : (
-                <div id="message">{messages.popup.notWorking}</div>
-            )}
+            <main>
+                {useStorageStore.getState().isWatchPage && (
+                    <section>
+                        <div className="ng-button-container">
+                            <button
+                                className="ng-button"
+                                title={titles.addNgVideo}
+                                onClick={catchAsync(onClickNgVideo)}
+                            >
+                                <ScreenShareOff size={28} />
+                            </button>
+                            <button
+                                className="ng-button"
+                                title={titles.addNgUserIdByVideo}
+                                onClick={catchAsync(onClickNgOwner)}
+                            >
+                                <UserX size={28} />
+                            </button>
+                        </div>
+                    </section>
+                )}
+                <Count />
+            </main>
         </>
     );
 }

@@ -4,7 +4,7 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { LogData } from "../types/storage/log.types";
-import { catchAsync, isWatchPage, isWorkingPage } from "./util";
+import { catchAsync, isWatchPage } from "./util";
 import { getActiveTab, sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
@@ -13,7 +13,6 @@ interface StorageState {
     log: LogData | undefined;
     isLoading: boolean;
     isWatchPage: boolean;
-    isWorkingPage: boolean;
     loadSettingsPageData: () => void;
     loadPopupPageData: () => void;
     loadLog: () => void;
@@ -26,7 +25,6 @@ export const useStorageStore = create<StorageState>()(
         log: undefined,
         isLoading: true,
         isWatchPage: false,
-        isWorkingPage: false,
         loadSettingsPageData: catchAsync(async () => {
             const settings = await loadSettings();
 
@@ -42,7 +40,6 @@ export const useStorageStore = create<StorageState>()(
             set({
                 log,
                 isWatchPage: isWatchPage(tab?.url),
-                isWorkingPage: isWorkingPage(tab?.url),
                 isLoading: false,
             });
         }),

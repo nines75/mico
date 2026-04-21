@@ -52,7 +52,3 @@ section {
     color: var(--lighter-gray);
     margin: 0 8px;
 }
-#message {
-    margin: 20px;
-    font-weight: bold;
-}

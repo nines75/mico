@@ -32,10 +32,6 @@ export function isSearchPage(url: string | undefined) {
     );
 }
 
-export function isWorkingPage(url: string | undefined) {
-    return isWatchPage(url) || isRankingPage(url) || isSearchPage(url);
-}
-
 export function escapeNewline(text: string) {
     return text.replaceAll("\n", String.raw`\n`);
 }
