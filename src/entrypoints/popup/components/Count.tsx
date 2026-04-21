@@ -42,7 +42,7 @@ export default function Count() {
                 return (
                     <section key={name}>
                         <span className="info">
-                            <span>{name}</span>
+                            {name}
                             <span className="value">{value}</span>
                         </span>
                     </section>
