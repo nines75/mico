@@ -1,6 +1,10 @@
 import { useMemo, useState } from "#imports";
 import { escapeNewline } from "@/utils/util";
-import type { ColDef, ValueFormatterParams } from "ag-grid-community";
+import type {
+    ColDef,
+    ITooltipParams,
+    ValueFormatterParams,
+} from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
 import { useStorageStore } from "@/utils/store";
 import type { NiconicoComment } from "@/types/api/comment.types";
@@ -54,7 +58,7 @@ export function CommentViewer() {
                 width: 300,
                 spanRows: true, // 値が同じセルを結合
                 sort: "asc",
-                sortable: false,
+                sortable: false, // ルール別にソートするために、マルチソートを常に有効化させたうえでルール列のソートを固定する
                 cellRenderer: RuleCell,
             },
             // ルールの左に置くとspanRowsの影響で横スクロールバーが途切れるので右に置く
@@ -67,10 +71,11 @@ export function CommentViewer() {
             },
             {
                 field: "comment.body",
-                tooltipField: "comment.body",
                 headerName: "本文",
                 width: 350,
                 valueFormatter: (params: ValueFormatterParams<Row, string>) =>
+                    escapeNewline(params.value ?? ""),
+                tooltipValueGetter: (params: ITooltipParams<Row, string>) =>
                     escapeNewline(params.value ?? ""),
             },
             {
