@@ -11,38 +11,8 @@ header {
 section {
     margin: 10px 30px;
 }
-summary {
-    color: gray;
-    font-size: 13px;
-    padding: 6px 0;
-}
-.container {
-    background: #292a2d;
-    color: var(--dim-white);
-    width: auto;
-    height: auto;
-    text-align: center;
-    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
-}
-.filtering-type {
-    font-size: 20px;
-    font-weight: bold;
-
-    /* アイコンを揃えて中央寄せ */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-.svg-container {
-    display: flex;
-}
-.info-container {
-    margin-block: 5px;
-}
 .info {
     color: var(--lighter-gray);
-    margin: 0px 5px;
     .value {
         font-weight: bold;
     }
@@ -52,52 +22,16 @@ summary {
     margin-right: 14px;
     gap: 8px;
     .link {
+        color: var(--dim-white);
         display: flex;
         align-items: center;
+
+        /* buttonをanchor風にする */
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        padding: 0;
     }
-}
-.log {
-    width: 550px;
-    height: 400px;
-    resize: both;
-    overflow: auto;
-    background: black;
-    color: lightgray;
-    font-family: var(--font);
-    padding: 4px 0;
-    white-space: pre; /* 折り返しを無効化 */
-    text-align: start;
-    .log-line {
-        padding: 0 2px 0 6px;
-        .ng-score {
-            color: pink;
-        }
-        .nicoru {
-            color: yellow;
-        }
-        .duplicate {
-            color: aqua;
-        }
-        .strict-symbol {
-            color: red;
-        }
-        .clickable {
-            cursor: pointer;
-        }
-    }
-    .comment {
-        color: gray;
-    }
-}
-.button {
-    padding: 3px 10px;
-    margin: 5px;
-    border: gray 2px solid;
-    border-radius: 8px;
-    color: var(--lighter-gray);
-}
-.selected-button {
-    border-color: lightskyblue;
 }
 .ng-button-container {
     display: flex;
@@ -109,20 +43,18 @@ summary {
         padding: 0;
         margin: 0;
         border: none;
-        color: var(--dim-white);
     }
 }
-#video-id {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--lighter-gray);
+#root {
+    background: #292a2d;
+    color: var(--dim-white);
+    width: auto;
+    height: auto;
+    text-align: center;
+    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
 }
 #version {
     font-size: 17px;
     color: var(--lighter-gray);
     margin: 0 8px;
-}
-#message {
-    margin: 20px;
-    font-weight: bold;
 }

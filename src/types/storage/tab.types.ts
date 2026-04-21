@@ -9,8 +9,8 @@ export interface TabData {
     videoId: string;
     seriesId: string | undefined;
     title: string;
-    userId: string | undefined;
-    userName: string | undefined;
+    ownerId: string | undefined;
+    ownerName: string | undefined;
     tags: string[];
 }
 

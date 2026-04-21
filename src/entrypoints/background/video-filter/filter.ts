@@ -1,41 +1,18 @@
 import type { Settings } from "@/types/storage/settings.types";
-import type { VideoMap } from "@/types/storage/log-video.types";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { FilteredVideo } from "@/types/storage/log.types";
 
-export abstract class Filter<T> {
-    protected blockedCount = 0;
-    protected filteredVideos: VideoMap = new Map();
+export abstract class Filter {
     protected settings: Settings;
-    protected abstract log: T;
+    protected filteredVideos: FilteredVideo[] = [];
 
     constructor(settings: Settings) {
         this.settings = settings;
     }
 
     abstract filtering(data: { videos: NiconicoVideo[] }): void;
-    abstract isNgVideo(video: NiconicoVideo): boolean;
-    abstract sortLog(): void;
 
-    getBlockedCount(): number {
-        return this.blockedCount;
-    }
     getFilteredVideos() {
         return this.filteredVideos;
     }
-    getLog() {
-        return this.log;
-    }
-}
-
-export function sortVideoId(ids: string[], videos: VideoMap): string[] {
-    const idsCopy = [...ids];
-
-    idsCopy.sort((idA, idB) => {
-        const a = videos.get(idA) as NiconicoVideo;
-        const b = videos.get(idB) as NiconicoVideo;
-
-        return a.title.localeCompare(b.title);
-    });
-
-    return idsCopy;
 }

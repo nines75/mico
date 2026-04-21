@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import { checkComment, testThreads } from "@/utils/test";
+import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import { WordFilter } from "./word-filter";
 import type { Settings } from "@/types/storage/settings.types";
@@ -33,25 +33,27 @@ describe(WordFilter.name, () => {
         it("基本", () => {
             const filter = "test";
 
-            expect(filtering({ filter }).getLog()).toEqual(
-                new Map([["test", new Map([["test", ["1000", "1001"]]])]]),
-            );
+            expect(getFilteredIds(filtering({ filter }))).toEqual([
+                "1000",
+                "1001",
+            ]);
             checkComment(threads, ["1000", "1001"]);
         });
 
         it("部分一致", () => {
             const filter = "tes";
 
-            expect(filtering({ filter }).getLog()).toEqual(
-                new Map([["tes", new Map([["test", ["1000", "1001"]]])]]),
-            );
+            expect(getFilteredIds(filtering({ filter }))).toEqual([
+                "1000",
+                "1001",
+            ]);
             checkComment(threads, ["1000", "1001"]);
         });
 
         it("大小文字が異なる", () => {
             const filter = "TesT";
 
-            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
             checkComment(threads, []);
         });
     });
@@ -59,17 +61,7 @@ describe(WordFilter.name, () => {
     it("正規表現ルール", () => {
         const filter = "/テスト/";
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([
-                [
-                    "/テスト/",
-                    new Map([
-                        ["テスト", ["1002"]],
-                        ["テストコメント", ["1003"]],
-                    ]),
-                ],
-            ]),
-        );
+        expect(getFilteredIds(filtering({ filter }))).toEqual(["1002", "1003"]);
         checkComment(threads, ["1002", "1003"]);
     });
 
@@ -91,13 +83,14 @@ describe(WordFilter.name, () => {
             },
         });
 
-        expect(wordFilter.getLog()).toEqual(new Map());
+        expect(getFilteredIds(wordFilter)).toEqual([]);
         expect(wordFilter.getStrictData()).toEqual([
             {
                 userId: "user-id-main-1",
                 context: "comment-body: テスト",
             },
         ]);
+        checkComment(threads, []);
     });
 
     // https://github.com/nines75/mico/issues/61
@@ -108,34 +101,9 @@ describe(WordFilter.name, () => {
 
 コメント
 `;
-        expect(filtering({ filter, isStrictOnly: true }).getLog()).toEqual(
-            new Map(),
-        );
-        checkComment(threads, []);
-    });
-
-    it(WordFilter.prototype.sortLog.name, () => {
-        const filter = `
-コメント
-テスト
-`;
-        const wordFilter = filtering({
-            filter,
-        });
-        wordFilter.sortLog();
-
-        // 順序を調べるために配列に変換
         expect(
-            [...wordFilter.getLog()].map(([key, map]) => [key, [...map]]),
-        ).toEqual([
-            [
-                "コメント",
-                [
-                    ["コメント", ["1004"]],
-                    ["テストコメント", ["1003"]],
-                ],
-            ],
-            ["テスト", [["テスト", ["1002"]]]],
-        ]);
+            getFilteredIds(filtering({ filter, isStrictOnly: true })),
+        ).toEqual([]);
+        checkComment(threads, []);
     });
 });

@@ -23,8 +23,6 @@ export interface FilteredData {
         wordFilter: WordFilter;
     };
     loadedCommentCount: number;
-    filteringTime: number;
-    strictUserIds: string[];
     strictData: StrictData[];
     threads: Thread[];
 }
@@ -35,8 +33,6 @@ export function filterComment(
     tab: TabData,
 ): FilteredData | undefined {
     if (!settings.isCommentFilterEnabled) return;
-
-    const start = performance.now();
 
     // -------------------------------------------------------------------------------------------
     // フィルタリングと関係ない処理
@@ -85,32 +81,35 @@ export function filterComment(
         filter.filtering(threads, true);
     }
 
-    const strictUserIds: string[] = [];
     const strictData: StrictData[] = [];
     for (const filter of Object.values(strictFilters)) {
         for (const data of filter.getStrictData()) {
-            if (!strictUserIds.includes(data.userId)) {
-                strictUserIds.push(data.userId);
-                strictData.push(data);
-            }
+            if (strictData.some(({ userId }) => userId === data.userId))
+                continue;
+
+            strictData.push(data);
         }
     }
 
-    // strictルールによってフィルタリングされたユーザーIDを反映
-    userIdFilter.updateFilter(strictUserIds);
+    // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
+    const ruleIds = userIdFilter.updateFilter(strictData);
+
+    // 生成されたルールIDをstrictDataに反映
+    for (const [index, ruleId] of ruleIds.entries()) {
+        const data = strictData[index];
+        if (data === undefined) continue;
+
+        data.ruleId = ruleId;
+    }
 
     // フィルタリング
     for (const filter of Object.values(filters)) {
         filter.filtering(threads);
     }
 
-    const end = performance.now();
-
     return {
         filters,
         loadedCommentCount,
-        filteringTime: end - start,
-        strictUserIds,
         strictData,
         threads,
     };

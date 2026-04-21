@@ -75,6 +75,9 @@ export default function commentRequest(
                             context: data.context,
                             source: "strict",
                             target: { commentUserId: true },
+                            ...(data.ruleId !== undefined && {
+                                id: data.ruleId,
+                            }),
                         };
                     }),
                 ),

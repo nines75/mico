@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandFilter } from "./command-filter";
 import { defaultSettings } from "@/utils/config";
-import { checkComment, testThreads } from "@/utils/test";
+import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -41,25 +41,27 @@ describe(CommandFilter.name, () => {
         it("基本", () => {
             const filter = "big";
 
-            expect(filtering({ filter }).getLog()).toEqual(
-                new Map([["big", ["1002", "1004"]]]),
-            );
+            expect(getFilteredIds(filtering({ filter }))).toEqual([
+                "1002",
+                "1004",
+            ]);
             checkComment(threads, ["1002", "1004"]);
         });
 
         it("大小文字が異なる", () => {
             const filter = "BiG";
 
-            expect(filtering({ filter }).getLog()).toEqual(
-                new Map([["big", ["1002", "1004"]]]),
-            );
+            expect(getFilteredIds(filtering({ filter }))).toEqual([
+                "1002",
+                "1004",
+            ]);
             checkComment(threads, ["1002", "1004"]);
         });
 
         it("部分一致", () => {
             const filter = "bi";
 
-            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
             checkComment(threads, []);
         });
     });
@@ -67,9 +69,11 @@ describe(CommandFilter.name, () => {
     it("正規表現ルール", () => {
         const filter = "/big|device:switch/";
 
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["/big|device:switch/", ["1002", "1003", "1004"]]]),
-        );
+        expect(getFilteredIds(filtering({ filter }))).toEqual([
+            "1002",
+            "1003",
+            "1004",
+        ]);
         checkComment(threads, ["1002", "1003", "1004"]);
     });
 
@@ -91,10 +95,11 @@ big
             },
         });
 
-        expect(commandFilter.getLog()).toEqual(new Map());
+        expect(getFilteredIds(commandFilter)).toEqual([]);
         expect(commandFilter.getStrictData()).toEqual([
             { userId: "user-id-main-1", context: "comment-commands: big" },
         ]);
+        checkComment(threads, []);
     });
 
     describe("@disable", () => {
@@ -115,8 +120,9 @@ device:switch
 `,
             },
         ])("$name", ({ filter }) => {
-            expect(filtering({ filter }).getLog()).toEqual(new Map());
+            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
             expect(hasCommand(["big", "device:switch"])).toBe(false);
+            checkComment(threads, []);
         });
     });
 
@@ -126,13 +132,13 @@ device:switch
 @disable
 big
 `;
-        const strictCommandFilter = filtering({ filter, isStrictOnly: true });
         const commandFilter = filtering({ filter });
+        const strictCommandFilter = filtering({ filter, isStrictOnly: true });
 
-        checkComment(threads, []);
+        expect(getFilteredIds(commandFilter)).toEqual([]);
         expect(strictCommandFilter.getStrictData()).toEqual([]);
-        expect(commandFilter.getLog()).toEqual(new Map());
         expect(hasCommand(["big"])).toBe(false);
+        checkComment(threads, []);
     });
 
     // https://github.com/nines75/mico/issues/31
@@ -144,9 +150,7 @@ big
 
 big
 `;
-        expect(filtering({ filter }).getLog()).toEqual(
-            new Map([["big", ["1002", "1004"]]]),
-        );
+        expect(getFilteredIds(filtering({ filter }))).toEqual(["1002", "1004"]);
         checkComment(threads, ["1002", "1004"]);
     });
 
@@ -163,26 +167,9 @@ device:switch
 `;
         const commandFilter = filtering({ filter, isStrictOnly: true });
 
-        expect(commandFilter.getLog()).toEqual(new Map());
+        expect(getFilteredIds(commandFilter)).toEqual([]);
         expect(commandFilter.getDisableCount()).toEqual(0);
         expect(hasCommand(["184"])).toBe(true);
         checkComment(threads, []);
-    });
-
-    it(CommandFilter.prototype.sortLog.name, () => {
-        const filter = `
-device:switch
-big
-`;
-        const commandFilter = filtering({
-            filter,
-        });
-        commandFilter.sortLog();
-
-        // 順序を調べるために配列に変換
-        expect([...commandFilter.getLog()]).toEqual([
-            ["device:switch", ["1003", "1004"]],
-            ["big", ["1002"]],
-        ]);
     });
 });

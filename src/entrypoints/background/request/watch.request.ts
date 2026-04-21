@@ -1,4 +1,4 @@
-import { isNgVideo } from "../video-filter/filter-video";
+import { filterVideo } from "../video-filter/filter-video";
 import { loadSettings } from "@/utils/storage";
 import type { Settings } from "@/types/storage/settings.types";
 import { filterResponse, spaFilter } from "./request";
@@ -66,17 +66,11 @@ function watchApiFilter(
         const video = series?.next;
 
         if (series !== undefined && video !== null && video !== undefined) {
-            if (settings.isVideoFilterEnabled) {
-                if (isNgVideo(video, settings)) {
-                    series.next = null;
-                }
-
-                if (settings.isCommentPreviewHidden && series.next !== null) {
-                    series.next.latestCommentSummary = "";
-                }
-
-                meta?.setAttribute("content", JSON.stringify(watchApi));
+            if ((filterVideo([video], settings)?.filteredIds.size ?? 0) > 0) {
+                series.next = null;
             }
+
+            meta?.setAttribute("content", JSON.stringify(watchApi));
 
             return { hasNext: true, data: video };
         } else {
@@ -84,7 +78,7 @@ function watchApiFilter(
         }
     })();
 
-    const userId = (
+    const ownerId = (
         response.owner?.id ?? // 通常のユーザー
         response.channel?.id ?? // チャンネル
         // ユーザーが退会済み
@@ -92,7 +86,7 @@ function watchApiFilter(
             /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
         )?.[1]
     )?.toString();
-    const userName =
+    const ownerName =
         response.owner?.nickname ??
         response.channel?.name ??
         metadata.jsonLds[0]?.author?.name;
@@ -103,8 +97,8 @@ function watchApiFilter(
         seriesId: response.series?.id.toString(),
         videoId: response.video.id,
         title: response.video.title,
-        userId,
-        userName,
+        ownerId,
+        ownerName,
         tags,
     };
 }

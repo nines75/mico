@@ -17,6 +17,8 @@ import {
 import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 import { getDropdownComment } from "./scripting";
+import type { SetOptional } from "type-fest";
+import type { AutoRule } from "./rule";
 
 type ExtractData<
     T extends Extract<BackgroundMessage, { data: unknown }>["type"],
@@ -54,27 +56,16 @@ export type BackgroundMessage =
           type: "remove-all-data";
       }
     | {
-          type: "add-ng-user-id";
+          type: "add-auto-rule";
+          data: SetOptional<AutoRule, "id">[];
+      }
+    | {
+          type: "remove-auto-rule";
           data: string[];
       }
     | {
-          type: "remove-ng-user-id";
-          data: {
-              userIds: string[];
-              isRemoveSpecific?: boolean;
-          };
-      }
-    | {
-          type: "add-ng-id";
-          data: string;
-      }
-    | {
-          type: "remove-ng-id";
-          data: string;
-      }
-    | {
           type: "get-log-data";
-          data: string;
+          data: string | undefined | null;
       }
     | {
           type: "send-notification";
@@ -127,27 +118,17 @@ export async function backgroundMessageHandler(
                 await removeAllData();
                 break;
             }
-            // TODO: 以下の4つのcaseはログ用なので#70で修正
-            case "add-ng-user-id": {
+            case "add-auto-rule": {
                 await addAutoRule(message.data);
                 break;
             }
-            case "remove-ng-user-id": {
-                await removeAutoRule(
-                    message.data.userIds,
-                    message.data.isRemoveSpecific,
-                );
-                break;
-            }
-            case "add-ng-id": {
-                await addNgId(message.data);
-                break;
-            }
-            case "remove-ng-id": {
-                await removeNgId(message.data);
+            case "remove-auto-rule": {
+                await removeAutoRule(message.data);
                 break;
             }
             case "get-log-data": {
+                if (message.data === undefined || message.data === null) return;
+
                 return await getLogData(message.data);
             }
             case "send-notification": {
@@ -230,7 +211,7 @@ async function getCommentsForDropdown(sender: browser.runtime.MessageSender) {
     const userId = dropdownComment?.userId;
     if (userId === undefined) return;
 
-    return log.commentFilterLog?.filtering?.renderedComments
+    return log.comment?.renderedComments
         .filter((comment) => comment.userId === userId)
         .toSorted((a, b) => a.body.localeCompare(b.body))
         .toSorted((a, b) => a.score - b.score)
@@ -247,7 +228,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     if (tabId === undefined || logId === undefined) return;
 
     const log = await getLogData(logId);
-    const count = log?.videoFilterLog?.count?.totalBlocked;
+    const count = log?.count?.blockedVideo;
     if (count === undefined) return;
 
     await setBadgeState(count, colors.videoBadge, tabId);

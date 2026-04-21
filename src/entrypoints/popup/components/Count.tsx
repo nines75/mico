@@ -1,45 +1,57 @@
 import { useStorageStore } from "@/utils/store";
-import { Info } from "./Info";
-import type { FilterTab } from "@/types/storage/settings.types";
 
-interface CountProps {
-    selectedTab: FilterTab;
-}
-
-export default function Count({ selectedTab }: CountProps) {
-    const count = useStorageStore((state) => {
-        switch (selectedTab) {
-            case "commentFilter": {
-                return state.log?.commentFilterLog?.count;
-            }
-            case "videoFilter": {
-                return state.log?.videoFilterLog?.count;
-            }
-        }
-    });
-
-    const blocked = count?.totalBlocked ?? 0;
-    const loaded = count?.loaded ?? 0;
-    const percentage = loaded === 0 ? 0 : Math.floor((blocked / loaded) * 100);
+export default function Count() {
+    const count = useStorageStore((state) => state.log?.count);
 
     return (
         <>
-            <Info
-                name="総ブロック数:"
-                value={`${blocked}/${loaded} (${percentage}%)`}
-            />
-            {count?.invalid !== undefined && count.invalid > 0 && (
-                <Info name="無効なルールの数:" value={count.invalid} />
-            )}
-            {count !== undefined && "include" in count && count.include > 0 && (
-                <Info name="有効化されたルールの数:" value={count.include} />
-            )}
-            {count !== undefined && "exclude" in count && count.exclude > 0 && (
-                <Info name="無効化されたルールの数:" value={count.exclude} />
-            )}
-            {count !== undefined && "disable" in count && count.disable > 0 && (
-                <Info name="無効化されたコマンドの数:" value={count.disable} />
-            )}
+            {[
+                {
+                    name: "コメントのブロック数:",
+                    value: createPercentage(
+                        count?.blockedComment,
+                        count?.loadedComment,
+                    ),
+                },
+                {
+                    name: "動画のブロック数:",
+                    value: createPercentage(
+                        count?.blockedVideo,
+                        count?.loadedVideo,
+                    ),
+                },
+                {
+                    name: "有効化されたルールの数:",
+                    value: count?.include,
+                },
+                {
+                    name: "無効化されたルールの数:",
+                    value: count?.exclude,
+                },
+                {
+                    name: "無効化されたコマンドの数:",
+                    value: count?.disable,
+                },
+            ].map(({ name, value }) => {
+                if (
+                    value === undefined ||
+                    (typeof value === "number" && value <= 0)
+                )
+                    return null;
+
+                return (
+                    <section key={name}>
+                        <span className="info">
+                            {name}
+                            <span className="value">{value}</span>
+                        </span>
+                    </section>
+                );
+            })}
         </>
     );
+}
+
+function createPercentage(blocked = 0, loaded = 0) {
+    return `${blocked}/${loaded} (${loaded === 0 ? 0 : Math.floor((blocked / loaded) * 100)}%)`;
 }

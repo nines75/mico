@@ -1,15 +1,38 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { testLog, testTabData, testThreads } from "@/utils/test";
+import { testTabData, testThreads } from "@/utils/test";
 import { beforeAll, expect, it, vi } from "vitest";
 import type { FilteredData } from "./filter-comment";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
-import { createCount, createFiltering, saveLog } from "./save-log";
+import { createCount, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
+import type { NiconicoComment } from "@/types/api/comment.types";
+import type { FilteredComment, LogData } from "@/types/storage/log.types";
 
 beforeAll(() => {
     vi.spyOn(util, "setBadgeState").mockResolvedValue();
 });
+
+const log = {
+    count: {
+        blockedComment: 7,
+        loadedComment: 7,
+        include: 0,
+        exclude: 0,
+        disable: 0,
+    },
+    comment: {
+        strictRuleIds: [],
+        filteredComments: [
+            ...getComments(["1000", "1001"], "user-id", "user-id-owner"),
+            ...getComments(["1005", "1006"], "easy-comment"),
+            ...getComments(["1002"], "score"),
+            ...getComments(["1004"], "commands", "big"),
+            ...getComments(["1003"], "body", "コメント"),
+        ],
+        renderedComments: [],
+    },
+} as const satisfies LogData;
 
 it(saveLog.name, () => {
     const threads = structuredClone(testThreads);
@@ -38,7 +61,31 @@ big
         testTabData,
     ) as FilteredData;
 
-    // 処理時間のログは不定なのでそれ以外を確認
-    expect(createCount(filteredData)).toEqual(testLog.count);
-    expect(createFiltering(filteredData)).toEqual(testLog.filtering);
+    expect(createCommentLog(filteredData)).toEqual(log.comment);
+    expect(createCount(filteredData)).toEqual(log.count);
 });
+
+function getComments(
+    ids: string[],
+    target: FilteredComment["target"],
+    pattern?: string,
+): FilteredComment[] {
+    const comments: FilteredComment[] = ids.map((id) => {
+        return {
+            target,
+            comment: testThreads
+                .flatMap((thread) => thread.comments)
+                .find((comment) => comment.id === id) as NiconicoComment,
+            ...(pattern !== undefined && { pattern }),
+        };
+    });
+
+    // コマンドを小文字化
+    for (const { comment } of comments) {
+        comment.commands = comment.commands.map((command) =>
+            command.toLowerCase(),
+        );
+    }
+
+    return comments;
+}

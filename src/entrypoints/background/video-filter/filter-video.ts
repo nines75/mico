@@ -19,7 +19,6 @@ export interface FilteredData {
         titleFilter: TitleFilter;
     };
     loadedVideoCount: number;
-    filteringTime: number;
     filteredIds: Set<string>;
 }
 
@@ -29,8 +28,6 @@ export function filterVideo(
     isRecommend = false,
 ): FilteredData | undefined {
     if (!settings.isVideoFilterEnabled) return;
-
-    const start = performance.now();
 
     const videoIdFilter = new VideoIdFilter(settings);
     const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
@@ -55,45 +52,18 @@ export function filterVideo(
     }
 
     const filteredIds = new Set(
-        Object.values(filters).flatMap((filter) => [
-            ...filter.getFilteredVideos().keys(),
-        ]),
+        Object.values(filters).flatMap((filter) =>
+            filter.getFilteredVideos().map(({ video }) => video.id),
+        ),
     );
 
     if (settings.isCommentPreviewHidden) {
         for (const video of data.videos) video.latestCommentSummary = "";
     }
 
-    const end = performance.now();
-
     return {
         filters,
         loadedVideoCount: videos.length,
-        filteringTime: end - start,
         filteredIds,
     };
-}
-
-export function isNgVideo(video: NiconicoVideo, settings: Settings): boolean {
-    const videoIdFilter = new VideoIdFilter(settings);
-    const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
-    const paidFilter = new PaidFilter(settings);
-    const viewsFilter = new ViewsFilter(settings, true);
-    const userNameFilter = new UserNameFilter(settings);
-    const titleFilter = new TitleFilter(settings);
-
-    const filters: Filters = {
-        videoIdFilter,
-        videoOwnerIdFilter,
-        paidFilter,
-        viewsFilter,
-        userNameFilter,
-        titleFilter,
-    };
-
-    if (Object.values(filters).some((filter) => filter.isNgVideo(video))) {
-        return true;
-    }
-
-    return false;
 }

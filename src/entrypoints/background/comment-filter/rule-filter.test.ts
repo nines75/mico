@@ -5,9 +5,7 @@ import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 import { parseFilter } from "../parse-filter";
 
-class TestFilter extends RuleFilter<unknown> {
-    protected override log: unknown;
-
+class TestFilter extends RuleFilter {
     constructor(settings: Settings) {
         super(settings, "commentBody");
 
@@ -16,7 +14,6 @@ class TestFilter extends RuleFilter<unknown> {
     }
 
     override filtering = vi.fn();
-    override sortLog = vi.fn();
 
     getRule() {
         return this.rules;

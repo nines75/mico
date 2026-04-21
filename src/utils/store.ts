@@ -4,20 +4,18 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { LogData } from "../types/storage/log.types";
-import { catchAsync, isRankingPage, isSearchPage, isWatchPage } from "./util";
-import { sendMessageToBackground } from "./browser";
+import { catchAsync, isWatchPage } from "./util";
+import { getActiveTab, sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
 interface StorageState {
     settings: Settings;
     log: LogData | undefined;
-    tabId: number | undefined;
     isLoading: boolean;
     isWatchPage: boolean;
-    isRankingPage: boolean;
-    isSearchPage: boolean;
     loadSettingsPageData: () => void;
     loadPopupPageData: () => void;
+    loadLog: () => void;
     saveSettings: (settings: Partial<Settings>) => void;
 }
 
@@ -25,44 +23,36 @@ export const useStorageStore = create<StorageState>()(
     subscribeWithSelector((set) => ({
         settings: defaultSettings,
         log: undefined,
-        tabId: undefined,
         isLoading: true,
         isWatchPage: false,
-        isRankingPage: false,
-        isSearchPage: false,
         loadSettingsPageData: catchAsync(async () => {
             const settings = await loadSettings();
 
             set({ settings, isLoading: false });
         }),
         loadPopupPageData: catchAsync(async () => {
-            const [settings, tabs] = await Promise.all([
-                loadSettings(),
-                browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                }),
-            ]);
-            const tab = tabs[0];
-            const tabId = tab?.id;
-            const logId = await getLogId(tabId);
-            const log =
-                logId === undefined
-                    ? undefined
-                    : ((await sendMessageToBackground({
-                          type: "get-log-data",
-                          data: logId,
-                      })) as LogData | undefined);
+            const tab = await getActiveTab();
+            const log = (await sendMessageToBackground({
+                type: "get-log-data",
+                data: await getLogId(tab?.id),
+            })) as LogData | undefined;
 
             set({
-                settings,
                 log,
                 isWatchPage: isWatchPage(tab?.url),
-                isRankingPage: isRankingPage(tab?.url),
-                isSearchPage: isSearchPage(tab?.url),
-                tabId,
                 isLoading: false,
             });
+        }),
+        loadLog: catchAsync(async () => {
+            const params = new URLSearchParams(location.search);
+            const id = params.get("id");
+
+            const log = (await sendMessageToBackground({
+                type: "get-log-data",
+                data: id,
+            })) as LogData | undefined;
+
+            set({ log, isLoading: false });
         }),
         saveSettings: catchAsync(async (settings) => {
             const currentSettings = useStorageStore.getState().settings;

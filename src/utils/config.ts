@@ -95,13 +95,6 @@ export const defaultSettings: Settings = {
     isIgnoreByNicoru: false,
     ignoreByNicoruCount: 30,
 
-    // ログ
-    isNgScoreVisible: true,
-    isNicoruVisible: true,
-    nicoruVisibleCount: 30,
-    isDuplicateVisible: true,
-    duplicateVisibleCount: 2,
-
     // 通知
     isNotifyAddNgUserId: true,
     isNotifyAutoAddNgUserId: true,
@@ -123,9 +116,6 @@ export const defaultSettings: Settings = {
     isViewsFilterEnabled: false,
     viewsFilterCount: 1000,
 
-    // ログ
-    isTitleRenderedAsLink: false,
-
     // 通知
     isNotifyAddNgId: true,
 
@@ -135,25 +125,6 @@ export const defaultSettings: Settings = {
 
     // タブ
     selectedSettingsTab: "general",
-    selectedPopupTab: "commentFilter",
-
-    // 開閉
-    isProcessingTimeOpen: false,
-    isCountOpen: true,
-    isLogOpen: true,
-
-    // 表示
-    isUserIdFilterVisible: true,
-    isEasyCommentFilterVisible: true,
-    isCommentAssistFilterVisible: true,
-    isScoreFilterVisible: true,
-    isCommandFilterVisible: true,
-    isWordFilterVisible: true,
-    isIdFilterVisible: true,
-    isPaidFilterVisible: true,
-    isViewsFilterVisible: true,
-    isUserNameFilterVisible: true,
-    isTitleFilterVisible: true,
 } as const;
 
 export const buttons = {

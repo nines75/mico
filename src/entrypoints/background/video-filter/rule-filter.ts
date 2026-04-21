@@ -1,60 +1,32 @@
-import type { CommonLog } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import { createRules, type Rule } from "../rule";
 import type { Filters } from "./filter-video";
-import { Filter, sortVideoId } from "./filter";
+import { Filter } from "./filter";
+import type { FilteredVideo } from "@/types/storage/log.types";
 
-export abstract class RuleFilter<T> extends Filter<T> {
+export abstract class RuleFilter extends Filter {
     protected rules: Rule[];
-    protected invalidCount = 0;
+    protected target: FilteredVideo["target"];
 
-    constructor(settings: Settings, target: keyof Rule["target"]) {
+    constructor(
+        settings: Settings,
+        target: keyof Rule["target"],
+        logTarget: FilteredVideo["target"],
+    ) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(settings);
+        const { rules } = parseFilter(settings);
         this.rules = createRules(settings, target, rules);
-        this.invalidCount += invalidCount;
-    }
 
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
-
-    countRules(): number {
-        return this.rules.length;
-    }
-
-    createKey(pattern: string | RegExp): string {
-        return isString(pattern) ? pattern : pattern.toString();
-    }
-
-    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        for (const key of keys) {
-            const keyStr = this.createKey(key);
-            const value = currentLog.get(keyStr);
-            if (value !== undefined) {
-                log.set(keyStr, value);
-            }
-        }
-
-        // 各キーの動画IDをソート
-        for (const [key, ids] of log) {
-            log.set(key, sortVideoId(ids, this.filteredVideos));
-        }
-
-        return log;
+        this.target = logTarget;
     }
 }
 
 export function getRuleFilters(
     filters: Filters,
-): ConditionalPick<Filters, RuleFilter<unknown>> {
+): ConditionalPick<Filters, RuleFilter> {
     return {
         videoIdFilter: filters.videoIdFilter,
         videoOwnerIdFilter: filters.videoOwnerIdFilter,

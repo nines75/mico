@@ -1,21 +1,12 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
-import type { CommentLogViewerProps } from "./components/CommentLogViewer";
-import CommentLogViewer from "./components/CommentLogViewer";
-import ProcessingTime from "./components/ProcessingTime";
 import { messages, urls, titles } from "@/utils/config";
-import { useStorageStore, storageChangeHandler } from "@/utils/store";
+import { useStorageStore } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
-import { useShallow } from "zustand/shallow";
-import type { VideoLogViewerProps } from "./components/VideoLogViewer";
-import VideoLogViewer from "./components/VideoLogViewer";
-import Details from "./components/Details";
-import type { FilterTab } from "@/types/storage/settings.types";
-import { formatNgId } from "../background/video-filter/filter/id-filter";
-import clsx from "clsx";
-import { catchAsync, replace } from "@/utils/util";
-import { sendMessageToBackground } from "@/utils/browser";
+import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
+import { catchAsync } from "@/utils/util";
+import { sendMessageToBackground, sendNotification } from "@/utils/browser";
+import { openLog } from "@/utils/log";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
@@ -33,121 +24,61 @@ function Page() {
     const name = browser.runtime.getManifest().name;
     const version = `v${browser.runtime.getManifest().version}`;
 
-    useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
-
-        return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
-        };
-    }, []);
-
     return (
-        <div className="container">
+        <>
             <header>
                 <span id="version">{`${name} ${version}`}</span>
                 <div className="link-container">
                     <a className="link" href={urls.repository}>
-                        <SiGithub size={24} color="var(--dim-white)" />
+                        <SiGithub size={24} />
                     </a>
-                    <a className="link" href="/options.html" target="_blank">
-                        <SettingsIcon size={24} color="var(--dim-white)" />
+                    <button
+                        className="link"
+                        title="ログを開く"
+                        onClick={catchAsync(async () => {
+                            await openLog();
+                        })}
+                    >
+                        <History size={24} />
+                    </button>
+                    <a
+                        className="link"
+                        href="/options.html"
+                        target="_blank"
+                        title="設定を開く"
+                    >
+                        <SettingsIcon size={24} />
                     </a>
                 </div>
             </header>
-            <Main />
-        </div>
+            <main>
+                {useStorageStore.getState().isWatchPage && (
+                    <section>
+                        <div className="ng-button-container">
+                            <button
+                                className="ng-button"
+                                title={titles.addNgVideo}
+                                onClick={catchAsync(onClickNgVideo)}
+                            >
+                                <ScreenShareOff size={28} />
+                            </button>
+                            <button
+                                className="ng-button"
+                                title={titles.addNgUserIdByVideo}
+                                onClick={catchAsync(onClickNgOwner)}
+                            >
+                                <UserX size={28} />
+                            </button>
+                        </div>
+                    </section>
+                )}
+                <Count />
+            </main>
+        </>
     );
 }
 
-function Main() {
-    const [videoId, rawSelectedTab, save] = useStorageStore(
-        useShallow((state) => [
-            state.log?.tab?.videoId,
-            state.settings.selectedPopupTab,
-            state.saveSettings,
-        ]),
-    );
-
-    const isWatchPage = useStorageStore.getState().isWatchPage;
-    const isRankingPage = useStorageStore.getState().isRankingPage;
-    const isSearchPage = useStorageStore.getState().isSearchPage;
-
-    if (!isWatchPage && !isRankingPage && !isSearchPage) {
-        return <div id="message">{messages.popup.notWorking}</div>;
-    }
-
-    // 視聴ページ以外は動画フィルターのみ表示
-    const selectedTab: FilterTab = isWatchPage ? rawSelectedTab : "videoFilter";
-
-    return (
-        <main>
-            {videoId !== undefined && (
-                <section>
-                    <span id="video-id">{videoId}</span>
-                    <div className="ng-button-container">
-                        <button
-                            className="ng-button"
-                            title={titles.addNgVideo}
-                            onClick={catchAsync(onClickNgVideoButton)}
-                        >
-                            <ScreenShareOff size={28} />
-                        </button>
-                        <button
-                            className="ng-button"
-                            title={titles.addNgUserIdByVideo}
-                            onClick={catchAsync(onClickNgUserButton)}
-                        >
-                            <UserX size={28} />
-                        </button>
-                    </div>
-                </section>
-            )}
-            {isWatchPage && (
-                <div>
-                    {config.tab.map((filter) => (
-                        <button
-                            key={filter.id}
-                            className={clsx(
-                                "button",
-                                selectedTab === filter.id && "selected-button",
-                            )}
-                            onClick={() => {
-                                save({ selectedPopupTab: filter.id });
-                            }}
-                        >
-                            {filter.name}
-                        </button>
-                    ))}
-                </div>
-            )}
-            <Details id={"isProcessingTimeOpen"} summary="処理時間">
-                <ProcessingTime {...{ selectedTab }} />
-            </Details>
-            <Details id={"isCountOpen"} summary="カウント情報">
-                <Count {...{ selectedTab }} />
-            </Details>
-            <Details id={"isLogOpen"} summary="フィルタリングログ">
-                {(() => {
-                    switch (selectedTab) {
-                        case "commentFilter": {
-                            return config.commentFilter.log.map((log) => (
-                                <CommentLogViewer key={log.id} {...log} />
-                            ));
-                        }
-                        case "videoFilter": {
-                            return config.videoFilter.log.map((log) => (
-                                <VideoLogViewer key={log.id} {...log} />
-                            ));
-                        }
-                    }
-                })()}
-            </Details>
-        </main>
-    );
-}
-
-async function onClickNgVideoButton() {
-    const settings = useStorageStore.getState().settings;
+async function onClickNgVideo() {
     const videoId = useStorageStore.getState().log?.tab?.videoId;
     const title = useStorageStore.getState().log?.tab?.title;
 
@@ -155,133 +86,45 @@ async function onClickNgVideoButton() {
         alert(messages.ngVideoId.getInfoFailed);
         return;
     }
-    if (
-        !confirm(
-            replace(messages.ngVideoId.confirmAddition, [
-                `${videoId} (${title})`,
-            ]),
-        )
-    )
-        return;
 
     await sendMessageToBackground({
-        type: "add-ng-id",
-        data: formatNgId(videoId, title, settings),
+        type: "add-auto-rule",
+        data: [
+            {
+                pattern: videoId,
+                context: `video-title: ${title}`,
+                source: "popup",
+                target: { videoId: true },
+            },
+        ],
     });
+    await sendNotification(
+        `以下の動画をNG登録しました\n\n${videoId} (${title})`,
+    );
 }
 
-async function onClickNgUserButton() {
-    const settings = useStorageStore.getState().settings;
-    const userId = useStorageStore.getState().log?.tab?.userId;
-    const userName = useStorageStore.getState().log?.tab?.userName;
+async function onClickNgOwner() {
+    const ownerId = useStorageStore.getState().log?.tab?.ownerId;
+    const ownerName = useStorageStore.getState().log?.tab?.ownerName;
 
     // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
-    if (userId === undefined || userName === undefined) {
+    if (ownerId === undefined || ownerName === undefined) {
         alert(messages.ngUserId.getInfoFailed);
         return;
     }
-    if (
-        !confirm(
-            replace(messages.ngUserId.confirmAddition, [
-                `${userId} (${userName})`,
-            ]),
-        )
-    )
-        return;
 
     await sendMessageToBackground({
-        type: "add-ng-id",
-        data: formatNgId(userId, userName, settings),
+        type: "add-auto-rule",
+        data: [
+            {
+                pattern: ownerId,
+                context: `owner-name: ${ownerName}`,
+                source: "popup",
+                target: { videoOwnerId: true },
+            },
+        ],
     });
+    await sendNotification(
+        `以下のユーザーをNG登録しました\n\n${ownerId} (${ownerName})`,
+    );
 }
-
-// -------------------------------------------------------------------------------------------
-// config
-// -------------------------------------------------------------------------------------------
-
-const config = {
-    tab: [
-        {
-            id: "commentFilter",
-            name: "コメントフィルター",
-        },
-        {
-            id: "videoFilter",
-            name: "動画フィルター",
-        },
-    ],
-    commentFilter: {
-        log: [
-            {
-                id: "userIdFilter",
-                visibleKey: "isUserIdFilterVisible",
-                name: "NGユーザーID",
-            },
-            {
-                id: "easyCommentFilter",
-                visibleKey: "isEasyCommentFilterVisible",
-                name: "かんたんコメント",
-            },
-            {
-                id: "commentAssistFilter",
-                visibleKey: "isCommentAssistFilterVisible",
-                name: "コメントアシスト",
-            },
-            {
-                id: "scoreFilter",
-                visibleKey: "isScoreFilterVisible",
-                name: "NGスコア",
-            },
-            {
-                id: "commandFilter",
-                visibleKey: "isCommandFilterVisible",
-                name: "NGコマンド",
-            },
-            {
-                id: "wordFilter",
-                visibleKey: "isWordFilterVisible",
-                name: "NGワード",
-            },
-        ],
-    },
-    videoFilter: {
-        log: [
-            {
-                id: "idFilter",
-                visibleKey: "isIdFilterVisible",
-                name: "NGユーザーID/動画ID",
-            },
-            {
-                id: "paidFilter",
-                visibleKey: "isPaidFilterVisible",
-                name: "有料動画",
-            },
-            {
-                id: "viewsFilter",
-                visibleKey: "isViewsFilterVisible",
-                name: "再生回数",
-            },
-            {
-                id: "userNameFilter",
-                visibleKey: "isUserNameFilterVisible",
-                name: "NGユーザー名",
-            },
-            {
-                id: "titleFilter",
-                visibleKey: "isTitleFilterVisible",
-                name: "NGタイトル",
-            },
-        ],
-    },
-} as const satisfies {
-    tab: {
-        id: FilterTab;
-        name: string;
-    }[];
-    commentFilter: {
-        log: CommentLogViewerProps[];
-    };
-    videoFilter: {
-        log: VideoLogViewerProps[];
-    };
-};

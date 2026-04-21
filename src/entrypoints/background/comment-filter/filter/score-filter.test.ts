@@ -1,5 +1,5 @@
 import type { Thread } from "@/types/api/comment.types";
-import { checkComment, testThreads } from "@/utils/test";
+import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter";
 import { defaultSettings } from "@/utils/config";
@@ -41,35 +41,20 @@ describe(ScoreFilter.name, () => {
             { score: -1001, ids: ["1002"] },
             { score: -10_000, ids: [] },
         ])("$score", ({ score, ids }) => {
-            expect(filtering({ score }).getLog()).toEqual(ids);
+            expect(getFilteredIds(filtering({ score }))).toEqual(ids);
             checkComment(threads, ids);
         });
     });
 
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
         expect(
-            filtering({
-                score: 0,
-                settings: { isScoreFilterEnabled: false },
-            }).getLog(),
+            getFilteredIds(
+                filtering({
+                    score: 0,
+                    settings: { isScoreFilterEnabled: false },
+                }),
+            ),
         ).toEqual([]);
         checkComment(threads, []);
-    });
-
-    it(ScoreFilter.prototype.sortLog.name, () => {
-        const scoreFilter = filtering({
-            score: 0,
-        });
-        scoreFilter.sortLog();
-
-        expect(scoreFilter.getLog()).toEqual([
-            "1002",
-            "1003",
-            "1004",
-            "1005",
-            "1000",
-            "1001",
-            "1006",
-        ]);
     });
 });

@@ -5,6 +5,7 @@ import type { Merge, PartialDeep, SetOptional } from "type-fest";
 export interface Rule {
     /** 元のフィルターを改行区切りで配列にしたときのインデックス */
     index?: number;
+    id?: string;
     pattern: string | RegExp;
     isStrict: boolean;
     isDisable: boolean;
@@ -24,7 +25,7 @@ export interface Rule {
 interface AutoRuleOnly {
     id: string;
     pattern: string; // 正規表現には対応しない
-    source: "dropdown" | "strict" | "contextMenu";
+    source: "dropdown" | "strict" | "contextMenu" | "popup";
     context?: string;
 }
 

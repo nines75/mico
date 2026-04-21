@@ -1,6 +1,11 @@
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { checkComment, testTabData, testThreads } from "@/utils/test";
+import {
+    checkComment,
+    getFilteredIds,
+    testTabData,
+    testThreads,
+} from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
@@ -38,21 +43,9 @@ big
     };
 
     it("基本", () => {
-        const result = filtering();
+        filtering();
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
-        expect(result?.filters.easyCommentFilter.getLog()).toEqual(new Map());
-        expect(result?.filters.commentAssistFilter.getLog()).toEqual(new Map());
-        expect(result?.filters.scoreFilter.getLog()).toEqual([]);
-        expect(result?.filters.userIdFilter.getLog()).toEqual(
-            new Map([["user-id-owner", ["1000", "1001"]]]),
-        );
-        expect(result?.filters.commandFilter.getLog()).toEqual(
-            new Map([["big", ["1002", "1004"]]]),
-        );
-        expect(result?.filters.wordFilter.getLog()).toEqual(
-            new Map([["コメント", new Map([["テストコメント", ["1003"]]])]]),
-        );
     });
 
     it("strictルールの先行適用", () => {
@@ -72,21 +65,17 @@ device:Switch
 `,
         });
 
-        checkComment(threads, ["1002", "1003", "1004"]);
-        expect(result?.strictUserIds).toEqual([
+        expect(result?.strictData.map(({ userId }) => userId)).toEqual([
             "user-id-main-1",
             "user-id-main-3",
             "user-id-main-2",
         ]);
-        expect(result?.filters.userIdFilter.getLog()).toEqual(
-            new Map([
-                ["user-id-main-1", ["1002"]],
-                ["user-id-main-2", ["1003"]],
-                ["user-id-main-3", ["1004"]],
-            ]),
-        );
-        expect(result?.filters.commandFilter.getLog()).toEqual(new Map());
-        expect(result?.filters.wordFilter.getLog()).toEqual(new Map());
+        expect(getFilteredIds(result?.filters.userIdFilter)).toEqual([
+            "1002",
+            "1003",
+            "1004",
+        ]);
+        checkComment(threads, ["1002", "1003", "1004"]);
     });
 
     it("strictルールによるフィルタリングの重複", () => {
@@ -106,7 +95,7 @@ device:switch
         });
 
         // 重複がないことを確認
-        expect(result?.strictUserIds).toEqual([
+        expect(result?.strictData.map(({ userId }) => userId)).toEqual([
             "user-id-main-2",
             "user-id-main-3",
         ]);

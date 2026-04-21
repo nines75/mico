@@ -1,6 +1,10 @@
 import type { LogId } from "@/types/storage/log.types";
 import delay from "delay";
-import { sendMessageToContent } from "./browser";
+import {
+    getActiveTab,
+    sendMessageToContent,
+    sendNotification,
+} from "./browser";
 
 export function createLogId() {
     return crypto.randomUUID();
@@ -34,4 +38,21 @@ export async function getLogId(
     } catch {
         return;
     }
+}
+
+export async function openLog() {
+    const tab = await getActiveTab();
+    const logId = await getLogId(tab?.id);
+    if (logId === undefined) {
+        await sendNotification("ログIDが抽出できませんでした");
+        return;
+    }
+
+    await browser.windows.create({
+        url: [`log.html?id=${logId}`],
+        type: "popup",
+        titlePreface: "ログ",
+        height: 800,
+        width: 1300,
+    });
 }

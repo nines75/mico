@@ -1,3 +1,4 @@
+import type { Filter } from "@/entrypoints/background/comment-filter/filter";
 import type { parseFilter } from "@/entrypoints/background/parse-filter";
 import type { Toggle } from "@/entrypoints/background/rule";
 import {
@@ -6,10 +7,6 @@ import {
     type Rule,
 } from "@/entrypoints/background/rule";
 import type { NiconicoComment, Thread } from "@/types/api/comment.types";
-import type {
-    CommentMap,
-    CommentFilterLog,
-} from "@/types/storage/log-comment.types";
 import type { TabData } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 
@@ -98,86 +95,6 @@ export const testThreads = [
     },
 ] satisfies Thread[];
 
-export const testComments: CommentMap = new Map(
-    testThreads.flatMap((thread) =>
-        thread.comments.map((comment) => [comment.id, comment]),
-    ),
-);
-
-function getComments(ids: string[]) {
-    const comments: [string, NiconicoComment][] = ids.map((id) => [
-        id,
-        testThreads
-            .flatMap((thread) => thread.comments)
-            .find((comment) => comment.id === id) as NiconicoComment,
-    ]);
-    for (const [_, comment] of comments) {
-        comment.commands = comment.commands.map((command) =>
-            command.toLowerCase(),
-        );
-    }
-
-    return comments;
-}
-
-export const testLog = {
-    count: {
-        rule: {
-            userIdFilter: 1,
-            commandFilter: 1,
-            wordFilter: 1,
-        },
-        blocked: {
-            userIdFilter: 2,
-            easyCommentFilter: 2,
-            commentAssistFilter: 0,
-            scoreFilter: 1,
-            commandFilter: 1,
-            wordFilter: 1,
-        },
-        totalBlocked: 7,
-        loaded: 7,
-        include: 0,
-        exclude: 0,
-        disable: 0,
-        invalid: 0,
-    },
-    filtering: {
-        filters: {
-            userIdFilter: new Map([["user-id-owner", ["1000", "1001"]]]),
-            easyCommentFilter: new Map([
-                ["！？", ["1005"]],
-                ["うぽつ", ["1006"]],
-            ]),
-            commentAssistFilter: new Map(),
-            scoreFilter: ["1002"],
-            commandFilter: new Map([["big", ["1004"]]]),
-            wordFilter: new Map([
-                ["コメント", new Map([["テストコメント", ["1003"]]])],
-            ]),
-        },
-        strictUserIds: [],
-        filteredComments: new Map(
-            getComments([
-                // NGユーザーID
-                "1000",
-                "1001",
-                // かんたんコメント
-                "1005",
-                "1006",
-                // NGスコア
-                "1002",
-                // NGコマンド
-                "1004",
-                // NGワード
-                "1003",
-            ]),
-        ),
-        renderedComments: [],
-    },
-    processingTime: { filtering: 1, saveLog: 5 },
-} as const satisfies CommentFilterLog;
-
 export const testTabData = {
     series: {
         hasNext: false,
@@ -185,8 +102,8 @@ export const testTabData = {
     videoId: "sm1",
     seriesId: "1",
     title: "title",
-    userId: "1",
-    userName: "user-name",
+    ownerId: "1",
+    ownerName: "user-name",
     tags: [],
 } as const satisfies TabData;
 
@@ -233,4 +150,8 @@ export function mockToggle(toggle: Partial<Toggle>): Toggle {
         ...createDefaultToggle(),
         ...toggle,
     };
+}
+
+export function getFilteredIds(filter: Filter | undefined) {
+    return filter?.getFilteredComments().map(({ comment }) => comment.id);
 }

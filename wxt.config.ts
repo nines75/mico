@@ -82,6 +82,14 @@ export default defineConfig({
                           }
                         : {},
                 },
+                "open-log": {
+                    description: "ログを開く",
+                    suggested_key: isDevelopment
+                        ? {
+                              default: "Alt+L",
+                          }
+                        : {},
+                },
                 "add-ng-from-clipboard": {
                     description: "クリップボードからNG登録",
                     suggested_key: isDevelopment
@@ -110,7 +118,7 @@ export default defineConfig({
                     description: "ポップアップを開く",
                     suggested_key: isDevelopment
                         ? {
-                              default: "Alt+L",
+                              default: "Alt+K",
                           }
                         : {},
                 },

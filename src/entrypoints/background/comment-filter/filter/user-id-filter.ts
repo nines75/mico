@@ -1,16 +1,12 @@
 import type { Settings } from "@/types/storage/settings.types";
 import type { Thread } from "@/types/api/comment.types";
-import { isString, pushCommonLog } from "@/utils/util";
-import type { CommonLog } from "@/types/storage/log.types";
-import { parseFilter } from "../../parse-filter";
+import { isString } from "@/utils/util";
 import { RuleFilter } from "../rule-filter";
-import { objectKeys } from "ts-extras";
 import type { Rule } from "../../rule";
 import { createDefaultRule } from "../../rule";
+import type { StrictData } from "../strict-filter";
 
-export class UserIdFilter extends RuleFilter<CommonLog> {
-    protected override log: CommonLog = new Map();
-
+export class UserIdFilter extends RuleFilter {
     constructor(settings: Settings) {
         super(settings, "commentUserId");
     }
@@ -19,35 +15,23 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         const rules = this.rules;
         if (rules.length === 0) return;
 
-        const userIdSet = new Set<string>();
-        const regexes: RegExp[] = [];
-        for (const { pattern } of rules) {
-            if (isString(pattern)) {
-                userIdSet.add(pattern);
-            } else {
-                regexes.push(pattern);
-            }
-        }
-
         this.traverseThreads(threads, (comment) => {
-            let key: string | undefined;
-            const { id, userId } = comment;
+            const { userId } = comment;
 
-            if (
-                userIdSet.has(userId) ||
-                regexes.some((regex) => {
-                    const isMatch = regex.test(userId);
-                    if (isMatch) {
-                        // 正規表現ルールではそれ自体をkeyにする
-                        key = this.createKey(regex);
-                    }
+            for (const { pattern, id } of rules) {
+                if (
+                    isString(pattern)
+                        ? userId !== pattern
+                        : !pattern.test(userId)
+                )
+                    continue;
 
-                    return isMatch;
-                })
-            ) {
-                pushCommonLog(this.log, key ?? userId, id);
-                this.filteredComments.set(id, comment);
-                this.blockedCount++;
+                this.filteredComments.push({
+                    comment,
+                    pattern,
+                    target: "user-id",
+                    ...(id !== undefined && { ruleId: id }),
+                });
 
                 return false;
             }
@@ -56,47 +40,24 @@ export class UserIdFilter extends RuleFilter<CommonLog> {
         });
     }
 
-    override sortLog(): void {
-        this.log = this.sortCommonLog(
-            this.log,
-            this.rules.map(({ pattern }) => pattern),
-        );
+    updateFilter(strictData: StrictData[]) {
+        const ruleIds: string[] = [];
+
+        this.rules = [
+            // フィルターと同じ順序になるように先頭に追加する
+            ...strictData.map(({ userId }): Rule => {
+                const ruleId = crypto.randomUUID();
+                ruleIds.push(ruleId);
+
+                return {
+                    ...createDefaultRule(),
+                    id: ruleId,
+                    pattern: userId,
+                };
+            }),
+            ...this.rules,
+        ];
+
+        return ruleIds;
     }
-
-    updateFilter(userIds: string[]) {
-        const newUserIds = userIds.map((id): Rule => {
-            return {
-                pattern: id,
-                ...createDefaultRule(),
-            };
-        });
-
-        // フィルターと同じ順序になるように先頭に追加する
-        this.rules = [...newUserIds, ...this.rules];
-    }
-}
-
-export function parseNgUserId(settings: Settings, hasSpecific = true) {
-    return parseFilter(settings.ngUserId, true).rules.filter(
-        ({ include, exclude }) => {
-            if (hasSpecific) return true;
-
-            // コンテキストに応じて無効化されないルールのみを返す
-            return (
-                objectKeys(include).every((key) => include[key].length === 0) &&
-                objectKeys(exclude).every((key) => exclude[key].length === 0)
-            );
-        },
-    );
-}
-
-/**
- * @returns 文字列かつコンテキストに応じて無効化されないNGユーザーIDのSet
- */
-export function getBasicNgUserIdSet(settings: Settings) {
-    return new Set(
-        parseNgUserId(settings, false)
-            .map(({ pattern }) => pattern)
-            .filter((pattern) => isString(pattern)),
-    );
 }

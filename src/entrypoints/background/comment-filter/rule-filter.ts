@@ -1,26 +1,22 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { isString } from "@/utils/util";
 import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import type { Filters } from "./filter-comment";
-import { Filter, sortCommentId } from "./filter";
-import type { CommonLog } from "@/types/storage/log.types";
+import { Filter } from "./filter";
 import type { TabData } from "@/types/storage/tab.types";
 import { objectKeys } from "ts-extras";
 import { createRules, type Rule } from "../rule";
 
-export abstract class RuleFilter<T> extends Filter<T> {
+export abstract class RuleFilter extends Filter {
     private includeCount = 0;
     private excludeCount = 0;
-    private invalidCount = 0;
     protected rules: Rule[];
 
     constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings);
 
-        const { rules, invalidCount } = parseFilter(settings);
+        const { rules } = parseFilter(settings);
         this.rules = createRules(settings, target, rules);
-        this.invalidCount += invalidCount;
     }
 
     getIncludeCount(): number {
@@ -29,12 +25,9 @@ export abstract class RuleFilter<T> extends Filter<T> {
     getExcludeCount(): number {
         return this.excludeCount;
     }
-    getInvalidCount(): number {
-        return this.invalidCount;
-    }
 
     filterRules(tab: TabData) {
-        const { videoId, userId, seriesId } = tab;
+        const { videoId, ownerId, seriesId } = tab;
         const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
         this.rules = this.rules.filter(({ include, exclude }) => {
@@ -42,7 +35,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
             if (
                 matches(exclude.tags, (arg) => tags.has(arg)) ||
                 matches(exclude.videoIds, (arg) => arg === videoId) ||
-                matches(exclude.userIds, (arg) => arg === userId) ||
+                matches(exclude.userIds, (arg) => arg === ownerId) ||
                 matches(exclude.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.excludeCount++;
@@ -53,7 +46,7 @@ export abstract class RuleFilter<T> extends Filter<T> {
             if (
                 matches(include.tags, (arg) => tags.has(arg)) ||
                 matches(include.videoIds, (arg) => arg === videoId) ||
-                matches(include.userIds, (arg) => arg === userId) ||
+                matches(include.userIds, (arg) => arg === ownerId) ||
                 matches(include.seriesIds, (arg) => arg === seriesId)
             ) {
                 this.includeCount++;
@@ -66,44 +59,11 @@ export abstract class RuleFilter<T> extends Filter<T> {
             return false;
         });
     }
-
-    countRules(): number {
-        return this.rules.length;
-    }
-
-    createKey(pattern: string | RegExp): string {
-        return isString(pattern) ? pattern : pattern.toString();
-    }
-
-    sortCommonLog(currentLog: CommonLog, keys: (string | RegExp)[]): CommonLog {
-        const log: CommonLog = new Map();
-
-        // フィルター順にソート
-        for (const key of keys) {
-            const keyStr = this.createKey(key);
-            const value = currentLog.get(keyStr);
-            if (value !== undefined) {
-                log.set(keyStr, value);
-            }
-        }
-
-        // 各ルールのコメントをソート
-        for (const [key, ids] of log) {
-            log.set(
-                key,
-                this.settings.isNgScoreVisible
-                    ? sortCommentId(ids, this.filteredComments, true)
-                    : sortCommentId(ids, this.filteredComments),
-            );
-        }
-
-        return log;
-    }
 }
 
 export function getRuleFilters(
     filters: Filters,
-): ConditionalPick<Filters, RuleFilter<unknown>> {
+): ConditionalPick<Filters, RuleFilter> {
     return {
         userIdFilter: filters.userIdFilter,
         commandFilter: filters.commandFilter,

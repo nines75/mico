@@ -1,6 +1,5 @@
 import type { DeepMergeLeafURI, DeepMergeNoFilteringURI } from "deepmerge-ts";
 import { deepmergeCustom } from "deepmerge-ts";
-import type { CommonLog } from "../types/storage/log.types";
 import type { z } from "./zod";
 
 export function isNiconicoPage(url: string | undefined) {
@@ -35,15 +34,6 @@ export function isSearchPage(url: string | undefined) {
 
 export function escapeNewline(text: string) {
     return text.replaceAll("\n", String.raw`\n`);
-}
-
-export function pushCommonLog(log: CommonLog, key: string, value: string) {
-    const array = log.get(key);
-    if (array === undefined) {
-        log.set(key, [value]);
-    } else {
-        array.push(value);
-    }
 }
 
 export function sumNumbers(numbers: number[]) {

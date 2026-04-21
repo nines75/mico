@@ -1,8 +1,7 @@
 import type { Thread } from "@/types/api/comment.types";
-import type { CommonLog } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { defaultSettings } from "@/utils/config";
-import { checkComment, testThreads } from "@/utils/test";
+import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import { describe, beforeEach, it, expect } from "vitest";
 import { EasyCommentFilter } from "./easy-comment-filter";
 
@@ -32,38 +31,20 @@ describe(EasyCommentFilter.name, () => {
             {
                 isEnabled: true,
                 ids: ["1005", "1006"],
-                expected: new Map([
-                    ["！？", ["1005"]],
-                    ["うぽつ", ["1006"]],
-                ]),
             },
             {
                 isEnabled: false,
                 ids: [],
-                expected: new Map(),
             },
-        ] satisfies {
-            isEnabled: boolean;
-            ids: string[];
-            expected: CommonLog;
-        }[])("$isEnabled", ({ isEnabled, ids, expected }) => {
+        ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
-                filtering({
-                    settings: { isEasyCommentHidden: isEnabled },
-                }).getLog(),
-            ).toEqual(expected);
+                getFilteredIds(
+                    filtering({
+                        settings: { isEasyCommentHidden: isEnabled },
+                    }),
+                ),
+            ).toEqual(ids);
             checkComment(threads, ids);
         });
-    });
-
-    it(EasyCommentFilter.prototype.sortLog.name, () => {
-        const easyCommentFilter = filtering({});
-        easyCommentFilter.sortLog();
-
-        // 順序を調べるために配列に変換
-        expect([...easyCommentFilter.getLog()]).toEqual([
-            ["！？", ["1005"]],
-            ["うぽつ", ["1006"]],
-        ]);
     });
 });

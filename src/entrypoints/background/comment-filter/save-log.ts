@@ -1,90 +1,46 @@
 import type { FilteredData } from "./filter-comment";
 import { sumNumbers } from "@/utils/util";
-import type {
-    BlockedCount,
-    CommentCount,
-    CommentFiltering,
-    LogFilters,
-    RuleCount,
-} from "@/types/storage/log-comment.types";
 import { colors } from "@/utils/config";
-import { setLog } from "@/utils/db";
+import { mergeCount, setLog } from "@/utils/db";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter";
 import { getRuleFilters } from "./rule-filter";
 import { setBadgeState } from "@/utils/browser";
+import type { Count, LogData } from "@/types/storage/log.types";
 
 export async function saveLog(
     filteredData: FilteredData,
     logId: string,
     tabId: number,
 ) {
-    const start = performance.now();
-
+    const comment = createCommentLog(filteredData);
     const count = createCount(filteredData);
-    const filtering = createFiltering(filteredData);
 
     await Promise.all([
-        setLog({ commentFilterLog: { count, filtering } }, logId, tabId),
-        setBadgeState(count.totalBlocked, colors.commentBadge, tabId),
-    ]);
-
-    const end = performance.now();
-    await setLog(
-        {
-            commentFilterLog: {
-                processingTime: {
-                    filtering: filteredData.filteringTime,
-                    saveLog: end - start,
-                },
+        setLog(
+            async () => {
+                return {
+                    comment,
+                    count: await mergeCount(count, logId),
+                };
             },
-        },
-        logId,
-        tabId,
-    );
+            logId,
+            tabId,
+        ),
+        setBadgeState(count.blockedComment, colors.commentBadge, tabId),
+    ]);
 }
 
-export function createCount(filteredData: FilteredData): CommentCount {
-    const filters = filteredData.filters;
-    const ruleFilters = getRuleFilters(filters);
+export function createCommentLog(
+    filteredData: FilteredData,
+): NonNullable<LogData["comment"]> {
+    const strictRuleIds: string[] = [];
+    for (const { ruleId } of filteredData.strictData) {
+        if (ruleId !== undefined) strictRuleIds.push(ruleId);
+    }
 
-    const rule = Object.fromEntries(
-        Object.entries(ruleFilters).map(([key, filter]) => [
-            key,
-            filter.countRules(),
-        ]),
-    ) as RuleCount;
-    const blocked = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [
-            key,
-            filter.getBlockedCount(),
-        ]),
-    ) as BlockedCount;
-
-    const calc = (key: ConditionalKeys<RuleFilter<unknown>, () => number>) => {
-        return sumNumbers(
-            Object.values(ruleFilters).map((filter) => filter[key]()),
-        );
-    };
-
-    return {
-        rule,
-        blocked,
-        totalBlocked: sumNumbers(Object.values(blocked)),
-        loaded: filteredData.loadedCommentCount,
-        include: calc("getIncludeCount"),
-        exclude: calc("getExcludeCount"),
-        invalid: calc("getInvalidCount"),
-        disable: filters.commandFilter.getDisableCount(),
-    };
-}
-
-export function createFiltering(filteredData: FilteredData): CommentFiltering {
-    const filters = filteredData.filters;
-    const filteredComments = new Map(
-        Object.values(filters).flatMap((filter) => [
-            ...filter.getFilteredComments(),
-        ]),
+    const filteredComments = Object.values(filteredData.filters).flatMap(
+        (filter) => filter.getFilteredComments(),
     );
     const renderedComments = filteredData.threads.flatMap((thread) =>
         thread.comments.map(({ body, userId, score }) => {
@@ -92,19 +48,32 @@ export function createFiltering(filteredData: FilteredData): CommentFiltering {
         }),
     );
 
-    for (const filter of Object.values(filters)) {
-        filter.sortLog();
-    }
-
-    // ソート後にログを取得
-    const logFilters = Object.fromEntries(
-        Object.entries(filters).map(([key, filter]) => [key, filter.getLog()]),
-    ) as LogFilters;
-
     return {
-        strictUserIds: filteredData.strictUserIds,
-        filters: logFilters,
+        strictRuleIds,
         filteredComments,
         renderedComments,
     };
+}
+
+export function createCount(filteredData: FilteredData) {
+    const filters = filteredData.filters;
+    const ruleFilters = getRuleFilters(filters);
+
+    const calc = (key: ConditionalKeys<RuleFilter, () => number>) => {
+        return sumNumbers(
+            Object.values(ruleFilters).map((filter) => filter[key]()),
+        );
+    };
+
+    return {
+        blockedComment: sumNumbers(
+            Object.values(filters).map(
+                (filter) => filter.getFilteredComments().length,
+            ),
+        ),
+        loadedComment: filteredData.loadedCommentCount,
+        include: calc("getIncludeCount"),
+        exclude: calc("getExcludeCount"),
+        disable: filters.commandFilter.getDisableCount(),
+    } satisfies Count;
 }
