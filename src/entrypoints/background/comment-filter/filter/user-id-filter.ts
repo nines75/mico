@@ -30,7 +30,7 @@ export class UserIdFilter extends RuleFilter {
                     comment,
                     pattern,
                     target: "user-id",
-                    ...(id !== undefined && { id }),
+                    ...(id !== undefined && { ruleId: id }),
                 });
 
                 return false;

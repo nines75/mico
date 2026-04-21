@@ -21,7 +21,7 @@ export abstract class ExactFilter extends RuleFilter {
                     video,
                     pattern,
                     target: this.target,
-                    ...(id !== undefined && { id }),
+                    ...(id !== undefined && { ruleId: id }),
                 });
 
                 return false;

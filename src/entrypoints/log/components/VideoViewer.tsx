@@ -6,7 +6,10 @@ import type { FilteredVideo } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 
-type Row = Merge<FilteredVideo, { video: OmitIndexSignature<NiconicoVideo> }>;
+export type Row = Merge<
+    FilteredVideo,
+    { video: OmitIndexSignature<NiconicoVideo> }
+>;
 
 const filters = [
     "id",

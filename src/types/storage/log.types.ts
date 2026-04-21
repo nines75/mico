@@ -19,7 +19,7 @@ export interface LogData {
 }
 
 export interface FilteredComment {
-    id?: string;
+    ruleId?: string;
     pattern?: string | RegExp;
     comment: NiconicoComment;
     target:
@@ -32,7 +32,7 @@ export interface FilteredComment {
 }
 
 export interface FilteredVideo {
-    id?: string;
+    ruleId?: string;
     pattern?: string | RegExp;
     video: NiconicoVideo;
     target: "id" | "owner-id" | "paid" | "views" | "owner-name" | "title";

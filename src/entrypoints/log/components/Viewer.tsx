@@ -11,6 +11,8 @@ import type {
 import { themeQuartz, colorSchemeDark } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { Trash } from "lucide-react";
+import type { Row as CommentRow } from "./CommentViewer";
+import type { Row as VideoRow } from "./VideoViewer";
 
 interface ViewerProps<T> {
     filter: string;
@@ -85,13 +87,13 @@ export function Viewer<T>({
 }
 
 export function RuleCell(
-    params: ICellRendererParams<{ id?: string }, string | RegExp>,
+    params: ICellRendererParams<CommentRow | VideoRow, string | RegExp>,
 ) {
     const value = params.value;
     if (value === null || value === undefined) return null;
 
-    const id = params.data?.id;
-    if (id === undefined || !isString(value)) return value.toString();
+    const ruleId = params.data?.ruleId;
+    if (ruleId === undefined || !isString(value)) return value.toString();
 
     return (
         <div className="rule">
@@ -103,7 +105,7 @@ export function RuleCell(
 
                     await sendMessageToBackground({
                         type: "remove-auto-rule",
-                        data: [id],
+                        data: [ruleId],
                     });
                 })}
             >

@@ -11,7 +11,7 @@ import type { NiconicoComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 
-type Row = Merge<
+export type Row = Merge<
     FilteredComment,
     // column用のプロパティを指定する際に正しく型チェックされるようにインデックスシグネチャを除外
     { comment: OmitIndexSignature<NiconicoComment> }
@@ -37,13 +37,14 @@ export function CommentViewer() {
             log?.comment?.filteredComments
                 .filter(({ target }) => target === filter)
                 .map((comment) => {
-                    const id = comment.id;
+                    const ruleId = comment.ruleId;
                     const ruleIds = log.comment?.strictRuleIds;
 
                     return {
                         ...comment,
                         strict:
-                            id !== undefined && ruleIds?.includes(id) === true,
+                            ruleId !== undefined &&
+                            ruleIds?.includes(ruleId) === true,
                     };
                 }) ?? [],
         [log, filter],
