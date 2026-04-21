@@ -23,8 +23,15 @@ section {
     margin-right: 14px;
     gap: 8px;
     .link {
+        color: var(--dim-white);
         display: flex;
         align-items: center;
+
+        /* buttonをanchor風にする */
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        padding: 0;
     }
 }
 .ng-button-container {

@@ -3,9 +3,10 @@ import Count from "./components/Count";
 import { messages, urls, titles } from "@/utils/config";
 import { useStorageStore } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
+import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { catchAsync } from "@/utils/util";
 import { sendMessageToBackground, sendNotification } from "@/utils/browser";
+import { openLog } from "@/utils/log";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
@@ -29,10 +30,24 @@ function Page() {
                 <span id="version">{`${name} ${version}`}</span>
                 <div className="link-container">
                     <a className="link" href={urls.repository}>
-                        <SiGithub size={24} color="var(--dim-white)" />
+                        <SiGithub size={24} />
                     </a>
-                    <a className="link" href="/options.html" target="_blank">
-                        <SettingsIcon size={24} color="var(--dim-white)" />
+                    <button
+                        className="link"
+                        title="ログを開く"
+                        onClick={catchAsync(async () => {
+                            await openLog();
+                        })}
+                    >
+                        <History size={24} />
+                    </button>
+                    <a
+                        className="link"
+                        href="/options.html"
+                        target="_blank"
+                        title="設定を開く"
+                    >
+                        <SettingsIcon size={24} />
                     </a>
                 </div>
             </header>
