@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
-    customMerge,
+    merge,
     escapeNewline,
     isNiconicoPage,
     isRankingPage,
     isSearchPage,
     isWatchPage,
     replace,
-    sumNumbers,
+    sum,
 } from "./util";
 
 describe(isNiconicoPage.name, () => {
@@ -68,7 +68,7 @@ it(escapeNewline.name, () => {
     );
 });
 
-describe(sumNumbers.name, () => {
+describe(sum.name, () => {
     it.each([
         {
             name: "基本",
@@ -83,7 +83,7 @@ describe(sumNumbers.name, () => {
     ] satisfies { name: string; numbers: number[]; expected: number }[])(
         `$name`,
         ({ numbers, expected }) => {
-            expect(sumNumbers(numbers)).toEqual(expected);
+            expect(sum(numbers)).toEqual(expected);
         },
     );
 });
@@ -132,7 +132,7 @@ it("customMerge", () => {
         undefined: undefined,
     };
 
-    expect(customMerge(oldObject, newObject)).toStrictEqual({
+    expect(merge(oldObject, newObject)).toStrictEqual({
         nest: {
             a: true,
             b: false,

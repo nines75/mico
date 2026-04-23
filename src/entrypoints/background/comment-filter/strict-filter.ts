@@ -13,13 +13,13 @@ export interface StrictData {
 }
 
 export abstract class StrictFilter extends RuleFilter {
-    protected ngUserIds: Set<string>;
+    protected userIds: Set<string>;
     protected strictData: StrictData[] = [];
 
     constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings, target);
 
-        this.ngUserIds = new Set(
+        this.userIds = new Set(
             settings.autoFilter
                 .filter(
                     (rule) =>

@@ -4,7 +4,7 @@ import { loadSettings } from "@/utils/storage";
 import { filterVideo } from "../video-filter/filter-video";
 import { saveLog } from "../video-filter/save-log";
 import { filterResponse } from "./request";
-import { getTabData } from "@/utils/db";
+import { getTab } from "@/utils/db";
 import { safeParseJson } from "@/utils/util";
 
 export function recommendRequest(
@@ -14,7 +14,7 @@ export function recommendRequest(
         const tabId = details.tabId;
         const [settings, tab] = await Promise.all([
             loadSettings(),
-            getTabData(tabId),
+            getTab(tabId),
         ]);
         const logId = tab?.logId;
         if (logId === undefined) return true;
@@ -43,18 +43,18 @@ export function recommendRequest(
         const videos = recommendApi.data.items
             .filter((item) => item.contentType === "video")
             .map((item) => item.content);
-        const filteredData = filterVideo(videos, settings, true);
-        if (filteredData === undefined) return true;
+        const result = filterVideo(videos, settings, true);
+        if (result === undefined) return true;
 
         // 実際にフィルタリング
         recommendApi.data.items = recommendApi.data.items.filter(
-            (item) => !filteredData.filteredIds.has(item.id),
+            (item) => !result.filteredIds.has(item.id),
         );
 
         filter.write(encoder.encode(JSON.stringify(recommendApi)));
         filter.disconnect();
 
-        await saveLog(filteredData, logId, tabId, false);
+        await saveLog(result, logId, tabId, false);
 
         return false;
     });

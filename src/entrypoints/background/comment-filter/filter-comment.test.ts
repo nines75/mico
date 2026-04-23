@@ -3,7 +3,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import {
     checkComment,
     getFilteredIds,
-    testTabData,
+    testTab,
     testThreads,
 } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -38,7 +38,7 @@ big
 `,
                 ...settings,
             },
-            testTabData,
+            testTab,
         );
     };
 

@@ -32,14 +32,14 @@ export function searchRequest(
         );
         if (result === undefined) return true;
 
-        const { filteredBuf, filteredData } = result;
-        if (filteredData === undefined) return true;
+        const { filteredBuf, filteringResult } = result;
+        if (filteringResult === undefined) return true;
 
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
         await Promise.all([
-            saveLog(filteredData, logId, tabId),
+            saveLog(filteringResult, logId, tabId),
             ...(details.type === "main_frame"
                 ? [mountLogId(logId, tabId)]
                 : []),
@@ -57,16 +57,16 @@ function searchApiFilter(
 ) {
     // フィルタリング対象の動画IDを調べる
     const videos = searchApi.data.response.$getSearchVideoV2.data.items;
-    const filteredData = filterVideo(videos, settings);
-    if (filteredData === undefined) return;
+    const result = filterVideo(videos, settings);
+    if (result === undefined) return;
 
     // 実際にフィルタリング
     const filteredVideos = videos.filter(
-        (video) => !filteredData.filteredIds.has(video.id),
+        (video) => !result.filteredIds.has(video.id),
     );
 
     searchApi.data.response.$getSearchVideoV2.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(searchApi));
 
-    return filteredData;
+    return result;
 }

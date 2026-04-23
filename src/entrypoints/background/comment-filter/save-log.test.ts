@@ -1,13 +1,13 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { testTabData, testThreads } from "@/utils/test";
+import { testTab, testThreads } from "@/utils/test";
 import { beforeAll, expect, it, vi } from "vitest";
-import type { FilteredData } from "./filter-comment";
+import type { FilteringResult } from "./filter-comment";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
 import { createCount, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
 import type { NiconicoComment } from "@/types/api/comment.types";
-import type { FilteredComment, LogData } from "@/types/storage/log.types";
+import type { FilteredComment, Log } from "@/types/storage/log.types";
 
 beforeAll(() => {
     vi.spyOn(util, "setBadgeState").mockResolvedValue();
@@ -32,7 +32,7 @@ const log = {
         ],
         renderedComments: [],
     },
-} as const satisfies LogData;
+} as const satisfies Log;
 
 it(saveLog.name, () => {
     const threads = structuredClone(testThreads);
@@ -55,14 +55,10 @@ big
 `,
     } satisfies Partial<Settings>;
 
-    const filteredData = filterComment(
-        threads,
-        settings,
-        testTabData,
-    ) as FilteredData;
+    const result = filterComment(threads, settings, testTab) as FilteringResult;
 
-    expect(createCommentLog(filteredData)).toEqual(log.comment);
-    expect(createCount(filteredData)).toEqual(log.count);
+    expect(createCommentLog(result)).toEqual(log.comment);
+    expect(createCount(result)).toEqual(log.count);
 });
 
 function getComments(

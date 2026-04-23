@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { customMerge } from "@/utils/util";
+import { merge } from "@/utils/util";
 import type { Merge, PartialDeep, SetOptional } from "type-fest";
 
 export interface Rule {
@@ -74,7 +74,7 @@ export function createRules(
     return [
         ...manualRules.filter((rule) => rule.target[target]),
         ...settings.autoFilter
-            .map((rule) => customMerge(createDefaultRule(), rule) as Rule)
+            .map((rule) => merge(createDefaultRule(), rule) as Rule)
             .filter((rule) => rule.target[target]),
     ];
 }

@@ -1,11 +1,11 @@
 import type { RenderedComment, NiconicoComment } from "../api/comment.types";
 import type { NiconicoVideo } from "../api/niconico-video.types";
-import type { TabData } from "./tab.types";
+import type { Tab } from "./tab.types";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
 export type LogTab = "commentFilter" | "videoFilter";
 
-export interface LogData {
+export interface Log {
     comment?: {
         strictRuleIds: string[];
         filteredComments: FilteredComment[];
@@ -15,7 +15,7 @@ export interface LogData {
         filteredVideos: FilteredVideo[];
     };
     count?: Count;
-    tab?: TabData;
+    tab?: Tab;
 }
 
 export interface FilteredComment {

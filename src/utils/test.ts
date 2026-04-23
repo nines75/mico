@@ -7,7 +7,7 @@ import {
     type Rule,
 } from "@/entrypoints/background/rule";
 import type { NiconicoComment, Thread } from "@/types/api/comment.types";
-import type { TabData } from "@/types/storage/tab.types";
+import type { Tab } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 
 export function mockComments(
@@ -95,7 +95,7 @@ export const testThreads = [
     },
 ] satisfies Thread[];
 
-export const testTabData = {
+export const testTab = {
     series: {
         hasNext: false,
     },
@@ -105,7 +105,7 @@ export const testTabData = {
     ownerId: "1",
     ownerName: "user-name",
     tags: [],
-} as const satisfies TabData;
+} as const satisfies Tab;
 
 export function checkComment(
     threads: Thread[],

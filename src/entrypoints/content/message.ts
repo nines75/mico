@@ -64,7 +64,7 @@ async function reload() {
     if (video === null) return;
 
     await sendMessageToBackground({
-        type: "set-tab-data",
+        type: "set-tab",
         data: {
             playbackTime: Math.floor(video.currentTime),
         },

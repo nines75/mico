@@ -1,5 +1,5 @@
 import type { Settings } from "./settings.types";
 
-export interface BackupData {
+export interface Backup {
     settings?: Partial<Settings>;
 }

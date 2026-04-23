@@ -48,11 +48,11 @@ export function spaFilter<T, U>(
         if (data === undefined) return;
 
         // callbackではhtmlを変更するため先に呼び出す
-        const filteredData = callback(data, settings, meta);
+        const filteringResult = callback(data, settings, meta);
 
         return {
             filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
-            filteredData,
+            filteringResult,
         };
     }
 
@@ -61,11 +61,11 @@ export function spaFilter<T, U>(
         if (data === undefined) return;
 
         // callbackではdataを変更するため先に呼び出す
-        const filteredData = callback(data, settings);
+        const filteringResult = callback(data, settings);
 
         return {
             filteredBuf: JSON.stringify(data),
-            filteredData,
+            filteringResult,
         };
     }
 }

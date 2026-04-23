@@ -1,18 +1,18 @@
-import type { FilteredData } from "./filter-video";
-import { sumNumbers } from "@/utils/util";
+import type { FilteringResult } from "./filter-video";
+import { sum } from "@/utils/util";
 import { colors } from "@/utils/config";
 import { mergeCount, setLog } from "@/utils/db";
 import { setBadgeState } from "@/utils/browser";
-import type { Count, LogData } from "@/types/storage/log.types";
+import type { Count, Log } from "@/types/storage/log.types";
 
 export async function saveLog(
-    filteredData: FilteredData,
+    result: FilteringResult,
     logId: string,
     tabId: number,
     isSetBadge = true,
 ) {
-    const video = createVideoLog(filteredData);
-    const count = createCount(filteredData);
+    const video = createVideoLog(result);
+    const count = createCount(result);
 
     await Promise.all([
         setLog(
@@ -31,23 +31,21 @@ export async function saveLog(
     ]);
 }
 
-function createVideoLog(
-    filteredData: FilteredData,
-): NonNullable<LogData["video"]> {
-    const filteredVideos = Object.values(filteredData.filters).flatMap(
-        (filter) => filter.getFilteredVideos(),
+function createVideoLog(result: FilteringResult): NonNullable<Log["video"]> {
+    const filteredVideos = Object.values(result.filters).flatMap((filter) =>
+        filter.getFilteredVideos(),
     );
 
     return { filteredVideos };
 }
 
-function createCount(filteredData: FilteredData) {
+function createCount(result: FilteringResult) {
     return {
-        blockedVideo: sumNumbers(
-            Object.values(filteredData.filters).map(
+        blockedVideo: sum(
+            Object.values(result.filters).map(
                 (filter) => filter.getFilteredVideos().length,
             ),
         ),
-        loadedVideo: filteredData.loadedVideoCount,
+        loadedVideo: result.loadedVideoCount,
     } satisfies Count;
 }

@@ -26,7 +26,7 @@ export class WordFilter extends StrictFilter {
                     continue;
 
                 if (isStrictOnly) {
-                    if (!this.ngUserIds.has(userId)) {
+                    if (!this.userIds.has(userId)) {
                         this.strictData.push({
                             userId,
                             context: `comment-body: ${body}`,

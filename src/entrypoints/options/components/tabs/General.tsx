@@ -1,9 +1,9 @@
 import { defaultSettings, messages } from "@/utils/config";
 import H2 from "../ui/H2";
 import { useStorageStore } from "@/utils/store";
-import type { BackupData } from "@/types/storage/backup.types";
+import type { Backup } from "@/types/storage/backup.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { getSettingsData } from "@/utils/storage";
+import { getSettings } from "@/utils/storage";
 import type { ValueOf } from "type-fest";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
@@ -98,7 +98,7 @@ async function importBackup(
     const text = await event.target.files?.[0]?.text();
     if (text === undefined) return;
 
-    const backup = JSON.parse(text) as BackupData;
+    const backup = JSON.parse(text) as Backup;
     if (backup.settings === undefined) return;
 
     const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
@@ -117,19 +117,19 @@ async function importBackup(
 }
 
 async function exportBackup() {
-    const settingsData = await getSettingsData();
-    if (settingsData === null) {
+    const settings = await getSettings();
+    if (settings === null) {
         // 一度も設定が保存されていない場合
         alert(messages.settings.neverReset);
         return;
     }
 
-    const data: BackupData = {
-        settings: settingsData,
+    const backup: Backup = {
+        settings,
     };
-    const dataStr = JSON.stringify(data);
+    const backupStr = JSON.stringify(backup);
 
-    const blob = new Blob([dataStr], { type: "application/json" });
+    const blob = new Blob([backupStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const fileName = `${browser.runtime.getManifest().name}-backup.json`;
 

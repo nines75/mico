@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { mockRules, mockToggle, testTabData } from "@/utils/test";
+import { mockRules, mockToggle, testTab } from "@/utils/test";
 import { RuleFilter } from "./rule-filter";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
@@ -26,7 +26,7 @@ function filtering(options: { filter: string; tags?: string[] }) {
         manualFilter: options.filter,
     });
     testFilter.filterRules({
-        ...testTabData,
+        ...testTab,
         tags: options.tags ?? [],
     });
 

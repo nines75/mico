@@ -31,14 +31,14 @@ export function rankingRequest(
         );
         if (result === undefined) return true;
 
-        const { filteredBuf, filteredData } = result;
-        if (filteredData === undefined) return true;
+        const { filteredBuf, filteringResult } = result;
+        if (filteringResult === undefined) return true;
 
         filter.write(encoder.encode(filteredBuf));
         filter.disconnect();
 
         await Promise.all([
-            saveLog(filteredData, logId, tabId),
+            saveLog(filteringResult, logId, tabId),
             ...(details.type === "main_frame"
                 ? [mountLogId(logId, tabId)]
                 : []),
@@ -55,15 +55,15 @@ function rankingApiFilter(
     meta?: Element | null,
 ) {
     const videos = rankingApi.data.response.$getTeibanRanking.data.items;
-    const filteredData = filterVideo(videos, settings);
-    if (filteredData === undefined) return;
+    const result = filterVideo(videos, settings);
+    if (result === undefined) return;
 
     const filteredVideos = videos.filter(
-        ({ id }) => !filteredData.filteredIds.has(id),
+        ({ id }) => !result.filteredIds.has(id),
     );
 
     rankingApi.data.response.$getTeibanRanking.data.items = filteredVideos;
     meta?.setAttribute("content", JSON.stringify(rankingApi));
 
-    return filteredData;
+    return result;
 }

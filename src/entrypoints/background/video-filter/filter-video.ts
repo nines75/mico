@@ -7,9 +7,9 @@ import { ViewsFilter } from "./filter/views-filter";
 import { VideoIdFilter } from "./filter/video-id-filter";
 import { VideoOwnerIdFilter } from "./filter/video-owner-id-filter";
 
-export type Filters = FilteredData["filters"];
+export type Filters = FilteringResult["filters"];
 
-export interface FilteredData {
+export interface FilteringResult {
     filters: {
         videoIdFilter: VideoIdFilter;
         videoOwnerIdFilter: VideoOwnerIdFilter;
@@ -26,7 +26,7 @@ export function filterVideo(
     videos: NiconicoVideo[],
     settings: Settings,
     isRecommend = false,
-): FilteredData | undefined {
+): FilteringResult | undefined {
     if (!settings.isVideoFilterEnabled) return;
 
     const videoIdFilter = new VideoIdFilter(settings);

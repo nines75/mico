@@ -7,9 +7,9 @@ import { filterResponse } from "./request";
 import { addAutoRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment.types";
 import { commentApiSchema } from "@/types/api/comment.types";
-import { cleanupDb, getTabData, setTabData } from "@/utils/db";
-import type { TabData } from "@/types/storage/tab.types";
-import { sendMessageToContent, sendNotification } from "@/utils/browser";
+import { cleanupDb, getTab, setTab } from "@/utils/db";
+import type { Tab } from "@/types/storage/tab.types";
+import { sendMessageToContent, notify } from "@/utils/browser";
 import { safeParseJson } from "@/utils/util";
 
 export default function commentRequest(
@@ -17,19 +17,19 @@ export default function commentRequest(
 ) {
     filterResponse(details, "POST", async (filter, encoder, buf) => {
         const tabId = details.tabId;
-        const [settings, tabData, tab] = await Promise.all([
+        const [settings, tab, { url }] = await Promise.all([
             loadSettings(),
-            getTabData(tabId),
+            getTab(tabId),
             browser.tabs.get(tabId),
         ]);
 
         // プレビュー再生のコメントをフィルタリングしないように視聴ページか判定
-        if (tabData === undefined || !isWatchPage(tab.url)) return true;
+        if (tab === undefined || !isWatchPage(url)) return true;
 
         // フィルタリングするかに関わらず実行する処理
-        await restorePlaybackTime(tabId, tabData);
+        await restorePlaybackTime(tabId, tab);
 
-        const logId = tabData.logId;
+        const logId = tab.logId;
         if (logId === undefined) return true;
 
         const commentApi: CommentApi | undefined = safeParseJson(
@@ -38,26 +38,22 @@ export default function commentRequest(
         );
         if (commentApi === undefined) return true;
 
-        const filteredData = filterComment(
-            commentApi.data.threads,
-            settings,
-            tabData,
-        );
-        if (filteredData === undefined) return true;
+        const result = filterComment(commentApi.data.threads, settings, tab);
+        if (result === undefined) return true;
 
         filter.write(encoder.encode(JSON.stringify(commentApi)));
         filter.disconnect();
 
         const tasks: Promise<void>[] = [];
-        const strictData = filteredData.strictData;
+        const strictData = result.strictData;
 
         // ログを保存
-        tasks.push(saveLog(filteredData, logId, tabId));
+        tasks.push(saveLog(result, logId, tabId));
 
         // 通知を送信
         if (strictData.length > 0 && settings.isNotifyAutoAddNgUserId) {
             tasks.push(
-                sendNotification(
+                notify(
                     replace(messages.ngUserId.notifyAddition, [
                         strictData.length.toString(),
                     ]),
@@ -91,12 +87,12 @@ export default function commentRequest(
     });
 }
 
-async function restorePlaybackTime(tabId: number, tabData: TabData) {
-    const playbackTime = tabData.playbackTime ?? 0;
+async function restorePlaybackTime(tabId: number, tab: Tab) {
+    const playbackTime = tab.playbackTime ?? 0;
     if (playbackTime <= 0) return;
 
     await Promise.all([
-        setTabData({ playbackTime: 0 }, tabId),
+        setTab({ playbackTime: 0 }, tabId),
         sendMessageToContent(tabId, {
             type: "set-playback-time",
             data: playbackTime,

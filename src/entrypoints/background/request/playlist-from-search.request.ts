@@ -18,12 +18,12 @@ export function playlistFromSearchRequest(
 
         // フィルタリング対象の動画IDを調べる
         const videos = playlistApi.data.items.map((item) => item.content);
-        const filteredData = filterVideo(videos, settings);
-        if (filteredData === undefined) return true;
+        const result = filterVideo(videos, settings);
+        if (result === undefined) return true;
 
         // 実際にフィルタリング
         playlistApi.data.items = playlistApi.data.items.filter(
-            (item) => !filteredData.filteredIds.has(item.watchId),
+            (item) => !result.filteredIds.has(item.watchId),
         );
 
         filter.write(encoder.encode(JSON.stringify(playlistApi)));

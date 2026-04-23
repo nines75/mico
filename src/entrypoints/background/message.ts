@@ -7,13 +7,9 @@ import {
     addAutoRule,
     removeAutoRule,
 } from "@/utils/storage-write";
-import { getLogData, setTabData } from "@/utils/db";
-import type { TabData } from "@/types/storage/tab.types";
-import {
-    setBadgeState,
-    sendMessageToContent,
-    sendNotification,
-} from "@/utils/browser";
+import { getLog, setTab } from "@/utils/db";
+import type { Tab } from "@/types/storage/tab.types";
+import { setBadgeState, sendMessageToContent, notify } from "@/utils/browser";
 import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 import { getDropdownComment } from "./scripting";
@@ -32,7 +28,7 @@ export type BackgroundMessage =
           type: "mount-to-dropdown";
       }
     | {
-          type: "add-ng-user-id-from-dropdown";
+          type: "on-click-dropdown";
           data: { isSpecific: boolean };
       }
     | {
@@ -49,8 +45,8 @@ export type BackgroundMessage =
           data: Partial<Settings>;
       }
     | {
-          type: "set-tab-data";
-          data: Partial<TabData>;
+          type: "set-tab";
+          data: Partial<Tab>;
       }
     | {
           type: "remove-all-data";
@@ -64,11 +60,11 @@ export type BackgroundMessage =
           data: string[];
       }
     | {
-          type: "get-log-data";
+          type: "get-log";
           data: string | undefined | null;
       }
     | {
-          type: "send-notification";
+          type: "notify";
           data: string;
       };
 
@@ -88,8 +84,8 @@ export async function backgroundMessageHandler(
                 await mountToDropdown(sender);
                 break;
             }
-            case "add-ng-user-id-from-dropdown": {
-                await addNgUserIdFromDropdown(message.data, sender);
+            case "on-click-dropdown": {
+                await onClickDropdown(message.data, sender);
                 break;
             }
             case "get-comments-for-dropdown": {
@@ -106,10 +102,10 @@ export async function backgroundMessageHandler(
                 await setSettings(message.data);
                 break;
             }
-            case "set-tab-data": {
+            case "set-tab": {
                 const tabId = sender.tab?.id;
                 if (tabId !== undefined) {
-                    await setTabData(message.data, tabId);
+                    await setTab(message.data, tabId);
                 }
 
                 break;
@@ -126,13 +122,13 @@ export async function backgroundMessageHandler(
                 await removeAutoRule(message.data);
                 break;
             }
-            case "get-log-data": {
+            case "get-log": {
                 if (message.data === undefined || message.data === null) return;
 
-                return await getLogData(message.data);
+                return await getLog(message.data);
             }
-            case "send-notification": {
-                await sendNotification(message.data);
+            case "notify": {
+                await notify(message.data);
                 break;
             }
         }
@@ -166,14 +162,14 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
     }
 }
 
-async function addNgUserIdFromDropdown(
-    data: ExtractData<"add-ng-user-id-from-dropdown">,
+async function onClickDropdown(
+    data: ExtractData<"on-click-dropdown">,
     sender: browser.runtime.MessageSender,
 ) {
     const tabId = sender.tab?.id;
     const comment = await getDropdownComment(sender);
     if (tabId === undefined || comment?.$videoId === undefined) {
-        await sendNotification(messages.ngUserId.additionFailed);
+        await notify(messages.ngUserId.additionFailed);
         return;
     }
 
@@ -194,7 +190,7 @@ async function addNgUserIdFromDropdown(
     if (settings.isAutoReload)
         tasks.push(sendMessageToContent(tabId, { type: "reload" }));
     if (settings.isNotifyAddNgUserId)
-        tasks.push(sendNotification(messages.ngUserId.additionSuccess));
+        tasks.push(notify(messages.ngUserId.additionSuccess));
 
     await Promise.all(tasks);
 }
@@ -204,7 +200,7 @@ async function getCommentsForDropdown(sender: browser.runtime.MessageSender) {
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLogData(logId);
+    const log = await getLog(logId);
     if (log === undefined) return;
 
     const dropdownComment = await getDropdownComment(sender);
@@ -227,7 +223,7 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
     const logId = await getLogId(tabId);
     if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLogData(logId);
+    const log = await getLog(logId);
     const count = log?.count?.blockedVideo;
     if (count === undefined) return;
 

@@ -9,11 +9,11 @@ import { EasyCommentFilter } from "./filter/easy-comment-filter";
 import { getRuleFilters } from "./rule-filter";
 import type { StrictData } from "./strict-filter";
 import { getStrictFilters } from "./strict-filter";
-import type { TabData } from "@/types/storage/tab.types";
+import type { Tab } from "@/types/storage/tab.types";
 
-export type Filters = FilteredData["filters"];
+export type Filters = FilteringResult["filters"];
 
-export interface FilteredData {
+export interface FilteringResult {
     filters: {
         userIdFilter: UserIdFilter;
         easyCommentFilter: EasyCommentFilter;
@@ -30,8 +30,8 @@ export interface FilteredData {
 export function filterComment(
     threads: Thread[],
     settings: Settings,
-    tab: TabData,
-): FilteredData | undefined {
+    tab: Tab,
+): FilteringResult | undefined {
     if (!settings.isCommentFilterEnabled) return;
 
     // -------------------------------------------------------------------------------------------
