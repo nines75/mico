@@ -53,7 +53,7 @@ big
 @comment-body
 コメント
 `,
-    } satisfies Partial<Settings>;
+    } satisfies Settings;
 
     const result = filterComment(threads, settings, testTab) as FilteringResult;
 

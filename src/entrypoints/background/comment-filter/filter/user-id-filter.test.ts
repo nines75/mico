@@ -11,12 +11,12 @@ describe(UserIdFilter.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: { filter: string }) => {
+    const runFilter = (options: { filter: string }) => {
         const userIdFilter = new UserIdFilter({
             ...defaultSettings,
             manualFilter: `@comment-user-id\n${options.filter}`,
         });
-        userIdFilter.filtering(threads);
+        userIdFilter.apply(threads);
 
         return userIdFilter;
     };
@@ -27,7 +27,7 @@ describe(UserIdFilter.name, () => {
         it("基本", () => {
             const filter = "user-id-owner";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([
                 "1000",
                 "1001",
             ]);
@@ -37,7 +37,7 @@ describe(UserIdFilter.name, () => {
         it("部分一致", () => {
             const filter = "user-id";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
             checkComment(threads, []);
         });
     });
@@ -45,7 +45,7 @@ describe(UserIdFilter.name, () => {
     it("正規表現ルール", () => {
         const filter = "/^user-id-main/";
 
-        expect(getFilteredIds(filtering({ filter }))).toEqual([
+        expect(getFilteredIds(runFilter({ filter }))).toEqual([
             "1002",
             "1003",
             "1004",
@@ -54,9 +54,9 @@ describe(UserIdFilter.name, () => {
     });
 
     it(UserIdFilter.prototype.updateFilter.name, () => {
-        const userIdFilter = filtering({ filter: "user-id-main-1" });
+        const userIdFilter = runFilter({ filter: "user-id-main-1" });
         userIdFilter.updateFilter([{ userId: "user-id-main-2", context: "" }]);
-        userIdFilter.filtering(threads);
+        userIdFilter.apply(threads);
 
         expect(getFilteredIds(userIdFilter)).toEqual(["1002", "1003"]);
         checkComment(threads, ["1002", "1003"]);

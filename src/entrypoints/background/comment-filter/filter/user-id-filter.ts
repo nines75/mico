@@ -11,7 +11,7 @@ export class UserIdFilter extends RuleFilter {
         super(settings, "commentUserId");
     }
 
-    override filtering(threads: Thread[]): void {
+    override apply(threads: Thread[]): void {
         const rules = this.rules;
         if (rules.length === 0) return;
 

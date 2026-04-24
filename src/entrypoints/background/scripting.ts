@@ -18,9 +18,9 @@ export async function getDropdownComment(
     const tabId = sender.tab?.id;
     if (tabId === undefined) return;
 
-    const fiber = await browser.scripting.executeScript({
+    const results = await browser.scripting.executeScript({
         target: { tabId },
-        world: "MAIN", // fiberにアクセスするためにMAINで実行
+        world: "MAIN", // reactFiberプロパティにアクセスするためにMAINで実行
         func: () => {
             const dropdown = document.querySelector(".z_dropdown");
             if (dropdown === null) return;
@@ -37,5 +37,5 @@ export async function getDropdownComment(
         },
     });
 
-    return niconicoCommentSchema.safeParse(fiber[0]?.result).data;
+    return niconicoCommentSchema.safeParse(results[0]?.result).data;
 }

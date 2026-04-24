@@ -17,7 +17,7 @@ describe(filterComment.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (settings?: Partial<Settings>) => {
+    const runFilter = (settings?: Partial<Settings>) => {
         return filterComment(
             threads,
             {
@@ -43,13 +43,13 @@ big
     };
 
     it("基本", () => {
-        filtering();
+        runFilter();
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
     });
 
     it("strictルールの先行適用", () => {
-        const result = filtering({
+        const result = runFilter({
             manualFilter: `
 @comment-commands
 big
@@ -79,7 +79,7 @@ device:Switch
     });
 
     it("strictルールによるフィルタリングの重複", () => {
-        const result = filtering({
+        const result = runFilter({
             manualFilter: `
 @comment-commands
 # 1003と1004に一致
@@ -103,7 +103,7 @@ device:switch
     });
 
     it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
-        filtering({ isCommentFilterEnabled: false });
+        runFilter({ isCommentFilterEnabled: false });
 
         checkComment(threads, []);
     });
@@ -112,13 +112,13 @@ device:switch
         for (const thread of threads) {
             for (const comment of thread.comments) comment.isMyPost = true;
         }
-        filtering({ isMyCommentIgnored: true });
+        runFilter({ isMyCommentIgnored: true });
 
         checkComment(threads, []);
     });
 
     it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        filtering({ isIgnoreByNicoru: true });
+        runFilter({ isIgnoreByNicoru: true });
 
         checkComment(threads, ["1000", "1001", "1002"]);
     });

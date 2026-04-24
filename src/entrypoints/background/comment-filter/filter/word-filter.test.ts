@@ -2,29 +2,29 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
-import { WordFilter } from "./word-filter";
+import { BodyFilter } from "./word-filter";
 import type { Settings } from "@/types/storage/settings.types";
 
-describe(WordFilter.name, () => {
+describe(BodyFilter.name, () => {
     let threads: Thread[];
 
     beforeEach(() => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: {
+    const runFilter = (options: {
         filter: string;
-        isStrictOnly?: boolean;
+        strictOnly?: boolean;
         settings?: Partial<Settings>;
     }) => {
-        const wordFilter = new WordFilter({
+        const bodyFilter = new BodyFilter({
             ...defaultSettings,
             ...options.settings,
             manualFilter: `@comment-body\n${options.filter}`,
         });
-        wordFilter.filtering(threads, options.isStrictOnly ?? false);
+        bodyFilter.apply(threads, options.strictOnly ?? false);
 
-        return wordFilter;
+        return bodyFilter;
     };
 
     // -------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ describe(WordFilter.name, () => {
         it("基本", () => {
             const filter = "test";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([
                 "1000",
                 "1001",
             ]);
@@ -43,7 +43,7 @@ describe(WordFilter.name, () => {
         it("部分一致", () => {
             const filter = "tes";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([
                 "1000",
                 "1001",
             ]);
@@ -53,7 +53,7 @@ describe(WordFilter.name, () => {
         it("大小文字が異なる", () => {
             const filter = "TesT";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
             checkComment(threads, []);
         });
     });
@@ -61,7 +61,7 @@ describe(WordFilter.name, () => {
     it("正規表現ルール", () => {
         const filter = "/テスト/";
 
-        expect(getFilteredIds(filtering({ filter }))).toEqual(["1002", "1003"]);
+        expect(getFilteredIds(runFilter({ filter }))).toEqual(["1002", "1003"]);
         checkComment(threads, ["1002", "1003"]);
     });
 
@@ -70,9 +70,9 @@ describe(WordFilter.name, () => {
 @strict
 テスト
 `;
-        const wordFilter = filtering({
+        const bodyFilter = runFilter({
             filter,
-            isStrictOnly: true,
+            strictOnly: true,
             settings: {
                 autoFilter: [
                     {
@@ -83,8 +83,8 @@ describe(WordFilter.name, () => {
             },
         });
 
-        expect(getFilteredIds(wordFilter)).toEqual([]);
-        expect(wordFilter.getStrictData()).toEqual([
+        expect(getFilteredIds(bodyFilter)).toEqual([]);
+        expect(bodyFilter.getStrictData()).toEqual([
             {
                 userId: "user-id-main-1",
                 context: "comment-body: テスト",
@@ -101,9 +101,9 @@ describe(WordFilter.name, () => {
 
 コメント
 `;
-        expect(
-            getFilteredIds(filtering({ filter, isStrictOnly: true })),
-        ).toEqual([]);
+        expect(getFilteredIds(runFilter({ filter, strictOnly: true }))).toEqual(
+            [],
+        );
         checkComment(threads, []);
     });
 });

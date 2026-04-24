@@ -72,6 +72,6 @@ export function createCount(result: FilteringResult) {
         loadedComment: result.loadedCommentCount,
         include: calc("getIncludeCount"),
         exclude: calc("getExcludeCount"),
-        disable: filters.commandFilter.getDisableCount(),
+        disable: filters.commandsFilter.getDisableCount(),
     } satisfies Count;
 }

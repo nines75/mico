@@ -2,7 +2,7 @@ import type { Thread } from "@/types/api/comment.types";
 import { Filter } from "../filter";
 
 export class ScoreFilter extends Filter {
-    override filtering(threads: Thread[]): void {
+    override apply(threads: Thread[]): void {
         if (!this.settings.isScoreFilterEnabled) return;
 
         this.traverseThreads(threads, (comment) => {

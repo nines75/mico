@@ -4,7 +4,7 @@ import { isString } from "@/utils/util";
 import { StrictFilter } from "../strict-filter";
 import type { Rule } from "../../rule";
 
-export class CommandFilter extends StrictFilter {
+export class CommandsFilter extends StrictFilter {
     private disableCount = 0;
 
     constructor(settings: Settings) {
@@ -24,15 +24,15 @@ export class CommandFilter extends StrictFilter {
         return this.disableCount;
     }
 
-    override filtering(threads: Thread[], isStrictOnly = false): void {
-        const rules = isStrictOnly
+    override apply(threads: Thread[], strictOnly = false): void {
+        const rules = strictOnly
             ? this.rules.filter((rule) => this.isStrict(rule))
             : this.rules
                   .filter((rule) => !this.isStrict(rule))
                   // 無効化ルールを後から適用するためにソート
                   .toSorted((a, b) => {
-                      if (a.isDisable === b.isDisable) return 0;
-                      return a.isDisable ? 1 : -1;
+                      if (a.disable === b.disable) return 0;
+                      return a.disable ? 1 : -1;
                   });
         if (rules.length === 0) return;
 
@@ -46,9 +46,9 @@ export class CommandFilter extends StrictFilter {
 
             // 前の参照を持たないようコマンドを置き換えた後に定義する
             const { commands, userId } = comment;
-            const disableCommands = new Set<string>();
+            const commandsToDisable = new Set<string>();
 
-            for (const { pattern, isDisable } of rules) {
+            for (const { pattern, disable } of rules) {
                 for (const command of commands) {
                     if (
                         isString(pattern)
@@ -57,7 +57,7 @@ export class CommandFilter extends StrictFilter {
                     )
                         continue;
 
-                    if (isStrictOnly) {
+                    if (strictOnly) {
                         if (!this.userIds.has(userId)) {
                             this.strictData.push({
                                 userId,
@@ -68,8 +68,8 @@ export class CommandFilter extends StrictFilter {
                         return true;
                     }
 
-                    if (isDisable) {
-                        disableCommands.add(command);
+                    if (disable) {
+                        commandsToDisable.add(command);
 
                         continue;
                     }
@@ -84,12 +84,12 @@ export class CommandFilter extends StrictFilter {
                 }
             }
 
-            if (isStrictOnly) return true;
+            if (strictOnly) return true;
 
             // forループ内で配列を変更するのは危険なので後から無効化する
-            if (disableCommands.size > 0) {
+            if (commandsToDisable.size > 0) {
                 comment.commands = commands.filter((command) => {
-                    const isMatch = disableCommands.has(command);
+                    const isMatch = commandsToDisable.has(command);
                     if (isMatch) this.disableCount++;
 
                     return !isMatch;
@@ -102,6 +102,6 @@ export class CommandFilter extends StrictFilter {
 
     isStrict(rule: Rule): boolean {
         // strictルールと無効化ルールが併用されている場合、strictルールを無視する
-        return rule.isStrict && !rule.isDisable;
+        return rule.strict && !rule.disable;
     }
 }

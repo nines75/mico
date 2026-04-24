@@ -12,14 +12,14 @@ describe(EasyCommentFilter.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: { settings?: Partial<Settings> }) => {
+    const runFilter = (options: { settings?: Partial<Settings> }) => {
         const easyCommentFilter = new EasyCommentFilter({
             ...defaultSettings,
             isEasyCommentHidden: true,
             ...options.settings,
         });
 
-        easyCommentFilter.filtering(threads);
+        easyCommentFilter.apply(threads);
 
         return easyCommentFilter;
     };
@@ -39,7 +39,7 @@ describe(EasyCommentFilter.name, () => {
         ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
                 getFilteredIds(
-                    filtering({
+                    runFilter({
                         settings: { isEasyCommentHidden: isEnabled },
                     }),
                 ),

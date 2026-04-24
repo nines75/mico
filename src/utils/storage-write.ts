@@ -78,7 +78,7 @@ export async function removeAutoRule(ids: string[]) {
     await setSettings(transaction);
 }
 
-export async function addNgIdFromUrl(url: string | undefined) {
+export async function addRuleFromUrl(url: string | undefined) {
     const settings = await loadSettings();
 
     const videoId = url?.match(

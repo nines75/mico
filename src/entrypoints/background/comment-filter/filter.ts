@@ -10,7 +10,7 @@ export abstract class Filter {
         this.settings = settings;
     }
 
-    abstract filtering(threads: Thread[]): void;
+    abstract apply(threads: Thread[]): void;
 
     getFilteredComments() {
         return this.filteredComments;

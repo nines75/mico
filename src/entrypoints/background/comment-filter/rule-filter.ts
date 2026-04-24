@@ -66,8 +66,8 @@ export function getRuleFilters(
 ): ConditionalPick<Filters, RuleFilter> {
     return {
         userIdFilter: filters.userIdFilter,
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
+        commandsFilter: filters.commandsFilter,
+        bodyFilter: filters.bodyFilter,
     };
 }
 

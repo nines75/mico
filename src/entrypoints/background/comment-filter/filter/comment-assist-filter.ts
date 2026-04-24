@@ -10,7 +10,7 @@ import { Filter } from "../filter";
 const RELEASE_DATE = new Date("2025-02-26T00:00:00+09:00");
 
 export class CommentAssistFilter extends Filter {
-    override filtering(threads: Thread[]): void {
+    override apply(threads: Thread[]): void {
         if (!this.settings.isCommentAssistFilterEnabled) return;
 
         this.traverseThreads(threads, (comment, thread) => {

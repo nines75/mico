@@ -12,7 +12,7 @@ describe(ScoreFilter.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: {
+    const runFilter = (options: {
         score: number;
         settings?: Partial<Settings>;
     }) => {
@@ -23,7 +23,7 @@ describe(ScoreFilter.name, () => {
             ...options.settings,
         });
 
-        scoreFilter.filtering(threads);
+        scoreFilter.apply(threads);
 
         return scoreFilter;
     };
@@ -41,7 +41,7 @@ describe(ScoreFilter.name, () => {
             { score: -1001, ids: ["1002"] },
             { score: -10_000, ids: [] },
         ])("$score", ({ score, ids }) => {
-            expect(getFilteredIds(filtering({ score }))).toEqual(ids);
+            expect(getFilteredIds(runFilter({ score }))).toEqual(ids);
             checkComment(threads, ids);
         });
     });
@@ -49,7 +49,7 @@ describe(ScoreFilter.name, () => {
     it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
         expect(
             getFilteredIds(
-                filtering({
+                runFilter({
                     score: 0,
                     settings: { isScoreFilterEnabled: false },
                 }),

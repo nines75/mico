@@ -51,14 +51,14 @@ describe(CommentAssistFilter.name, () => {
         threads = structuredClone(commentAssistThreads);
     });
 
-    const filtering = (options: { settings?: Partial<Settings> }) => {
+    const runFilter = (options: { settings?: Partial<Settings> }) => {
         const commentAssistFilter = new CommentAssistFilter({
             ...defaultSettings,
             isCommentAssistFilterEnabled: true,
             ...options.settings,
         });
 
-        commentAssistFilter.filtering(threads);
+        commentAssistFilter.apply(threads);
 
         return commentAssistFilter;
     };
@@ -78,7 +78,7 @@ describe(CommentAssistFilter.name, () => {
         ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
                 getFilteredIds(
-                    filtering({
+                    runFilter({
                         settings: { isCommentAssistFilterEnabled: isEnabled },
                     }),
                 ),

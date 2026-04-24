@@ -3,15 +3,15 @@ import type { Settings } from "@/types/storage/settings.types";
 import { isString } from "@/utils/util";
 import { StrictFilter } from "../strict-filter";
 
-export class WordFilter extends StrictFilter {
+export class BodyFilter extends StrictFilter {
     constructor(settings: Settings) {
         super(settings, "commentBody");
     }
 
-    override filtering(threads: Thread[], isStrictOnly = false): void {
-        const rules = isStrictOnly
-            ? this.rules.filter((rule) => rule.isStrict)
-            : this.rules.filter((rule) => !rule.isStrict);
+    override apply(threads: Thread[], strictOnly = false): void {
+        const rules = strictOnly
+            ? this.rules.filter((rule) => rule.strict)
+            : this.rules.filter((rule) => !rule.strict);
         if (rules.length === 0) return;
 
         this.traverseThreads(threads, (comment) => {
@@ -25,7 +25,7 @@ export class WordFilter extends StrictFilter {
                 )
                     continue;
 
-                if (isStrictOnly) {
+                if (strictOnly) {
                     if (!this.userIds.has(userId)) {
                         this.strictData.push({
                             userId,

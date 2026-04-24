@@ -7,8 +7,8 @@ export interface Rule {
     index?: number;
     id?: string;
     pattern: string | RegExp;
-    isStrict: boolean;
-    isDisable: boolean;
+    strict: boolean;
+    disable: boolean;
     include: Toggle;
     exclude: Toggle;
     target: {
@@ -40,8 +40,8 @@ export interface Toggle {
 
 export function createDefaultRule(): SetOptional<Rule, "pattern"> {
     return {
-        isStrict: false,
-        isDisable: false,
+        strict: false,
+        disable: false,
         include: createDefaultToggle(),
         exclude: createDefaultToggle(),
         target: {
