@@ -26,7 +26,7 @@ export const niconicoCommentSchema = z.looseObject({
 export type NiconicoComment = z.infer<typeof niconicoCommentSchema>;
 
 const threadSchema = z.looseObject({
-    fork: z.literal(["owner", "main", "easy"]),
+    fork: z.literal(["owner", "main", "easy", "ai"]),
     commentCount: z.number().int(),
     comments: z.array(niconicoCommentSchema),
 });

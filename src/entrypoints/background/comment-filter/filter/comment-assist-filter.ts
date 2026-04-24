@@ -18,7 +18,7 @@ export class CommentAssistFilter extends Filter<CommonLog> {
         if (!this.settings.isCommentAssistFilterEnabled) return;
 
         this.traverseThreads(threads, (comment, thread) => {
-            if (thread.fork === "owner") return true;
+            if (thread.fork === "owner" || thread.fork === "ai") return true;
 
             const { id, commands, postedAt, body } = comment;
 
