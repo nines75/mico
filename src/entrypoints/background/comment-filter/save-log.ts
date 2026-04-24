@@ -14,7 +14,7 @@ export async function saveLog(
     tabId: number,
 ) {
     const comment = createCommentLog(result);
-    const count = createCount(result);
+    const count = createCountLog(result);
 
     await Promise.all([
         setLog(
@@ -55,7 +55,7 @@ export function createCommentLog(
     };
 }
 
-export function createCount(result: FilteringResult) {
+export function createCountLog(result: FilteringResult) {
     const filters = result.filters;
     const ruleFilters = getRuleFilters(filters);
 

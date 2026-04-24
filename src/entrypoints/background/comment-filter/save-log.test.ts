@@ -4,7 +4,7 @@ import { beforeAll, expect, it, vi } from "vitest";
 import type { FilteringResult } from "./filter-comment";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
-import { createCount, createCommentLog, saveLog } from "./save-log";
+import { createCountLog, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
 import type { NiconicoComment } from "@/types/api/comment.types";
 import type { FilteredComment, Log } from "@/types/storage/log.types";
@@ -58,7 +58,7 @@ big
     const result = filterComment(threads, settings, testTab) as FilteringResult;
 
     expect(createCommentLog(result)).toEqual(log.comment);
-    expect(createCount(result)).toEqual(log.count);
+    expect(createCountLog(result)).toEqual(log.count);
 });
 
 function getComments(

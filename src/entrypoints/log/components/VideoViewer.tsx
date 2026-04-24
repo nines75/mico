@@ -15,7 +15,7 @@ const filters = [
     "id",
     "owner-id",
     "paid",
-    "views",
+    "view-count",
     "owner-name",
     "title",
 ] as const satisfies FilteredVideo["target"][];

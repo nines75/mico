@@ -1,21 +1,21 @@
-import { UserNameFilter } from "./filter/user-name-filter";
+import { OwnerNameFilter } from "./filter/user-name-filter";
 import { TitleFilter } from "./filter/title-filter";
 import type { Settings } from "@/types/storage/settings.types";
 import type { NiconicoVideo } from "@/types/api/niconico-video.types";
 import { PaidFilter } from "./filter/paid-filter";
-import { ViewsFilter } from "./filter/views-filter";
-import { VideoIdFilter } from "./filter/video-id-filter";
-import { VideoOwnerIdFilter } from "./filter/video-owner-id-filter";
+import { ViewCountFilter } from "./filter/views-filter";
+import { IdFilter } from "./filter/video-id-filter";
+import { OwnerIdFilter } from "./filter/video-owner-id-filter";
 
 export type Filters = FilteringResult["filters"];
 
 export interface FilteringResult {
     filters: {
-        videoIdFilter: VideoIdFilter;
-        videoOwnerIdFilter: VideoOwnerIdFilter;
+        idFilter: IdFilter;
+        ownerIdFilter: OwnerIdFilter;
         paidFilter: PaidFilter;
-        viewsFilter: ViewsFilter;
-        userNameFilter: UserNameFilter;
+        viewCountFilter: ViewCountFilter;
+        ownerNameFilter: OwnerNameFilter;
         titleFilter: TitleFilter;
     };
     loadedVideoCount: number;
@@ -25,30 +25,30 @@ export interface FilteringResult {
 export function filterVideo(
     videos: NiconicoVideo[],
     settings: Settings,
-    isRecommend = false,
+    forRecommendApi = false,
 ): FilteringResult | undefined {
     if (!settings.isVideoFilterEnabled) return;
 
-    const videoIdFilter = new VideoIdFilter(settings);
-    const videoOwnerIdFilter = new VideoOwnerIdFilter(settings);
+    const idFilter = new IdFilter(settings);
+    const ownerIdFilter = new OwnerIdFilter(settings);
     const paidFilter = new PaidFilter(settings);
-    const viewsFilter = new ViewsFilter(settings, isRecommend);
-    const userNameFilter = new UserNameFilter(settings);
+    const viewCountFilter = new ViewCountFilter(settings, forRecommendApi);
+    const ownerNameFilter = new OwnerNameFilter(settings);
     const titleFilter = new TitleFilter(settings);
 
     const filters: Filters = {
-        videoIdFilter,
-        videoOwnerIdFilter,
+        idFilter,
+        ownerIdFilter,
         paidFilter,
-        viewsFilter,
-        userNameFilter,
+        viewCountFilter,
+        ownerNameFilter,
         titleFilter,
     };
 
     // フィルタリングの重複を避けるためにオブジェクトを作って渡す
     const data = { videos };
     for (const filter of Object.values(filters)) {
-        filter.filtering(data);
+        filter.apply(data);
     }
 
     const filteredIds = new Set(

@@ -35,7 +35,7 @@ export interface FilteredVideo {
     ruleId?: string;
     pattern?: string | RegExp;
     video: NiconicoVideo;
-    target: "id" | "owner-id" | "paid" | "views" | "owner-name" | "title";
+    target: "id" | "owner-id" | "paid" | "view-count" | "owner-name" | "title";
 }
 
 export interface Count {

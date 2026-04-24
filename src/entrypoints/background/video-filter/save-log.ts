@@ -9,10 +9,10 @@ export async function saveLog(
     result: FilteringResult,
     logId: string,
     tabId: number,
-    isSetBadge = true,
+    setBadge = true,
 ) {
     const video = createVideoLog(result);
-    const count = createCount(result);
+    const count = createCountLog(result);
 
     await Promise.all([
         setLog(
@@ -25,7 +25,7 @@ export async function saveLog(
             logId,
             tabId,
         ),
-        ...(isSetBadge
+        ...(setBadge
             ? [setBadgeState(count.blockedVideo, colors.videoBadge, tabId)]
             : []),
     ]);
@@ -39,7 +39,7 @@ function createVideoLog(result: FilteringResult): NonNullable<Log["video"]> {
     return { filteredVideos };
 }
 
-function createCount(result: FilteringResult) {
+function createCountLog(result: FilteringResult) {
     return {
         blockedVideo: sum(
             Object.values(result.filters).map(

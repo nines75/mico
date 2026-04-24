@@ -5,7 +5,7 @@ import { RuleFilter } from "../rule-filter";
 export abstract class ExactFilter extends RuleFilter {
     protected abstract pickTarget(video: NiconicoVideo): string;
 
-    override filtering(data: { videos: NiconicoVideo[] }): void {
+    override apply(data: { videos: NiconicoVideo[] }): void {
         data.videos = data.videos.filter((video) => {
             const target = this.pickTarget(video);
 

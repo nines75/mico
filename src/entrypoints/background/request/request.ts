@@ -23,8 +23,8 @@ export function filterResponse(
     };
 
     filter.onstop = catchAsync(async () => {
-        const isCancel = await callback(filter, encoder, buf);
-        if (isCancel) {
+        const shouldCancel = await callback(filter, encoder, buf);
+        if (shouldCancel) {
             filter.write(encoder.encode(buf));
             filter.disconnect();
         }

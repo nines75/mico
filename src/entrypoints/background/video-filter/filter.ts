@@ -10,7 +10,7 @@ export abstract class Filter {
         this.settings = settings;
     }
 
-    abstract filtering(data: { videos: NiconicoVideo[] }): void;
+    abstract apply(data: { videos: NiconicoVideo[] }): void;
 
     getFilteredVideos() {
         return this.filteredVideos;
