@@ -168,7 +168,7 @@ const config = [
     },
     {
         heading: "高度な機能",
-        isChildren: true,
+        hasChildren: true,
         items: [
             {
                 id: "isAdvancedFeaturesVisible",

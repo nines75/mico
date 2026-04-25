@@ -17,7 +17,7 @@ export async function mountToDropdown(element: Element) {
             callback: async () => {
                 await sendMessageToBackground({
                     type: "on-click-dropdown",
-                    data: { isSpecific: false },
+                    data: { videoOnly: false },
                 });
             },
         },
@@ -26,7 +26,7 @@ export async function mountToDropdown(element: Element) {
             callback: async () => {
                 await sendMessageToBackground({
                     type: "on-click-dropdown",
-                    data: { isSpecific: true },
+                    data: { videoOnly: true },
                 });
             },
         },

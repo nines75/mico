@@ -15,7 +15,6 @@ export default function VideoFilter() {
 
 const config = [
     {
-        isChildren: true,
         items: [
             {
                 id: "isVideoFilterEnabled",

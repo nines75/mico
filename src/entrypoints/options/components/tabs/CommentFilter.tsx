@@ -15,7 +15,6 @@ export default function CommentFilter() {
 
 const config = [
     {
-        isChildren: true,
         items: [
             {
                 id: "isCommentFilterEnabled",

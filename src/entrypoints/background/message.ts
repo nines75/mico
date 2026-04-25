@@ -29,7 +29,7 @@ export type BackgroundMessage =
       }
     | {
           type: "on-click-dropdown";
-          data: { isSpecific: boolean };
+          data: { videoOnly: boolean };
       }
     | {
           type: "get-comments-for-dropdown";
@@ -180,7 +180,7 @@ async function onClickDropdown(
             context: `comment-body: ${comment.body}`,
             source: "dropdown",
             target: { commentUserId: true },
-            ...(data.isSpecific && {
+            ...(data.videoOnly && {
                 include: { videoIds: [[comment.$videoId]] },
             }),
         },
