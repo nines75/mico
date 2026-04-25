@@ -1,18 +1,18 @@
 import { loadSettings } from "@/utils/storage";
 import { filterVideo } from "../video-filter/filter-video";
 import { filterResponse } from "./request";
-import type { PlaylistFromSearchApi } from "@/types/api/playlist-from-search.types";
-import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
+import type { SearchPlaylistApi } from "@/types/api/playlist-from-search.types";
+import { searchPlaylistApiSchema } from "@/types/api/playlist-from-search.types";
 import { safeParseJson } from "@/utils/util";
 
-export function playlistFromSearchRequest(
+export function searchPlaylistRequest(
     details: browser.webRequest._OnBeforeRequestDetails,
 ) {
     filterResponse(details, "GET", async (filter, encoder, buf) => {
         const settings = await loadSettings();
-        const playlistApi: PlaylistFromSearchApi | undefined = safeParseJson(
+        const playlistApi: SearchPlaylistApi | undefined = safeParseJson(
             buf,
-            playlistFromSearchApiSchema,
+            searchPlaylistApiSchema,
         );
         if (playlistApi === undefined) return true;
 

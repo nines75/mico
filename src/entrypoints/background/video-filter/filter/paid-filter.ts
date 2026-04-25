@@ -1,8 +1,8 @@
 import { Filter } from "../filter";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 
 export class PaidFilter extends Filter {
-    override apply(data: { videos: NiconicoVideo[] }): void {
+    override apply(data: { videos: Video[] }): void {
         if (!this.settings.isPaidVideoHidden) return;
 
         data.videos = data.videos.filter((video) => {

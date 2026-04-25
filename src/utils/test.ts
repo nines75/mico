@@ -6,13 +6,11 @@ import {
     createDefaultToggle,
     type Rule,
 } from "@/entrypoints/background/rule";
-import type { NiconicoComment, Thread } from "@/types/api/comment.types";
+import type { Comment, Thread } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 
-export function mockComments(
-    ...comments: Partial<NiconicoComment>[]
-): NiconicoComment[] {
+export function mockComments(...comments: Partial<Comment>[]): Comment[] {
     return comments.map((comment) => {
         return {
             id: "1000",

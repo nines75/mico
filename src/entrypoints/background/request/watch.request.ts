@@ -72,7 +72,7 @@ function watchApiFilter(
 
             meta?.setAttribute("content", JSON.stringify(watchApi));
 
-            return { hasNext: true, data: next };
+            return { hasNext: true, video: next };
         } else {
             return { hasNext: false };
         }

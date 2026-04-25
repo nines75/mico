@@ -3,7 +3,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { niconicoVideoSchema } from "./niconico-video.types";
+import { videoSchema } from "./niconico-video.types";
 
 export const recommendApiSchema = z.looseObject({
     data: z.looseObject({
@@ -12,7 +12,7 @@ export const recommendApiSchema = z.looseObject({
                 z.looseObject({
                     id: z.string(),
                     contentType: z.literal("video"),
-                    content: niconicoVideoSchema,
+                    content: videoSchema,
                 }),
                 z.looseObject({
                     id: z.string(),

@@ -7,7 +7,7 @@ import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
 import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
-import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
+import { searchPlaylistRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
 import {
     getActiveTab,
@@ -75,7 +75,7 @@ export default defineBackground(() => {
 
     // 検索から視聴ページに遷移した際に表示されるプレイリストのリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
-        playlistFromSearchRequest,
+        searchPlaylistRequest,
         {
             urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
             types: ["xmlhttprequest"],

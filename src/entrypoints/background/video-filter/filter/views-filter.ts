@@ -1,5 +1,5 @@
 import { Filter } from "../filter";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import type { Settings } from "@/types/storage/settings.types";
 
 export class ViewCountFilter extends Filter {
@@ -11,7 +11,7 @@ export class ViewCountFilter extends Filter {
         this.isEnabled = isEnabled;
     }
 
-    override apply(data: { videos: NiconicoVideo[] }): void {
+    override apply(data: { videos: Video[] }): void {
         if (!this.isEnabled || !this.settings.isViewsFilterEnabled) return;
 
         data.videos = data.videos.filter((video) => {

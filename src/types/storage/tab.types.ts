@@ -1,4 +1,4 @@
-import type { NiconicoVideo } from "../api/niconico-video.types";
+import type { Video } from "../api/niconico-video.types";
 
 export interface Tab {
     series: Series;
@@ -16,5 +16,5 @@ export interface Tab {
 
 export interface Series {
     hasNext: boolean;
-    data?: NiconicoVideo;
+    video?: Video;
 }

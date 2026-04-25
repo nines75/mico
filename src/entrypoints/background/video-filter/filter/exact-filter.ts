@@ -1,11 +1,11 @@
 import { isString } from "@/utils/util";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import { RuleFilter } from "../rule-filter";
 
 export abstract class ExactFilter extends RuleFilter {
-    protected abstract pickTarget(video: NiconicoVideo): string;
+    protected abstract pickTarget(video: Video): string;
 
-    override apply(data: { videos: NiconicoVideo[] }): void {
+    override apply(data: { videos: Video[] }): void {
         data.videos = data.videos.filter((video) => {
             const target = this.pickTarget(video);
 

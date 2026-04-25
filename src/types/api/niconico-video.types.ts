@@ -1,6 +1,6 @@
 import { z } from "@/utils/zod";
 
-export const niconicoVideoSchema = z.looseObject({
+export const videoSchema = z.looseObject({
     id: z.string(),
     title: z.string(),
     latestCommentSummary: z.string(),
@@ -18,4 +18,4 @@ export const niconicoVideoSchema = z.looseObject({
     }),
 });
 
-export type NiconicoVideo = z.infer<typeof niconicoVideoSchema>;
+export type Video = z.infer<typeof videoSchema>;

@@ -1,4 +1,4 @@
-import { niconicoCommentSchema } from "@/types/api/comment.types";
+import { commentSchema } from "@/types/api/comment.types";
 
 type Fiber = Record<
     string,
@@ -37,5 +37,5 @@ export async function getDropdownComment(
         },
     });
 
-    return niconicoCommentSchema.safeParse(results[0]?.result).data;
+    return commentSchema.safeParse(results[0]?.result).data;
 }

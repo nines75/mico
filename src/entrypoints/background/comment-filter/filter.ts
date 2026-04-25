@@ -1,4 +1,4 @@
-import type { NiconicoComment, Thread } from "@/types/api/comment.types";
+import type { Comment, Thread } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -18,7 +18,7 @@ export abstract class Filter {
 
     traverseThreads(
         threads: Thread[],
-        callback: (comment: NiconicoComment, thread: Thread) => boolean,
+        callback: (comment: Comment, thread: Thread) => boolean,
     ) {
         for (const thread of threads) {
             thread.comments = thread.comments.filter((comment): boolean => {

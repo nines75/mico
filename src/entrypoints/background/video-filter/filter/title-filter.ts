@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import { PartialFilter } from "../partial-filter";
 
 export class TitleFilter extends PartialFilter {
@@ -7,7 +7,7 @@ export class TitleFilter extends PartialFilter {
         super(settings, "videoTitle", "title");
     }
 
-    protected override pickTarget(video: NiconicoVideo): string {
+    protected override pickTarget(video: Video): string {
         return video.title;
     }
 }

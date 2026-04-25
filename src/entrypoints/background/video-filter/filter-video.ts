@@ -1,7 +1,7 @@
 import { OwnerNameFilter } from "./filter/user-name-filter";
 import { TitleFilter } from "./filter/title-filter";
 import type { Settings } from "@/types/storage/settings.types";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import { PaidFilter } from "./filter/paid-filter";
 import { ViewCountFilter } from "./filter/views-filter";
 import { IdFilter } from "./filter/video-id-filter";
@@ -23,7 +23,7 @@ export interface FilteringResult {
 }
 
 export function filterVideo(
-    videos: NiconicoVideo[],
+    videos: Video[],
     settings: Settings,
     forRecommendApi = false,
 ): FilteringResult | undefined {

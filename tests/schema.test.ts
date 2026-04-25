@@ -1,6 +1,6 @@
 import { safeParseJson } from "@/utils/util";
 import { commentApiSchema } from "@/types/api/comment.types";
-import { playlistFromSearchApiSchema } from "@/types/api/playlist-from-search.types";
+import { searchPlaylistApiSchema } from "@/types/api/playlist-from-search.types";
 import { rankingApiSchema } from "@/types/api/ranking.types";
 import { recommendApiSchema } from "@/types/api/recommend.types";
 import { searchApiSchema } from "@/types/api/search.types";
@@ -39,11 +39,11 @@ for (const { title, url, responseUrl, method, schema, selector } of [
         schema: recommendApiSchema,
     },
     {
-        title: "PlaylistFromSearchApi",
+        title: "SearchPlaylistApi",
         url: SEARCH_PAGE_URL,
         responseUrl: "https://nvapi.nicovideo.jp/v1/playlist/search",
         method: "GET",
-        schema: playlistFromSearchApiSchema,
+        schema: searchPlaylistApiSchema,
         selector: "[data-anchor-area='main'][tabindex]",
     },
 ] satisfies {
