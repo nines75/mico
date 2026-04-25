@@ -5,7 +5,7 @@ import { saveLog } from "../video-filter/save-log";
 import { filterResponse, spaFilter } from "./request";
 import type { RankingApi } from "@/types/api/ranking.types";
 import { rankingApiSchema } from "@/types/api/ranking.types";
-import { cleanupDb } from "@/utils/db";
+import { cleanUpDb } from "@/utils/db";
 import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
@@ -43,7 +43,7 @@ export function rankingRequest(
                 ? [mountLogId(logId, tabId)]
                 : []),
         ]);
-        await cleanupDb();
+        await cleanUpDb();
 
         return false;
     });

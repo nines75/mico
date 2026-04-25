@@ -7,7 +7,7 @@ import { filterResponse } from "./request";
 import { addAutoRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment.types";
 import { commentApiSchema } from "@/types/api/comment.types";
-import { cleanupDb, getTab, setTab } from "@/utils/db";
+import { cleanUpDb, getTab, setTab } from "@/utils/db";
 import type { Tab } from "@/types/storage/tab.types";
 import { sendMessageToContent, notify } from "@/utils/browser";
 import { safeParseJson } from "@/utils/util";
@@ -81,7 +81,7 @@ export default function commentRequest(
         }
 
         await Promise.all(tasks);
-        await cleanupDb();
+        await cleanUpDb();
 
         return false;
     });

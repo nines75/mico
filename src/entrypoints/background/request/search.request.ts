@@ -5,7 +5,7 @@ import { saveLog } from "../video-filter/save-log";
 import { filterResponse, spaFilter } from "./request";
 import type { SearchApi } from "@/types/api/search.types";
 import { searchApiSchema } from "@/types/api/search.types";
-import { cleanupDb } from "@/utils/db";
+import { cleanUpDb } from "@/utils/db";
 import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
@@ -44,7 +44,7 @@ export function searchRequest(
                 ? [mountLogId(logId, tabId)]
                 : []),
         ]);
-        await cleanupDb();
+        await cleanUpDb();
 
         return false;
     });

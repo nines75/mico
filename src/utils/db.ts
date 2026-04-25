@@ -17,7 +17,7 @@ interface LogDb {
 
 interface TabDb {
     tabId: number;
-    data: Tab;
+    tab: Tab;
 }
 
 const db = new Dexie("main") as Dexie & {
@@ -40,7 +40,7 @@ export async function getLog(id: string) {
 export async function getTab(tabId: number) {
     const result = await db.tab.get(tabId);
 
-    return result?.data;
+    return result?.tab;
 }
 
 export async function setLog(
@@ -50,36 +50,34 @@ export async function setLog(
 ) {
     await db.transaction("rw", db.log, async () => {
         const logDb = await db.log.get(id);
-        const newLog = merge(
+        const log = merge(
             logDb?.log,
             typeof value === "function" ? await value() : value,
         ) as Log;
 
-        await db.log.put({ id, tabId, log: newLog });
+        await db.log.put({ id, tabId, log });
     });
 }
 
 export async function setTab(value: Partial<Tab>, tabId: number) {
     await db.transaction("rw", db.tab, async () => {
         const tabDb = await db.tab.get(tabId);
-        const newData = merge(tabDb?.data, value) as Tab;
+        const tab = merge(tabDb?.tab, value) as Tab;
 
-        await db.tab.put({ tabId, data: newData });
+        await db.tab.put({ tabId, tab });
     });
 }
 
-export async function cleanupDb() {
+export async function cleanUpDb() {
     const tabs = await browser.tabs.query({});
-    const aliveTabIds = tabs
-        .map((tab) => tab.id)
-        .filter((id) => id !== undefined);
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined);
 
     const deleteKeys = async (...tables: Dexie.Table[]) => {
         for (const table of tables) {
             await db.transaction("rw", table, async () => {
                 const keys = await table
                     .where("tabId")
-                    .noneOf(aliveTabIds)
+                    .noneOf(tabIds)
                     .primaryKeys();
                 if (keys.length > 0) await table.bulkDelete(keys);
             });
