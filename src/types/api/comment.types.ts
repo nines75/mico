@@ -26,7 +26,7 @@ export const commentSchema = z.looseObject({
 export type Comment = z.infer<typeof commentSchema>;
 
 const threadSchema = z.looseObject({
-    fork: z.literal(["owner", "main", "easy"]),
+    fork: z.literal(["owner", "main", "easy", "ai"]),
     commentCount: z.number().int(),
     comments: z.array(commentSchema),
 });
