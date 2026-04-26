@@ -118,11 +118,6 @@ async function importBackup(
 
 async function exportBackup() {
     const settings = await getSettings();
-    if (settings === null) {
-        // 一度も設定が保存されていない場合
-        alert(messages.settings.neverReset);
-        return;
-    }
 
     const backup: Backup = {
         settings,
