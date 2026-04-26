@@ -58,19 +58,6 @@ const config = [
         ],
     },
     {
-        heading: "通知",
-        items: [
-            {
-                id: "notifyOnManualNg",
-                label: "手動でNG登録した際に通知する",
-            },
-            {
-                id: "notifyOnAutoNg",
-                label: "自動でNG登録した際に通知する",
-            },
-        ],
-    },
-    {
         heading: "ドロップダウン",
         items: [
             {

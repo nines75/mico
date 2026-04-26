@@ -9,6 +9,10 @@ export const defaultSettings: Settings = {
     enableCloseBrackets: true,
     enableHighlightTrailingWhitespace: true,
 
+    // 通知
+    notifyOnManualNg: true,
+    notifyOnAutoNg: true,
+
     // 高度な機能
     showAdvancedFeatures: false,
     importLocalFilterOnLoad: false,
@@ -94,10 +98,6 @@ export const defaultSettings: Settings = {
     ignoreMyComments: true,
     ignoreByNicoru: false,
     ignoreByNicoruThreshold: 30,
-
-    // 通知
-    notifyOnManualNg: true,
-    notifyOnAutoNg: true,
 
     // ドロップダウン
     autoReload: false,

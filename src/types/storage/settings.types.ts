@@ -17,6 +17,10 @@ export interface Settings {
     enableCloseBrackets: boolean;
     enableHighlightTrailingWhitespace: boolean;
 
+    // 通知
+    notifyOnManualNg: boolean;
+    notifyOnAutoNg: boolean;
+
     // 高度な機能
     showAdvancedFeatures: boolean;
     importLocalFilterOnLoad: boolean;
@@ -45,10 +49,6 @@ export interface Settings {
     ignoreMyComments: boolean;
     ignoreByNicoru: boolean;
     ignoreByNicoruThreshold: number;
-
-    // 通知
-    notifyOnManualNg: boolean;
-    notifyOnAutoNg: boolean;
 
     // ドロップダウン
     autoReload: boolean;
