@@ -188,7 +188,7 @@ async function onClickDropdown(
     const tasks: Promise<unknown>[] = [];
     if (settings.autoReload)
         tasks.push(sendMessageToContent(tabId, { type: "reload" }));
-    if (settings.notifyOnManualNg)
+    if (settings.notifyOnManualNg && !settings.autoReload)
         tasks.push(notify(messages.ngUserId.additionSuccess));
 
     await Promise.all(tasks);
