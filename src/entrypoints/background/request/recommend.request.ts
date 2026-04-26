@@ -1,5 +1,5 @@
-import type { RecommendApi } from "@/types/api/recommend.types";
-import { recommendApiSchema } from "@/types/api/recommend.types";
+import type { RecommendApi } from "@/types/api/recommend-api.types";
+import { recommendApiSchema } from "@/types/api/recommend-api.types";
 import { loadSettings } from "@/utils/storage";
 import { filterVideo } from "../video-filter/filter-video";
 import { saveLog } from "../video-filter/save-log";

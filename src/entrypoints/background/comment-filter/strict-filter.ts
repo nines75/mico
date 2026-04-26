@@ -2,7 +2,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import type { ConditionalPick } from "type-fest";
 import type { Filters } from "./filter-comment";
 import { RuleFilter } from "./rule-filter";
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import type { Rule } from "../rule";
 import { isString } from "@/utils/util";
 

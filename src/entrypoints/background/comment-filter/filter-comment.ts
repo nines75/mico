@@ -1,9 +1,9 @@
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { BodyFilter } from "./filter/word-filter";
+import { BodyFilter } from "./filter/body-filter";
 import { UserIdFilter } from "./filter/user-id-filter";
 import { ScoreFilter } from "./filter/score-filter";
-import { CommandsFilter } from "./filter/command-filter";
+import { CommandsFilter } from "./filter/commands-filter";
 import { CommentAssistFilter } from "./filter/comment-assist-filter";
 import { EasyCommentFilter } from "./filter/easy-comment-filter";
 import { getRuleFilters } from "./rule-filter";

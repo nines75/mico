@@ -7,7 +7,7 @@ import type {
 } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
 import { useStorageStore } from "@/utils/store";
-import type { Comment } from "@/types/api/comment.types";
+import type { Comment } from "@/types/api/comment-api.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 

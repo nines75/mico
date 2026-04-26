@@ -1,5 +1,5 @@
-import type { RenderedComment, Comment } from "../api/comment.types";
-import type { Video } from "../api/niconico-video.types";
+import type { RenderedComment, Comment } from "../api/comment-api.types";
+import type { Video } from "../api/video.types";
 import type { Tab } from "./tab.types";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;

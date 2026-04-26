@@ -1,4 +1,4 @@
-import type { Video } from "../api/niconico-video.types";
+import type { Video } from "../api/video.types";
 
 export interface Tab {
     series: Series;

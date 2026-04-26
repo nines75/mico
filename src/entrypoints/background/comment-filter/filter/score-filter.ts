@@ -1,4 +1,4 @@
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import { Filter } from "../filter";
 
 export class ScoreFilter extends Filter {

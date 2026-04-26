@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { videoSchema } from "./niconico-video.types";
+import { videoSchema } from "./video.types";
 
 export const searchApiSchema = z.looseObject({
     data: z.looseObject({

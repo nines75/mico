@@ -1,11 +1,11 @@
-import { OwnerNameFilter } from "./filter/user-name-filter";
+import { OwnerNameFilter } from "./filter/owner-name-filter";
 import { TitleFilter } from "./filter/title-filter";
 import type { Settings } from "@/types/storage/settings.types";
-import type { Video } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/video.types";
 import { PaidFilter } from "./filter/paid-filter";
-import { ViewCountFilter } from "./filter/views-filter";
-import { IdFilter } from "./filter/video-id-filter";
-import { OwnerIdFilter } from "./filter/video-owner-id-filter";
+import { ViewCountFilter } from "./filter/view-count-filter";
+import { IdFilter } from "./filter/id-filter";
+import { OwnerIdFilter } from "./filter/owner-id-filter";
 
 export type Filters = FilteringResult["filters"];
 

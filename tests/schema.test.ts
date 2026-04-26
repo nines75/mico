@@ -1,10 +1,10 @@
 import { safeParseJson } from "@/utils/util";
-import { commentApiSchema } from "@/types/api/comment.types";
-import { searchPlaylistApiSchema } from "@/types/api/playlist-from-search.types";
-import { rankingApiSchema } from "@/types/api/ranking.types";
-import { recommendApiSchema } from "@/types/api/recommend.types";
-import { searchApiSchema } from "@/types/api/search.types";
-import { watchApiSchema } from "@/types/api/watch.types";
+import { commentApiSchema } from "@/types/api/comment-api.types";
+import { searchPlaylistApiSchema } from "@/types/api/search-playlist-api.types";
+import { rankingApiSchema } from "@/types/api/ranking-api.types";
+import { recommendApiSchema } from "@/types/api/recommend-api.types";
+import { searchApiSchema } from "@/types/api/search-api.types";
+import { watchApiSchema } from "@/types/api/watch-api.types";
 import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
 

@@ -1,4 +1,4 @@
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, getFilteredIds, testThreads } from "@/utils/test";

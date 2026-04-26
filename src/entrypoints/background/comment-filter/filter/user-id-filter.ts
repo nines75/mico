@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import { isString } from "@/utils/util";
 import { RuleFilter } from "../rule-filter";
 import type { Rule } from "../../rule";

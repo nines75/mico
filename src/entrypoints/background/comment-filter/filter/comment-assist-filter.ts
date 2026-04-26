@@ -2,7 +2,7 @@
 // 実装方針: https://github.com/nines75/mico/issues/41
 // -------------------------------------------------------------------------------------------
 
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import { Filter } from "../filter";
 
 // コメントアシスト機能のリリース日は2025/02/26

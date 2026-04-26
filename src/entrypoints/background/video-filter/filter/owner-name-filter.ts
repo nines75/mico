@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import type { Video } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/video.types";
 import { PartialFilter } from "../partial-filter";
 
 export class OwnerNameFilter extends PartialFilter {

@@ -1,8 +1,8 @@
 import { loadSettings } from "@/utils/storage";
 import { filterVideo } from "../video-filter/filter-video";
 import { filterResponse } from "./request";
-import type { SearchPlaylistApi } from "@/types/api/playlist-from-search.types";
-import { searchPlaylistApiSchema } from "@/types/api/playlist-from-search.types";
+import type { SearchPlaylistApi } from "@/types/api/search-playlist-api.types";
+import { searchPlaylistApiSchema } from "@/types/api/search-playlist-api.types";
 import { safeParseJson } from "@/utils/util";
 
 export function searchPlaylistRequest(

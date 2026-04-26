@@ -7,7 +7,7 @@ import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
 import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
-import { searchPlaylistRequest } from "./request/playlist-from-search.request";
+import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
 import {
     getActiveTab,

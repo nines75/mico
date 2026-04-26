@@ -1,5 +1,5 @@
 import { isString } from "@/utils/util";
-import type { Video } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/video.types";
 import { RuleFilter } from "../rule-filter";
 
 export abstract class ExactFilter extends RuleFilter {

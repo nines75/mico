@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import { UserIdFilter } from "./user-id-filter";
 
 describe(UserIdFilter.name, () => {

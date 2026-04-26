@@ -1,4 +1,4 @@
-import type { Thread } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ScoreFilter } from "./score-filter";

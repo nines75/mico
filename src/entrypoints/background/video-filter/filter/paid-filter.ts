@@ -1,5 +1,5 @@
 import { Filter } from "../filter";
-import type { Video } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/video.types";
 
 export class PaidFilter extends Filter {
     override apply(data: { videos: Video[] }): void {
