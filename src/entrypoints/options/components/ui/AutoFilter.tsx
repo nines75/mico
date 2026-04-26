@@ -4,6 +4,7 @@ import decamelize from "decamelize";
 import { X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import { VList } from "virtua";
+import { escapeNewline } from "@/utils/util";
 
 export default function AutoFilter() {
     const autoFilter = useStorageStore((state) => state.settings.autoFilter);
@@ -77,7 +78,9 @@ function Rule({ rule }: RuleProps) {
                     <Detail name="ソース">{rule.source}</Detail>
                 )}
                 {rule.context !== undefined && (
-                    <Detail name="コンテキスト">{rule.context}</Detail>
+                    <Detail name="コンテキスト">
+                        {escapeNewline(rule.context)}
+                    </Detail>
                 )}
             </div>
         </div>
