@@ -1,4 +1,4 @@
-import type { NiconicoComment, Thread } from "@/types/api/comment.types";
+import type { Comment, Thread } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -10,7 +10,7 @@ export abstract class Filter {
         this.settings = settings;
     }
 
-    abstract filtering(threads: Thread[]): void;
+    abstract apply(threads: Thread[]): void;
 
     getFilteredComments() {
         return this.filteredComments;
@@ -18,15 +18,15 @@ export abstract class Filter {
 
     traverseThreads(
         threads: Thread[],
-        callback: (comment: NiconicoComment, thread: Thread) => boolean,
+        callback: (comment: Comment, thread: Thread) => boolean,
     ) {
         for (const thread of threads) {
             thread.comments = thread.comments.filter((comment): boolean => {
-                if (this.settings.isMyCommentIgnored && comment.isMyPost)
+                if (this.settings.ignoreMyComments && comment.isMyPost)
                     return true;
                 if (
-                    this.settings.isIgnoreByNicoru &&
-                    comment.nicoruCount >= this.settings.ignoreByNicoruCount
+                    this.settings.ignoreByNicoru &&
+                    comment.nicoruCount >= this.settings.ignoreByNicoruThreshold
                 )
                     return true;
 

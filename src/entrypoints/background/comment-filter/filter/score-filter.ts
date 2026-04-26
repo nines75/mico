@@ -2,13 +2,13 @@ import type { Thread } from "@/types/api/comment.types";
 import { Filter } from "../filter";
 
 export class ScoreFilter extends Filter {
-    override filtering(threads: Thread[]): void {
-        if (!this.settings.isScoreFilterEnabled) return;
+    override apply(threads: Thread[]): void {
+        if (!this.settings.enableScoreFilter) return;
 
         this.traverseThreads(threads, (comment) => {
             const { score } = comment;
 
-            if (score <= this.settings.scoreFilterCount) {
+            if (score <= this.settings.scoreFilterThreshold) {
                 this.filteredComments.push({
                     comment,
                     target: "score",

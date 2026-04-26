@@ -1,9 +1,9 @@
 import { defaultSettings, messages } from "@/utils/config";
 import H2 from "../ui/H2";
 import { useStorageStore } from "@/utils/store";
-import type { BackupData } from "@/types/storage/backup.types";
+import type { Backup } from "@/types/storage/backup.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { getSettingsData } from "@/utils/storage";
+import { getSettings } from "@/utils/storage";
 import type { ValueOf } from "type-fest";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
@@ -20,7 +20,7 @@ export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
     const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
         useShallow((state) => [
-            state.settings.isAdvancedFeaturesVisible,
+            state.settings.showAdvancedFeatures,
             state.settings.localFilterPath,
             state.saveSettings,
         ]),
@@ -98,7 +98,7 @@ async function importBackup(
     const text = await event.target.files?.[0]?.text();
     if (text === undefined) return;
 
-    const backup = JSON.parse(text) as BackupData;
+    const backup = JSON.parse(text) as Backup;
     if (backup.settings === undefined) return;
 
     const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
@@ -117,19 +117,19 @@ async function importBackup(
 }
 
 async function exportBackup() {
-    const settingsData = await getSettingsData();
-    if (settingsData === null) {
+    const settings = await getSettings();
+    if (settings === null) {
         // 一度も設定が保存されていない場合
         alert(messages.settings.neverReset);
         return;
     }
 
-    const data: BackupData = {
-        settings: settingsData,
+    const backup: Backup = {
+        settings,
     };
-    const dataStr = JSON.stringify(data);
+    const backupStr = JSON.stringify(backup);
 
-    const blob = new Blob([dataStr], { type: "application/json" });
+    const blob = new Blob([backupStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const fileName = `${browser.runtime.getManifest().name}-backup.json`;
 
@@ -157,21 +157,21 @@ const config = [
         heading: "エディター",
         items: [
             {
-                id: "isCloseBrackets",
+                id: "enableCloseBrackets",
                 label: "括弧を自動で閉じる",
             },
             {
-                id: "isHighlightTrailingWhitespace",
+                id: "enableHighlightTrailingWhitespace",
                 label: "行末の空白文字をハイライトする",
             },
         ],
     },
     {
         heading: "高度な機能",
-        isChildren: true,
+        hasChildren: true,
         items: [
             {
-                id: "isAdvancedFeaturesVisible",
+                id: "showAdvancedFeatures",
                 label: "高度な機能を表示する",
             },
         ],
@@ -180,11 +180,11 @@ const config = [
 
 const advancedFeaturesConfig = [
     {
-        id: "shouldImportLocalFilterOnLoad",
+        id: "importLocalFilterOnLoad",
         label: "ページ読み込み時にローカルフィルターをインポートする",
         childrenProps: [
             {
-                id: "shouldImportOnlyWhenWslRunning",
+                id: "importOnlyWhenWslRunning",
                 label: "WSL起動時のみインポートする",
             },
         ],

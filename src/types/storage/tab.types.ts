@@ -1,7 +1,7 @@
-import type { NiconicoVideo } from "../api/niconico-video.types";
+import type { Video } from "../api/niconico-video.types";
 
-export interface TabData {
-    series: SeriesData;
+export interface Tab {
+    series: Series;
 
     playbackTime?: number;
 
@@ -14,7 +14,7 @@ export interface TabData {
     tags: string[];
 }
 
-export interface SeriesData {
+export interface Series {
     hasNext: boolean;
-    data?: NiconicoVideo;
+    video?: Video;
 }

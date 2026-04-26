@@ -1,5 +1,5 @@
 import { defaultSettings } from "@/utils/config";
-import { getSettingsData, loadSettings } from "@/utils/storage";
+import { getSettings, loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
 import type { Settings } from "@/types/storage/settings.types";
 import { setSettings } from "./storage-write";
@@ -12,8 +12,8 @@ describe(loadSettings.name, () => {
         },
         {
             name: "設定あり",
-            settings: { isCommentFilterEnabled: false },
-            expected: { ...defaultSettings, isCommentFilterEnabled: false },
+            settings: { enableCommentFilter: false },
+            expected: { ...defaultSettings, enableCommentFilter: false },
         },
     ] satisfies {
         name: string;
@@ -26,8 +26,8 @@ describe(loadSettings.name, () => {
     });
 });
 
-it(getSettingsData.name, async () => {
+it(getSettings.name, async () => {
     await setSettings(defaultSettings);
 
-    expect(await getSettingsData()).toEqual(defaultSettings);
+    expect(await getSettings()).toEqual(defaultSettings);
 });

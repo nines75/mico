@@ -28,9 +28,9 @@ export function getRuleFilters(
     filters: Filters,
 ): ConditionalPick<Filters, RuleFilter> {
     return {
-        videoIdFilter: filters.videoIdFilter,
-        videoOwnerIdFilter: filters.videoOwnerIdFilter,
-        userNameFilter: filters.userNameFilter,
+        idFilter: filters.idFilter,
+        ownerIdFilter: filters.ownerIdFilter,
+        ownerNameFilter: filters.ownerNameFilter,
         titleFilter: filters.titleFilter,
     };
 }

@@ -6,7 +6,7 @@ import { migrateSettingsToV4 } from "./settings-legacy";
 export const storageArea = "local";
 
 export async function loadSettings() {
-    const settings = await getSettingsData();
+    const settings = await getSettings();
     if (settings === null) return defaultSettings;
 
     return { ...defaultSettings, ...settings };
@@ -23,6 +23,6 @@ const settingsStorage = storage.defineItem<Partial<Settings>>(
     },
 );
 
-export async function getSettingsData() {
+export async function getSettings() {
     return await settingsStorage.getValue();
 }

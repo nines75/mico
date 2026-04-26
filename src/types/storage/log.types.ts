@@ -1,11 +1,11 @@
-import type { RenderedComment, NiconicoComment } from "../api/comment.types";
-import type { NiconicoVideo } from "../api/niconico-video.types";
-import type { TabData } from "./tab.types";
+import type { RenderedComment, Comment } from "../api/comment.types";
+import type { Video } from "../api/niconico-video.types";
+import type { Tab } from "./tab.types";
 
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
 export type LogTab = "commentFilter" | "videoFilter";
 
-export interface LogData {
+export interface Log {
     comment?: {
         strictRuleIds: string[];
         filteredComments: FilteredComment[];
@@ -15,13 +15,13 @@ export interface LogData {
         filteredVideos: FilteredVideo[];
     };
     count?: Count;
-    tab?: TabData;
+    tab?: Tab;
 }
 
 export interface FilteredComment {
     ruleId?: string;
     pattern?: string | RegExp;
-    comment: NiconicoComment;
+    comment: Comment;
     target:
         | "user-id"
         | "easy-comment"
@@ -34,8 +34,8 @@ export interface FilteredComment {
 export interface FilteredVideo {
     ruleId?: string;
     pattern?: string | RegExp;
-    video: NiconicoVideo;
-    target: "id" | "owner-id" | "paid" | "views" | "owner-name" | "title";
+    video: Video;
+    target: "id" | "owner-id" | "paid" | "view-count" | "owner-name" | "title";
 }
 
 export interface Count {

@@ -36,8 +36,8 @@ export function escapeNewline(text: string) {
     return text.replaceAll("\n", String.raw`\n`);
 }
 
-export function sumNumbers(numbers: number[]) {
-    return numbers.reduce((sum, num) => sum + num, 0);
+export function sum(numbers: number[]) {
+    return numbers.reduce((result, num) => result + num, 0);
 }
 
 export function replace(text: string, placeholders: string[]) {
@@ -61,7 +61,7 @@ export function isString(value: unknown) {
     return typeof value === "string";
 }
 
-export const customMerge = deepmergeCustom<
+export const merge = deepmergeCustom<
     unknown,
     {
         DeepMergeArraysURI: DeepMergeLeafURI;

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useStorageStore, storageChangeHandler } from "@/utils/store";
+import { useStorageStore, settingsChangeHandler } from "@/utils/store";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
 import General from "./components/tabs/General";
@@ -13,7 +13,7 @@ export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        useStorageStore.getState().loadSettingsPageData();
+        useStorageStore.getState().loadSettings();
     }, []);
 
     if (isLoading) return null;
@@ -30,10 +30,10 @@ function Page() {
     );
 
     useEffect(() => {
-        browser.storage.onChanged.addListener(storageChangeHandler);
+        browser.storage.onChanged.addListener(settingsChangeHandler);
 
         return () => {
-            browser.storage.onChanged.removeListener(storageChangeHandler);
+            browser.storage.onChanged.removeListener(settingsChangeHandler);
         };
     }, []);
 

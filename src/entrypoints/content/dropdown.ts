@@ -16,8 +16,8 @@ export async function mountToDropdown(element: Element) {
             text: buttons.addNgUserId,
             callback: async () => {
                 await sendMessageToBackground({
-                    type: "add-ng-user-id-from-dropdown",
-                    data: { isSpecific: false },
+                    type: "on-click-dropdown",
+                    data: { videoOnly: false },
                 });
             },
         },
@@ -25,8 +25,8 @@ export async function mountToDropdown(element: Element) {
             text: buttons.addSpecificNgUserId,
             callback: async () => {
                 await sendMessageToBackground({
-                    type: "add-ng-user-id-from-dropdown",
-                    data: { isSpecific: true },
+                    type: "on-click-dropdown",
+                    data: { videoOnly: true },
                 });
             },
         },
@@ -38,7 +38,7 @@ export async function mountToDropdown(element: Element) {
                 })) as string | undefined;
                 if (comments === undefined) {
                     await sendMessageToBackground({
-                        type: "send-notification",
+                        type: "notify",
                         data: messages.other.getCommentFailed,
                     });
                     return;

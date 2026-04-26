@@ -51,21 +51,21 @@ describe(CommentAssistFilter.name, () => {
         threads = structuredClone(commentAssistThreads);
     });
 
-    const filtering = (options: { settings?: Partial<Settings> }) => {
+    const runFilter = (options: { settings?: Partial<Settings> }) => {
         const commentAssistFilter = new CommentAssistFilter({
             ...defaultSettings,
-            isCommentAssistFilterEnabled: true,
+            enableCommentAssistFilter: true,
             ...options.settings,
         });
 
-        commentAssistFilter.filtering(threads);
+        commentAssistFilter.apply(threads);
 
         return commentAssistFilter;
     };
 
     // -------------------------------------------------------------------------------------------
 
-    describe(`Settings.${"isCommentAssistFilterEnabled" satisfies keyof Settings}`, () => {
+    describe(`Settings.${"enableCommentAssistFilter" satisfies keyof Settings}`, () => {
         it.each([
             {
                 isEnabled: true,
@@ -78,8 +78,8 @@ describe(CommentAssistFilter.name, () => {
         ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
                 getFilteredIds(
-                    filtering({
-                        settings: { isCommentAssistFilterEnabled: isEnabled },
+                    runFilter({
+                        settings: { enableCommentAssistFilter: isEnabled },
                     }),
                 ),
             ).toEqual(ids);

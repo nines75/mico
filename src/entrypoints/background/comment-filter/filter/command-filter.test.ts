@@ -1,30 +1,30 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { CommandFilter } from "./command-filter";
+import { CommandsFilter } from "./command-filter";
 import { defaultSettings } from "@/utils/config";
 import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
 
-describe(CommandFilter.name, () => {
+describe(CommandsFilter.name, () => {
     let threads: Thread[];
 
     beforeEach(() => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: {
+    const runFilter = (options: {
         filter: string;
-        isStrictOnly?: boolean;
+        strictOnly?: boolean;
         settings?: Partial<Settings>;
     }) => {
-        const commandFilter = new CommandFilter({
+        const commandsFilter = new CommandsFilter({
             ...defaultSettings,
             ...options.settings,
             manualFilter: `@comment-commands\n${options.filter}`,
         });
-        commandFilter.filtering(threads, options.isStrictOnly ?? false);
+        commandsFilter.apply(threads, options.strictOnly ?? false);
 
-        return commandFilter;
+        return commandsFilter;
     };
     const hasCommand = (targets: string[]) =>
         threads.some((thread) =>
@@ -41,7 +41,7 @@ describe(CommandFilter.name, () => {
         it("基本", () => {
             const filter = "big";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([
                 "1002",
                 "1004",
             ]);
@@ -51,7 +51,7 @@ describe(CommandFilter.name, () => {
         it("大小文字が異なる", () => {
             const filter = "BiG";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([
                 "1002",
                 "1004",
             ]);
@@ -61,7 +61,7 @@ describe(CommandFilter.name, () => {
         it("部分一致", () => {
             const filter = "bi";
 
-            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
             checkComment(threads, []);
         });
     });
@@ -69,7 +69,7 @@ describe(CommandFilter.name, () => {
     it("正規表現ルール", () => {
         const filter = "/big|device:switch/";
 
-        expect(getFilteredIds(filtering({ filter }))).toEqual([
+        expect(getFilteredIds(runFilter({ filter }))).toEqual([
             "1002",
             "1003",
             "1004",
@@ -82,9 +82,9 @@ describe(CommandFilter.name, () => {
 @strict
 big
 `;
-        const commandFilter = filtering({
+        const commandsFilter = runFilter({
             filter,
-            isStrictOnly: true,
+            strictOnly: true,
             settings: {
                 autoFilter: [
                     {
@@ -95,8 +95,8 @@ big
             },
         });
 
-        expect(getFilteredIds(commandFilter)).toEqual([]);
-        expect(commandFilter.getStrictData()).toEqual([
+        expect(getFilteredIds(commandsFilter)).toEqual([]);
+        expect(commandsFilter.getStrictData()).toEqual([
             { userId: "user-id-main-1", context: "comment-commands: big" },
         ]);
         checkComment(threads, []);
@@ -120,7 +120,7 @@ device:switch
 `,
             },
         ])("$name", ({ filter }) => {
-            expect(getFilteredIds(filtering({ filter }))).toEqual([]);
+            expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
             expect(hasCommand(["big", "device:switch"])).toBe(false);
             checkComment(threads, []);
         });
@@ -132,11 +132,11 @@ device:switch
 @disable
 big
 `;
-        const commandFilter = filtering({ filter });
-        const strictCommandFilter = filtering({ filter, isStrictOnly: true });
+        const commandsFilter = runFilter({ filter });
+        const strictCommandsFilter = runFilter({ filter, strictOnly: true });
 
-        expect(getFilteredIds(commandFilter)).toEqual([]);
-        expect(strictCommandFilter.getStrictData()).toEqual([]);
+        expect(getFilteredIds(commandsFilter)).toEqual([]);
+        expect(strictCommandsFilter.getStrictData()).toEqual([]);
         expect(hasCommand(["big"])).toBe(false);
         checkComment(threads, []);
     });
@@ -150,7 +150,7 @@ big
 
 big
 `;
-        expect(getFilteredIds(filtering({ filter }))).toEqual(["1002", "1004"]);
+        expect(getFilteredIds(runFilter({ filter }))).toEqual(["1002", "1004"]);
         checkComment(threads, ["1002", "1004"]);
     });
 
@@ -165,10 +165,10 @@ device:switch
 @disable
 184
 `;
-        const commandFilter = filtering({ filter, isStrictOnly: true });
+        const commandsFilter = runFilter({ filter, strictOnly: true });
 
-        expect(getFilteredIds(commandFilter)).toEqual([]);
-        expect(commandFilter.getDisableCount()).toEqual(0);
+        expect(getFilteredIds(commandsFilter)).toEqual([]);
+        expect(commandsFilter.getDisableCount()).toEqual(0);
         expect(hasCommand(["184"])).toBe(true);
         checkComment(threads, []);
     });

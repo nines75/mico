@@ -1,10 +1,6 @@
 import type { LogId } from "@/types/storage/log.types";
 import delay from "delay";
-import {
-    getActiveTab,
-    sendMessageToContent,
-    sendNotification,
-} from "./browser";
+import { getActiveTab, sendMessageToContent, notify } from "./browser";
 
 export function createLogId() {
     return crypto.randomUUID();
@@ -44,7 +40,7 @@ export async function openLog() {
     const tab = await getActiveTab();
     const logId = await getLogId(tab?.id);
     if (logId === undefined) {
-        await sendNotification("ログIDが抽出できませんでした");
+        await notify("ログIDが抽出できませんでした");
         return;
     }
 

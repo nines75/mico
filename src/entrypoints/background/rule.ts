@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { customMerge } from "@/utils/util";
+import { merge } from "@/utils/util";
 import type { Merge, PartialDeep, SetOptional } from "type-fest";
 
 export interface Rule {
@@ -7,8 +7,8 @@ export interface Rule {
     index?: number;
     id?: string;
     pattern: string | RegExp;
-    isStrict: boolean;
-    isDisable: boolean;
+    strict: boolean;
+    disable: boolean;
     include: Toggle;
     exclude: Toggle;
     target: {
@@ -40,8 +40,8 @@ export interface Toggle {
 
 export function createDefaultRule(): SetOptional<Rule, "pattern"> {
     return {
-        isStrict: false,
-        isDisable: false,
+        strict: false,
+        disable: false,
         include: createDefaultToggle(),
         exclude: createDefaultToggle(),
         target: {
@@ -74,7 +74,7 @@ export function createRules(
     return [
         ...manualRules.filter((rule) => rule.target[target]),
         ...settings.autoFilter
-            .map((rule) => customMerge(createDefaultRule(), rule) as Rule)
+            .map((rule) => merge(createDefaultRule(), rule) as Rule)
             .filter((rule) => rule.target[target]),
     ];
 }

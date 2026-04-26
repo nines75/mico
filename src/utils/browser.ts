@@ -37,7 +37,7 @@ export async function setBadgeState(
     ]);
 }
 
-export async function sendNotification(message: string) {
+export async function notify(message: string) {
     await browser.notifications.create({
         type: "basic",
         title: browser.runtime.getManifest().name,
@@ -56,9 +56,7 @@ export async function tryWithPermission(
 
     await (hasPermission
         ? callback()
-        : sendNotification(
-              replace(messages.other.permissionRequired, [permission]),
-          ));
+        : notify(replace(messages.other.permissionRequired, [permission])));
 }
 
 export async function getActiveTab() {

@@ -4,18 +4,15 @@ import { RuleCell, Viewer } from "./Viewer";
 import { useStorageStore } from "@/utils/store";
 import type { FilteredVideo } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 
-export type Row = Merge<
-    FilteredVideo,
-    { video: OmitIndexSignature<NiconicoVideo> }
->;
+export type Row = Merge<FilteredVideo, { video: OmitIndexSignature<Video> }>;
 
 const filters = [
     "id",
     "owner-id",
     "paid",
-    "views",
+    "view-count",
     "owner-name",
     "title",
 ] as const satisfies FilteredVideo["target"][];

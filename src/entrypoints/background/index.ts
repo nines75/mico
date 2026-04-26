@@ -5,9 +5,9 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync, isWatchPage } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { addNgIdFromUrl, importLocalFilter } from "@/utils/storage-write";
+import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
-import { playlistFromSearchRequest } from "./request/playlist-from-search.request";
+import { searchPlaylistRequest } from "./request/playlist-from-search.request";
 import { clearDb } from "@/utils/db";
 import {
     getActiveTab,
@@ -75,7 +75,7 @@ export default defineBackground(() => {
 
     // 検索から視聴ページに遷移した際に表示されるプレイリストのリクエストを監視
     browser.webRequest.onBeforeRequest.addListener(
-        playlistFromSearchRequest,
+        searchPlaylistRequest,
         {
             urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
             types: ["xmlhttprequest"],
@@ -104,10 +104,10 @@ export default defineBackground(() => {
                 await openLog();
             }
 
-            if (command === "add-ng-from-clipboard") {
+            if (command === "add-rule-from-clipboard") {
                 await tryWithPermission("clipboardRead", async () => {
                     const text = await navigator.clipboard.readText();
-                    await addNgIdFromUrl(text);
+                    await addRuleFromUrl(text);
                 });
             }
 
@@ -128,7 +128,7 @@ export default defineBackground(() => {
     );
 
     browser.contextMenus.create({
-        id: "add-ng",
+        id: "add-rule",
         title: "NG登録",
         contexts: ["link"],
         documentUrlPatterns: ["https://www.nicovideo.jp/*"],
@@ -141,8 +141,8 @@ export default defineBackground(() => {
 
     browser.contextMenus.onClicked.addListener(
         catchAsync(async (data) => {
-            if (data.menuItemId === "add-ng") {
-                await addNgIdFromUrl(data.linkUrl);
+            if (data.menuItemId === "add-rule") {
+                await addRuleFromUrl(data.linkUrl);
             }
         }),
     );

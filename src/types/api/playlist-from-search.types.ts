@@ -3,17 +3,17 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { niconicoVideoSchema } from "./niconico-video.types";
+import { videoSchema } from "./niconico-video.types";
 
-export const playlistFromSearchApiSchema = z.looseObject({
+export const searchPlaylistApiSchema = z.looseObject({
     data: z.looseObject({
         items: z.array(
             z.looseObject({
                 watchId: z.string(),
-                content: niconicoVideoSchema,
+                content: videoSchema,
             }),
         ),
     }),
 });
 
-export type PlaylistFromSearchApi = z.infer<typeof playlistFromSearchApiSchema>;
+export type SearchPlaylistApi = z.infer<typeof searchPlaylistApiSchema>;

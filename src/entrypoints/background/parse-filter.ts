@@ -54,13 +54,13 @@ export const noArgsDirectives = [
 
 export function parseFilter(
     settings: Settings,
-    hasIndex = false, // テストが複雑になるためindexはデフォルトで含めない
+    includeIndex = false, // テストが複雑になるためindexはデフォルトで含めない
 ): {
     rules: Rule[];
     invalidCount: number;
 } {
     let invalidCount = 0;
-    let isStrictAlias = false;
+    let strictAlias = false;
     const directives: Directive[] = [];
     const rules: Rule[] = [];
 
@@ -98,7 +98,7 @@ export function parseFilter(
             continue;
         }
         if (trimmedLine === "@s") {
-            isStrictAlias = true;
+            strictAlias = true;
             continue;
         }
 
@@ -110,8 +110,8 @@ export function parseFilter(
         // -------------------------------------------------------------------------------------------
 
         const rule: Except<Rule, "pattern"> = {
-            isStrict: false,
-            isDisable: false,
+            strict: false,
+            disable: false,
             include: createDefaultToggle(),
             exclude: createDefaultToggle(),
             target: {
@@ -165,11 +165,11 @@ export function parseFilter(
 
                 // 引数なし
                 case "strict": {
-                    rule.isStrict = true;
+                    rule.strict = true;
                     break;
                 }
                 case "disable": {
-                    rule.isDisable = true;
+                    rule.disable = true;
                     break;
                 }
 
@@ -206,18 +206,19 @@ export function parseFilter(
         }
 
         // エイリアスの適用
-        if (isStrictAlias) {
-            rule.isStrict = true;
-            isStrictAlias = false;
+        if (strictAlias) {
+            rule.strict = true;
+            strictAlias = false;
         }
 
         // -------------------------------------------------------------------------------------------
         // ルールのパース
         // -------------------------------------------------------------------------------------------
 
-        const regexResult = /^\/(.*)\/(.*)$/.exec(line);
-        const regexStr = regexResult?.[1];
-        const flags = regexResult?.[2];
+        const results = /^\/(.*)\/(.*)$/.exec(line);
+
+        const regexStr = results?.[1];
+        const flags = results?.[2];
 
         let regex: RegExp | undefined;
         if (regexStr !== undefined && flags !== undefined) {
@@ -240,7 +241,7 @@ export function parseFilter(
         rules.push({
             pattern: regex ?? line,
             ...rule,
-            ...(hasIndex ? { index } : {}),
+            ...(includeIndex ? { index } : {}),
         });
     }
 

@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import type { FilteredVideo } from "@/types/storage/log.types";
 
 export abstract class Filter {
@@ -10,7 +10,7 @@ export abstract class Filter {
         this.settings = settings;
     }
 
-    abstract filtering(data: { videos: NiconicoVideo[] }): void;
+    abstract apply(data: { videos: Video[] }): void;
 
     getFilteredVideos() {
         return this.filteredVideos;

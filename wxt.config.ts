@@ -90,7 +90,7 @@ export default defineConfig({
                           }
                         : {},
                 },
-                "add-ng-from-clipboard": {
+                "add-rule-from-clipboard": {
                     description: "クリップボードからNG登録",
                     suggested_key: isDevelopment
                         ? {

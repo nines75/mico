@@ -5,14 +5,14 @@ import { useStorageStore } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { catchAsync } from "@/utils/util";
-import { sendMessageToBackground, sendNotification } from "@/utils/browser";
+import { sendMessageToBackground, notify } from "@/utils/browser";
 import { openLog } from "@/utils/log";
 
 export function Init() {
     const isLoading = useStorageStore((state) => state.isLoading);
 
     useEffect(() => {
-        useStorageStore.getState().loadPopupPageData();
+        useStorageStore.getState().loadPopup();
     }, []);
 
     if (isLoading) return null;
@@ -98,9 +98,7 @@ async function onClickNgVideo() {
             },
         ],
     });
-    await sendNotification(
-        `以下の動画をNG登録しました\n\n${videoId} (${title})`,
-    );
+    await notify(`以下の動画をNG登録しました\n\n${videoId} (${title})`);
 }
 
 async function onClickNgOwner() {
@@ -124,7 +122,5 @@ async function onClickNgOwner() {
             },
         ],
     });
-    await sendNotification(
-        `以下のユーザーをNG登録しました\n\n${ownerId} (${ownerName})`,
-    );
+    await notify(`以下のユーザーをNG登録しました\n\n${ownerId} (${ownerName})`);
 }

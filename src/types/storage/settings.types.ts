@@ -14,13 +14,13 @@ export interface Settings {
     // -------------------------------------------------------------------------------------------
 
     // エディター
-    isCloseBrackets: boolean;
-    isHighlightTrailingWhitespace: boolean;
+    enableCloseBrackets: boolean;
+    enableHighlightTrailingWhitespace: boolean;
 
     // 高度な機能
-    isAdvancedFeaturesVisible: boolean;
-    shouldImportLocalFilterOnLoad: boolean;
-    shouldImportOnlyWhenWslRunning: boolean;
+    showAdvancedFeatures: boolean;
+    importLocalFilterOnLoad: boolean;
+    importOnlyWhenWslRunning: boolean;
     localFilterPath: string;
 
     // -------------------------------------------------------------------------------------------
@@ -35,40 +35,37 @@ export interface Settings {
     // コメントフィルター
     // -------------------------------------------------------------------------------------------
 
-    isCommentFilterEnabled: boolean;
+    enableCommentFilter: boolean;
 
     // フィルタリング
-    isEasyCommentHidden: boolean;
-    isCommentAssistFilterEnabled: boolean;
-    isScoreFilterEnabled: boolean;
-    scoreFilterCount: number;
-    isMyCommentIgnored: boolean;
-    isIgnoreByNicoru: boolean;
-    ignoreByNicoruCount: number;
+    enableEasyCommentFilter: boolean;
+    enableCommentAssistFilter: boolean;
+    enableScoreFilter: boolean;
+    scoreFilterThreshold: number;
+    ignoreMyComments: boolean;
+    ignoreByNicoru: boolean;
+    ignoreByNicoruThreshold: number;
 
     // 通知
-    isNotifyAddNgUserId: boolean;
-    isNotifyAutoAddNgUserId: boolean;
+    notifyOnManualNg: boolean;
+    notifyOnAutoNg: boolean;
 
     // ドロップダウン
-    isAutoReload: boolean;
-    isUserIdMountedToDropdown: boolean;
-    isNgScoreMountedToDropdown: boolean;
+    autoReload: boolean;
+    showUserIdInDropdown: boolean;
+    showScoreInDropdown: boolean;
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
 
-    isVideoFilterEnabled: boolean;
+    enableVideoFilter: boolean;
 
     // フィルタリング
-    isPaidVideoHidden: boolean;
-    isCommentPreviewHidden: boolean;
-    isViewsFilterEnabled: boolean;
-    viewsFilterCount: number;
-
-    // 通知
-    isNotifyAddNgId: boolean;
+    enablePaidFilter: boolean;
+    hideCommentPreview: boolean;
+    enableViewCountFilter: boolean;
+    viewCountFilterThreshold: number;
 
     // -------------------------------------------------------------------------------------------
     // その他

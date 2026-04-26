@@ -3,7 +3,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import {
     checkComment,
     getFilteredIds,
-    testTabData,
+    testTab,
     testThreads,
 } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -17,12 +17,12 @@ describe(filterComment.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (settings?: Partial<Settings>) => {
+    const runFilter = (settings?: Partial<Settings>) => {
         return filterComment(
             threads,
             {
                 ...defaultSettings,
-                scoreFilterCount: -1001,
+                scoreFilterThreshold: -1001,
                 manualFilter: `
 @comment-user-id
 user-id-owner
@@ -38,18 +38,18 @@ big
 `,
                 ...settings,
             },
-            testTabData,
+            testTab,
         );
     };
 
     it("基本", () => {
-        filtering();
+        runFilter();
 
         checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
     });
 
     it("strictルールの先行適用", () => {
-        const result = filtering({
+        const result = runFilter({
             manualFilter: `
 @comment-commands
 big
@@ -79,7 +79,7 @@ device:Switch
     });
 
     it("strictルールによるフィルタリングの重複", () => {
-        const result = filtering({
+        const result = runFilter({
             manualFilter: `
 @comment-commands
 # 1003と1004に一致
@@ -102,23 +102,23 @@ device:switch
         checkComment(threads, ["1003", "1004"]);
     });
 
-    it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
-        filtering({ isCommentFilterEnabled: false });
+    it(`Settings.${"enableCommentFilter" satisfies keyof Settings}`, () => {
+        runFilter({ enableCommentFilter: false });
 
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
+    it(`Settings.${"ignoreMyComments" satisfies keyof Settings}`, () => {
         for (const thread of threads) {
             for (const comment of thread.comments) comment.isMyPost = true;
         }
-        filtering({ isMyCommentIgnored: true });
+        runFilter({ ignoreMyComments: true });
 
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        filtering({ isIgnoreByNicoru: true });
+    it(`Settings.${"ignoreByNicoru" satisfies keyof Settings}`, () => {
+        runFilter({ ignoreByNicoru: true });
 
         checkComment(threads, ["1000", "1001", "1002"]);
     });

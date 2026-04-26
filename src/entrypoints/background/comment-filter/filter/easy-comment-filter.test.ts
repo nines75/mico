@@ -12,21 +12,21 @@ describe(EasyCommentFilter.name, () => {
         threads = structuredClone(testThreads);
     });
 
-    const filtering = (options: { settings?: Partial<Settings> }) => {
+    const runFilter = (options: { settings?: Partial<Settings> }) => {
         const easyCommentFilter = new EasyCommentFilter({
             ...defaultSettings,
-            isEasyCommentHidden: true,
+            enableEasyCommentFilter: true,
             ...options.settings,
         });
 
-        easyCommentFilter.filtering(threads);
+        easyCommentFilter.apply(threads);
 
         return easyCommentFilter;
     };
 
     // -------------------------------------------------------------------------------------------
 
-    describe(`Settings.${"isEasyCommentHidden" satisfies keyof Settings}`, () => {
+    describe(`Settings.${"enableEasyCommentFilter" satisfies keyof Settings}`, () => {
         it.each([
             {
                 isEnabled: true,
@@ -39,8 +39,8 @@ describe(EasyCommentFilter.name, () => {
         ])("$isEnabled", ({ isEnabled, ids }) => {
             expect(
                 getFilteredIds(
-                    filtering({
-                        settings: { isEasyCommentHidden: isEnabled },
+                    runFilter({
+                        settings: { enableEasyCommentFilter: isEnabled },
                     }),
                 ),
             ).toEqual(ids);

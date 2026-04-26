@@ -42,6 +42,7 @@ async function observerCallback(records: MutationRecord[]) {
     for (const record of records) {
         for (const node of record.addedNodes) {
             if (!(node instanceof Element)) continue;
+
             // ドロップダウン
             if (isWatchPage(location.href) && node.className === "z_dropdown") {
                 await mountToDropdown(node);

@@ -4,7 +4,7 @@
 
 import { z } from "@/utils/zod";
 
-export const niconicoCommentSchema = z.looseObject({
+export const commentSchema = z.looseObject({
     id: z.string(),
     body: z.string(),
     commands: z.array(z.string()),
@@ -23,12 +23,12 @@ export const niconicoCommentSchema = z.looseObject({
 
     source: z.literal(["trunk", "leaf", "nicoru"]),
 });
-export type NiconicoComment = z.infer<typeof niconicoCommentSchema>;
+export type Comment = z.infer<typeof commentSchema>;
 
 const threadSchema = z.looseObject({
     fork: z.literal(["owner", "main", "easy"]),
     commentCount: z.number().int(),
-    comments: z.array(niconicoCommentSchema),
+    comments: z.array(commentSchema),
 });
 export type Thread = z.infer<typeof threadSchema>;
 

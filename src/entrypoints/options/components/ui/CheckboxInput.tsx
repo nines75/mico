@@ -16,7 +16,7 @@ export default function CheckboxInput({
     min,
     max,
 }: CheckboxInputProps) {
-    const [input, save] = useStorageStore(
+    const [value, save] = useStorageStore(
         useShallow((state) => [state.settings[id], state.saveSettings]),
     );
 
@@ -26,7 +26,7 @@ export default function CheckboxInput({
                 {...{ min, max }}
                 type="number"
                 size={5}
-                value={input}
+                value={value}
                 onChange={(event) => {
                     save({ [id]: Number(event.target.value) });
                 }}

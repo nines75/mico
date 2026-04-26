@@ -3,18 +3,18 @@ import { subscribeWithSelector } from "zustand/middleware";
 import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
-import type { LogData } from "../types/storage/log.types";
+import type { Log } from "../types/storage/log.types";
 import { catchAsync, isWatchPage } from "./util";
 import { getActiveTab, sendMessageToBackground } from "./browser";
 import { getLogId } from "./log";
 
 interface StorageState {
     settings: Settings;
-    log: LogData | undefined;
+    log: Log | undefined;
     isLoading: boolean;
     isWatchPage: boolean;
-    loadSettingsPageData: () => void;
-    loadPopupPageData: () => void;
+    loadSettings: () => void;
+    loadPopup: () => void;
     loadLog: () => void;
     saveSettings: (settings: Partial<Settings>) => void;
 }
@@ -25,17 +25,17 @@ export const useStorageStore = create<StorageState>()(
         log: undefined,
         isLoading: true,
         isWatchPage: false,
-        loadSettingsPageData: catchAsync(async () => {
+        loadSettings: catchAsync(async () => {
             const settings = await loadSettings();
 
             set({ settings, isLoading: false });
         }),
-        loadPopupPageData: catchAsync(async () => {
+        loadPopup: catchAsync(async () => {
             const tab = await getActiveTab();
             const log = (await sendMessageToBackground({
-                type: "get-log-data",
+                type: "get-log",
                 data: await getLogId(tab?.id),
-            })) as LogData | undefined;
+            })) as Log | undefined;
 
             set({
                 log,
@@ -48,9 +48,9 @@ export const useStorageStore = create<StorageState>()(
             const id = params.get("id");
 
             const log = (await sendMessageToBackground({
-                type: "get-log-data",
+                type: "get-log",
                 data: id,
-            })) as LogData | undefined;
+            })) as Log | undefined;
 
             set({ log, isLoading: false });
         }),
@@ -79,7 +79,7 @@ export const useStorageStore = create<StorageState>()(
 );
 
 // 外部での変更を反映させるために必要
-export function storageChangeHandler(
+export function settingsChangeHandler(
     changes: Record<string, browser.storage.StorageChange>,
     area: string,
 ) {

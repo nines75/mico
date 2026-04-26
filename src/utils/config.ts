@@ -6,13 +6,13 @@ export const defaultSettings: Settings = {
     // -------------------------------------------------------------------------------------------
 
     // エディター
-    isCloseBrackets: true,
-    isHighlightTrailingWhitespace: true,
+    enableCloseBrackets: true,
+    enableHighlightTrailingWhitespace: true,
 
     // 高度な機能
-    isAdvancedFeaturesVisible: false,
-    shouldImportLocalFilterOnLoad: false,
-    shouldImportOnlyWhenWslRunning: false,
+    showAdvancedFeatures: false,
+    importLocalFilterOnLoad: false,
+    importOnlyWhenWslRunning: false,
     localFilterPath: "",
 
     // -------------------------------------------------------------------------------------------
@@ -84,40 +84,37 @@ export const defaultSettings: Settings = {
     // コメントフィルター
     // -------------------------------------------------------------------------------------------
 
-    isCommentFilterEnabled: true,
+    enableCommentFilter: true,
 
     // フィルタリング
-    isEasyCommentHidden: false,
-    isCommentAssistFilterEnabled: false,
-    isScoreFilterEnabled: false,
-    scoreFilterCount: -4800,
-    isMyCommentIgnored: true,
-    isIgnoreByNicoru: false,
-    ignoreByNicoruCount: 30,
+    enableEasyCommentFilter: false,
+    enableCommentAssistFilter: false,
+    enableScoreFilter: false,
+    scoreFilterThreshold: -4800,
+    ignoreMyComments: true,
+    ignoreByNicoru: false,
+    ignoreByNicoruThreshold: 30,
 
     // 通知
-    isNotifyAddNgUserId: true,
-    isNotifyAutoAddNgUserId: true,
+    notifyOnManualNg: true,
+    notifyOnAutoNg: true,
 
     // ドロップダウン
-    isAutoReload: false,
-    isUserIdMountedToDropdown: false,
-    isNgScoreMountedToDropdown: false,
+    autoReload: false,
+    showUserIdInDropdown: false,
+    showScoreInDropdown: false,
 
     // -------------------------------------------------------------------------------------------
     // 動画フィルター
     // -------------------------------------------------------------------------------------------
 
-    isVideoFilterEnabled: true,
+    enableVideoFilter: true,
 
     // フィルタリング
-    isPaidVideoHidden: false,
-    isCommentPreviewHidden: false,
-    isViewsFilterEnabled: false,
-    viewsFilterCount: 1000,
-
-    // 通知
-    isNotifyAddNgId: true,
+    enablePaidFilter: false,
+    hideCommentPreview: false,
+    enableViewCountFilter: false,
+    viewCountFilterThreshold: 1000,
 
     // -------------------------------------------------------------------------------------------
     // その他

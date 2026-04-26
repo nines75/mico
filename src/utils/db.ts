@@ -3,21 +3,21 @@
 // https://github.com/nines75/mico/issues/40
 // -------------------------------------------------------------------------------------------
 
-import type { Count, LogData } from "@/types/storage/log.types";
+import type { Count, Log } from "@/types/storage/log.types";
 import Dexie, { type EntityTable } from "dexie";
-import type { TabData } from "@/types/storage/tab.types";
-import { customMerge } from "./util";
+import type { Tab } from "@/types/storage/tab.types";
+import { merge } from "./util";
 import { objectEntries } from "ts-extras";
 
 interface LogDb {
     id: string;
     tabId: number;
-    log: LogData;
+    log: Log;
 }
 
 interface TabDb {
     tabId: number;
-    data: TabData;
+    tab: Tab;
 }
 
 const db = new Dexie("main") as Dexie & {
@@ -31,55 +31,53 @@ db.version(1).stores({
     tab: "tabId",
 });
 
-export async function getLogData(id: string) {
+export async function getLog(id: string) {
     const result = await db.log.get(id);
 
     return result?.log;
 }
 
-export async function getTabData(tabId: number) {
+export async function getTab(tabId: number) {
     const result = await db.tab.get(tabId);
 
-    return result?.data;
+    return result?.tab;
 }
 
 export async function setLog(
-    value: Partial<LogData> | (() => Promise<Partial<LogData>>),
+    value: Partial<Log> | (() => Promise<Partial<Log>>),
     id: string,
     tabId: number,
 ) {
     await db.transaction("rw", db.log, async () => {
         const logDb = await db.log.get(id);
-        const newLog = customMerge(
+        const log = merge(
             logDb?.log,
             typeof value === "function" ? await value() : value,
-        ) as LogData;
+        ) as Log;
 
-        await db.log.put({ id, tabId, log: newLog });
+        await db.log.put({ id, tabId, log });
     });
 }
 
-export async function setTabData(value: Partial<TabData>, tabId: number) {
+export async function setTab(value: Partial<Tab>, tabId: number) {
     await db.transaction("rw", db.tab, async () => {
         const tabDb = await db.tab.get(tabId);
-        const newData = customMerge(tabDb?.data, value) as TabData;
+        const tab = merge(tabDb?.tab, value) as Tab;
 
-        await db.tab.put({ tabId, data: newData });
+        await db.tab.put({ tabId, tab });
     });
 }
 
-export async function cleanupDb() {
+export async function cleanUpDb() {
     const tabs = await browser.tabs.query({});
-    const aliveTabIds = tabs
-        .map((tab) => tab.id)
-        .filter((id) => id !== undefined);
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined);
 
     const deleteKeys = async (...tables: Dexie.Table[]) => {
         for (const table of tables) {
             await db.transaction("rw", table, async () => {
                 const keys = await table
                     .where("tabId")
-                    .noneOf(aliveTabIds)
+                    .noneOf(tabIds)
                     .primaryKeys();
                 if (keys.length > 0) await table.bulkDelete(keys);
             });
@@ -95,7 +93,7 @@ export async function clearDb() {
 
 // 現在はコメントフィルターと動画フィルターでプロパティを共有していないが、将来的には一部共有する予定なのでマージ関数を用意しておく
 export async function mergeCount(count: Count, logId: string): Promise<Count> {
-    const log = await getLogData(logId);
+    const log = await getLog(logId);
 
     return Object.fromEntries(
         objectEntries(count).map(([key, value]) => [

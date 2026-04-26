@@ -113,7 +113,7 @@ rule
 @end
 rule
 `,
-                expected: mockRules({ isStrict: true }, {}),
+                expected: mockRules({ strict: true }, {}),
             },
             {
                 name: "余分に@endがある",
@@ -131,7 +131,7 @@ rule
 @strict
 rule
 `,
-                expected: mockRules({ isStrict: true }),
+                expected: mockRules({ strict: true }),
             },
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(createSettings(filter))).toEqual(expected);
@@ -150,7 +150,7 @@ rule
 `;
 
         expect(parseFilter(createSettings(filter))).toEqual(
-            mockRules({ isStrict: true }),
+            mockRules({ strict: true }),
         );
     });
 
@@ -166,7 +166,7 @@ rule
 `;
 
         expect(parseFilter(createSettings(filter))).toEqual(
-            mockRules({ isDisable: true }),
+            mockRules({ disable: true }),
         );
     });
 
@@ -232,7 +232,7 @@ rule
 rule
 rule
 `,
-                expected: mockRules({ isStrict: true }, {}),
+                expected: mockRules({ strict: true }, {}),
             },
             {
                 name: "直後の行にルールがない",
@@ -241,7 +241,7 @@ rule
 @end
 rule
 `,
-                expected: mockRules({ isStrict: true }),
+                expected: mockRules({ strict: true }),
             },
             {
                 name: "ディレクティブが連続",
@@ -251,7 +251,7 @@ rule
 rule
 rule
 `,
-                expected: mockRules({ isStrict: true }, {}),
+                expected: mockRules({ strict: true }, {}),
             },
         ])("$name", ({ filter, expected }) => {
             expect(parseFilter(createSettings(filter))).toEqual(expected);
@@ -313,13 +313,13 @@ rule
                     {
                         include: mockToggle({ tags: [[tags[0]]] }),
                         exclude: mockToggle({ tags: [[tags[1]]] }),
-                        isStrict: true,
+                        strict: true,
                     },
                     {
                         include: mockToggle({ tags: [[tags[0]]] }),
                         exclude: mockToggle({ tags: [[tags[1]]] }),
-                        isStrict: true,
-                        isDisable: true,
+                        strict: true,
+                        disable: true,
                     },
                     {
                         include: mockToggle({ tags: [[tags[0]], [tags[2]]] }),

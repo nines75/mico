@@ -2,8 +2,8 @@ import type { Thread } from "@/types/api/comment.types";
 import { Filter } from "../filter";
 
 export class EasyCommentFilter extends Filter {
-    override filtering(threads: Thread[]): void {
-        if (!this.settings.isEasyCommentHidden) return;
+    override apply(threads: Thread[]): void {
+        if (!this.settings.enableEasyCommentFilter) return;
 
         this.traverseThreads(threads, (comment, thread) => {
             if (thread.fork === "easy") {

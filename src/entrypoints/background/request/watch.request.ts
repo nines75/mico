@@ -4,8 +4,8 @@ import type { Settings } from "@/types/storage/settings.types";
 import { filterResponse, spaFilter } from "./request";
 import type { WatchApi } from "@/types/api/watch.types";
 import { watchApiSchema } from "@/types/api/watch.types";
-import { setLog, setTabData } from "@/utils/db";
-import type { SeriesData, TabData } from "@/types/storage/tab.types";
+import { setLog, setTab } from "@/utils/db";
+import type { Series, Tab } from "@/types/storage/tab.types";
 import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
@@ -33,13 +33,13 @@ export function watchRequest(
         );
         if (result === undefined) return true;
 
-        const { filteredBuf, filteredData: tabData } = result;
+        const { filteredBuf, filteringResult: tab } = result;
 
-        tabData.logId = logId;
+        tab.logId = logId;
 
         await Promise.all([
-            setTabData(tabData, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
-            setLog({ tab: tabData }, logId, tabId),
+            setTab(tab, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
+            setLog({ tab }, logId, tabId),
         ]);
 
         filter.write(encoder.encode(filteredBuf));
@@ -57,22 +57,22 @@ function watchApiFilter(
     watchApi: WatchApi,
     settings: Settings,
     meta?: Element | null,
-): TabData {
+): Tab {
     const response = watchApi.data.response;
     const metadata = watchApi.data.metadata;
 
-    const seriesData: SeriesData = (() => {
-        const series = response.series?.video;
-        const video = series?.next;
+    const series: Series = (() => {
+        const video = response.series?.video;
+        const next = video?.next;
 
-        if (series !== undefined && video !== null && video !== undefined) {
-            if ((filterVideo([video], settings)?.filteredIds.size ?? 0) > 0) {
-                series.next = null;
+        if (video !== undefined && next !== null && next !== undefined) {
+            if ((filterVideo([next], settings)?.filteredIds.size ?? 0) > 0) {
+                video.next = null;
             }
 
             meta?.setAttribute("content", JSON.stringify(watchApi));
 
-            return { hasNext: true, data: video };
+            return { hasNext: true, video: next };
         } else {
             return { hasNext: false };
         }
@@ -93,7 +93,7 @@ function watchApiFilter(
     const tags = response.tag.items.map(({ name }) => name);
 
     return {
-        series: seriesData,
+        series,
         seriesId: response.series?.id.toString(),
         videoId: response.video.id,
         title: response.video.title,

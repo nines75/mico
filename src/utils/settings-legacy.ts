@@ -5,7 +5,7 @@ import { defaultSettings } from "./config";
 import { isString } from "./util";
 import { objectEntries, objectValues } from "ts-extras";
 import type { AutoRule, Rule } from "@/entrypoints/background/rule";
-import type { Except } from "type-fest";
+import type { Except, ValueOf } from "type-fest";
 
 type FilterTab = "commentFilter" | "videoFilter";
 type SettingsTab =
@@ -124,6 +124,32 @@ interface SettingsV3 {
     isTitleFilterVisible: boolean;
 }
 
+const keyMap = [
+    ["isCloseBrackets", "enableCloseBrackets"],
+    ["isHighlightTrailingWhitespace", "enableHighlightTrailingWhitespace"],
+    ["isAdvancedFeaturesVisible", "showAdvancedFeatures"],
+    ["shouldImportLocalFilterOnLoad", "importLocalFilterOnLoad"],
+    ["shouldImportOnlyWhenWslRunning", "importOnlyWhenWslRunning"],
+    ["isCommentFilterEnabled", "enableCommentFilter"],
+    ["isEasyCommentHidden", "enableEasyCommentFilter"],
+    ["isCommentAssistFilterEnabled", "enableCommentAssistFilter"],
+    ["isScoreFilterEnabled", "enableScoreFilter"],
+    ["scoreFilterCount", "scoreFilterThreshold"],
+    ["isMyCommentIgnored", "ignoreMyComments"],
+    ["isIgnoreByNicoru", "ignoreByNicoru"],
+    ["ignoreByNicoruCount", "ignoreByNicoruThreshold"],
+    ["isNotifyAddNgUserId", "notifyOnManualNg"],
+    ["isNotifyAutoAddNgUserId", "notifyOnAutoNg"],
+    ["isAutoReload", "autoReload"],
+    ["isUserIdMountedToDropdown", "showUserIdInDropdown"],
+    ["isNgScoreMountedToDropdown", "showScoreInDropdown"],
+    ["isVideoFilterEnabled", "enableVideoFilter"],
+    ["isPaidVideoHidden", "enablePaidFilter"],
+    ["isCommentPreviewHidden", "hideCommentPreview"],
+    ["isViewsFilterEnabled", "enableViewCountFilter"],
+    ["viewsFilterCount", "viewCountFilterThreshold"],
+] satisfies [keyof SettingsV3, keyof Settings][];
+
 export function migrateSettingsToV4(v3: Partial<SettingsV3>) {
     // v3のフィルターでAutoフィルター対象外のものはそのままManualフィルターに結合する
     // Autoフィルター対象の場合は、ルールの中から移行可能なものをAutoフィルターに追加したうえで
@@ -134,7 +160,7 @@ export function migrateSettingsToV4(v3: Partial<SettingsV3>) {
     const ngUserIdResult = migrateNgUserId(v3, autoFilter);
     const ngIdResult = migrateNgId(v3, autoFilter);
 
-    const v4 = {
+    const v4: Record<string, ValueOf<Settings>> = {
         autoFilter,
         manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
 
@@ -194,7 +220,14 @@ ${v3.ngTitle !== undefined && v3.ngTitle !== "" ? v3.ngTitle : "# ここに非�
 
 @end
 `,
-    } satisfies Partial<Settings>;
+    };
+
+    for (const [v3Key, v4Key] of keyMap) {
+        const value = v3[v3Key];
+        if (value !== undefined) {
+            v4[v4Key] = value;
+        }
+    }
 
     return { ...v3, ...v4 };
 }

@@ -4,14 +4,14 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { niconicoVideoSchema } from "./niconico-video.types";
+import { videoSchema } from "./niconico-video.types";
 
 export const searchApiSchema = z.looseObject({
     data: z.looseObject({
         response: z.looseObject({
             $getSearchVideoV2: z.looseObject({
                 data: z.looseObject({
-                    items: z.array(niconicoVideoSchema),
+                    items: z.array(videoSchema),
                 }),
             }),
         }),

@@ -6,10 +6,10 @@
 import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
-import { getSettingsData, storageArea, loadSettings } from "./storage";
+import { getSettings, storageArea, loadSettings } from "./storage";
 import { messages } from "./config";
 import { clearDb } from "./db";
-import { sendNotification, tryWithPermission } from "./browser";
+import { notify, tryWithPermission } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional } from "type-fest";
 
@@ -30,7 +30,7 @@ export async function setSettings(
     value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
     await queue.add(async () => {
-        const settings = await getSettingsData();
+        const settings = await getSettings();
         const newSettings = {
             ...settings,
             ...(typeof value === "function" ? await value() : value),
@@ -78,7 +78,7 @@ export async function removeAutoRule(ids: string[]) {
     await setSettings(transaction);
 }
 
-export async function addNgIdFromUrl(url: string | undefined) {
+export async function addRuleFromUrl(url: string | undefined) {
     const settings = await loadSettings();
 
     const videoId = url?.match(
@@ -93,10 +93,8 @@ export async function addNgIdFromUrl(url: string | undefined) {
             },
         ]);
 
-        if (settings.isNotifyAddNgId) {
-            await sendNotification(
-                `以下の動画IDをNG登録しました\n\n${videoId}`,
-            );
+        if (settings.notifyOnManualNg) {
+            await notify(`以下の動画IDをNG登録しました\n\n${videoId}`);
         }
 
         return;
@@ -114,27 +112,25 @@ export async function addNgIdFromUrl(url: string | undefined) {
             },
         ]);
 
-        if (settings.isNotifyAddNgId) {
-            await sendNotification(
-                `以下のユーザーIDをNG登録しました\n\n${userId}`,
-            );
+        if (settings.notifyOnManualNg) {
+            await notify(`以下のユーザーIDをNG登録しました\n\n${userId}`);
         }
 
         return;
     }
 
-    await sendNotification(messages.ngId.extractionFailed);
+    await notify(messages.ngId.extractionFailed);
 }
 
 export async function importLocalFilter(isManual = false) {
     // 権限があるか確認する前に設定を確認
     // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
     const settings = await loadSettings();
-    if (!isManual && !settings.shouldImportLocalFilterOnLoad) return;
+    if (!isManual && !settings.importLocalFilterOnLoad) return;
 
     await tryWithPermission("nativeMessaging", async () => {
         if (settings.localFilterPath === "") {
-            await sendNotification(messages.settings.pathNotSet);
+            await notify(messages.settings.pathNotSet);
             return;
         }
 
@@ -142,8 +138,7 @@ export async function importLocalFilter(isManual = false) {
             "mico.native",
             {
                 path: settings.localFilterPath,
-                shouldCheckWsl:
-                    !isManual && settings.shouldImportOnlyWhenWslRunning,
+                shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
             },
         )) as { settings?: Partial<Settings> };
 
@@ -152,14 +147,14 @@ export async function importLocalFilter(isManual = false) {
 
         // ファイルが見つからなかった場合
         if (Object.keys(response.settings).length === 0) {
-            await sendNotification(messages.settings.localFileNotFound);
+            await notify(messages.settings.localFileNotFound);
             return;
         }
 
         await setSettings(response.settings);
 
         if (isManual) {
-            await sendNotification(messages.settings.importSuccess);
+            await notify(messages.settings.importSuccess);
         }
     });
 }

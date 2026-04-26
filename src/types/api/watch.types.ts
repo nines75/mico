@@ -3,7 +3,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { niconicoVideoSchema } from "./niconico-video.types";
+import { videoSchema } from "./niconico-video.types";
 
 export const watchApiSchema = z.looseObject({
     data: z.looseObject({
@@ -24,7 +24,7 @@ export const watchApiSchema = z.looseObject({
                 .looseObject({
                     id: z.number().int(),
                     video: z.looseObject({
-                        next: niconicoVideoSchema.nullable(), // シリーズの次の動画がなければnull
+                        next: videoSchema.nullable(), // シリーズの次の動画がなければnull
                     }),
                 })
                 .nullable(), // シリーズに登録されていなければnull

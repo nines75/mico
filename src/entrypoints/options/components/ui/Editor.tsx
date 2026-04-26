@@ -139,8 +139,8 @@ export default function Editor({ value, onChange }: EditorProps) {
         });
 
         return [
-            ...(settings.isCloseBrackets ? [closeBrackets()] : []),
-            ...(settings.isHighlightTrailingWhitespace
+            ...(settings.enableCloseBrackets ? [closeBrackets()] : []),
+            ...(settings.enableHighlightTrailingWhitespace
                 ? [highlightTrailingWhitespace()]
                 : []),
             ...extensions,

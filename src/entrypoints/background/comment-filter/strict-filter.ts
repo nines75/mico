@@ -13,13 +13,13 @@ export interface StrictData {
 }
 
 export abstract class StrictFilter extends RuleFilter {
-    protected ngUserIds: Set<string>;
+    protected userIds: Set<string>;
     protected strictData: StrictData[] = [];
 
     constructor(settings: Settings, target: keyof Rule["target"]) {
         super(settings, target);
 
-        this.ngUserIds = new Set(
+        this.userIds = new Set(
             settings.autoFilter
                 .filter(
                     (rule) =>
@@ -32,10 +32,7 @@ export abstract class StrictFilter extends RuleFilter {
         );
     }
 
-    abstract override filtering(
-        threads: Thread[],
-        isStrictOnly?: boolean,
-    ): void;
+    abstract override apply(threads: Thread[], strictOnly?: boolean): void;
 
     getStrictData() {
         return this.strictData;
@@ -46,7 +43,7 @@ export function getStrictFilters(
     filters: Filters,
 ): ConditionalPick<Filters, StrictFilter> {
     return {
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
+        commandsFilter: filters.commandsFilter,
+        bodyFilter: filters.bodyFilter,
     };
 }

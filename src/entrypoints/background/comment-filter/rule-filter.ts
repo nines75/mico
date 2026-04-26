@@ -3,7 +3,7 @@ import type { ConditionalPick } from "type-fest";
 import { parseFilter } from "../parse-filter";
 import type { Filters } from "./filter-comment";
 import { Filter } from "./filter";
-import type { TabData } from "@/types/storage/tab.types";
+import type { Tab } from "@/types/storage/tab.types";
 import { objectKeys } from "ts-extras";
 import { createRules, type Rule } from "../rule";
 
@@ -26,7 +26,7 @@ export abstract class RuleFilter extends Filter {
         return this.excludeCount;
     }
 
-    filterRules(tab: TabData) {
+    filterRules(tab: Tab) {
         const { videoId, ownerId, seriesId } = tab;
         const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
@@ -66,8 +66,8 @@ export function getRuleFilters(
 ): ConditionalPick<Filters, RuleFilter> {
     return {
         userIdFilter: filters.userIdFilter,
-        commandFilter: filters.commandFilter,
-        wordFilter: filters.wordFilter,
+        commandsFilter: filters.commandsFilter,
+        bodyFilter: filters.bodyFilter,
     };
 }
 

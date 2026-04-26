@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { mockRules, mockToggle, testTabData } from "@/utils/test";
+import { mockRules, mockToggle, testTab } from "@/utils/test";
 import { RuleFilter } from "./rule-filter";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
@@ -13,20 +13,20 @@ class TestFilter extends RuleFilter {
         this.rules = parseFilter(settings).rules;
     }
 
-    override filtering = vi.fn();
+    override apply = vi.fn();
 
     getRule() {
         return this.rules;
     }
 }
 
-function filtering(options: { filter: string; tags?: string[] }) {
+function runFilter(options: { filter: string; tags?: string[] }) {
     const testFilter = new TestFilter({
         ...defaultSettings,
         manualFilter: options.filter,
     });
     testFilter.filterRules({
-        ...testTabData,
+        ...testTab,
         tags: options.tags ?? [],
     });
 
@@ -84,7 +84,7 @@ rule
 @end
 `;
 
-            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
         });
     });
 
@@ -137,7 +137,7 @@ rule
 @end
 @end
 `;
-            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
         });
     });
 
@@ -177,7 +177,7 @@ rule
 rule
 `;
 
-            expect(filtering({ filter, tags }).getRule()).toEqual(expected);
+            expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
         });
     });
 
@@ -215,7 +215,7 @@ rule
 @end
 `;
 
-        expect(filtering({ filter }).getRule()).toEqual(expected);
+        expect(runFilter({ filter }).getRule()).toEqual(expected);
     });
 
     // -------------------------------------------------------------------------------------------
@@ -267,6 +267,6 @@ rule
 @end
 `;
 
-        expect(filtering({ filter }).getRule()).toEqual(expected);
+        expect(runFilter({ filter }).getRule()).toEqual(expected);
     });
 });

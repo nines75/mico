@@ -1,26 +1,26 @@
 import type { Thread } from "@/types/api/comment.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { WordFilter } from "./filter/word-filter";
+import { BodyFilter } from "./filter/word-filter";
 import { UserIdFilter } from "./filter/user-id-filter";
 import { ScoreFilter } from "./filter/score-filter";
-import { CommandFilter } from "./filter/command-filter";
+import { CommandsFilter } from "./filter/command-filter";
 import { CommentAssistFilter } from "./filter/comment-assist-filter";
 import { EasyCommentFilter } from "./filter/easy-comment-filter";
 import { getRuleFilters } from "./rule-filter";
 import type { StrictData } from "./strict-filter";
 import { getStrictFilters } from "./strict-filter";
-import type { TabData } from "@/types/storage/tab.types";
+import type { Tab } from "@/types/storage/tab.types";
 
-export type Filters = FilteredData["filters"];
+export type Filters = FilteringResult["filters"];
 
-export interface FilteredData {
+export interface FilteringResult {
     filters: {
         userIdFilter: UserIdFilter;
         easyCommentFilter: EasyCommentFilter;
         commentAssistFilter: CommentAssistFilter;
         scoreFilter: ScoreFilter;
-        commandFilter: CommandFilter;
-        wordFilter: WordFilter;
+        commandsFilter: CommandsFilter;
+        bodyFilter: BodyFilter;
     };
     loadedCommentCount: number;
     strictData: StrictData[];
@@ -30,9 +30,9 @@ export interface FilteredData {
 export function filterComment(
     threads: Thread[],
     settings: Settings,
-    tab: TabData,
-): FilteredData | undefined {
-    if (!settings.isCommentFilterEnabled) return;
+    tab: Tab,
+): FilteringResult | undefined {
+    if (!settings.enableCommentFilter) return;
 
     // -------------------------------------------------------------------------------------------
     // フィルタリングと関係ない処理
@@ -53,16 +53,16 @@ export function filterComment(
     const easyCommentFilter = new EasyCommentFilter(settings);
     const commentAssistFilter = new CommentAssistFilter(settings);
     const scoreFilter = new ScoreFilter(settings);
-    const commandFilter = new CommandFilter(settings);
-    const wordFilter = new WordFilter(settings);
+    const commandsFilter = new CommandsFilter(settings);
+    const bodyFilter = new BodyFilter(settings);
 
     const filters: Filters = {
         userIdFilter,
         easyCommentFilter,
         commentAssistFilter,
         scoreFilter,
-        commandFilter,
-        wordFilter,
+        commandsFilter,
+        bodyFilter,
     };
     const ruleFilters = getRuleFilters(filters);
     const strictFilters = getStrictFilters(filters);
@@ -78,7 +78,7 @@ export function filterComment(
 
     // strictルールのみでフィルタリング
     for (const filter of Object.values(strictFilters)) {
-        filter.filtering(threads, true);
+        filter.apply(threads, true);
     }
 
     const strictData: StrictData[] = [];
@@ -104,7 +104,7 @@ export function filterComment(
 
     // フィルタリング
     for (const filter of Object.values(filters)) {
-        filter.filtering(threads);
+        filter.apply(threads);
     }
 
     return {

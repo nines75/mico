@@ -1,8 +1,8 @@
 import { Filter } from "../filter";
-import type { NiconicoVideo } from "@/types/api/niconico-video.types";
+import type { Video } from "@/types/api/niconico-video.types";
 import type { Settings } from "@/types/storage/settings.types";
 
-export class ViewsFilter extends Filter {
+export class ViewCountFilter extends Filter {
     private isEnabled: boolean;
 
     constructor(settings: Settings, isEnabled: boolean) {
@@ -11,13 +11,13 @@ export class ViewsFilter extends Filter {
         this.isEnabled = isEnabled;
     }
 
-    override filtering(data: { videos: NiconicoVideo[] }): void {
-        if (!this.isEnabled || !this.settings.isViewsFilterEnabled) return;
+    override apply(data: { videos: Video[] }): void {
+        if (!this.isEnabled || !this.settings.enableViewCountFilter) return;
 
         data.videos = data.videos.filter((video) => {
-            const views = video.count.view;
-            if (views <= this.settings.viewsFilterCount) {
-                this.filteredVideos.push({ video, target: "views" });
+            const view = video.count.view;
+            if (view <= this.settings.viewCountFilterThreshold) {
+                this.filteredVideos.push({ video, target: "view-count" });
 
                 return false;
             }
