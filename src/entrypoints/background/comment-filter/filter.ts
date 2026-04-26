@@ -22,11 +22,11 @@ export abstract class Filter {
     ) {
         for (const thread of threads) {
             thread.comments = thread.comments.filter((comment): boolean => {
-                if (this.settings.isMyCommentIgnored && comment.isMyPost)
+                if (this.settings.ignoreMyComments && comment.isMyPost)
                     return true;
                 if (
-                    this.settings.isIgnoreByNicoru &&
-                    comment.nicoruCount >= this.settings.ignoreByNicoruCount
+                    this.settings.ignoreByNicoru &&
+                    comment.nicoruCount >= this.settings.ignoreByNicoruThreshold
                 )
                     return true;
 

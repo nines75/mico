@@ -54,7 +54,7 @@ describe(CommentAssistFilter.name, () => {
     const runFilter = (options: { settings?: Partial<Settings> }) => {
         const commentAssistFilter = new CommentAssistFilter({
             ...defaultSettings,
-            isCommentAssistFilterEnabled: true,
+            enableCommentAssistFilter: true,
             ...options.settings,
         });
 
@@ -65,7 +65,7 @@ describe(CommentAssistFilter.name, () => {
 
     // -------------------------------------------------------------------------------------------
 
-    describe(`Settings.${"isCommentAssistFilterEnabled" satisfies keyof Settings}`, () => {
+    describe(`Settings.${"enableCommentAssistFilter" satisfies keyof Settings}`, () => {
         it.each([
             {
                 isEnabled: true,
@@ -79,7 +79,7 @@ describe(CommentAssistFilter.name, () => {
             expect(
                 getFilteredIds(
                     runFilter({
-                        settings: { isCommentAssistFilterEnabled: isEnabled },
+                        settings: { enableCommentAssistFilter: isEnabled },
                     }),
                 ),
             ).toEqual(ids);

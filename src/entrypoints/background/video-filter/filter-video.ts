@@ -27,7 +27,7 @@ export function filterVideo(
     settings: Settings,
     forRecommendApi = false,
 ): FilteringResult | undefined {
-    if (!settings.isVideoFilterEnabled) return;
+    if (!settings.enableVideoFilter) return;
 
     const idFilter = new IdFilter(settings);
     const ownerIdFilter = new OwnerIdFilter(settings);
@@ -57,7 +57,7 @@ export function filterVideo(
         ),
     );
 
-    if (settings.isCommentPreviewHidden) {
+    if (settings.hideCommentPreview) {
         for (const video of data.videos) video.latestCommentSummary = "";
     }
 

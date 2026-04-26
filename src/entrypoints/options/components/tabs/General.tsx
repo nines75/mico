@@ -20,7 +20,7 @@ export default function General() {
     const input = useRef<HTMLInputElement | null>(null);
     const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
         useShallow((state) => [
-            state.settings.isAdvancedFeaturesVisible,
+            state.settings.showAdvancedFeatures,
             state.settings.localFilterPath,
             state.saveSettings,
         ]),
@@ -157,11 +157,11 @@ const config = [
         heading: "エディター",
         items: [
             {
-                id: "isCloseBrackets",
+                id: "enableCloseBrackets",
                 label: "括弧を自動で閉じる",
             },
             {
-                id: "isHighlightTrailingWhitespace",
+                id: "enableHighlightTrailingWhitespace",
                 label: "行末の空白文字をハイライトする",
             },
         ],
@@ -171,7 +171,7 @@ const config = [
         hasChildren: true,
         items: [
             {
-                id: "isAdvancedFeaturesVisible",
+                id: "showAdvancedFeatures",
                 label: "高度な機能を表示する",
             },
         ],
@@ -180,11 +180,11 @@ const config = [
 
 const advancedFeaturesConfig = [
     {
-        id: "shouldImportLocalFilterOnLoad",
+        id: "importLocalFilterOnLoad",
         label: "ページ読み込み時にローカルフィルターをインポートする",
         childrenProps: [
             {
-                id: "shouldImportOnlyWhenWslRunning",
+                id: "importOnlyWhenWslRunning",
                 label: "WSL起動時のみインポートする",
             },
         ],

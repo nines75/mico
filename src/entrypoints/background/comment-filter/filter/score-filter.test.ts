@@ -18,8 +18,8 @@ describe(ScoreFilter.name, () => {
     }) => {
         const scoreFilter = new ScoreFilter({
             ...defaultSettings,
-            isScoreFilterEnabled: true,
-            scoreFilterCount: options.score,
+            enableScoreFilter: true,
+            scoreFilterThreshold: options.score,
             ...options.settings,
         });
 
@@ -46,12 +46,12 @@ describe(ScoreFilter.name, () => {
         });
     });
 
-    it(`Settings.${"isScoreFilterEnabled" satisfies keyof Settings}`, () => {
+    it(`Settings.${"enableScoreFilter" satisfies keyof Settings}`, () => {
         expect(
             getFilteredIds(
                 runFilter({
                     score: 0,
-                    settings: { isScoreFilterEnabled: false },
+                    settings: { enableScoreFilter: false },
                 }),
             ),
         ).toEqual([]);

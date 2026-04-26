@@ -3,7 +3,7 @@ import { Filter } from "../filter";
 
 export class EasyCommentFilter extends Filter {
     override apply(threads: Thread[]): void {
-        if (!this.settings.isEasyCommentHidden) return;
+        if (!this.settings.enableEasyCommentFilter) return;
 
         this.traverseThreads(threads, (comment, thread) => {
             if (thread.fork === "easy") {

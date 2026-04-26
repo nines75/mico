@@ -38,9 +38,9 @@ it(saveLog.name, () => {
     const threads = structuredClone(testThreads);
     const settings = {
         ...defaultSettings,
-        isEasyCommentHidden: true,
-        isScoreFilterEnabled: true,
-        scoreFilterCount: -1001,
+        enableEasyCommentFilter: true,
+        enableScoreFilter: true,
+        scoreFilterThreshold: -1001,
         manualFilter: `
 @comment-user-id
 user-id-owner

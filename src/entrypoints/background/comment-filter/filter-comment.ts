@@ -32,7 +32,7 @@ export function filterComment(
     settings: Settings,
     tab: Tab,
 ): FilteringResult | undefined {
-    if (!settings.isCommentFilterEnabled) return;
+    if (!settings.enableCommentFilter) return;
 
     // -------------------------------------------------------------------------------------------
     // フィルタリングと関係ない処理

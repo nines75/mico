@@ -15,7 +15,7 @@ describe(EasyCommentFilter.name, () => {
     const runFilter = (options: { settings?: Partial<Settings> }) => {
         const easyCommentFilter = new EasyCommentFilter({
             ...defaultSettings,
-            isEasyCommentHidden: true,
+            enableEasyCommentFilter: true,
             ...options.settings,
         });
 
@@ -26,7 +26,7 @@ describe(EasyCommentFilter.name, () => {
 
     // -------------------------------------------------------------------------------------------
 
-    describe(`Settings.${"isEasyCommentHidden" satisfies keyof Settings}`, () => {
+    describe(`Settings.${"enableEasyCommentFilter" satisfies keyof Settings}`, () => {
         it.each([
             {
                 isEnabled: true,
@@ -40,7 +40,7 @@ describe(EasyCommentFilter.name, () => {
             expect(
                 getFilteredIds(
                     runFilter({
-                        settings: { isEasyCommentHidden: isEnabled },
+                        settings: { enableEasyCommentFilter: isEnabled },
                     }),
                 ),
             ).toEqual(ids);

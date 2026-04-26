@@ -12,11 +12,11 @@ export class ViewCountFilter extends Filter {
     }
 
     override apply(data: { videos: Video[] }): void {
-        if (!this.isEnabled || !this.settings.isViewsFilterEnabled) return;
+        if (!this.isEnabled || !this.settings.enableViewCountFilter) return;
 
         data.videos = data.videos.filter((video) => {
             const view = video.count.view;
-            if (view <= this.settings.viewsFilterCount) {
+            if (view <= this.settings.viewCountFilterThreshold) {
                 this.filteredVideos.push({ video, target: "view-count" });
 
                 return false;

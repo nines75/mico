@@ -11,7 +11,7 @@ const RELEASE_DATE = new Date("2025-02-26T00:00:00+09:00");
 
 export class CommentAssistFilter extends Filter {
     override apply(threads: Thread[]): void {
-        if (!this.settings.isCommentAssistFilterEnabled) return;
+        if (!this.settings.enableCommentAssistFilter) return;
 
         this.traverseThreads(threads, (comment, thread) => {
             if (thread.fork === "owner") return true;

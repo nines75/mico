@@ -149,10 +149,9 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
 
     const settings = await loadSettings();
     const texts: string[] = [];
-    if (settings.isUserIdMountedToDropdown)
+    if (settings.showUserIdInDropdown)
         texts.push(`ユーザーID：${comment.userId}`);
-    if (settings.isNgScoreMountedToDropdown)
-        texts.push(`NGスコア：${comment.score}`);
+    if (settings.showScoreInDropdown) texts.push(`NGスコア：${comment.score}`);
 
     if (texts.length > 0) {
         await sendMessageToContent(tabId, {
@@ -187,9 +186,9 @@ async function onClickDropdown(
     ]);
 
     const tasks: Promise<unknown>[] = [];
-    if (settings.isAutoReload)
+    if (settings.autoReload)
         tasks.push(sendMessageToContent(tabId, { type: "reload" }));
-    if (settings.isNotifyAddNgUserId)
+    if (settings.notifyOnManualNg)
         tasks.push(notify(messages.ngUserId.additionSuccess));
 
     await Promise.all(tasks);

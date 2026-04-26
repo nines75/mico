@@ -22,7 +22,7 @@ describe(filterComment.name, () => {
             threads,
             {
                 ...defaultSettings,
-                scoreFilterCount: -1001,
+                scoreFilterThreshold: -1001,
                 manualFilter: `
 @comment-user-id
 user-id-owner
@@ -102,23 +102,23 @@ device:switch
         checkComment(threads, ["1003", "1004"]);
     });
 
-    it(`Settings.${"isCommentFilterEnabled" satisfies keyof Settings}`, () => {
-        runFilter({ isCommentFilterEnabled: false });
+    it(`Settings.${"enableCommentFilter" satisfies keyof Settings}`, () => {
+        runFilter({ enableCommentFilter: false });
 
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isMyCommentIgnored" satisfies keyof Settings}`, () => {
+    it(`Settings.${"ignoreMyComments" satisfies keyof Settings}`, () => {
         for (const thread of threads) {
             for (const comment of thread.comments) comment.isMyPost = true;
         }
-        runFilter({ isMyCommentIgnored: true });
+        runFilter({ ignoreMyComments: true });
 
         checkComment(threads, []);
     });
 
-    it(`Settings.${"isIgnoreByNicoru" satisfies keyof Settings}`, () => {
-        runFilter({ isIgnoreByNicoru: true });
+    it(`Settings.${"ignoreByNicoru" satisfies keyof Settings}`, () => {
+        runFilter({ ignoreByNicoru: true });
 
         checkComment(threads, ["1000", "1001", "1002"]);
     });

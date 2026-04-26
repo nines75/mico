@@ -17,7 +17,7 @@ const config = [
     {
         items: [
             {
-                id: "isCommentFilterEnabled",
+                id: "enableCommentFilter",
                 label: "コメントフィルターを有効にする",
             },
         ],
@@ -26,31 +26,31 @@ const config = [
         heading: "フィルタリング",
         items: [
             {
-                id: "isEasyCommentHidden",
+                id: "enableEasyCommentFilter",
                 label: "かんたんコメントを非表示にする",
             },
             {
-                id: "isCommentAssistFilterEnabled",
+                id: "enableCommentAssistFilter",
                 label: "コメントアシストによって投稿されたコメントを非表示にする",
             },
             {
-                id: "isScoreFilterEnabled",
+                id: "enableScoreFilter",
                 label: "NGスコアによるフィルタリングを有効にする",
                 input: {
-                    id: "scoreFilterCount",
+                    id: "scoreFilterThreshold",
                     label: "以下の場合にフィルタリング",
                     max: 0,
                 },
             },
             {
-                id: "isMyCommentIgnored",
+                id: "ignoreMyComments",
                 label: "自分が投稿したコメントをフィルタリングの対象外にする",
             },
             {
-                id: "isIgnoreByNicoru",
+                id: "ignoreByNicoru",
                 label: "ニコるの数に応じてフィルタリングの対象外にする",
                 input: {
-                    id: "ignoreByNicoruCount",
+                    id: "ignoreByNicoruThreshold",
                     label: "回以上ニコられていた場合に除外",
                     min: 0,
                 },
@@ -61,12 +61,12 @@ const config = [
         heading: "通知",
         items: [
             {
-                id: "isNotifyAddNgUserId",
-                label: "NGユーザーIDの手動登録時に通知する",
+                id: "notifyOnManualNg",
+                label: "手動でNG登録した際に通知する",
             },
             {
-                id: "isNotifyAutoAddNgUserId",
-                label: "NGユーザーIDの自動登録時に通知する",
+                id: "notifyOnAutoNg",
+                label: "自動でNG登録した際に通知する",
             },
         ],
     },
@@ -74,15 +74,15 @@ const config = [
         heading: "ドロップダウン",
         items: [
             {
-                id: "isUserIdMountedToDropdown",
+                id: "showUserIdInDropdown",
                 label: "ユーザーIDを表示する",
             },
             {
-                id: "isNgScoreMountedToDropdown",
+                id: "showScoreInDropdown",
                 label: "NGスコアを表示する",
             },
             {
-                id: "isAutoReload",
+                id: "autoReload",
                 label: "自動リロードを有効にする",
                 details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
                     読み込み後、リロードする前の再生時間が自動で再設定されます。`,

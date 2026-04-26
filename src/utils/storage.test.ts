@@ -12,8 +12,8 @@ describe(loadSettings.name, () => {
         },
         {
             name: "設定あり",
-            settings: { isCommentFilterEnabled: false },
-            expected: { ...defaultSettings, isCommentFilterEnabled: false },
+            settings: { enableCommentFilter: false },
+            expected: { ...defaultSettings, enableCommentFilter: false },
         },
     ] satisfies {
         name: string;

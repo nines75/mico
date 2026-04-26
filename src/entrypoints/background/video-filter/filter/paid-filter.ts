@@ -3,7 +3,7 @@ import type { Video } from "@/types/api/niconico-video.types";
 
 export class PaidFilter extends Filter {
     override apply(data: { videos: Video[] }): void {
-        if (!this.settings.isPaidVideoHidden) return;
+        if (!this.settings.enablePaidFilter) return;
 
         data.videos = data.videos.filter((video) => {
             if (video.isPaymentRequired) {

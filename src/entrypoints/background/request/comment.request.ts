@@ -51,7 +51,7 @@ export default function commentRequest(
         tasks.push(saveLog(result, logId, tabId));
 
         // 通知を送信
-        if (strictData.length > 0 && settings.isNotifyAutoAddNgUserId) {
+        if (strictData.length > 0 && settings.notifyOnAutoNg) {
             tasks.push(
                 notify(
                     replace(messages.ngUserId.notifyAddition, [

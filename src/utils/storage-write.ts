@@ -93,7 +93,7 @@ export async function addRuleFromUrl(url: string | undefined) {
             },
         ]);
 
-        if (settings.isNotifyAddNgId) {
+        if (settings.notifyOnManualNg) {
             await notify(`以下の動画IDをNG登録しました\n\n${videoId}`);
         }
 
@@ -112,7 +112,7 @@ export async function addRuleFromUrl(url: string | undefined) {
             },
         ]);
 
-        if (settings.isNotifyAddNgId) {
+        if (settings.notifyOnManualNg) {
             await notify(`以下のユーザーIDをNG登録しました\n\n${userId}`);
         }
 
@@ -126,7 +126,7 @@ export async function importLocalFilter(isManual = false) {
     // 権限があるか確認する前に設定を確認
     // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
     const settings = await loadSettings();
-    if (!isManual && !settings.shouldImportLocalFilterOnLoad) return;
+    if (!isManual && !settings.importLocalFilterOnLoad) return;
 
     await tryWithPermission("nativeMessaging", async () => {
         if (settings.localFilterPath === "") {
@@ -138,8 +138,7 @@ export async function importLocalFilter(isManual = false) {
             "mico.native",
             {
                 path: settings.localFilterPath,
-                shouldCheckWsl:
-                    !isManual && settings.shouldImportOnlyWhenWslRunning,
+                shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
             },
         )) as { settings?: Partial<Settings> };
 
