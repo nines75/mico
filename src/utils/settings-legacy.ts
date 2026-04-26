@@ -236,9 +236,10 @@ function migrateNgUserId(
     v3: Partial<SettingsV3>,
     autoFilter: Except<AutoRule, "source">[],
 ) {
-    const lines = (v3.ngUserId ?? "").split("\n");
+    const ngUserId = migrateVAlias(v3.ngUserId ?? "");
+    const lines = ngUserId.split("\n");
     const rules = parseFilter(
-        { ...defaultSettings, manualFilter: migrateVAlias(v3.ngUserId ?? "") },
+        { ...defaultSettings, manualFilter: ngUserId },
         true,
     ).rules;
 
