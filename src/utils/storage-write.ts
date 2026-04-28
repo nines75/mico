@@ -9,7 +9,7 @@ import PQueue from "p-queue";
 import { getSettings, storageArea, loadSettings } from "./storage";
 import { messages } from "./config";
 import { clearDb } from "./db";
-import { notify, tryWithPermission } from "./browser";
+import { hasPermission, notify, tryWithPermission } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional } from "type-fest";
 
@@ -123,9 +123,14 @@ export async function addRuleFromUrl(url: string | undefined) {
 }
 
 export async function importLocalFilter(isManual = false) {
+  // 不要な設定のロードを避けるため最初に権限を確認
+  if (!(await hasPermission("nativeMessaging"))) return;
+
+  // この関数は設定を更新するため、呼び出し元でロードした設定を流用できない
+  const settings = await loadSettings();
+
   // 権限があるか確認する前に設定を確認
   // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
-  const settings = await loadSettings();
   if (!isManual && !settings.importLocalFilterOnLoad) return;
 
   await tryWithPermission("nativeMessaging", async () => {

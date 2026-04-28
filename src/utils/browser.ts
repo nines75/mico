@@ -46,15 +46,19 @@ export async function notify(message: string) {
   });
 }
 
+export async function hasPermission(
+  permission: Browser.runtime.ManifestPermission,
+) {
+  return await browser.permissions.contains({
+    permissions: [permission],
+  });
+}
+
 export async function tryWithPermission(
   permission: Browser.runtime.ManifestPermission,
   callback: () => void | Promise<void>,
 ) {
-  const hasPermission = await browser.permissions.contains({
-    permissions: [permission],
-  });
-
-  await (hasPermission
+  await ((await hasPermission(permission))
     ? callback()
     : notify(replace(messages.other.permissionRequired, [permission])));
 }
