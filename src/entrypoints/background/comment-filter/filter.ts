@@ -1,4 +1,5 @@
-import type { Comment, Thread } from "@/types/api/comment-api.types";
+import type { Thread } from "@/types/api/comment-api.types";
+import type { Comment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Settings } from "@/types/storage/settings.types";
 

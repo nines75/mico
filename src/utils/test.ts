@@ -6,7 +6,8 @@ import {
   createDefaultToggle,
   type Rule,
 } from "@/entrypoints/background/rule";
-import type { Comment, Thread } from "@/types/api/comment-api.types";
+import type { Thread } from "@/types/api/comment-api.types";
+import type { Comment } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 

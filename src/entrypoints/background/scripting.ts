@@ -1,4 +1,4 @@
-import { commentSchema } from "@/types/api/comment-api.types";
+import { commentSchema } from "@/types/api/comment.types";
 
 type Fiber = Record<
   string,

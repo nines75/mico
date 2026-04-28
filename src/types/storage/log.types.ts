@@ -1,4 +1,5 @@
-import type { RenderedComment, Comment } from "../api/comment-api.types";
+import type { RenderedComment } from "../api/comment-api.types";
+import type { Comment } from "../api/comment.types";
 import type { Video } from "../api/video.types";
 import type { Tab } from "./tab.types";
 

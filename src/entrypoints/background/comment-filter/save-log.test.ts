@@ -6,7 +6,7 @@ import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
 import { createCountLog, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
-import type { Comment } from "@/types/api/comment-api.types";
+import type { Comment } from "@/types/api/comment.types";
 import type { FilteredComment, Log } from "@/types/storage/log.types";
 
 beforeAll(() => {
