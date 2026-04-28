@@ -11,7 +11,7 @@ import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
-import { sendMessageToBackground } from "@/utils/browser";
+import { notify, sendMessageToBackground } from "@/utils/browser";
 import { objectKeys } from "ts-extras";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
@@ -101,15 +101,22 @@ async function importBackup(
   const keys = Object.keys(defaultSettings);
 
   // defaultSettingsに存在するキーのみを抽出
+  let importedCount = 0;
   for (const key of objectKeys(backup.settings)) {
     if (keys.includes(key)) {
       const value = backup.settings[key];
 
-      if (value !== undefined) newSettings[key] = value;
+      if (value !== undefined) {
+        newSettings[key] = value;
+        importedCount++;
+      }
     }
   }
 
   saveSettings(newSettings);
+
+  const totalCount = Object.keys(backup.settings).length;
+  await notify(`${totalCount}件中${importedCount}件の設定をインポートしました`);
 }
 
 async function exportBackup() {
