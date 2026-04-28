@@ -14,7 +14,7 @@ export class CommentAssistFilter extends Filter {
     if (!this.settings.enableCommentAssistFilter) return;
 
     this.traverseThreads(threads, (comment, thread) => {
-      if (thread.fork === "owner" || thread.fork === "ai") return true;
+      if (thread.fork !== "main") return true;
 
       const { commands, postedAt } = comment;
 
