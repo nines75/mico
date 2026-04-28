@@ -1,8 +1,7 @@
 import { filterComment } from "../comment-filter/filter-comment";
 import { saveLog } from "../comment-filter/save-log";
-import { messages } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
-import { isWatchPage, replace } from "@/utils/util";
+import { isWatchPage } from "@/utils/util";
 import { filterResponse } from "./request";
 import { addAutoRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment-api.types";
@@ -52,13 +51,7 @@ export default function commentRequest(
 
     // 通知を送信
     if (strictData.length > 0 && settings.notifyOnAutoNg) {
-      tasks.push(
-        notify(
-          replace(messages.ngUserId.notifyAddition, [
-            strictData.length.toString(),
-          ]),
-        ),
-      );
+      tasks.push(notify(`${strictData.length}件のユーザーIDをNG登録しました`));
     }
 
     // strictルールによってフィルタリングされたユーザーIDをNG登録

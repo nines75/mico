@@ -1,6 +1,5 @@
 import type { FilteringResult } from "./filter-video";
 import { sum } from "@/utils/util";
-import { colors } from "@/utils/config";
 import { mergeCount, setLog } from "@/utils/db";
 import { setBadgeState } from "@/utils/browser";
 import type { Count, Log } from "@/types/storage/log.types";
@@ -25,9 +24,7 @@ export async function saveLog(
       logId,
       tabId,
     ),
-    ...(setBadge
-      ? [setBadgeState(count.blockedVideo, colors.videoBadge, tabId)]
-      : []),
+    ...(setBadge ? [setBadgeState(count.blockedVideo, "video", tabId)] : []),
   ]);
 }
 

@@ -1,4 +1,3 @@
-import { colors, messages } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
 import type { Settings } from "@/types/storage/settings.types";
 import {
@@ -168,7 +167,7 @@ async function onClickDropdown(
   const tabId = sender.tab?.id;
   const comment = await getDropdownComment(sender);
   if (tabId === undefined || comment?.$videoId === undefined) {
-    await notify(messages.ngUserId.additionFailed);
+    await notify("NG登録に失敗しました");
     return;
   }
 
@@ -189,7 +188,7 @@ async function onClickDropdown(
   if (settings.autoReload)
     tasks.push(sendMessageToContent(tabId, { type: "reload" }));
   if (settings.notifyOnManualNg && !settings.autoReload)
-    tasks.push(notify(messages.ngUserId.additionSuccess));
+    tasks.push(notify(`以下のユーザーIDをNG登録しました\n\n${comment.userId}`));
 
   await Promise.all(tasks);
 }
@@ -226,5 +225,5 @@ async function restoreBadge(sender: browser.runtime.MessageSender) {
   const count = log?.count?.blockedVideo;
   if (count === undefined) return;
 
-  await setBadgeState(count, colors.videoBadge, tabId);
+  await setBadgeState(count, "video", tabId);
 }

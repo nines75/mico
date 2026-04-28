@@ -1,8 +1,6 @@
 import type { Browser } from "#imports";
 import type { BackgroundMessage } from "@/entrypoints/background/message";
 import type { ContentMessage } from "@/entrypoints/content/message";
-import { replace } from "./util";
-import { messages } from "./config";
 
 export async function sendMessageToBackground(
   message: BackgroundMessage,
@@ -19,7 +17,7 @@ export async function sendMessageToContent(
 
 export async function setBadgeState(
   value: number,
-  color: string,
+  target: "comment" | "video",
   tabId: number,
 ) {
   const text = (() => {
@@ -29,6 +27,16 @@ export async function setBadgeState(
     }
 
     return value.toString();
+  })();
+  const color = (() => {
+    switch (target) {
+      case "comment": {
+        return "#b22222";
+      }
+      case "video": {
+        return "#00ffff";
+      }
+    }
   })();
 
   await Promise.all([
@@ -60,7 +68,7 @@ export async function tryWithPermission(
 ) {
   await ((await hasPermission(permission))
     ? callback()
-    : notify(replace(messages.other.permissionRequired, [permission])));
+    : notify(`以下の権限が必要です\n\n${permission}`));
 }
 
 export async function getActiveTab() {

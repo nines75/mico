@@ -1,4 +1,4 @@
-import { defaultSettings, messages } from "@/utils/config";
+import { defaultSettings } from "@/utils/config";
 import H2 from "../ui/H2";
 import { useStorageStore } from "@/utils/store";
 import type { Backup } from "@/types/storage/backup.types";
@@ -139,7 +139,12 @@ async function exportBackup() {
 }
 
 async function reset() {
-  if (!confirm(messages.settings.confirmReset)) return;
+  if (
+    !confirm(
+      "ストレージに保存されている全てのデータを削除します。\nこの操作により、設定やログがリセットされます。",
+    )
+  )
+    return;
 
   await sendMessageToBackground({
     type: "remove-all-data",

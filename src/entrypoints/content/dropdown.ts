@@ -1,5 +1,4 @@
 import { sendMessageToBackground } from "@/utils/browser";
-import { buttons, messages } from "@/utils/config";
 import { catchAsync, replace } from "@/utils/util";
 
 interface DropdownContent {
@@ -13,7 +12,7 @@ export async function mountToDropdown(element: Element) {
 
   appendButton(dropdownContent, [
     {
-      text: buttons.addNgUserId,
+      text: "ユーザーをNG登録($1)",
       callback: async () => {
         await sendMessageToBackground({
           type: "on-click-dropdown",
@@ -22,7 +21,7 @@ export async function mountToDropdown(element: Element) {
       },
     },
     {
-      text: buttons.addSpecificNgUserId,
+      text: "この動画だけユーザーをNG登録($1)",
       callback: async () => {
         await sendMessageToBackground({
           type: "on-click-dropdown",
@@ -31,7 +30,7 @@ export async function mountToDropdown(element: Element) {
       },
     },
     {
-      text: buttons.showComments,
+      text: "ユーザーが投稿したコメント($1)",
       callback: async () => {
         const comments = (await sendMessageToBackground({
           type: "get-comments-for-dropdown",
@@ -39,7 +38,7 @@ export async function mountToDropdown(element: Element) {
         if (comments === undefined) {
           await sendMessageToBackground({
             type: "notify",
-            data: messages.other.getCommentFailed,
+            data: "コメントの取得に失敗しました",
           });
           return;
         }

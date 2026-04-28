@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
-import { messages, urls, titles } from "@/utils/config";
 import { useStorageStore } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
@@ -29,7 +28,7 @@ function Page() {
       <header>
         <span id="version">{`${name} ${version}`}</span>
         <div className="link-container">
-          <a className="link" href={urls.repository}>
+          <a className="link" href="https://github.com/nines75/mico">
             <SiGithub size={24} />
           </a>
           <button
@@ -57,14 +56,14 @@ function Page() {
             <div className="ng-button-container">
               <button
                 className="ng-button"
-                title={titles.addNgVideo}
+                title="クリックしてこの動画をNG登録"
                 onClick={catchAsync(onClickNgVideo)}
               >
                 <ScreenShareOff size={28} />
               </button>
               <button
                 className="ng-button"
-                title={titles.addNgUserIdByVideo}
+                title="クリックしてこの動画の投稿者をNG登録"
                 onClick={catchAsync(onClickNgOwner)}
               >
                 <UserX size={28} />
@@ -83,7 +82,7 @@ async function onClickNgVideo() {
   const title = useStorageStore.getState().log?.tab?.title;
 
   if (videoId === undefined || title === undefined) {
-    alert(messages.ngVideoId.getInfoFailed);
+    alert("NG登録に失敗しました");
     return;
   }
 
@@ -98,7 +97,7 @@ async function onClickNgVideo() {
       },
     ],
   });
-  await notify(`以下の動画をNG登録しました\n\n${videoId} (${title})`);
+  await notify(`以下の動画IDをNG登録しました\n\n${videoId} (${title})`);
 }
 
 async function onClickNgOwner() {
@@ -107,7 +106,7 @@ async function onClickNgOwner() {
 
   // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
   if (ownerId === undefined || ownerName === undefined) {
-    alert(messages.ngUserId.getInfoFailed);
+    alert("NG登録に失敗しました");
     return;
   }
 
@@ -122,5 +121,5 @@ async function onClickNgOwner() {
       },
     ],
   });
-  await notify(`以下のユーザーをNG登録しました\n\n${ownerId} (${ownerName})`);
+  await notify(`以下のユーザーIDをNG登録しました\n\n${ownerId} (${ownerName})`);
 }

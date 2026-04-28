@@ -1,6 +1,5 @@
 import type { FilteringResult } from "./filter-comment";
 import { sum } from "@/utils/util";
-import { colors } from "@/utils/config";
 import { mergeCount, setLog } from "@/utils/db";
 import type { ConditionalKeys } from "type-fest";
 import type { RuleFilter } from "./rule-filter";
@@ -27,7 +26,7 @@ export async function saveLog(
       logId,
       tabId,
     ),
-    setBadgeState(count.blockedComment, colors.commentBadge, tabId),
+    setBadgeState(count.blockedComment, "comment", tabId),
   ]);
 }
 

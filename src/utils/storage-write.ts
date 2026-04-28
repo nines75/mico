@@ -7,7 +7,6 @@ import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
 import { getSettings, storageArea, loadSettings } from "./storage";
-import { messages } from "./config";
 import { clearDb } from "./db";
 import { hasPermission, notify, tryWithPermission } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
@@ -119,7 +118,7 @@ export async function addRuleFromUrl(url: string | undefined) {
     return;
   }
 
-  await notify(messages.ngId.extractionFailed);
+  await notify("NG登録に失敗しました");
 }
 
 export async function importLocalFilter(isManual = false) {
@@ -135,7 +134,7 @@ export async function importLocalFilter(isManual = false) {
 
   await tryWithPermission("nativeMessaging", async () => {
     if (settings.localFilterPath === "") {
-      await notify(messages.settings.pathNotSet);
+      await notify("パスが設定されていません");
       return;
     }
 
@@ -149,14 +148,14 @@ export async function importLocalFilter(isManual = false) {
 
     // ファイルが見つからなかった場合
     if (Object.keys(response.settings).length === 0) {
-      await notify(messages.settings.localFileNotFound);
+      await notify("ローカルフィルターが見つかりませんでした");
       return;
     }
 
     await setSettings(response.settings);
 
     if (isManual) {
-      await notify(messages.settings.importSuccess);
+      await notify("ローカルフィルターをインポートしました");
     }
   });
 }
