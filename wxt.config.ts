@@ -124,6 +124,9 @@ export default defineConfig({
       browser_specific_settings: {
         gecko: {
           id: "{d70b3441-5892-45aa-b214-4c67086a623f}",
+          data_collection_permissions: {
+            required: ["none"],
+          },
         },
       },
     };
