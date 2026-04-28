@@ -1,6 +1,6 @@
 import { isString } from "@/utils/util";
 import type { Video } from "@/types/api/video.types";
-import { RuleFilter } from "../rule-filter";
+import { RuleFilter } from "./rule-filter";
 
 export abstract class ExactFilter extends RuleFilter {
   protected abstract pickTarget(video: Video): string;
