@@ -53,7 +53,7 @@ export async function setLog(
         const log = merge(
             logDb?.log,
             typeof value === "function" ? await value() : value,
-        ) as Log;
+        );
 
         await db.log.put({ id, tabId, log });
     });

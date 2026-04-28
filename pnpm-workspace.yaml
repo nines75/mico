@@ -8,3 +8,7 @@ minimumReleaseAge: 4320 # 3日
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 144000 # 100日
 engineStrict: true
+overrides:
+  # 1.1.5は、1.1.3と内容は同じだが署名されていないので一時的に固定
+  # https://github.com/aklinker1/webext-core/releases/tag/isolated-element-v1.1.5
+  "@webext-core/isolated-element": "1.1.3"
