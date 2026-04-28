@@ -20,13 +20,15 @@ export const commentSchema = z.looseObject({
 
   isPremium: z.boolean(),
   isMyPost: z.boolean(),
-
-  source: z.literal(["trunk", "leaf", "nicoru"]),
 });
 export type Comment = z.infer<typeof commentSchema>;
 
 const threadSchema = z.looseObject({
-  fork: z.literal(["owner", "main", "easy", "ai"]),
+  // 値が追加されてもエラーにならないようにz.string()とのユニオン型にする
+  fork: z.union([
+    z.literal(["owner", "main", "easy", "ai"]),
+    z.string() as z.ZodType<string & {}>, // アサーションしないとリテラル型が吸われる
+  ]),
   commentCount: z.number().int(),
   comments: z.array(commentSchema),
 });

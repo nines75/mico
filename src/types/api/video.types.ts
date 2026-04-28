@@ -14,7 +14,6 @@ export const videoSchema = z.looseObject({
   owner: z.looseObject({
     id: z.string(),
     name: z.string().nullable(), // ユーザーが退会済みならnull
-    visibility: z.literal(["visible", "hidden"]),
   }),
 });
 

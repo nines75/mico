@@ -24,7 +24,6 @@ export function mockComments(...comments: Partial<Comment>[]): Comment[] {
       nicoruId: null,
       postedAt: "2025-05-07T15:00:00+09:00",
       score: 0,
-      source: "trunk",
       userId: "user-id-owner",
       ...comment,
     };
