@@ -1,5 +1,5 @@
 import type { RenderedComment } from "../api/comment-api.types";
-import type { Comment } from "../api/comment.types";
+import type { NvComment } from "../api/comment.types";
 import type { Video } from "../api/video.types";
 import type { Tab } from "./tab.types";
 
@@ -22,7 +22,7 @@ export interface Log {
 export interface FilteredComment {
   ruleId?: string;
   pattern?: string | RegExp;
-  comment: Comment;
+  comment: NvComment;
   target:
     | "user-id"
     | "easy-comment"

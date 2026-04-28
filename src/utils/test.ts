@@ -7,11 +7,11 @@ import {
   type Rule,
 } from "@/entrypoints/background/rule";
 import type { Thread } from "@/types/api/comment-api.types";
-import type { Comment } from "@/types/api/comment.types";
+import type { NvComment } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
 import { expect } from "vitest";
 
-export function mockComments(...comments: Partial<Comment>[]): Comment[] {
+export function mockComments(...comments: Partial<NvComment>[]): NvComment[] {
   return comments.map((comment) => {
     return {
       id: "1000",

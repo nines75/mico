@@ -18,4 +18,5 @@ export const commentSchema = z.looseObject({
   isMyPost: z.boolean(),
 });
 
-export type Comment = z.infer<typeof commentSchema>;
+// CommentはDOM APIと名前が衝突するためプレフィックスを付ける
+export type NvComment = z.infer<typeof commentSchema>;

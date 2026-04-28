@@ -6,7 +6,7 @@ import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
 import { createCountLog, createCommentLog, saveLog } from "./save-log";
 import * as util from "@/utils/browser";
-import type { Comment } from "@/types/api/comment.types";
+import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment, Log } from "@/types/storage/log.types";
 
 beforeAll(() => {
@@ -71,7 +71,7 @@ function getComments(
       target,
       comment: testThreads
         .flatMap((thread) => thread.comments)
-        .find((comment) => comment.id === id) as Comment,
+        .find((comment) => comment.id === id) as NvComment,
       ...(pattern !== undefined && { pattern }),
     };
   });
