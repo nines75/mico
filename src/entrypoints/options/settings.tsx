@@ -10,86 +10,85 @@ import type { SettingsTab } from "@/types/storage/settings.types";
 import FilterArea from "./components/ui/FilterArea";
 
 export function Init() {
-    const isLoading = useStorageStore((state) => state.isLoading);
+  const isLoading = useStorageStore((state) => state.isLoading);
 
-    useEffect(() => {
-        useStorageStore.getState().loadSettings();
-    }, []);
+  useEffect(() => {
+    useStorageStore.getState().loadSettings();
+  }, []);
 
-    if (isLoading) return null;
+  if (isLoading) return null;
 
-    return <Page />;
+  return <Page />;
 }
 
 function Page() {
-    const [selectedTab, save] = useStorageStore(
-        useShallow((state) => [
-            state.settings.selectedSettingsTab,
-            state.saveSettings,
-        ]),
-    );
+  const [selectedTab, save] = useStorageStore(
+    useShallow((state) => [
+      state.settings.selectedSettingsTab,
+      state.saveSettings,
+    ]),
+  );
 
-    useEffect(() => {
-        browser.storage.onChanged.addListener(settingsChangeHandler);
+  useEffect(() => {
+    browser.storage.onChanged.addListener(settingsChangeHandler);
 
-        return () => {
-            browser.storage.onChanged.removeListener(settingsChangeHandler);
-        };
-    }, []);
+    return () => {
+      browser.storage.onChanged.removeListener(settingsChangeHandler);
+    };
+  }, []);
 
-    return (
-        <>
-            <span className="v7-message">
-                v7に更新されました。
-                <a
-                    href="https://github.com/nines75/mico/releases/tag/v7.0.0"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    リリースノート
-                </a>
-                を確認することをお勧めします。
-            </span>
-            <div className="tab-container">
-                <div className="tab-inner">
-                    {config.map((filter) => (
-                        <button
-                            key={filter.id}
-                            className={clsx(
-                                "tab-button",
-                                selectedTab === filter.id &&
-                                    "selected-tab-button",
-                            )}
-                            onClick={() => {
-                                save({ selectedSettingsTab: filter.id });
-                            }}
-                        >
-                            <span>{filter.name}</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-            {(() => {
-                switch (selectedTab) {
-                    case "general": {
-                        return <General />;
-                    }
-                    case "filter": {
-                        return <FilterArea />;
-                    }
-                    case "commentFilter": {
-                        return <CommentFilter />;
-                    }
-                    case "videoFilter": {
-                        return <VideoFilter />;
-                    }
-                    case "support": {
-                        return <Support />;
-                    }
-                }
-            })()}
-        </>
-    );
+  return (
+    <>
+      <span className="v7-message">
+        v7に更新されました。
+        <a
+          href="https://github.com/nines75/mico/releases/tag/v7.0.0"
+          target="_blank"
+          rel="noreferrer"
+        >
+          リリースノート
+        </a>
+        を確認することをお勧めします。
+      </span>
+      <div className="tab-container">
+        <div className="tab-inner">
+          {config.map((filter) => (
+            <button
+              key={filter.id}
+              className={clsx(
+                "tab-button",
+                selectedTab === filter.id && "selected-tab-button",
+              )}
+              onClick={() => {
+                save({ selectedSettingsTab: filter.id });
+              }}
+            >
+              <span>{filter.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {(() => {
+        switch (selectedTab) {
+          case "general": {
+            return <General />;
+          }
+          case "filter": {
+            return <FilterArea />;
+          }
+          case "commentFilter": {
+            return <CommentFilter />;
+          }
+          case "videoFilter": {
+            return <VideoFilter />;
+          }
+          case "support": {
+            return <Support />;
+          }
+        }
+      })()}
+    </>
+  );
 }
 
 // -------------------------------------------------------------------------------------------
@@ -97,27 +96,27 @@ function Page() {
 // -------------------------------------------------------------------------------------------
 
 const config = [
-    {
-        id: "general",
-        name: "一般設定",
-    },
-    {
-        id: "filter",
-        name: "フィルター",
-    },
-    {
-        id: "commentFilter",
-        name: "コメントフィルター",
-    },
-    {
-        id: "videoFilter",
-        name: "動画フィルター",
-    },
-    {
-        id: "support",
-        name: "サポート",
-    },
+  {
+    id: "general",
+    name: "一般設定",
+  },
+  {
+    id: "filter",
+    name: "フィルター",
+  },
+  {
+    id: "commentFilter",
+    name: "コメントフィルター",
+  },
+  {
+    id: "videoFilter",
+    name: "動画フィルター",
+  },
+  {
+    id: "support",
+    name: "サポート",
+  },
 ] satisfies {
-    id: SettingsTab;
-    name: string;
+  id: SettingsTab;
+  name: string;
 }[];

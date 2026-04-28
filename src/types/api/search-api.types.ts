@@ -7,15 +7,15 @@ import { z } from "@/utils/zod";
 import { videoSchema } from "./video.types";
 
 export const searchApiSchema = z.looseObject({
-    data: z.looseObject({
-        response: z.looseObject({
-            $getSearchVideoV2: z.looseObject({
-                data: z.looseObject({
-                    items: z.array(videoSchema),
-                }),
-            }),
+  data: z.looseObject({
+    response: z.looseObject({
+      $getSearchVideoV2: z.looseObject({
+        data: z.looseObject({
+          items: z.array(videoSchema),
         }),
+      }),
     }),
+  }),
 });
 
 export type SearchApi = z.infer<typeof searchApiSchema>;

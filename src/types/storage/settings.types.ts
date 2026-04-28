@@ -2,75 +2,75 @@ import type { AutoRule } from "@/entrypoints/background/rule";
 import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
 
 export type SettingsTab =
-    | "general"
-    | "filter"
-    | "commentFilter"
-    | "videoFilter"
-    | "support";
+  | "general"
+  | "filter"
+  | "commentFilter"
+  | "videoFilter"
+  | "support";
 
 export interface Settings {
-    // -------------------------------------------------------------------------------------------
-    // 一般設定
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // 一般設定
+  // -------------------------------------------------------------------------------------------
 
-    // エディター
-    enableCloseBrackets: boolean;
-    enableHighlightTrailingWhitespace: boolean;
+  // エディター
+  enableCloseBrackets: boolean;
+  enableHighlightTrailingWhitespace: boolean;
 
-    // 通知
-    notifyOnManualNg: boolean;
-    notifyOnAutoNg: boolean;
+  // 通知
+  notifyOnManualNg: boolean;
+  notifyOnAutoNg: boolean;
 
-    // 高度な機能
-    showAdvancedFeatures: boolean;
-    importLocalFilterOnLoad: boolean;
-    importOnlyWhenWslRunning: boolean;
-    localFilterPath: string;
+  // 高度な機能
+  showAdvancedFeatures: boolean;
+  importLocalFilterOnLoad: boolean;
+  importOnlyWhenWslRunning: boolean;
+  localFilterPath: string;
 
-    // -------------------------------------------------------------------------------------------
-    // フィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // フィルター
+  // -------------------------------------------------------------------------------------------
 
-    selectedFilter: FilterId;
-    manualFilter: string;
-    autoFilter: Partial<AutoRule>[];
+  selectedFilter: FilterId;
+  manualFilter: string;
+  autoFilter: Partial<AutoRule>[];
 
-    // -------------------------------------------------------------------------------------------
-    // コメントフィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // コメントフィルター
+  // -------------------------------------------------------------------------------------------
 
-    enableCommentFilter: boolean;
+  enableCommentFilter: boolean;
 
-    // フィルタリング
-    enableEasyCommentFilter: boolean;
-    enableCommentAssistFilter: boolean;
-    enableScoreFilter: boolean;
-    scoreFilterThreshold: number;
-    ignoreMyComments: boolean;
-    ignoreByNicoru: boolean;
-    ignoreByNicoruThreshold: number;
+  // フィルタリング
+  enableEasyCommentFilter: boolean;
+  enableCommentAssistFilter: boolean;
+  enableScoreFilter: boolean;
+  scoreFilterThreshold: number;
+  ignoreMyComments: boolean;
+  ignoreByNicoru: boolean;
+  ignoreByNicoruThreshold: number;
 
-    // ドロップダウン
-    autoReload: boolean;
-    showUserIdInDropdown: boolean;
-    showScoreInDropdown: boolean;
+  // ドロップダウン
+  autoReload: boolean;
+  showUserIdInDropdown: boolean;
+  showScoreInDropdown: boolean;
 
-    // -------------------------------------------------------------------------------------------
-    // 動画フィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // 動画フィルター
+  // -------------------------------------------------------------------------------------------
 
-    enableVideoFilter: boolean;
+  enableVideoFilter: boolean;
 
-    // フィルタリング
-    enablePaidFilter: boolean;
-    hideCommentPreview: boolean;
-    enableViewCountFilter: boolean;
-    viewCountFilterThreshold: number;
+  // フィルタリング
+  enablePaidFilter: boolean;
+  hideCommentPreview: boolean;
+  enableViewCountFilter: boolean;
+  viewCountFilterThreshold: number;
 
-    // -------------------------------------------------------------------------------------------
-    // その他
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // その他
+  // -------------------------------------------------------------------------------------------
 
-    // タブ
-    selectedSettingsTab: SettingsTab;
+  // タブ
+  selectedSettingsTab: SettingsTab;
 }

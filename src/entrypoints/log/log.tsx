@@ -6,55 +6,52 @@ import { CommentViewer } from "./components/CommentViewer";
 import { VideoViewer } from "./components/VideoViewer";
 
 export function Init() {
-    const isLoading = useStorageStore((state) => state.isLoading);
+  const isLoading = useStorageStore((state) => state.isLoading);
 
-    useEffect(() => {
-        useStorageStore.getState().loadLog();
-    }, []);
+  useEffect(() => {
+    useStorageStore.getState().loadLog();
+  }, []);
 
-    if (isLoading) return null;
+  if (isLoading) return null;
 
-    return <Page />;
+  return <Page />;
 }
 
 function Page() {
-    const log = useStorageStore.getState().log;
-    const [tab, setTab] = useState<LogTab>(
-        log?.comment === undefined && log?.video !== undefined
-            ? "videoFilter"
-            : "commentFilter",
-    );
+  const log = useStorageStore.getState().log;
+  const [tab, setTab] = useState<LogTab>(
+    log?.comment === undefined && log?.video !== undefined
+      ? "videoFilter"
+      : "commentFilter",
+  );
 
-    return (
-        <>
-            <div className="tab">
-                {config.map(({ id, name }) => (
-                    <button
-                        key={id}
-                        className={clsx(
-                            "tab-button",
-                            id === tab && "selected-tab-button",
-                        )}
-                        onClick={() => {
-                            setTab(id);
-                        }}
-                    >
-                        {name}
-                    </button>
-                ))}
-            </div>
-            {(() => {
-                switch (tab) {
-                    case "commentFilter": {
-                        return <CommentViewer />;
-                    }
-                    case "videoFilter": {
-                        return <VideoViewer />;
-                    }
-                }
-            })()}
-        </>
-    );
+  return (
+    <>
+      <div className="tab">
+        {config.map(({ id, name }) => (
+          <button
+            key={id}
+            className={clsx("tab-button", id === tab && "selected-tab-button")}
+            onClick={() => {
+              setTab(id);
+            }}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      {(() => {
+        switch (tab) {
+          case "commentFilter": {
+            return <CommentViewer />;
+          }
+          case "videoFilter": {
+            return <VideoViewer />;
+          }
+        }
+      })()}
+    </>
+  );
 }
 
 // -------------------------------------------------------------------------------------------
@@ -62,12 +59,12 @@ function Page() {
 // -------------------------------------------------------------------------------------------
 
 const config = [
-    {
-        id: "commentFilter",
-        name: "コメントフィルター",
-    },
-    {
-        id: "videoFilter",
-        name: "動画フィルター",
-    },
+  {
+    id: "commentFilter",
+    name: "コメントフィルター",
+  },
+  {
+    id: "videoFilter",
+    name: "動画フィルター",
+  },
 ] as const;

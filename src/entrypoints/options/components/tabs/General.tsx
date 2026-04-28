@@ -17,130 +17,126 @@ import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
 
 export default function General() {
-    const input = useRef<HTMLInputElement | null>(null);
-    const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
-        useShallow((state) => [
-            state.settings.showAdvancedFeatures,
-            state.settings.localFilterPath,
-            state.saveSettings,
-        ]),
-    );
+  const input = useRef<HTMLInputElement | null>(null);
+  const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
+    useShallow((state) => [
+      state.settings.showAdvancedFeatures,
+      state.settings.localFilterPath,
+      state.saveSettings,
+    ]),
+  );
 
-    const clickInput = () => {
-        if (input.current !== null) input.current.click();
-    };
+  const clickInput = () => {
+    if (input.current !== null) input.current.click();
+  };
 
-    const buttons = [
-        ["インポート", clickInput],
-        ["エクスポート", catchAsync(exportBackup)],
-        ["リセット", catchAsync(reset)],
-    ] as const;
+  const buttons = [
+    ["インポート", clickInput],
+    ["エクスポート", catchAsync(exportBackup)],
+    ["リセット", catchAsync(reset)],
+  ] as const;
 
-    return (
-        <div className="tab-content">
-            <CheckboxSection groups={config}>
-                {isAdvancedFeaturesVisible && (
-                    <>
-                        {advancedFeaturesConfig.map((props) => (
-                            <Checkbox key={props.id} {...props} />
-                        ))}
-                        <div className="setting">
-                            <label>
-                                {"インポートするローカルフィルターのパス"}
-                                <input
-                                    className="input"
-                                    value={localFilterPath}
-                                    onChange={(event) => {
-                                        save({
-                                            localFilterPath: event.target.value,
-                                        });
-                                    }}
-                                />
-                            </label>
-                        </div>
-                    </>
-                )}
-            </CheckboxSection>
-            <H2 name="バックアップ">
-                {
-                    // eslint-plugin-react-hooksのバグにより誤った警告が出るため無効化
-                    // https://github.com/facebook/react/issues/34775
-
-                    // eslint-disable-next-line react-hooks/refs
-                    buttons.map(([text, callback]) => (
-                        <button
-                            key={text}
-                            className="button"
-                            onClick={callback}
-                        >
-                            {text}
-                        </button>
-                    ))
-                }
+  return (
+    <div className="tab-content">
+      <CheckboxSection groups={config}>
+        {isAdvancedFeaturesVisible && (
+          <>
+            {advancedFeaturesConfig.map((props) => (
+              <Checkbox key={props.id} {...props} />
+            ))}
+            <div className="setting">
+              <label>
+                {"インポートするローカルフィルターのパス"}
                 <input
-                    type="file"
-                    accept=".json"
-                    style={{ display: "none" }}
-                    ref={input}
-                    onChange={catchAsync(async (event) => {
-                        await importBackup(event, save);
-                    })}
+                  className="input"
+                  value={localFilterPath}
+                  onChange={(event) => {
+                    save({
+                      localFilterPath: event.target.value,
+                    });
+                  }}
                 />
-            </H2>
-        </div>
-    );
+              </label>
+            </div>
+          </>
+        )}
+      </CheckboxSection>
+      <H2 name="バックアップ">
+        {
+          // eslint-plugin-react-hooksのバグにより誤った警告が出るため無効化
+          // https://github.com/facebook/react/issues/34775
+
+          // eslint-disable-next-line react-hooks/refs
+          buttons.map(([text, callback]) => (
+            <button key={text} className="button" onClick={callback}>
+              {text}
+            </button>
+          ))
+        }
+        <input
+          type="file"
+          accept=".json"
+          style={{ display: "none" }}
+          ref={input}
+          onChange={catchAsync(async (event) => {
+            await importBackup(event, save);
+          })}
+        />
+      </H2>
+    </div>
+  );
 }
 
 async function importBackup(
-    event: ChangeEvent<HTMLInputElement>,
-    saveSettings: (settings: Partial<Settings>) => void,
+  event: ChangeEvent<HTMLInputElement>,
+  saveSettings: (settings: Partial<Settings>) => void,
 ) {
-    const text = await event.target.files?.[0]?.text();
-    if (text === undefined) return;
+  const text = await event.target.files?.[0]?.text();
+  if (text === undefined) return;
 
-    const backup = JSON.parse(text) as Backup;
-    if (backup.settings === undefined) return;
+  const backup = JSON.parse(text) as Backup;
+  if (backup.settings === undefined) return;
 
-    const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
-    const keys = Object.keys(defaultSettings);
+  const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
+  const keys = Object.keys(defaultSettings);
 
-    // defaultSettingsに存在するキーのみを抽出
-    for (const key of objectKeys(backup.settings)) {
-        if (keys.includes(key)) {
-            const value = backup.settings[key];
+  // defaultSettingsに存在するキーのみを抽出
+  for (const key of objectKeys(backup.settings)) {
+    if (keys.includes(key)) {
+      const value = backup.settings[key];
 
-            if (value !== undefined) newSettings[key] = value;
-        }
+      if (value !== undefined) newSettings[key] = value;
     }
+  }
 
-    saveSettings(newSettings);
+  saveSettings(newSettings);
 }
 
 async function exportBackup() {
-    const settings = await getSettings();
+  const settings = await getSettings();
 
-    const backup: Backup = {
-        settings,
-    };
-    const backupStr = JSON.stringify(backup);
+  const backup: Backup = {
+    settings,
+  };
+  const backupStr = JSON.stringify(backup);
 
-    const blob = new Blob([backupStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const fileName = `${browser.runtime.getManifest().name}-backup.json`;
+  const blob = new Blob([backupStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const fileName = `${browser.runtime.getManifest().name}-backup.json`;
 
-    // downloads権限なしでダウンロード
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    a.click();
+  // downloads権限なしでダウンロード
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
 }
 
 async function reset() {
-    if (!confirm(messages.settings.confirmReset)) return;
+  if (!confirm(messages.settings.confirmReset)) return;
 
-    await sendMessageToBackground({
-        type: "remove-all-data",
-    });
+  await sendMessageToBackground({
+    type: "remove-all-data",
+  });
 }
 
 // -------------------------------------------------------------------------------------------
@@ -148,53 +144,53 @@ async function reset() {
 // -------------------------------------------------------------------------------------------
 
 const config = [
-    {
-        heading: "エディター",
-        items: [
-            {
-                id: "enableCloseBrackets",
-                label: "括弧を自動で閉じる",
-            },
-            {
-                id: "enableHighlightTrailingWhitespace",
-                label: "行末の空白文字をハイライトする",
-            },
-        ],
-    },
-    {
-        heading: "通知",
-        items: [
-            {
-                id: "notifyOnManualNg",
-                label: "手動でNG登録した際に通知する",
-            },
-            {
-                id: "notifyOnAutoNg",
-                label: "自動でNG登録した際に通知する",
-            },
-        ],
-    },
-    {
-        heading: "高度な機能",
-        hasChildren: true,
-        items: [
-            {
-                id: "showAdvancedFeatures",
-                label: "高度な機能を表示する",
-            },
-        ],
-    },
+  {
+    heading: "エディター",
+    items: [
+      {
+        id: "enableCloseBrackets",
+        label: "括弧を自動で閉じる",
+      },
+      {
+        id: "enableHighlightTrailingWhitespace",
+        label: "行末の空白文字をハイライトする",
+      },
+    ],
+  },
+  {
+    heading: "通知",
+    items: [
+      {
+        id: "notifyOnManualNg",
+        label: "手動でNG登録した際に通知する",
+      },
+      {
+        id: "notifyOnAutoNg",
+        label: "自動でNG登録した際に通知する",
+      },
+    ],
+  },
+  {
+    heading: "高度な機能",
+    hasChildren: true,
+    items: [
+      {
+        id: "showAdvancedFeatures",
+        label: "高度な機能を表示する",
+      },
+    ],
+  },
 ] satisfies CheckboxGroups;
 
 const advancedFeaturesConfig = [
-    {
-        id: "importLocalFilterOnLoad",
-        label: "ページ読み込み時にローカルフィルターをインポートする",
-        childrenProps: [
-            {
-                id: "importOnlyWhenWslRunning",
-                label: "WSL起動時のみインポートする",
-            },
-        ],
-    },
+  {
+    id: "importLocalFilterOnLoad",
+    label: "ページ読み込み時にローカルフィルターをインポートする",
+    childrenProps: [
+      {
+        id: "importOnlyWhenWslRunning",
+        label: "WSL起動時のみインポートする",
+      },
+    ],
+  },
 ] satisfies CheckboxProps[];

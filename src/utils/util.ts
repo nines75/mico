@@ -3,99 +3,99 @@ import { deepmergeCustom } from "deepmerge-ts";
 import type { z } from "./zod";
 
 export function isNiconicoPage(url: string | undefined) {
-    if (url === undefined) return false;
+  if (url === undefined) return false;
 
-    return url.startsWith("https://www.nicovideo.jp/");
+  return url.startsWith("https://www.nicovideo.jp/");
 }
 
 export function isWatchPage(url: string | undefined) {
-    if (url === undefined) return false;
+  if (url === undefined) return false;
 
-    return url.startsWith("https://www.nicovideo.jp/watch/");
+  return url.startsWith("https://www.nicovideo.jp/watch/");
 }
 
 export function isRankingPage(url: string | undefined) {
-    if (url === undefined) return false;
+  if (url === undefined) return false;
 
-    return (
-        url.startsWith("https://www.nicovideo.jp/ranking") &&
-        !url.startsWith("https://www.nicovideo.jp/ranking/custom")
-    );
+  return (
+    url.startsWith("https://www.nicovideo.jp/ranking") &&
+    !url.startsWith("https://www.nicovideo.jp/ranking/custom")
+  );
 }
 
 export function isSearchPage(url: string | undefined) {
-    if (url === undefined) return false;
+  if (url === undefined) return false;
 
-    return (
-        url.startsWith("https://www.nicovideo.jp/search/") ||
-        url.startsWith("https://www.nicovideo.jp/tag/")
-    );
+  return (
+    url.startsWith("https://www.nicovideo.jp/search/") ||
+    url.startsWith("https://www.nicovideo.jp/tag/")
+  );
 }
 
 export function escapeNewline(text: string) {
-    return text.replaceAll("\n", String.raw`\n`);
+  return text.replaceAll("\n", String.raw`\n`);
 }
 
 export function sum(numbers: number[]) {
-    return numbers.reduce((result, num) => result + num, 0);
+  return numbers.reduce((result, num) => result + num, 0);
 }
 
 export function replace(text: string, placeholders: string[]) {
-    let result = text;
-    for (const [index, placeholder] of placeholders.entries()) {
-        result = result.replace(`$${index + 1}`, placeholder);
-    }
+  let result = text;
+  for (const [index, placeholder] of placeholders.entries()) {
+    result = result.replace(`$${index + 1}`, placeholder);
+  }
 
-    return result;
+  return result;
 }
 
 export function catchAsync<T extends unknown[]>(
-    fn: (...args: T) => Promise<void>,
+  fn: (...args: T) => Promise<void>,
 ) {
-    return (...args: T): void => {
-        fn(...args).catch(console.error);
-    };
+  return (...args: T): void => {
+    fn(...args).catch(console.error);
+  };
 }
 
 export function isString(value: unknown) {
-    return typeof value === "string";
+  return typeof value === "string";
 }
 
 export const merge = deepmergeCustom<
-    unknown,
-    {
-        DeepMergeArraysURI: DeepMergeLeafURI;
-        DeepMergeMapsURI: DeepMergeLeafURI;
-        DeepMergeSetsURI: DeepMergeLeafURI;
-        DeepMergeFilterValuesURI: DeepMergeNoFilteringURI;
-    }
+  unknown,
+  {
+    DeepMergeArraysURI: DeepMergeLeafURI;
+    DeepMergeMapsURI: DeepMergeLeafURI;
+    DeepMergeSetsURI: DeepMergeLeafURI;
+    DeepMergeFilterValuesURI: DeepMergeNoFilteringURI;
+  }
 >({
-    // マージではなく上書きする
-    mergeArrays: false,
-    mergeMaps: false,
-    mergeSets: false,
+  // マージではなく上書きする
+  mergeArrays: false,
+  mergeMaps: false,
+  mergeSets: false,
 
-    // 値がundefinedでも上書きする
-    filterValues: false,
+  // 値がundefinedでも上書きする
+  filterValues: false,
 });
 
 export function safeParseJson<T>(
-    text: string | null | undefined,
-    schema: z.ZodType<T>,
+  text: string | null | undefined,
+  schema: z.ZodType<T>,
 ): T | undefined {
-    try {
-        if (text === null || text === undefined) return;
+  try {
+    if (text === null || text === undefined) return;
 
-        const data = JSON.parse(text) as string;
-        const result = schema.safeParse(data);
+    const data = JSON.parse(text) as string;
+    const result = schema.safeParse(data);
 
-        return result.success ? result.data : undefined;
-    } catch {
-        return;
-    }
+    return result.success ? result.data : undefined;
+  } catch {
+    return;
+  }
 }
 
 // TODO: Lintを実装したら消す
 export function printInvalidRule(rule: string) {
-    console.error(`[mico] 無効なルール: ${rule}`);
+  console.error(`[mico] 無効なルール: ${rule}`);
 }

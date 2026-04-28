@@ -1,60 +1,60 @@
 @import "../../assets/global.css";
 
 header {
-    background: #3b3c4a;
-    width: 100%;
-    height: 35px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background: #3b3c4a;
+  width: 100%;
+  height: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 section {
-    margin: 10px 30px;
+  margin: 10px 30px;
 }
 .info {
-    color: var(--lighter-gray);
-    .value {
-        font-weight: bold;
-    }
+  color: var(--lighter-gray);
+  .value {
+    font-weight: bold;
+  }
 }
 .link-container {
+  display: flex;
+  margin-right: 14px;
+  gap: 8px;
+  .link {
+    color: var(--dim-white);
     display: flex;
-    margin-right: 14px;
-    gap: 8px;
-    .link {
-        color: var(--dim-white);
-        display: flex;
-        align-items: center;
+    align-items: center;
 
-        /* buttonをanchor風にする */
-        border: none;
-        background-color: transparent;
-        cursor: pointer;
-        padding: 0;
-    }
+    /* buttonをanchor風にする */
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
 }
 .ng-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-block: 5px;
-    .ng-button {
-        padding: 0;
-        margin: 0;
-        border: none;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-block: 5px;
+  .ng-button {
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
 }
 #root {
-    background: #292a2d;
-    color: var(--dim-white);
-    width: auto;
-    height: auto;
-    text-align: center;
-    display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
+  background: #292a2d;
+  color: var(--dim-white);
+  width: auto;
+  height: auto;
+  text-align: center;
+  display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
 }
 #version {
-    font-size: 17px;
-    color: var(--lighter-gray);
-    margin: 0 8px;
+  font-size: 17px;
+  color: var(--lighter-gray);
+  margin: 0 8px;
 }

@@ -6,45 +6,45 @@ import { describe, beforeEach, it, expect } from "vitest";
 import { EasyCommentFilter } from "./easy-comment-filter";
 
 describe(EasyCommentFilter.name, () => {
-    let threads: Thread[];
+  let threads: Thread[];
 
-    beforeEach(() => {
-        threads = structuredClone(testThreads);
+  beforeEach(() => {
+    threads = structuredClone(testThreads);
+  });
+
+  const runFilter = (options: { settings?: Partial<Settings> }) => {
+    const easyCommentFilter = new EasyCommentFilter({
+      ...defaultSettings,
+      enableEasyCommentFilter: true,
+      ...options.settings,
     });
 
-    const runFilter = (options: { settings?: Partial<Settings> }) => {
-        const easyCommentFilter = new EasyCommentFilter({
-            ...defaultSettings,
-            enableEasyCommentFilter: true,
-            ...options.settings,
-        });
+    easyCommentFilter.apply(threads);
 
-        easyCommentFilter.apply(threads);
+    return easyCommentFilter;
+  };
 
-        return easyCommentFilter;
-    };
+  // -------------------------------------------------------------------------------------------
 
-    // -------------------------------------------------------------------------------------------
-
-    describe(`Settings.${"enableEasyCommentFilter" satisfies keyof Settings}`, () => {
-        it.each([
-            {
-                isEnabled: true,
-                ids: ["1005", "1006"],
-            },
-            {
-                isEnabled: false,
-                ids: [],
-            },
-        ])("$isEnabled", ({ isEnabled, ids }) => {
-            expect(
-                getFilteredIds(
-                    runFilter({
-                        settings: { enableEasyCommentFilter: isEnabled },
-                    }),
-                ),
-            ).toEqual(ids);
-            checkComment(threads, ids);
-        });
+  describe(`Settings.${"enableEasyCommentFilter" satisfies keyof Settings}`, () => {
+    it.each([
+      {
+        isEnabled: true,
+        ids: ["1005", "1006"],
+      },
+      {
+        isEnabled: false,
+        ids: [],
+      },
+    ])("$isEnabled", ({ isEnabled, ids }) => {
+      expect(
+        getFilteredIds(
+          runFilter({
+            settings: { enableEasyCommentFilter: isEnabled },
+          }),
+        ),
+      ).toEqual(ids);
+      checkComment(threads, ids);
     });
+  });
 });

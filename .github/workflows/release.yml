@@ -1,52 +1,52 @@
 name: release
 
 on:
-    push:
-        tags:
-            - "v*"
+  push:
+    tags:
+      - "v*"
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    release:
-        timeout-minutes: 30
-        runs-on: ubuntu-latest
-        steps:
-            - uses: nines75/composite-action/setup-pnpm@main
+  release:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: nines75/composite-action/setup-pnpm@main
 
-            - name: チェック
-              run: pnpm check
+      - name: チェック
+        run: pnpm check
 
-            - name: URL生成
-              run: |
-                  git fetch --tags -f
-                  PREVIOUS_TAG=$(git tag | sort -V --reverse | sed -n 2p)
-                  echo "一つ前のタグ: $PREVIOUS_TAG"
-                  if [ -n "$PREVIOUS_TAG" ]; then
-                      echo "URL=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_ENV
-                  else
-                      echo "URL=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
-                  fi
+      - name: URL生成
+        run: |
+          git fetch --tags -f
+          PREVIOUS_TAG=$(git tag | sort -V --reverse | sed -n 2p)
+          echo "一つ前のタグ: $PREVIOUS_TAG"
+          if [ -n "$PREVIOUS_TAG" ]; then
+              echo "URL=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_ENV
+          else
+              echo "URL=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
 
-            - name: ビルド
-              run: pnpm zip
+      - name: ビルド
+        run: pnpm zip
 
-            - name: リリース作成
-              uses: softprops/action-gh-release@v2
-              with:
-                  files: .output/firefox.xpi
-                  name: ${{ github.ref_name }}
-                  tag_name: ${{ github.ref_name }}
-                  body: |
-                      **Full Changelog**: ${{ env.URL }}
+      - name: リリース作成
+        uses: softprops/action-gh-release@v2
+        with:
+          files: .output/firefox.xpi
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body: |
+            **Full Changelog**: ${{ env.URL }}
 
-            - name: ストアに提出
-              run: |
-                  pnpm wxt submit \
-                  --firefox-zip .output/firefox.xpi \
-                  --firefox-sources-zip .output/*-sources.zip
-              env:
-                  FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
-                  FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
-                  FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+      - name: ストアに提出
+        run: |
+          pnpm wxt submit \
+          --firefox-zip .output/firefox.xpi \
+          --firefox-sources-zip .output/*-sources.zip
+        env:
+          FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}

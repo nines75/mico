@@ -1,15 +1,15 @@
 @import "modern-normalize/modern-normalize.css";
 
 :root {
-    --background: #292a2d;
-    --dim-white: #e8eaed;
-    --lighter-gray: #c0c0c0;
-    --font: Consolas, monospace;
+  --background: #292a2d;
+  --dim-white: #e8eaed;
+  --lighter-gray: #c0c0c0;
+  --font: Consolas, monospace;
 }
 
 /* colorを継承させる */
 input,
 button,
 select {
-    color: inherit;
+  color: inherit;
 }

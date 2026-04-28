@@ -15,103 +15,102 @@ const SEARCH_PAGE_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
 const TAG_SEARCH_PAGE_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
 
 for (const { title, url, responseUrl, method, schema, selector } of [
-    {
-        title: "CommentApi",
-        url: WATCH_PAGE_URL,
-        responseUrl: "https://public.nvcomment.nicovideo.jp/v1/threads",
-        method: "POST",
-        schema: commentApiSchema,
-    },
-    {
-        title: "RecommendApi",
-        url: WATCH_PAGE_URL,
-        responseUrl:
-            "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation",
-        method: "GET",
-        schema: recommendApiSchema,
-    },
-    {
-        title: "RecommendApi(チャンネル動画)",
-        url: CHANNEL_WATCH_PAGE_URL,
-        responseUrl:
-            "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_channel_watch_recommendation",
-        method: "GET",
-        schema: recommendApiSchema,
-    },
-    {
-        title: "SearchPlaylistApi",
-        url: SEARCH_PAGE_URL,
-        responseUrl: "https://nvapi.nicovideo.jp/v1/playlist/search",
-        method: "GET",
-        schema: searchPlaylistApiSchema,
-        selector: "[data-anchor-area='main'][tabindex]",
-    },
+  {
+    title: "CommentApi",
+    url: WATCH_PAGE_URL,
+    responseUrl: "https://public.nvcomment.nicovideo.jp/v1/threads",
+    method: "POST",
+    schema: commentApiSchema,
+  },
+  {
+    title: "RecommendApi",
+    url: WATCH_PAGE_URL,
+    responseUrl:
+      "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation",
+    method: "GET",
+    schema: recommendApiSchema,
+  },
+  {
+    title: "RecommendApi(チャンネル動画)",
+    url: CHANNEL_WATCH_PAGE_URL,
+    responseUrl:
+      "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_channel_watch_recommendation",
+    method: "GET",
+    schema: recommendApiSchema,
+  },
+  {
+    title: "SearchPlaylistApi",
+    url: SEARCH_PAGE_URL,
+    responseUrl: "https://nvapi.nicovideo.jp/v1/playlist/search",
+    method: "GET",
+    schema: searchPlaylistApiSchema,
+    selector: "[data-anchor-area='main'][tabindex]",
+  },
 ] satisfies {
-    title: string;
-    url: string;
-    responseUrl: string;
-    method: "GET" | "POST";
-    schema: z.ZodType;
-    selector?: string;
+  title: string;
+  url: string;
+  responseUrl: string;
+  method: "GET" | "POST";
+  schema: z.ZodType;
+  selector?: string;
 }[]) {
-    test(title, async ({ page }) => {
-        await page.goto(url);
+  test(title, async ({ page }) => {
+    await page.goto(url);
 
-        if (selector !== undefined) {
-            await page.locator(selector).first().click();
-        }
+    if (selector !== undefined) {
+      await page.locator(selector).first().click();
+    }
 
-        const response = await page.waitForResponse(
-            (data) =>
-                data.url().startsWith(responseUrl) &&
-                data.request().method() === method,
-        );
-        const text = await response.text();
+    const response = await page.waitForResponse(
+      (data) =>
+        data.url().startsWith(responseUrl) &&
+        data.request().method() === method,
+    );
+    const text = await response.text();
 
-        expect(safeParseJson(text, schema as z.ZodType)).not.toBeUndefined();
-    });
+    expect(safeParseJson(text, schema as z.ZodType)).not.toBeUndefined();
+  });
 }
 
 for (const { title, url, schema } of [
-    {
-        title: "WatchApi",
-        url: WATCH_PAGE_URL,
-        schema: watchApiSchema,
-    },
-    {
-        title: "RankingApi",
-        url: RANKING_PAGE_URL,
-        schema: rankingApiSchema,
-    },
-    {
-        title: "SearchApi",
-        url: SEARCH_PAGE_URL,
-        schema: searchApiSchema,
-    },
-    {
-        title: "SearchApi(タグ)",
-        url: TAG_SEARCH_PAGE_URL,
-        schema: searchApiSchema,
-    },
+  {
+    title: "WatchApi",
+    url: WATCH_PAGE_URL,
+    schema: watchApiSchema,
+  },
+  {
+    title: "RankingApi",
+    url: RANKING_PAGE_URL,
+    schema: rankingApiSchema,
+  },
+  {
+    title: "SearchApi",
+    url: SEARCH_PAGE_URL,
+    schema: searchApiSchema,
+  },
+  {
+    title: "SearchApi(タグ)",
+    url: TAG_SEARCH_PAGE_URL,
+    schema: searchApiSchema,
+  },
 ] satisfies {
-    title: string;
-    url: string;
-    schema: z.ZodType;
+  title: string;
+  url: string;
+  schema: z.ZodType;
 }[]) {
-    test(title, async ({ page }) => {
-        const response = await page.goto(url);
-        const text = await response?.text();
-        if (text === undefined)
-            throw new Error("レスポンスが取得できませんでした");
+  test(title, async ({ page }) => {
+    const response = await page.goto(url);
+    const text = await response?.text();
+    if (text === undefined) throw new Error("レスポンスが取得できませんでした");
 
-        const content = await page.evaluate((str) => {
-            const parser = new DOMParser();
-            const html = parser.parseFromString(str, "text/html");
+    const content = await page.evaluate((str) => {
+      const parser = new DOMParser();
+      const html = parser.parseFromString(str, "text/html");
 
-            const meta = html.querySelector("meta[name='server-response']");
-            return meta?.getAttribute("content");
-        }, text);
+      const meta = html.querySelector("meta[name='server-response']");
+      return meta?.getAttribute("content");
+    }, text);
 
-        expect(safeParseJson(content, schema)).not.toBeUndefined();
-    });
+    expect(safeParseJson(content, schema)).not.toBeUndefined();
+  });
 }

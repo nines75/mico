@@ -10,95 +10,95 @@ import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
 export function watchRequest(
-    details: browser.webRequest._OnBeforeRequestDetails,
+  details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-    filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const tabId = details.tabId;
+  filterResponse(details, "GET", async (filter, encoder, buf) => {
+    const tabId = details.tabId;
 
-        // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
-        const logId = createLogId();
-        if (details.type === "xmlhttprequest") {
-            await mountLogId(logId, tabId);
-        }
+    // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
+    const logId = createLogId();
+    if (details.type === "xmlhttprequest") {
+      await mountLogId(logId, tabId);
+    }
 
-        await importLocalFilter();
+    await importLocalFilter();
 
-        const settings = await loadSettings();
-        const result = spaFilter(
-            details,
-            buf,
-            settings,
-            watchApiSchema,
-            watchApiFilter,
-        );
-        if (result === undefined) return true;
+    const settings = await loadSettings();
+    const result = spaFilter(
+      details,
+      buf,
+      settings,
+      watchApiSchema,
+      watchApiFilter,
+    );
+    if (result === undefined) return true;
 
-        const { filteredBuf, filteringResult: tab } = result;
+    const { filteredBuf, filteringResult: tab } = result;
 
-        tab.logId = logId;
+    tab.logId = logId;
 
-        await Promise.all([
-            setTab(tab, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
-            setLog({ tab }, logId, tabId),
-        ]);
+    await Promise.all([
+      setTab(tab, tabId), // 以降のリクエストで使用するためフィルタを切断する前に保存する
+      setLog({ tab }, logId, tabId),
+    ]);
 
-        filter.write(encoder.encode(filteredBuf));
-        filter.disconnect();
+    filter.write(encoder.encode(filteredBuf));
+    filter.disconnect();
 
-        if (details.type === "main_frame") {
-            await mountLogId(logId, tabId);
-        }
+    if (details.type === "main_frame") {
+      await mountLogId(logId, tabId);
+    }
 
-        return false;
-    });
+    return false;
+  });
 }
 
 function watchApiFilter(
-    watchApi: WatchApi,
-    settings: Settings,
-    meta?: Element | null,
+  watchApi: WatchApi,
+  settings: Settings,
+  meta?: Element | null,
 ): Tab {
-    const response = watchApi.data.response;
-    const metadata = watchApi.data.metadata;
+  const response = watchApi.data.response;
+  const metadata = watchApi.data.metadata;
 
-    const series: Series = (() => {
-        const video = response.series?.video;
-        const next = video?.next;
+  const series: Series = (() => {
+    const video = response.series?.video;
+    const next = video?.next;
 
-        if (video !== undefined && next !== null && next !== undefined) {
-            if ((filterVideo([next], settings)?.filteredIds.size ?? 0) > 0) {
-                video.next = null;
-            }
+    if (video !== undefined && next !== null && next !== undefined) {
+      if ((filterVideo([next], settings)?.filteredIds.size ?? 0) > 0) {
+        video.next = null;
+      }
 
-            meta?.setAttribute("content", JSON.stringify(watchApi));
+      meta?.setAttribute("content", JSON.stringify(watchApi));
 
-            return { hasNext: true, video: next };
-        } else {
-            return { hasNext: false };
-        }
-    })();
+      return { hasNext: true, video: next };
+    } else {
+      return { hasNext: false };
+    }
+  })();
 
-    const ownerId = (
-        response.owner?.id ?? // 通常のユーザー
-        response.channel?.id ?? // チャンネル
-        // ユーザーが退会済み
-        metadata.jsonLds[0]?.author?.url.match(
-            /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
-        )?.[1]
-    )?.toString();
-    const ownerName =
-        response.owner?.nickname ??
-        response.channel?.name ??
-        metadata.jsonLds[0]?.author?.name;
-    const tags = response.tag.items.map(({ name }) => name);
+  const ownerId = (
+    response.owner?.id ?? // 通常のユーザー
+    response.channel?.id ?? // チャンネル
+    // ユーザーが退会済み
+    metadata.jsonLds[0]?.author?.url.match(
+      /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
+    )?.[1]
+  )?.toString();
+  const ownerName =
+    response.owner?.nickname ??
+    response.channel?.name ??
+    metadata.jsonLds[0]?.author?.name;
+  const tags = response.tag.items.map(({ name }) => name);
 
-    return {
-        series,
-        seriesId: response.series?.id.toString(),
-        videoId: response.video.id,
-        title: response.video.title,
-        ownerId,
-        ownerName,
-        tags,
-    };
+  return {
+    series,
+    seriesId: response.series?.id.toString(),
+    videoId: response.video.id,
+    title: response.video.title,
+    ownerId,
+    ownerName,
+    tags,
+  };
 }

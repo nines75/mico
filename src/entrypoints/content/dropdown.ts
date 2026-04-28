@@ -3,83 +3,81 @@ import { buttons, messages } from "@/utils/config";
 import { catchAsync, replace } from "@/utils/util";
 
 interface DropdownContent {
-    parent: HTMLDivElement;
-    button: HTMLButtonElement;
+  parent: HTMLDivElement;
+  button: HTMLButtonElement;
 }
 
 export async function mountToDropdown(element: Element) {
-    const dropdownContent = getDropdownContent(element);
-    if (dropdownContent === undefined) return;
+  const dropdownContent = getDropdownContent(element);
+  if (dropdownContent === undefined) return;
 
-    appendButton(dropdownContent, [
-        {
-            text: buttons.addNgUserId,
-            callback: async () => {
-                await sendMessageToBackground({
-                    type: "on-click-dropdown",
-                    data: { videoOnly: false },
-                });
-            },
-        },
-        {
-            text: buttons.addSpecificNgUserId,
-            callback: async () => {
-                await sendMessageToBackground({
-                    type: "on-click-dropdown",
-                    data: { videoOnly: true },
-                });
-            },
-        },
-        {
-            text: buttons.showComments,
-            callback: async () => {
-                const comments = (await sendMessageToBackground({
-                    type: "get-comments-for-dropdown",
-                })) as string | undefined;
-                if (comments === undefined) {
-                    await sendMessageToBackground({
-                        type: "notify",
-                        data: messages.other.getCommentFailed,
-                    });
-                    return;
-                }
+  appendButton(dropdownContent, [
+    {
+      text: buttons.addNgUserId,
+      callback: async () => {
+        await sendMessageToBackground({
+          type: "on-click-dropdown",
+          data: { videoOnly: false },
+        });
+      },
+    },
+    {
+      text: buttons.addSpecificNgUserId,
+      callback: async () => {
+        await sendMessageToBackground({
+          type: "on-click-dropdown",
+          data: { videoOnly: true },
+        });
+      },
+    },
+    {
+      text: buttons.showComments,
+      callback: async () => {
+        const comments = (await sendMessageToBackground({
+          type: "get-comments-for-dropdown",
+        })) as string | undefined;
+        if (comments === undefined) {
+          await sendMessageToBackground({
+            type: "notify",
+            data: messages.other.getCommentFailed,
+          });
+          return;
+        }
 
-                alert(comments);
-            },
-        },
-    ]);
+        alert(comments);
+      },
+    },
+  ]);
 
-    await sendMessageToBackground({ type: "mount-to-dropdown" });
+  await sendMessageToBackground({ type: "mount-to-dropdown" });
 }
 
 function appendButton(
-    dropdownContent: DropdownContent,
-    data: { text: string; callback: () => Promise<void> }[],
+  dropdownContent: DropdownContent,
+  data: { text: string; callback: () => Promise<void> }[],
 ) {
-    for (const { text, callback } of data) {
-        const button = document.createElement("button");
+  for (const { text, callback } of data) {
+    const button = document.createElement("button");
 
-        button.addEventListener("click", catchAsync(callback));
-        button.textContent = replace(text, [
-            browser.runtime.getManifest().name,
-        ]);
-        for (const attribute of dropdownContent.button.attributes) {
-            button.setAttribute(attribute.name, attribute.value);
-        }
-
-        dropdownContent.parent.append(button);
+    button.addEventListener("click", catchAsync(callback));
+    button.textContent = replace(text, [browser.runtime.getManifest().name]);
+    for (const attribute of dropdownContent.button.attributes) {
+      button.setAttribute(attribute.name, attribute.value);
     }
+
+    dropdownContent.parent.append(button);
+  }
 }
 
 function getDropdownContent(element: Element): DropdownContent | undefined {
-    const parent = element.querySelector(":scope > div > div:last-of-type");
-    if (!(parent instanceof HTMLDivElement)) return;
+  const parent = element.querySelector(":scope > div > div:last-of-type");
+  if (!(parent instanceof HTMLDivElement)) return;
 
-    const button = parent.querySelector(":scope > button");
-    if (!(button instanceof HTMLButtonElement)) return;
+  const button = parent.querySelector(":scope > button");
+  if (!(button instanceof HTMLButtonElement)) return;
 
-    return {
-        parent,
-        button,
-    };
+  return {
+    parent,
+    button,
+  };
 }

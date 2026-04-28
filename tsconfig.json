@@ -1,12 +1,12 @@
 {
-    "extends": "./.wxt/tsconfig.json",
-    "compilerOptions": {
-        "types": ["firefox-webext-browser"],
-        "jsx": "react-jsx",
-        "incremental": true,
-        "outDir": "./.output",
-        "noUncheckedIndexedAccess": true,
-        "noImplicitOverride": true,
-        "exactOptionalPropertyTypes": true
-    }
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "types": ["firefox-webext-browser"],
+    "jsx": "react-jsx",
+    "incremental": true,
+    "outDir": "./.output",
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": true
+  }
 }

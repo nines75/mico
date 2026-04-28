@@ -3,26 +3,26 @@ import type { Video } from "@/types/api/video.types";
 import type { Settings } from "@/types/storage/settings.types";
 
 export class ViewCountFilter extends Filter {
-    private isEnabled: boolean;
+  private isEnabled: boolean;
 
-    constructor(settings: Settings, isEnabled: boolean) {
-        super(settings);
+  constructor(settings: Settings, isEnabled: boolean) {
+    super(settings);
 
-        this.isEnabled = isEnabled;
-    }
+    this.isEnabled = isEnabled;
+  }
 
-    override apply(data: { videos: Video[] }): void {
-        if (!this.isEnabled || !this.settings.enableViewCountFilter) return;
+  override apply(data: { videos: Video[] }): void {
+    if (!this.isEnabled || !this.settings.enableViewCountFilter) return;
 
-        data.videos = data.videos.filter((video) => {
-            const view = video.count.view;
-            if (view <= this.settings.viewCountFilterThreshold) {
-                this.filteredVideos.push({ video, target: "view-count" });
+    data.videos = data.videos.filter((video) => {
+      const view = video.count.view;
+      if (view <= this.settings.viewCountFilterThreshold) {
+        this.filteredVideos.push({ video, target: "view-count" });
 
-                return false;
-            }
+        return false;
+      }
 
-            return true;
-        });
-    }
+      return true;
+    });
+  }
 }

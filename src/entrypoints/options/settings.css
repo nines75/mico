@@ -1,104 +1,104 @@
 @import "../../assets/global.css";
 
 body {
-    background: var(--background);
-    color: var(--dim-white);
+  background: var(--background);
+  color: var(--dim-white);
 }
 h2 {
-    border-bottom: 2px solid gray;
-    font-size: 18px;
+  border-bottom: 2px solid gray;
+  font-size: 18px;
 }
 input[type="checkbox"] {
-    margin: 3px;
+  margin: 3px;
 }
 .heading-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .settings-container {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 .setting {
-    margin: 12px;
-    > label {
-        font-weight: bold;
-    }
-    .setting-details {
-        font-size: 12px;
-        margin-left: 25px;
-        padding: 4px;
-    }
-    .checkbox-input {
-        margin-left: 20px;
-        font-size: 13px;
-        font-weight: normal;
-    }
-    .input {
-        font-family: var(--font);
-        margin-left: 20px;
-        width: 530px;
-        height: 30px;
-    }
+  margin: 12px;
+  > label {
+    font-weight: bold;
+  }
+  .setting-details {
+    font-size: 12px;
+    margin-left: 25px;
+    padding: 4px;
+  }
+  .checkbox-input {
+    margin-left: 20px;
+    font-size: 13px;
+    font-weight: normal;
+  }
+  .input {
+    font-family: var(--font);
+    margin-left: 20px;
+    width: 530px;
+    height: 30px;
+  }
 }
 .link {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 .rule-container {
-    border: gray 1px solid;
-    border-radius: 10px;
+  border: gray 1px solid;
+  border-radius: 10px;
 
-    /* 仮想スクロールする要素の高さをウインドウサイズに応じて変える */
-    flex: 1; /* 指定しなくても同じ挙動だが、明示的に残りの領域を割り当てる */
-    min-height: 0; /* 枠が伸びないようにする保険 */
+  /* 仮想スクロールする要素の高さをウインドウサイズに応じて変える */
+  flex: 1; /* 指定しなくても同じ挙動だが、明示的に残りの領域を割り当てる */
+  min-height: 0; /* 枠が伸びないようにする保険 */
 }
 .rule {
-    font-size: 25px;
-    padding: 10px 20px;
-    margin: 10px;
-    border: gray 3px solid;
-    border-radius: 10px;
+  font-size: 25px;
+  padding: 10px 20px;
+  margin: 10px;
+  border: gray 3px solid;
+  border-radius: 10px;
 }
 .rule-pattern {
-    /* アイコンを揃える */
-    display: flex;
-    align-items: center;
+  /* アイコンを揃える */
+  display: flex;
+  align-items: center;
 
-    gap: 4px;
+  gap: 4px;
 }
 .rule-details {
-    color: silver;
-    font-size: 15px;
-    display: flex;
-    gap: 20px;
-    margin-top: 10px;
-    .value {
-        margin-left: 5px;
-        border: gray 1px solid;
-        border-radius: 5px;
-        padding-inline: 4px;
-    }
+  color: silver;
+  font-size: 15px;
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+  .value {
+    margin-left: 5px;
+    border: gray 1px solid;
+    border-radius: 5px;
+    padding-inline: 4px;
+  }
 }
 .rule-delete-button {
-    border: none;
-    color: gray;
+  border: none;
+  color: gray;
 
-    /* アイコンを揃える */
-    display: flex;
+  /* アイコンを揃える */
+  display: flex;
 }
 .v7-message {
-    color: red;
-    font-size: 13px;
-    margin-top: 5px;
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
 }
 #root {
-    padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
+  padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
 
-    /* エディタの高さをウインドウサイズに応じて変える */
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+  /* エディタの高さをウインドウサイズに応じて変える */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -106,35 +106,35 @@ tab
 ------------------------------------------------------------------------------------------- */
 
 .tab-container {
-    margin-bottom: 30px;
-    white-space: nowrap; /* 折り返さない */
+  margin-bottom: 30px;
+  white-space: nowrap; /* 折り返さない */
 
-    /* 上部への固定用 */
-    position: sticky;
-    top: 0;
-    background: var(--background); /* デフォルトは透明なので上書き */
-    padding-top: 20px; /* bodyで指定したりmarginを使うと上書きできない */
-    z-index: 1000;
+  /* 上部への固定用 */
+  position: sticky;
+  top: 0;
+  background: var(--background); /* デフォルトは透明なので上書き */
+  padding-top: 20px; /* bodyで指定したりmarginを使うと上書きできない */
+  z-index: 1000;
 }
 /* tab-containerはスクロール時に上書きできるように右端まで伸ばす
 ただし下線はボタンの幅に合わせたいので中間にtab-innerを作り調整する */
 .tab-inner {
-    width: fit-content;
-    border-bottom: 2px solid gray;
+  width: fit-content;
+  border-bottom: 2px solid gray;
 }
 .tab-button {
-    border: none;
-    font-size: 20px;
-    padding: 12px;
+  border: none;
+  font-size: 20px;
+  padding: 12px;
 }
 .selected-tab-button {
-    color: lightskyblue;
-    border-bottom: 2px solid lightskyblue;
-    margin-bottom: -2px; /* 親のボーダーに重ねる */
+  color: lightskyblue;
+  border-bottom: 2px solid lightskyblue;
+  margin-bottom: -2px; /* 親のボーダーに重ねる */
 }
 .tab-content {
-    /* フィルター以外のタブは#rootのpadding-bottomが効かない */
-    padding-bottom: 50px;
+  /* フィルター以外のタブは#rootのpadding-bottomが効かない */
+  padding-bottom: 50px;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -143,34 +143,34 @@ button
 
 /* アイコンを含むボタンを中央に揃える */
 .button-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 .button {
-    font-weight: bold;
-    padding: 10px 20px;
-    margin: 10px;
-    border: gray 3px solid;
-    border-radius: 10px;
-    font-size: 14px;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin: 10px;
+  border: gray 3px solid;
+  border-radius: 10px;
+  font-size: 14px;
 }
 .filter-button {
-    padding: 7px 12px;
-    height: 40px; /* import-filter-buttonの有無で位置がずれないようにする */
+  padding: 7px 12px;
+  height: 40px; /* import-filter-buttonの有無で位置がずれないようにする */
 }
 .selected-button {
-    border-color: lightskyblue;
+  border-color: lightskyblue;
 }
 .support-button {
-    display: inline-block; /* anchorをbuttonのように扱う */
-    text-decoration: none;
-    color: inherit;
+  display: inline-block; /* anchorをbuttonのように扱う */
+  text-decoration: none;
+  color: inherit;
 }
 .import-filter-button {
-    padding: 7px 12px;
-    display: flex;
-    align-items: center;
-    margin-left: 50px;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  margin-left: 50px;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -179,24 +179,24 @@ CodeMirror
 
 /* エディタの高さをウインドウサイズに応じて変える */
 .editor-container {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: 0; /* 行数がエディタのサイズを超えたときに伸びないようにする */
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0; /* 行数がエディタのサイズを超えたときに伸びないようにする */
 }
 .cm-editor {
-    width: 100%;
-    flex: 1; /* エディタの高さをウインドウサイズに応じて変える */
-    min-height: 0; /* 行数がエディタのサイズを超えたときに伸びないようにする */
-    .cm-trailingSpace {
-        background: transparent;
-    }
-    .cm-line:not(.cm-activeLine) .cm-trailingSpace {
-        border: 1px solid white;
-    }
+  width: 100%;
+  flex: 1; /* エディタの高さをウインドウサイズに応じて変える */
+  min-height: 0; /* 行数がエディタのサイズを超えたときに伸びないようにする */
+  .cm-trailingSpace {
+    background: transparent;
+  }
+  .cm-line:not(.cm-activeLine) .cm-trailingSpace {
+    border: 1px solid white;
+  }
 }
 .cm-content,
 .cm-gutter,
 .cm-tooltip-autocomplete {
-    font-family: var(--font);
+  font-family: var(--font);
 }

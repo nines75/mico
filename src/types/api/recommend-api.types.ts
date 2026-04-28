@@ -6,21 +6,21 @@ import { z } from "@/utils/zod";
 import { videoSchema } from "./video.types";
 
 export const recommendApiSchema = z.looseObject({
-    data: z.looseObject({
-        items: z.array(
-            z.union([
-                z.looseObject({
-                    id: z.string(),
-                    contentType: z.literal("video"),
-                    content: videoSchema,
-                }),
-                z.looseObject({
-                    id: z.string(),
-                    contentType: z.literal("mylist"),
-                }),
-            ]),
-        ),
-    }),
+  data: z.looseObject({
+    items: z.array(
+      z.union([
+        z.looseObject({
+          id: z.string(),
+          contentType: z.literal("video"),
+          content: videoSchema,
+        }),
+        z.looseObject({
+          id: z.string(),
+          contentType: z.literal("mylist"),
+        }),
+      ]),
+    ),
+  }),
 });
 
 export type RecommendApi = z.infer<typeof recommendApiSchema>;

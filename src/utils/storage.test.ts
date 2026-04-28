@@ -5,29 +5,29 @@ import type { Settings } from "@/types/storage/settings.types";
 import { setSettings } from "./storage-write";
 
 describe(loadSettings.name, () => {
-    it.each([
-        {
-            name: "設定なし",
-            expected: defaultSettings,
-        },
-        {
-            name: "設定あり",
-            settings: { enableCommentFilter: false },
-            expected: { ...defaultSettings, enableCommentFilter: false },
-        },
-    ] satisfies {
-        name: string;
-        settings?: Partial<Settings>;
-        expected: Settings;
-    }[])(`$name`, async ({ settings, expected }) => {
-        if (settings !== undefined) await setSettings(settings);
+  it.each([
+    {
+      name: "設定なし",
+      expected: defaultSettings,
+    },
+    {
+      name: "設定あり",
+      settings: { enableCommentFilter: false },
+      expected: { ...defaultSettings, enableCommentFilter: false },
+    },
+  ] satisfies {
+    name: string;
+    settings?: Partial<Settings>;
+    expected: Settings;
+  }[])(`$name`, async ({ settings, expected }) => {
+    if (settings !== undefined) await setSettings(settings);
 
-        expect(await loadSettings()).toEqual(expected);
-    });
+    expect(await loadSettings()).toEqual(expected);
+  });
 });
 
 it(getSettings.name, async () => {
-    await setSettings(defaultSettings);
+  await setSettings(defaultSettings);
 
-    expect(await getSettings()).toEqual(defaultSettings);
+  expect(await getSettings()).toEqual(defaultSettings);
 });

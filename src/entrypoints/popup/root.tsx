@@ -4,10 +4,10 @@ import { StrictMode } from "react";
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
-    const root = createRoot(dom);
-    root.render(
-        <StrictMode>
-            <Init />
-        </StrictMode>,
-    );
+  const root = createRoot(dom);
+  root.render(
+    <StrictMode>
+      <Init />
+    </StrictMode>,
+  );
 }

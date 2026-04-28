@@ -14,103 +14,102 @@ import type { Tab } from "@/types/storage/tab.types";
 export type Filters = FilteringResult["filters"];
 
 export interface FilteringResult {
-    filters: {
-        userIdFilter: UserIdFilter;
-        easyCommentFilter: EasyCommentFilter;
-        commentAssistFilter: CommentAssistFilter;
-        scoreFilter: ScoreFilter;
-        commandsFilter: CommandsFilter;
-        bodyFilter: BodyFilter;
-    };
-    loadedCommentCount: number;
-    strictData: StrictData[];
-    threads: Thread[];
+  filters: {
+    userIdFilter: UserIdFilter;
+    easyCommentFilter: EasyCommentFilter;
+    commentAssistFilter: CommentAssistFilter;
+    scoreFilter: ScoreFilter;
+    commandsFilter: CommandsFilter;
+    bodyFilter: BodyFilter;
+  };
+  loadedCommentCount: number;
+  strictData: StrictData[];
+  threads: Thread[];
 }
 
 export function filterComment(
-    threads: Thread[],
-    settings: Settings,
-    tab: Tab,
+  threads: Thread[],
+  settings: Settings,
+  tab: Tab,
 ): FilteringResult | undefined {
-    if (!settings.enableCommentFilter) return;
+  if (!settings.enableCommentFilter) return;
 
-    // -------------------------------------------------------------------------------------------
-    // フィルタリングと関係ない処理
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // フィルタリングと関係ない処理
+  // -------------------------------------------------------------------------------------------
 
-    // 動画の総コメント数を取得
-    const loadedCommentCount = threads.reduce(
-        (sum, thread) => sum + thread.comments.length,
-        0,
-    );
+  // 動画の総コメント数を取得
+  const loadedCommentCount = threads.reduce(
+    (sum, thread) => sum + thread.comments.length,
+    0,
+  );
 
-    // -------------------------------------------------------------------------------------------
-    // フィルタリングの前処理
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // フィルタリングの前処理
+  // -------------------------------------------------------------------------------------------
 
-    // フィルター初期化
-    const userIdFilter = new UserIdFilter(settings);
-    const easyCommentFilter = new EasyCommentFilter(settings);
-    const commentAssistFilter = new CommentAssistFilter(settings);
-    const scoreFilter = new ScoreFilter(settings);
-    const commandsFilter = new CommandsFilter(settings);
-    const bodyFilter = new BodyFilter(settings);
+  // フィルター初期化
+  const userIdFilter = new UserIdFilter(settings);
+  const easyCommentFilter = new EasyCommentFilter(settings);
+  const commentAssistFilter = new CommentAssistFilter(settings);
+  const scoreFilter = new ScoreFilter(settings);
+  const commandsFilter = new CommandsFilter(settings);
+  const bodyFilter = new BodyFilter(settings);
 
-    const filters: Filters = {
-        userIdFilter,
-        easyCommentFilter,
-        commentAssistFilter,
-        scoreFilter,
-        commandsFilter,
-        bodyFilter,
-    };
-    const ruleFilters = getRuleFilters(filters);
-    const strictFilters = getStrictFilters(filters);
+  const filters: Filters = {
+    userIdFilter,
+    easyCommentFilter,
+    commentAssistFilter,
+    scoreFilter,
+    commandsFilter,
+    bodyFilter,
+  };
+  const ruleFilters = getRuleFilters(filters);
+  const strictFilters = getStrictFilters(filters);
 
-    // 適用するルールを決定
-    for (const filter of Object.values(ruleFilters)) {
-        filter.filterRules(tab);
+  // 適用するルールを決定
+  for (const filter of Object.values(ruleFilters)) {
+    filter.filterRules(tab);
+  }
+
+  // -------------------------------------------------------------------------------------------
+  // フィルタリング
+  // -------------------------------------------------------------------------------------------
+
+  // strictルールのみでフィルタリング
+  for (const filter of Object.values(strictFilters)) {
+    filter.apply(threads, true);
+  }
+
+  const strictData: StrictData[] = [];
+  for (const filter of Object.values(strictFilters)) {
+    for (const data of filter.getStrictData()) {
+      if (strictData.some(({ userId }) => userId === data.userId)) continue;
+
+      strictData.push(data);
     }
+  }
 
-    // -------------------------------------------------------------------------------------------
-    // フィルタリング
-    // -------------------------------------------------------------------------------------------
+  // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
+  const ruleIds = userIdFilter.updateFilter(strictData);
 
-    // strictルールのみでフィルタリング
-    for (const filter of Object.values(strictFilters)) {
-        filter.apply(threads, true);
-    }
+  // 生成されたルールIDをstrictDataに反映
+  for (const [index, ruleId] of ruleIds.entries()) {
+    const data = strictData[index];
+    if (data === undefined) continue;
 
-    const strictData: StrictData[] = [];
-    for (const filter of Object.values(strictFilters)) {
-        for (const data of filter.getStrictData()) {
-            if (strictData.some(({ userId }) => userId === data.userId))
-                continue;
+    data.ruleId = ruleId;
+  }
 
-            strictData.push(data);
-        }
-    }
+  // フィルタリング
+  for (const filter of Object.values(filters)) {
+    filter.apply(threads);
+  }
 
-    // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
-    const ruleIds = userIdFilter.updateFilter(strictData);
-
-    // 生成されたルールIDをstrictDataに反映
-    for (const [index, ruleId] of ruleIds.entries()) {
-        const data = strictData[index];
-        if (data === undefined) continue;
-
-        data.ruleId = ruleId;
-    }
-
-    // フィルタリング
-    for (const filter of Object.values(filters)) {
-        filter.apply(threads);
-    }
-
-    return {
-        filters,
-        loadedCommentCount,
-        strictData,
-        threads,
-    };
+  return {
+    filters,
+    loadedCommentCount,
+    strictData,
+    threads,
+  };
 }

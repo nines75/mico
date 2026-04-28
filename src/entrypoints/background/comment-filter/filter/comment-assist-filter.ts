@@ -10,27 +10,27 @@ import { Filter } from "../filter";
 const RELEASE_DATE = new Date("2025-02-26T00:00:00+09:00");
 
 export class CommentAssistFilter extends Filter {
-    override apply(threads: Thread[]): void {
-        if (!this.settings.enableCommentAssistFilter) return;
+  override apply(threads: Thread[]): void {
+    if (!this.settings.enableCommentAssistFilter) return;
 
-        this.traverseThreads(threads, (comment, thread) => {
-            if (thread.fork === "owner" || thread.fork === "ai") return true;
+    this.traverseThreads(threads, (comment, thread) => {
+      if (thread.fork === "owner" || thread.fork === "ai") return true;
 
-            const { commands, postedAt } = comment;
+      const { commands, postedAt } = comment;
 
-            const date = new Date(postedAt);
-            if (Number.isNaN(date.getTime())) return true; // 有効なDateであるか確認
+      const date = new Date(postedAt);
+      if (Number.isNaN(date.getTime())) return true; // 有効なDateであるか確認
 
-            if (commands.length === 0 && date >= RELEASE_DATE) {
-                this.filteredComments.push({
-                    comment,
-                    target: "comment-assist",
-                });
-
-                return false;
-            }
-
-            return true;
+      if (commands.length === 0 && date >= RELEASE_DATE) {
+        this.filteredComments.push({
+          comment,
+          target: "comment-assist",
         });
-    }
+
+        return false;
+      }
+
+      return true;
+    });
+  }
 }

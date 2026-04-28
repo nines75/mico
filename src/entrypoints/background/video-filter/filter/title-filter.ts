@@ -3,11 +3,11 @@ import type { Video } from "@/types/api/video.types";
 import { PartialFilter } from "../partial-filter";
 
 export class TitleFilter extends PartialFilter {
-    constructor(settings: Settings) {
-        super(settings, "videoTitle", "title");
-    }
+  constructor(settings: Settings) {
+    super(settings, "videoTitle", "title");
+  }
 
-    protected override pickTarget(video: Video): string {
-        return video.title;
-    }
+  protected override pickTarget(video: Video): string {
+    return video.title;
+  }
 }

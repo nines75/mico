@@ -1,20 +1,20 @@
 name: test
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-    test:
-        name: ${{ matrix.task }}
-        timeout-minutes: 30
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                task: ["compile", "lint", "format:ci", "test:ci"]
-        steps:
-            - uses: nines75/composite-action/setup-pnpm@main
-            - run: pnpm ${{ matrix.task }}
+  test:
+    name: ${{ matrix.task }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: ["compile", "lint", "format:ci", "test:ci"]
+    steps:
+      - uses: nines75/composite-action/setup-pnpm@main
+      - run: pnpm ${{ matrix.task }}

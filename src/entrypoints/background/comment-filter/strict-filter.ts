@@ -7,43 +7,43 @@ import type { Rule } from "../rule";
 import { isString } from "@/utils/util";
 
 export interface StrictData {
-    ruleId?: string;
-    userId: string;
-    context: string;
+  ruleId?: string;
+  userId: string;
+  context: string;
 }
 
 export abstract class StrictFilter extends RuleFilter {
-    protected userIds: Set<string>;
-    protected strictData: StrictData[] = [];
+  protected userIds: Set<string>;
+  protected strictData: StrictData[] = [];
 
-    constructor(settings: Settings, target: keyof Rule["target"]) {
-        super(settings, target);
+  constructor(settings: Settings, target: keyof Rule["target"]) {
+    super(settings, target);
 
-        this.userIds = new Set(
-            settings.autoFilter
-                .filter(
-                    (rule) =>
-                        rule.target?.commentUserId === true &&
-                        rule.include === undefined &&
-                        rule.exclude === undefined,
-                )
-                .map(({ pattern }) => pattern)
-                .filter((pattern) => isString(pattern)),
-        );
-    }
+    this.userIds = new Set(
+      settings.autoFilter
+        .filter(
+          (rule) =>
+            rule.target?.commentUserId === true &&
+            rule.include === undefined &&
+            rule.exclude === undefined,
+        )
+        .map(({ pattern }) => pattern)
+        .filter((pattern) => isString(pattern)),
+    );
+  }
 
-    abstract override apply(threads: Thread[], strictOnly?: boolean): void;
+  abstract override apply(threads: Thread[], strictOnly?: boolean): void;
 
-    getStrictData() {
-        return this.strictData;
-    }
+  getStrictData() {
+    return this.strictData;
+  }
 }
 
 export function getStrictFilters(
-    filters: Filters,
+  filters: Filters,
 ): ConditionalPick<Filters, StrictFilter> {
-    return {
-        commandsFilter: filters.commandsFilter,
-        bodyFilter: filters.bodyFilter,
-    };
+  return {
+    commandsFilter: filters.commandsFilter,
+    bodyFilter: filters.bodyFilter,
+  };
 }

@@ -5,65 +5,65 @@ import { replace } from "./util";
 import { messages } from "./config";
 
 export async function sendMessageToBackground(
-    message: BackgroundMessage,
+  message: BackgroundMessage,
 ): Promise<unknown> {
-    return await browser.runtime.sendMessage(message);
+  return await browser.runtime.sendMessage(message);
 }
 
 export async function sendMessageToContent(
-    tabId: number,
-    message: ContentMessage,
+  tabId: number,
+  message: ContentMessage,
 ): Promise<unknown> {
-    return await browser.tabs.sendMessage(tabId, message);
+  return await browser.tabs.sendMessage(tabId, message);
 }
 
 export async function setBadgeState(
-    value: number,
-    color: string,
-    tabId: number,
+  value: number,
+  color: string,
+  tabId: number,
 ) {
-    const text = (() => {
-        if (value === 0) return "";
-        if (value >= 1000) {
-            return Math.floor(value / 1000).toString() + "k";
-        }
+  const text = (() => {
+    if (value === 0) return "";
+    if (value >= 1000) {
+      return Math.floor(value / 1000).toString() + "k";
+    }
 
-        return value.toString();
-    })();
+    return value.toString();
+  })();
 
-    await Promise.all([
-        browser.browserAction.setBadgeText({ text, tabId }),
-        browser.browserAction.setBadgeBackgroundColor({ color, tabId }),
-    ]);
+  await Promise.all([
+    browser.browserAction.setBadgeText({ text, tabId }),
+    browser.browserAction.setBadgeBackgroundColor({ color, tabId }),
+  ]);
 }
 
 export async function notify(message: string) {
-    await browser.notifications.create({
-        type: "basic",
-        title: browser.runtime.getManifest().name,
-        message,
-        iconUrl: browser.runtime.getURL("/icons/128.png"),
-    });
+  await browser.notifications.create({
+    type: "basic",
+    title: browser.runtime.getManifest().name,
+    message,
+    iconUrl: browser.runtime.getURL("/icons/128.png"),
+  });
 }
 
 export async function tryWithPermission(
-    permission: Browser.runtime.ManifestPermission,
-    callback: () => void | Promise<void>,
+  permission: Browser.runtime.ManifestPermission,
+  callback: () => void | Promise<void>,
 ) {
-    const hasPermission = await browser.permissions.contains({
-        permissions: [permission],
-    });
+  const hasPermission = await browser.permissions.contains({
+    permissions: [permission],
+  });
 
-    await (hasPermission
-        ? callback()
-        : notify(replace(messages.other.permissionRequired, [permission])));
+  await (hasPermission
+    ? callback()
+    : notify(replace(messages.other.permissionRequired, [permission])));
 }
 
 export async function getActiveTab() {
-    const tabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-    });
+  const tabs = await browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
 
-    return tabs[0];
+  return tabs[0];
 }

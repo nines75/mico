@@ -8,12 +8,12 @@ const modules = [AllCommunityModule];
 
 const dom = document.querySelector("#root");
 if (dom !== null) {
-    const root = createRoot(dom);
-    root.render(
-        <StrictMode>
-            <AgGridProvider modules={modules}>
-                <Init />
-            </AgGridProvider>
-        </StrictMode>,
-    );
+  const root = createRoot(dom);
+  root.render(
+    <StrictMode>
+      <AgGridProvider modules={modules}>
+        <Init />
+      </AgGridProvider>
+    </StrictMode>,
+  );
 }

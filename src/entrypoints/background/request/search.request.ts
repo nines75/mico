@@ -10,63 +10,61 @@ import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
 export function searchRequest(
-    details: browser.webRequest._OnBeforeRequestDetails,
+  details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-    filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const tabId = details.tabId;
-        const logId = createLogId();
-        if (details.type === "xmlhttprequest") {
-            // XHRでないとmountできない
-            await mountLogId(logId, tabId);
-        }
+  filterResponse(details, "GET", async (filter, encoder, buf) => {
+    const tabId = details.tabId;
+    const logId = createLogId();
+    if (details.type === "xmlhttprequest") {
+      // XHRでないとmountできない
+      await mountLogId(logId, tabId);
+    }
 
-        await importLocalFilter();
+    await importLocalFilter();
 
-        const settings = await loadSettings();
-        const result = spaFilter(
-            details,
-            buf,
-            settings,
-            searchApiSchema,
-            searchApiFilter,
-        );
-        if (result === undefined) return true;
+    const settings = await loadSettings();
+    const result = spaFilter(
+      details,
+      buf,
+      settings,
+      searchApiSchema,
+      searchApiFilter,
+    );
+    if (result === undefined) return true;
 
-        const { filteredBuf, filteringResult } = result;
-        if (filteringResult === undefined) return true;
+    const { filteredBuf, filteringResult } = result;
+    if (filteringResult === undefined) return true;
 
-        filter.write(encoder.encode(filteredBuf));
-        filter.disconnect();
+    filter.write(encoder.encode(filteredBuf));
+    filter.disconnect();
 
-        await Promise.all([
-            saveLog(filteringResult, logId, tabId),
-            ...(details.type === "main_frame"
-                ? [mountLogId(logId, tabId)]
-                : []),
-        ]);
-        await cleanUpDb();
+    await Promise.all([
+      saveLog(filteringResult, logId, tabId),
+      ...(details.type === "main_frame" ? [mountLogId(logId, tabId)] : []),
+    ]);
+    await cleanUpDb();
 
-        return false;
-    });
+    return false;
+  });
 }
 
 function searchApiFilter(
-    searchApi: SearchApi,
-    settings: Settings,
-    meta?: Element | null,
+  searchApi: SearchApi,
+  settings: Settings,
+  meta?: Element | null,
 ) {
-    // フィルタリング対象の動画IDを調べる
-    const videos = searchApi.data.response.$getSearchVideoV2.data.items;
-    const result = filterVideo(videos, settings);
-    if (result === undefined) return;
+  // フィルタリング対象の動画IDを調べる
+  const videos = searchApi.data.response.$getSearchVideoV2.data.items;
+  const result = filterVideo(videos, settings);
+  if (result === undefined) return;
 
-    // 実際にフィルタリング
-    const filteredVideos = videos.filter(
-        (video) => !result.filteredIds.has(video.id),
-    );
+  // 実際にフィルタリング
+  const filteredVideos = videos.filter(
+    (video) => !result.filteredIds.has(video.id),
+  );
 
-    searchApi.data.response.$getSearchVideoV2.data.items = filteredVideos;
-    meta?.setAttribute("content", JSON.stringify(searchApi));
+  searchApi.data.response.$getSearchVideoV2.data.items = filteredVideos;
+  meta?.setAttribute("content", JSON.stringify(searchApi));
 
-    return result;
+  return result;
 }

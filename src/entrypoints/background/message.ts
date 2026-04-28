@@ -2,10 +2,10 @@ import { colors, messages } from "@/utils/config";
 import { loadSettings } from "@/utils/storage";
 import type { Settings } from "@/types/storage/settings.types";
 import {
-    setSettings,
-    removeAllData,
-    addAutoRule,
-    removeAutoRule,
+  setSettings,
+  removeAllData,
+  addAutoRule,
+  removeAutoRule,
 } from "@/utils/storage-write";
 import { getLog, setTab } from "@/utils/db";
 import type { Tab } from "@/types/storage/tab.types";
@@ -17,125 +17,125 @@ import type { SetOptional } from "type-fest";
 import type { AutoRule } from "./rule";
 
 type ExtractData<
-    T extends Extract<BackgroundMessage, { data: unknown }>["type"],
+  T extends Extract<BackgroundMessage, { data: unknown }>["type"],
 > = Extract<BackgroundMessage, { type: T }>["data"];
 
 export type BackgroundMessage =
-    // -------------------------------------------------------------------------------------------
-    // このファイルの関数を呼び出すもの
-    // -------------------------------------------------------------------------------------------
-    | {
-          type: "mount-to-dropdown";
-      }
-    | {
-          type: "on-click-dropdown";
-          data: { videoOnly: boolean };
-      }
-    | {
-          type: "get-comments-for-dropdown";
-      }
-    | {
-          type: "restore-badge";
-      }
-    // -------------------------------------------------------------------------------------------
-    // 他のファイルの関数を呼び出すもの
-    // -------------------------------------------------------------------------------------------
-    | {
-          type: "set-settings";
-          data: Partial<Settings>;
-      }
-    | {
-          type: "set-tab";
-          data: Partial<Tab>;
-      }
-    | {
-          type: "remove-all-data";
-      }
-    | {
-          type: "add-auto-rule";
-          data: SetOptional<AutoRule, "id">[];
-      }
-    | {
-          type: "remove-auto-rule";
-          data: string[];
-      }
-    | {
-          type: "get-log";
-          data: string | undefined | null;
-      }
-    | {
-          type: "notify";
-          data: string;
-      };
+  // -------------------------------------------------------------------------------------------
+  // このファイルの関数を呼び出すもの
+  // -------------------------------------------------------------------------------------------
+  | {
+      type: "mount-to-dropdown";
+    }
+  | {
+      type: "on-click-dropdown";
+      data: { videoOnly: boolean };
+    }
+  | {
+      type: "get-comments-for-dropdown";
+    }
+  | {
+      type: "restore-badge";
+    }
+  // -------------------------------------------------------------------------------------------
+  // 他のファイルの関数を呼び出すもの
+  // -------------------------------------------------------------------------------------------
+  | {
+      type: "set-settings";
+      data: Partial<Settings>;
+    }
+  | {
+      type: "set-tab";
+      data: Partial<Tab>;
+    }
+  | {
+      type: "remove-all-data";
+    }
+  | {
+      type: "add-auto-rule";
+      data: SetOptional<AutoRule, "id">[];
+    }
+  | {
+      type: "remove-auto-rule";
+      data: string[];
+    }
+  | {
+      type: "get-log";
+      data: string | undefined | null;
+    }
+  | {
+      type: "notify";
+      data: string;
+    };
 
 export async function backgroundMessageHandler(
-    message: BackgroundMessage,
-    sender: browser.runtime.MessageSender,
+  message: BackgroundMessage,
+  sender: browser.runtime.MessageSender,
 ) {
-    // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
-    try {
-        if (sender.id !== browser.runtime.id) return;
+  // エラーの発生箇所を出力するためにメッセージ受信側でエラーを出力
+  try {
+    if (sender.id !== browser.runtime.id) return;
 
-        switch (message.type) {
-            // -------------------------------------------------------------------------------------------
-            // このファイルの関数を呼び出すもの
-            // -------------------------------------------------------------------------------------------
-            case "mount-to-dropdown": {
-                await mountToDropdown(sender);
-                break;
-            }
-            case "on-click-dropdown": {
-                await onClickDropdown(message.data, sender);
-                break;
-            }
-            case "get-comments-for-dropdown": {
-                return await getCommentsForDropdown(sender);
-            }
-            case "restore-badge": {
-                await restoreBadge(sender);
-                break;
-            }
-            // -------------------------------------------------------------------------------------------
-            // 他のファイルの関数を呼び出すもの
-            // -------------------------------------------------------------------------------------------
-            case "set-settings": {
-                await setSettings(message.data);
-                break;
-            }
-            case "set-tab": {
-                const tabId = sender.tab?.id;
-                if (tabId !== undefined) {
-                    await setTab(message.data, tabId);
-                }
-
-                break;
-            }
-            case "remove-all-data": {
-                await removeAllData();
-                break;
-            }
-            case "add-auto-rule": {
-                await addAutoRule(message.data);
-                break;
-            }
-            case "remove-auto-rule": {
-                await removeAutoRule(message.data);
-                break;
-            }
-            case "get-log": {
-                if (message.data === undefined || message.data === null) return;
-
-                return await getLog(message.data);
-            }
-            case "notify": {
-                await notify(message.data);
-                break;
-            }
+    switch (message.type) {
+      // -------------------------------------------------------------------------------------------
+      // このファイルの関数を呼び出すもの
+      // -------------------------------------------------------------------------------------------
+      case "mount-to-dropdown": {
+        await mountToDropdown(sender);
+        break;
+      }
+      case "on-click-dropdown": {
+        await onClickDropdown(message.data, sender);
+        break;
+      }
+      case "get-comments-for-dropdown": {
+        return await getCommentsForDropdown(sender);
+      }
+      case "restore-badge": {
+        await restoreBadge(sender);
+        break;
+      }
+      // -------------------------------------------------------------------------------------------
+      // 他のファイルの関数を呼び出すもの
+      // -------------------------------------------------------------------------------------------
+      case "set-settings": {
+        await setSettings(message.data);
+        break;
+      }
+      case "set-tab": {
+        const tabId = sender.tab?.id;
+        if (tabId !== undefined) {
+          await setTab(message.data, tabId);
         }
-    } catch (error) {
-        console.error(error);
-        throw error;
+
+        break;
+      }
+      case "remove-all-data": {
+        await removeAllData();
+        break;
+      }
+      case "add-auto-rule": {
+        await addAutoRule(message.data);
+        break;
+      }
+      case "remove-auto-rule": {
+        await removeAutoRule(message.data);
+        break;
+      }
+      case "get-log": {
+        if (message.data === undefined || message.data === null) return;
+
+        return await getLog(message.data);
+      }
+      case "notify": {
+        await notify(message.data);
+        break;
+      }
     }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 // -------------------------------------------------------------------------------------------
@@ -143,88 +143,88 @@ export async function backgroundMessageHandler(
 // -------------------------------------------------------------------------------------------
 
 async function mountToDropdown(sender: browser.runtime.MessageSender) {
-    const tabId = sender.tab?.id;
-    const comment = await getDropdownComment(sender);
-    if (tabId === undefined || comment === undefined) return;
+  const tabId = sender.tab?.id;
+  const comment = await getDropdownComment(sender);
+  if (tabId === undefined || comment === undefined) return;
 
-    const settings = await loadSettings();
-    const texts: string[] = [];
-    if (settings.showUserIdInDropdown)
-        texts.push(`ユーザーID：${comment.userId}`);
-    if (settings.showScoreInDropdown) texts.push(`NGスコア：${comment.score}`);
+  const settings = await loadSettings();
+  const texts: string[] = [];
+  if (settings.showUserIdInDropdown)
+    texts.push(`ユーザーID：${comment.userId}`);
+  if (settings.showScoreInDropdown) texts.push(`NGスコア：${comment.score}`);
 
-    if (texts.length > 0) {
-        await sendMessageToContent(tabId, {
-            type: "mount-to-dropdown",
-            data: texts,
-        });
-    }
+  if (texts.length > 0) {
+    await sendMessageToContent(tabId, {
+      type: "mount-to-dropdown",
+      data: texts,
+    });
+  }
 }
 
 async function onClickDropdown(
-    data: ExtractData<"on-click-dropdown">,
-    sender: browser.runtime.MessageSender,
+  data: ExtractData<"on-click-dropdown">,
+  sender: browser.runtime.MessageSender,
 ) {
-    const tabId = sender.tab?.id;
-    const comment = await getDropdownComment(sender);
-    if (tabId === undefined || comment?.$videoId === undefined) {
-        await notify(messages.ngUserId.additionFailed);
-        return;
-    }
+  const tabId = sender.tab?.id;
+  const comment = await getDropdownComment(sender);
+  if (tabId === undefined || comment?.$videoId === undefined) {
+    await notify(messages.ngUserId.additionFailed);
+    return;
+  }
 
-    const settings = await loadSettings();
-    await addAutoRule([
-        {
-            pattern: comment.userId,
-            context: `comment-body: ${comment.body}`,
-            source: "dropdown",
-            target: { commentUserId: true },
-            ...(data.videoOnly && {
-                include: { videoIds: [[comment.$videoId]] },
-            }),
-        },
-    ]);
+  const settings = await loadSettings();
+  await addAutoRule([
+    {
+      pattern: comment.userId,
+      context: `comment-body: ${comment.body}`,
+      source: "dropdown",
+      target: { commentUserId: true },
+      ...(data.videoOnly && {
+        include: { videoIds: [[comment.$videoId]] },
+      }),
+    },
+  ]);
 
-    const tasks: Promise<unknown>[] = [];
-    if (settings.autoReload)
-        tasks.push(sendMessageToContent(tabId, { type: "reload" }));
-    if (settings.notifyOnManualNg && !settings.autoReload)
-        tasks.push(notify(messages.ngUserId.additionSuccess));
+  const tasks: Promise<unknown>[] = [];
+  if (settings.autoReload)
+    tasks.push(sendMessageToContent(tabId, { type: "reload" }));
+  if (settings.notifyOnManualNg && !settings.autoReload)
+    tasks.push(notify(messages.ngUserId.additionSuccess));
 
-    await Promise.all(tasks);
+  await Promise.all(tasks);
 }
 
 async function getCommentsForDropdown(sender: browser.runtime.MessageSender) {
-    const tabId = sender.tab?.id;
-    const logId = await getLogId(tabId);
-    if (tabId === undefined || logId === undefined) return;
+  const tabId = sender.tab?.id;
+  const logId = await getLogId(tabId);
+  if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLog(logId);
-    if (log === undefined) return;
+  const log = await getLog(logId);
+  if (log === undefined) return;
 
-    const dropdownComment = await getDropdownComment(sender);
-    const userId = dropdownComment?.userId;
-    if (userId === undefined) return;
+  const dropdownComment = await getDropdownComment(sender);
+  const userId = dropdownComment?.userId;
+  if (userId === undefined) return;
 
-    return log.comment?.renderedComments
-        .filter((comment) => comment.userId === userId)
-        .toSorted((a, b) => a.body.localeCompare(b.body))
-        .toSorted((a, b) => a.score - b.score)
-        .map(
-            (comment) =>
-                `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,
-        )
-        .join("\n");
+  return log.comment?.renderedComments
+    .filter((comment) => comment.userId === userId)
+    .toSorted((a, b) => a.body.localeCompare(b.body))
+    .toSorted((a, b) => a.score - b.score)
+    .map(
+      (comment) =>
+        `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,
+    )
+    .join("\n");
 }
 
 async function restoreBadge(sender: browser.runtime.MessageSender) {
-    const tabId = sender.tab?.id;
-    const logId = await getLogId(tabId);
-    if (tabId === undefined || logId === undefined) return;
+  const tabId = sender.tab?.id;
+  const logId = await getLogId(tabId);
+  if (tabId === undefined || logId === undefined) return;
 
-    const log = await getLog(logId);
-    const count = log?.count?.blockedVideo;
-    if (count === undefined) return;
+  const log = await getLog(logId);
+  const count = log?.count?.blockedVideo;
+  if (count === undefined) return;
 
-    await setBadgeState(count, colors.videoBadge, tabId);
+  await setBadgeState(count, colors.videoBadge, tabId);
 }

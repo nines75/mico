@@ -8,54 +8,51 @@ import { getTab } from "@/utils/db";
 import { safeParseJson } from "@/utils/util";
 
 export function recommendRequest(
-    details: browser.webRequest._OnBeforeRequestDetails,
+  details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-    filterResponse(details, "GET", async (filter, encoder, buf) => {
-        const tabId = details.tabId;
-        const [settings, tab] = await Promise.all([
-            loadSettings(),
-            getTab(tabId),
-        ]);
-        const logId = tab?.logId;
-        if (logId === undefined) return true;
+  filterResponse(details, "GET", async (filter, encoder, buf) => {
+    const tabId = details.tabId;
+    const [settings, tab] = await Promise.all([loadSettings(), getTab(tabId)]);
+    const logId = tab?.logId;
+    if (logId === undefined) return true;
 
-        const recommendApi: RecommendApi | undefined = safeParseJson(
-            buf,
-            recommendApiSchema,
-        );
-        if (recommendApi === undefined) return true;
+    const recommendApi: RecommendApi | undefined = safeParseJson(
+      buf,
+      recommendApiSchema,
+    );
+    if (recommendApi === undefined) return true;
 
-        // シリーズの次の動画を追加
-        const series = tab?.series;
-        if (series?.video !== undefined && series.hasNext) {
-            const videoId = series.video.id;
+    // シリーズの次の動画を追加
+    const series = tab?.series;
+    if (series?.video !== undefined && series.hasNext) {
+      const videoId = series.video.id;
 
-            if (recommendApi.data.items.every((item) => item.id !== videoId)) {
-                recommendApi.data.items.push({
-                    id: videoId,
-                    content: series.video,
-                    contentType: "video",
-                });
-            }
-        }
+      if (recommendApi.data.items.every((item) => item.id !== videoId)) {
+        recommendApi.data.items.push({
+          id: videoId,
+          content: series.video,
+          contentType: "video",
+        });
+      }
+    }
 
-        // フィルタリング対象の動画IDを調べる
-        const videos = recommendApi.data.items
-            .filter((item) => item.contentType === "video")
-            .map((item) => item.content);
-        const result = filterVideo(videos, settings, true);
-        if (result === undefined) return true;
+    // フィルタリング対象の動画IDを調べる
+    const videos = recommendApi.data.items
+      .filter((item) => item.contentType === "video")
+      .map((item) => item.content);
+    const result = filterVideo(videos, settings, true);
+    if (result === undefined) return true;
 
-        // 実際にフィルタリング
-        recommendApi.data.items = recommendApi.data.items.filter(
-            (item) => !result.filteredIds.has(item.id),
-        );
+    // 実際にフィルタリング
+    recommendApi.data.items = recommendApi.data.items.filter(
+      (item) => !result.filteredIds.has(item.id),
+    );
 
-        filter.write(encoder.encode(JSON.stringify(recommendApi)));
-        filter.disconnect();
+    filter.write(encoder.encode(JSON.stringify(recommendApi)));
+    filter.disconnect();
 
-        await saveLog(result, logId, tabId, false);
+    await saveLog(result, logId, tabId, false);
 
-        return false;
-    });
+    return false;
+  });
 }

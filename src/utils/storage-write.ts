@@ -17,144 +17,141 @@ import type { SetOptional } from "type-fest";
 const queue = new PQueue({ concurrency: 1 });
 
 export async function removeAllData() {
-    await Promise.all([
-        queue.add(async () => {
-            // すべてのデータを削除するとバージョン情報まで消えるため単体で削除
-            await storage.removeItem(`${storageArea}:settings`);
-        }),
-        clearDb(),
-    ]);
+  await Promise.all([
+    queue.add(async () => {
+      // すべてのデータを削除するとバージョン情報まで消えるため単体で削除
+      await storage.removeItem(`${storageArea}:settings`);
+    }),
+    clearDb(),
+  ]);
 }
 
 export async function setSettings(
-    value: Partial<Settings> | (() => Promise<Partial<Settings>>),
+  value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
-    await queue.add(async () => {
-        const settings = await getSettings();
-        const newSettings = {
-            ...settings,
-            ...(typeof value === "function" ? await value() : value),
-        };
+  await queue.add(async () => {
+    const settings = await getSettings();
+    const newSettings = {
+      ...settings,
+      ...(typeof value === "function" ? await value() : value),
+    };
 
-        await storage.setItem(`${storageArea}:settings`, newSettings);
-    });
+    await storage.setItem(`${storageArea}:settings`, newSettings);
+  });
 }
 
 export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
-    if (rules.length === 0) return;
+  if (rules.length === 0) return;
 
-    const transaction = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
+  const transaction = async (): Promise<Partial<Settings>> => {
+    const settings = await loadSettings();
 
-        return {
-            autoFilter: [
-                ...rules.map((rule) => {
-                    return {
-                        ...rule,
-                        id: rule.id ?? crypto.randomUUID(),
-                    } satisfies AutoRule;
-                }),
-                ...settings.autoFilter,
-            ],
-        };
+    return {
+      autoFilter: [
+        ...rules.map((rule) => {
+          return {
+            ...rule,
+            id: rule.id ?? crypto.randomUUID(),
+          } satisfies AutoRule;
+        }),
+        ...settings.autoFilter,
+      ],
     };
+  };
 
-    await setSettings(transaction);
+  await setSettings(transaction);
 }
 
 export async function removeAutoRule(ids: string[]) {
-    if (ids.length === 0) return;
+  if (ids.length === 0) return;
 
-    const transaction = async (): Promise<Partial<Settings>> => {
-        const settings = await loadSettings();
+  const transaction = async (): Promise<Partial<Settings>> => {
+    const settings = await loadSettings();
 
-        return {
-            autoFilter: settings.autoFilter.filter(
-                ({ id }) => id !== undefined && !ids.includes(id),
-            ),
-        };
+    return {
+      autoFilter: settings.autoFilter.filter(
+        ({ id }) => id !== undefined && !ids.includes(id),
+      ),
     };
+  };
 
-    await setSettings(transaction);
+  await setSettings(transaction);
 }
 
 export async function addRuleFromUrl(url: string | undefined) {
-    const settings = await loadSettings();
+  const settings = await loadSettings();
 
-    const videoId = url?.match(
-        /^https:\/\/www\.nicovideo\.jp\/watch\/([^?]+)/,
-    )?.[1];
-    if (videoId !== undefined) {
-        await addAutoRule([
-            {
-                pattern: videoId,
-                source: "contextMenu",
-                target: { videoId: true },
-            },
-        ]);
+  const videoId = url?.match(
+    /^https:\/\/www\.nicovideo\.jp\/watch\/([^?]+)/,
+  )?.[1];
+  if (videoId !== undefined) {
+    await addAutoRule([
+      {
+        pattern: videoId,
+        source: "contextMenu",
+        target: { videoId: true },
+      },
+    ]);
 
-        if (settings.notifyOnManualNg) {
-            await notify(`以下の動画IDをNG登録しました\n\n${videoId}`);
-        }
-
-        return;
+    if (settings.notifyOnManualNg) {
+      await notify(`以下の動画IDをNG登録しました\n\n${videoId}`);
     }
 
-    const userId = url?.match(
-        /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
-    )?.[1];
-    if (userId !== undefined) {
-        await addAutoRule([
-            {
-                pattern: userId,
-                source: "contextMenu",
-                target: { videoOwnerId: true },
-            },
-        ]);
+    return;
+  }
 
-        if (settings.notifyOnManualNg) {
-            await notify(`以下のユーザーIDをNG登録しました\n\n${userId}`);
-        }
+  const userId = url?.match(
+    /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
+  )?.[1];
+  if (userId !== undefined) {
+    await addAutoRule([
+      {
+        pattern: userId,
+        source: "contextMenu",
+        target: { videoOwnerId: true },
+      },
+    ]);
 
-        return;
+    if (settings.notifyOnManualNg) {
+      await notify(`以下のユーザーIDをNG登録しました\n\n${userId}`);
     }
 
-    await notify(messages.ngId.extractionFailed);
+    return;
+  }
+
+  await notify(messages.ngId.extractionFailed);
 }
 
 export async function importLocalFilter(isManual = false) {
-    // 権限があるか確認する前に設定を確認
-    // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
-    const settings = await loadSettings();
-    if (!isManual && !settings.importLocalFilterOnLoad) return;
+  // 権限があるか確認する前に設定を確認
+  // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
+  const settings = await loadSettings();
+  if (!isManual && !settings.importLocalFilterOnLoad) return;
 
-    await tryWithPermission("nativeMessaging", async () => {
-        if (settings.localFilterPath === "") {
-            await notify(messages.settings.pathNotSet);
-            return;
-        }
+  await tryWithPermission("nativeMessaging", async () => {
+    if (settings.localFilterPath === "") {
+      await notify(messages.settings.pathNotSet);
+      return;
+    }
 
-        const response = (await browser.runtime.sendNativeMessage(
-            "mico.native",
-            {
-                path: settings.localFilterPath,
-                shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
-            },
-        )) as { settings?: Partial<Settings> };
+    const response = (await browser.runtime.sendNativeMessage("mico.native", {
+      path: settings.localFilterPath,
+      shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
+    })) as { settings?: Partial<Settings> };
 
-        // キャンセルされた場合
-        if (response.settings === undefined) return;
+    // キャンセルされた場合
+    if (response.settings === undefined) return;
 
-        // ファイルが見つからなかった場合
-        if (Object.keys(response.settings).length === 0) {
-            await notify(messages.settings.localFileNotFound);
-            return;
-        }
+    // ファイルが見つからなかった場合
+    if (Object.keys(response.settings).length === 0) {
+      await notify(messages.settings.localFileNotFound);
+      return;
+    }
 
-        await setSettings(response.settings);
+    await setSettings(response.settings);
 
-        if (isManual) {
-            await notify(messages.settings.importSuccess);
-        }
-    });
+    if (isManual) {
+      await notify(messages.settings.importSuccess);
+    }
+  });
 }

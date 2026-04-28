@@ -4,34 +4,34 @@ import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 
 interface CheckboxInputProps {
-    id: keyof ConditionalPick<Settings, number>;
-    label: string;
-    min?: number;
-    max?: number;
+  id: keyof ConditionalPick<Settings, number>;
+  label: string;
+  min?: number;
+  max?: number;
 }
 
 export default function CheckboxInput({
-    id,
-    label,
-    min,
-    max,
+  id,
+  label,
+  min,
+  max,
 }: CheckboxInputProps) {
-    const [value, save] = useStorageStore(
-        useShallow((state) => [state.settings[id], state.saveSettings]),
-    );
+  const [value, save] = useStorageStore(
+    useShallow((state) => [state.settings[id], state.saveSettings]),
+  );
 
-    return (
-        <label className="checkbox-input">
-            <input
-                {...{ min, max }}
-                type="number"
-                size={5}
-                value={value}
-                onChange={(event) => {
-                    save({ [id]: Number(event.target.value) });
-                }}
-            />
-            {label}
-        </label>
-    );
+  return (
+    <label className="checkbox-input">
+      <input
+        {...{ min, max }}
+        type="number"
+        size={5}
+        value={value}
+        onChange={(event) => {
+          save({ [id]: Number(event.target.value) });
+        }}
+      />
+      {label}
+    </label>
+  );
 }

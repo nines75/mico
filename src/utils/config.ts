@@ -1,30 +1,30 @@
 import type { Settings } from "../types/storage/settings.types";
 
 export const defaultSettings: Settings = {
-    // -------------------------------------------------------------------------------------------
-    // 一般設定
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // 一般設定
+  // -------------------------------------------------------------------------------------------
 
-    // エディター
-    enableCloseBrackets: true,
-    enableHighlightTrailingWhitespace: true,
+  // エディター
+  enableCloseBrackets: true,
+  enableHighlightTrailingWhitespace: true,
 
-    // 通知
-    notifyOnManualNg: true,
-    notifyOnAutoNg: true,
+  // 通知
+  notifyOnManualNg: true,
+  notifyOnAutoNg: true,
 
-    // 高度な機能
-    showAdvancedFeatures: false,
-    importLocalFilterOnLoad: false,
-    importOnlyWhenWslRunning: false,
-    localFilterPath: "",
+  // 高度な機能
+  showAdvancedFeatures: false,
+  importLocalFilterOnLoad: false,
+  importOnlyWhenWslRunning: false,
+  localFilterPath: "",
 
-    // -------------------------------------------------------------------------------------------
-    // フィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // フィルター
+  // -------------------------------------------------------------------------------------------
 
-    selectedFilter: "manual",
-    manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
+  selectedFilter: "manual",
+  manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
 
 #============================================================
 
@@ -82,129 +82,129 @@ export const defaultSettings: Settings = {
 
 @end
 `,
-    autoFilter: [],
+  autoFilter: [],
 
-    // -------------------------------------------------------------------------------------------
-    // コメントフィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // コメントフィルター
+  // -------------------------------------------------------------------------------------------
 
-    enableCommentFilter: true,
+  enableCommentFilter: true,
 
-    // フィルタリング
-    enableEasyCommentFilter: false,
-    enableCommentAssistFilter: false,
-    enableScoreFilter: false,
-    scoreFilterThreshold: -4800,
-    ignoreMyComments: true,
-    ignoreByNicoru: false,
-    ignoreByNicoruThreshold: 30,
+  // フィルタリング
+  enableEasyCommentFilter: false,
+  enableCommentAssistFilter: false,
+  enableScoreFilter: false,
+  scoreFilterThreshold: -4800,
+  ignoreMyComments: true,
+  ignoreByNicoru: false,
+  ignoreByNicoruThreshold: 30,
 
-    // ドロップダウン
-    autoReload: false,
-    showUserIdInDropdown: false,
-    showScoreInDropdown: false,
+  // ドロップダウン
+  autoReload: false,
+  showUserIdInDropdown: false,
+  showScoreInDropdown: false,
 
-    // -------------------------------------------------------------------------------------------
-    // 動画フィルター
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // 動画フィルター
+  // -------------------------------------------------------------------------------------------
 
-    enableVideoFilter: true,
+  enableVideoFilter: true,
 
-    // フィルタリング
-    enablePaidFilter: false,
-    hideCommentPreview: false,
-    enableViewCountFilter: false,
-    viewCountFilterThreshold: 1000,
+  // フィルタリング
+  enablePaidFilter: false,
+  hideCommentPreview: false,
+  enableViewCountFilter: false,
+  viewCountFilterThreshold: 1000,
 
-    // -------------------------------------------------------------------------------------------
-    // その他
-    // -------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+  // その他
+  // -------------------------------------------------------------------------------------------
 
-    // タブ
-    selectedSettingsTab: "general",
+  // タブ
+  selectedSettingsTab: "general",
 } as const;
 
 export const buttons = {
-    addNgUserId: "ユーザーをNG登録($1)",
-    addSpecificNgUserId: "この動画だけユーザーをNG登録($1)",
-    showComments: "ユーザーが投稿したコメント($1)",
+  addNgUserId: "ユーザーをNG登録($1)",
+  addSpecificNgUserId: "この動画だけユーザーをNG登録($1)",
+  showComments: "ユーザーが投稿したコメント($1)",
 } as const;
 
 export const messages = {
-    ngId: {
-        additionSuccess: "以下のIDをNG登録しました\n\n$1",
-        extractionFailed: "IDの抽出に失敗しました",
-    },
-    ngUserId: {
-        // 登録
-        additionSuccess: "ユーザーのNG登録に成功しました",
-        additionFailed: "ユーザーのNG登録に失敗しました",
-        notifyAddition: "$1件のユーザーIDをNG登録しました",
-        confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n$1",
-        getInfoFailed: "ユーザー情報の取得に失敗しました",
+  ngId: {
+    additionSuccess: "以下のIDをNG登録しました\n\n$1",
+    extractionFailed: "IDの抽出に失敗しました",
+  },
+  ngUserId: {
+    // 登録
+    additionSuccess: "ユーザーのNG登録に成功しました",
+    additionFailed: "ユーザーのNG登録に失敗しました",
+    notifyAddition: "$1件のユーザーIDをNG登録しました",
+    confirmAddition: "以下のユーザーIDをNG登録しますか？\n\n$1",
+    getInfoFailed: "ユーザー情報の取得に失敗しました",
 
-        // 削除
-        confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n$1",
+    // 削除
+    confirmRemoval: "以下のNGユーザーIDを削除しますか？\n\n$1",
 
-        undoStrict:
-            "strictルールによってNG登録されたユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n$1",
-        alreadyAdded: "このユーザーIDは既にNG登録されています",
-        cannotGetUserId: "このコメントのユーザーIDは取得できません",
-    },
-    ngVideoId: {
-        additionFailed: "動画のNG登録に失敗しました",
-        confirmAddition: "以下の動画IDをNG登録しますか？\n\n$1",
-        confirmRemoval: "以下のNG動画IDを削除しますか？\n\n$1",
-        getInfoFailed: "動画情報の取得に失敗しました",
-    },
-    settings: {
-        neverReset: "設定が一度も変更されていません",
-        confirmReset:
-            "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
-        importSuccess: "ローカルファイルからフィルターをインポートしました",
-        pathNotSet: "パスが設定されていません",
-        localFileNotFound: "ローカルファイルが見つかりませんでした",
-    },
-    popup: {
-        notWorking: "このページでは動作しません",
-        outdatedLog: "表示されているログは古いものである可能性があります",
-    },
-    other: {
-        permissionRequired: "以下の権限が必要です\n\n$1",
-        getCommentFailed: "コメントの取得に失敗しました",
-    },
+    undoStrict:
+      "strictルールによってNG登録されたユーザーIDを削除します。\n以下のNGユーザーIDを削除しますか？\n\n$1",
+    alreadyAdded: "このユーザーIDは既にNG登録されています",
+    cannotGetUserId: "このコメントのユーザーIDは取得できません",
+  },
+  ngVideoId: {
+    additionFailed: "動画のNG登録に失敗しました",
+    confirmAddition: "以下の動画IDをNG登録しますか？\n\n$1",
+    confirmRemoval: "以下のNG動画IDを削除しますか？\n\n$1",
+    getInfoFailed: "動画情報の取得に失敗しました",
+  },
+  settings: {
+    neverReset: "設定が一度も変更されていません",
+    confirmReset:
+      "ストレージに保存されている全てのデータを削除します。\nこの操作により、この拡張機能の設定やログがリセットされます。\n続行しますか？",
+    importSuccess: "ローカルファイルからフィルターをインポートしました",
+    pathNotSet: "パスが設定されていません",
+    localFileNotFound: "ローカルファイルが見つかりませんでした",
+  },
+  popup: {
+    notWorking: "このページでは動作しません",
+    outdatedLog: "表示されているログは古いものである可能性があります",
+  },
+  other: {
+    permissionRequired: "以下の権限が必要です\n\n$1",
+    getCommentFailed: "コメントの取得に失敗しました",
+  },
 } as const;
 
 export const titles = {
-    // 登録
-    addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
-    addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
-    addNgVideo: "クリックしてこの動画をNG登録",
+  // 登録
+  addNgUserIdByComment: "クリックしてこのコメントを投稿したユーザーをNG登録",
+  addNgUserIdByVideo: "クリックしてこの動画を投稿したユーザーをNG登録",
+  addNgVideo: "クリックしてこの動画をNG登録",
 
-    // 削除
-    removeNgUserId: "クリックしてNGユーザーIDを削除",
-    removeNgVideoId: "クリックしてNG動画IDを削除",
+  // 削除
+  removeNgUserId: "クリックしてNGユーザーIDを削除",
+  removeNgVideoId: "クリックしてNG動画IDを削除",
 
-    // ログ
-    ngScore: "NGスコア",
-    nicoruCount: "ニコるの数",
-    duplicateComments: "本文が重複したコメントの数",
-    strictSymbol: "strictルールによってNG登録されたユーザーID",
-    showLog: "クリックしてログを表示",
-    hideLog: "クリックしてログを非表示",
+  // ログ
+  ngScore: "NGスコア",
+  nicoruCount: "ニコるの数",
+  duplicateComments: "本文が重複したコメントの数",
+  strictSymbol: "strictルールによってNG登録されたユーザーID",
+  showLog: "クリックしてログを表示",
+  hideLog: "クリックしてログを非表示",
 
-    undoStrict: "strictルールによってNG登録されたユーザーIDを削除します",
+  undoStrict: "strictルールによってNG登録されたユーザーIDを削除します",
 } as const;
 
 export const colors = {
-    commentBadge: "#b22222",
-    videoBadge: "#00ffff",
+  commentBadge: "#b22222",
+  videoBadge: "#00ffff",
 } as const;
 
 export const urls = {
-    repository: "https://github.com/nines75/mico",
-    changeLog: "https://github.com/nines75/mico/releases",
-    wiki: "https://github.com/nines75/mico/wiki",
-    issues: "https://github.com/nines75/mico/issues",
-    discussions: "https://github.com/nines75/mico/discussions",
+  repository: "https://github.com/nines75/mico",
+  changeLog: "https://github.com/nines75/mico/releases",
+  wiki: "https://github.com/nines75/mico/wiki",
+  issues: "https://github.com/nines75/mico/issues",
+  discussions: "https://github.com/nines75/mico/discussions",
 } as const;

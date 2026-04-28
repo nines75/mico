@@ -1,43 +1,43 @@
 @import "../../assets/global.css";
 
 #root {
-    background: var(--background);
-    color: var(--dim-white);
+  background: var(--background);
+  color: var(--dim-white);
 
-    /* 高さをウインドウサイズに応じて変える */
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+  /* 高さをウインドウサイズに応じて変える */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 .filter-select {
-    margin: 10px;
-    height: 40px;
+  margin: 10px;
+  height: 40px;
 }
 .blocked {
-    color: var(--lighter-gray);
+  color: var(--lighter-gray);
 }
 .log {
-    /* 高さをウインドウサイズに応じて変える */
-    flex: 1;
-    min-height: 0;
+  /* 高さをウインドウサイズに応じて変える */
+  flex: 1;
+  min-height: 0;
 }
 .rule {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 .remove-rule-button {
-    border: none;
+  border: none;
 }
 .tab {
-    border-bottom: 2px solid gray;
+  border-bottom: 2px solid gray;
 }
 .tab-button {
-    border: none;
-    font-size: 18px;
-    padding: 12px;
+  border: none;
+  font-size: 18px;
+  padding: 12px;
 }
 .selected-tab-button {
-    color: lightskyblue;
-    border-bottom: 2px solid lightskyblue;
-    margin-bottom: -2px; /* 親のボーダーに重ねる */
+  color: lightskyblue;
+  border-bottom: 2px solid lightskyblue;
+  margin-bottom: -2px; /* 親のボーダーに重ねる */
 }
