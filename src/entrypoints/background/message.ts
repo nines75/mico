@@ -150,7 +150,7 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
   const texts: string[] = [];
   if (settings.showUserIdInDropdown)
     texts.push(`ユーザーID：${comment.userId}`);
-  if (settings.showScoreInDropdown) texts.push(`NGスコア：${comment.score}`);
+  if (settings.showScoreInDropdown) texts.push(`スコア：${comment.score}`);
 
   if (texts.length > 0) {
     await sendMessageToContent(tabId, {

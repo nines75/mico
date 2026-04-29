@@ -35,7 +35,7 @@ const config = [
       },
       {
         id: "enableScoreFilter",
-        label: "NGスコアによるフィルタリングを有効にする",
+        label: "スコアによるフィルタリングを有効にする",
         input: {
           id: "scoreFilterThreshold",
           label: "以下の場合にフィルタリング",
@@ -66,7 +66,7 @@ const config = [
       },
       {
         id: "showScoreInDropdown",
-        label: "NGスコアを表示する",
+        label: "スコアを表示する",
       },
       {
         id: "autoReload",

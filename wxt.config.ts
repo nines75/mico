@@ -73,7 +73,7 @@ export default defineConfig({
       optional_permissions: ["clipboardRead", "nativeMessaging"],
       commands: {
         "open-settings": {
-          description: "設定ページを開く",
+          description: "設定を開く",
           suggested_key: isDevelopment
             ? {
                 default: "Alt+O",
@@ -97,7 +97,7 @@ export default defineConfig({
             : {},
         },
         "import-local-filter": {
-          description: "ローカルファイルからフィルターをインポート",
+          description: "ローカルフィルターをインポート",
           suggested_key: isDevelopment
             ? {
                 default: "Ctrl+Alt+N",
