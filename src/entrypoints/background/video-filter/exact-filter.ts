@@ -6,10 +6,13 @@ export abstract class ExactFilter extends RuleFilter {
   protected abstract pickTarget(video: Video): string;
 
   override apply(data: { videos: Video[] }): void {
+    const rules = this.rules;
+    if (rules.length === 0) return;
+
     this.traverseVideos(data, (video) => {
       const target = this.pickTarget(video);
 
-      for (const { pattern, id } of this.rules) {
+      for (const { pattern, id } of rules) {
         if (isString(pattern) ? target !== pattern : !pattern.test(target))
           continue;
 
