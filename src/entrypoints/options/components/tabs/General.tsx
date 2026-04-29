@@ -11,7 +11,7 @@ import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
-import { notify, sendMessageToBackground } from "@/utils/browser";
+import { notify, sendMessage } from "@/utils/browser";
 import { objectKeys } from "ts-extras";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
@@ -146,9 +146,7 @@ async function reset() {
   )
     return;
 
-  await sendMessageToBackground({
-    type: "remove-all-data",
-  });
+  await sendMessage({ type: "remove-all-data" });
 }
 
 // -------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 import type { LogId } from "@/types/storage/log.types";
 import delay from "delay";
-import { getActiveTab, sendMessageToContent, notify } from "./browser";
+import { getActiveTab, sendMessageToTab, notify } from "./browser";
 
 export function createLogId() {
   return crypto.randomUUID();
@@ -9,10 +9,7 @@ export function createLogId() {
 export async function mountLogId(logId: LogId, tabId: number) {
   const mount = async () => {
     try {
-      await sendMessageToContent(tabId, {
-        type: "mount-log-id",
-        data: logId,
-      });
+      await sendMessageToTab(tabId, { type: "mount-log-id", data: logId });
     } catch {
       await delay(1);
       await mount();
@@ -28,7 +25,7 @@ export async function getLogId(
 
   // host権限がないタブではエラーが発生する
   try {
-    return (await sendMessageToContent(tabId, {
+    return (await sendMessageToTab(tabId, {
       type: "get-log-id",
     })) as string | undefined;
   } catch {

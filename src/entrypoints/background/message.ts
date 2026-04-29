@@ -6,7 +6,7 @@ import {
   removeAutoRule,
 } from "@/utils/storage-write";
 import { getLog, setTab } from "@/utils/db";
-import { setBadgeState, sendMessageToContent, notify } from "@/utils/browser";
+import { setBadgeState, sendMessageToTab, notify } from "@/utils/browser";
 import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 import { getDropdownComment } from "./scripting";
@@ -145,10 +145,7 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
   if (settings.showScoreInDropdown) texts.push(`スコア：${comment.score}`);
 
   if (texts.length > 0) {
-    await sendMessageToContent(tabId, {
-      type: "mount-to-dropdown",
-      data: texts,
-    });
+    await sendMessageToTab(tabId, { type: "mount-to-dropdown", data: texts });
   }
 }
 
@@ -178,7 +175,7 @@ async function onClickDropdown(
 
   const tasks: Promise<unknown>[] = [];
   if (settings.autoReload)
-    tasks.push(sendMessageToContent(tabId, { type: "reload" }));
+    tasks.push(sendMessageToTab(tabId, { type: "reload" }));
   if (settings.notifyOnManualNg && !settings.autoReload)
     tasks.push(notify(`以下のユーザーIDをNG登録しました\n\n${comment.userId}`));
 

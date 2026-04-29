@@ -1,5 +1,5 @@
 import type { LogId } from "@/types/storage/log.types";
-import { sendMessageToBackground } from "@/utils/browser";
+import { sendMessage } from "@/utils/browser";
 
 export type ContentMessage =
   | {
@@ -60,7 +60,7 @@ async function reload() {
   const video = document.querySelector("video");
   if (video === null) return;
 
-  await sendMessageToBackground({
+  await sendMessage({
     type: "set-tab",
     data: {
       playbackTime: Math.floor(video.currentTime),

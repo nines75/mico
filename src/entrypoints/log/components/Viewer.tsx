@@ -1,5 +1,5 @@
 import { useMemo } from "#imports";
-import { sendMessageToBackground } from "@/utils/browser";
+import { sendMessage } from "@/utils/browser";
 import { isString, catchAsync } from "@/utils/util";
 import { AG_GRID_LOCALE_JP } from "@ag-grid-community/locale";
 import type {
@@ -102,10 +102,7 @@ export function RuleCell(
         onClick={catchAsync(async () => {
           if (!confirm(`以下のルールを削除しますか？\n\n${value}`)) return;
 
-          await sendMessageToBackground({
-            type: "remove-auto-rule",
-            data: [ruleId],
-          });
+          await sendMessage({ type: "remove-auto-rule", data: [ruleId] });
         })}
       >
         <Trash size={16} />

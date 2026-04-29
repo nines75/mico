@@ -7,7 +7,7 @@ import {
   isSearchPage,
   isWatchPage,
 } from "@/utils/util";
-import { sendMessageToBackground } from "@/utils/browser";
+import { sendMessage } from "@/utils/browser";
 
 export default defineContentScript({
   matches: ["https://www.nicovideo.jp/*"],
@@ -29,9 +29,7 @@ export default defineContentScript({
           // キャッシュによる発火か判定
           if (!event.persisted) return;
 
-          await sendMessageToBackground({
-            type: "restore-badge",
-          });
+          await sendMessage({ type: "restore-badge" });
         }),
       );
     }

@@ -5,7 +5,7 @@ import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { Log } from "../types/storage/log.types";
 import { catchAsync, isWatchPage } from "./util";
-import { getActiveTab, sendMessageToBackground } from "./browser";
+import { getActiveTab, sendMessage } from "./browser";
 import { getLogId } from "./log";
 
 interface StorageState {
@@ -31,7 +31,7 @@ export const useStorageStore = create<StorageState>()(
     }),
     loadPopup: catchAsync(async () => {
       const tab = await getActiveTab();
-      const log = (await sendMessageToBackground({
+      const log = (await sendMessage({
         type: "get-log",
         data: await getLogId(tab?.id),
       })) as Log | undefined;
@@ -46,7 +46,7 @@ export const useStorageStore = create<StorageState>()(
       const params = new URLSearchParams(location.search);
       const id = params.get("id");
 
-      const log = (await sendMessageToBackground({
+      const log = (await sendMessage({
         type: "get-log",
         data: id,
       })) as Log | undefined;
@@ -65,10 +65,7 @@ export const useStorageStore = create<StorageState>()(
 
       // 書き込む
       try {
-        await sendMessageToBackground({
-          type: "set-settings",
-          data: settings,
-        });
+        await sendMessage({ type: "set-settings", data: settings });
       } catch {
         // ロールバック
         set({ settings: currentSettings });

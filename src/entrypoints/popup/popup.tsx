@@ -4,7 +4,7 @@ import { useStorageStore } from "@/utils/store";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
 import { catchAsync } from "@/utils/util";
-import { sendMessageToBackground, notify } from "@/utils/browser";
+import { sendMessage, notify } from "@/utils/browser";
 import { openLog } from "@/utils/log";
 
 export function Init() {
@@ -86,7 +86,7 @@ async function onClickNgVideo() {
     return;
   }
 
-  await sendMessageToBackground({
+  await sendMessage({
     type: "add-auto-rule",
     data: [
       {
@@ -110,7 +110,7 @@ async function onClickNgOwner() {
     return;
   }
 
-  await sendMessageToBackground({
+  await sendMessage({
     type: "add-auto-rule",
     data: [
       {

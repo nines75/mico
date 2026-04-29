@@ -8,7 +8,7 @@ import type { CommentApi } from "@/types/api/comment-api.types";
 import { commentApiSchema } from "@/types/api/comment-api.types";
 import { cleanUpDb, getTab, setTab } from "@/utils/db";
 import type { Tab } from "@/types/storage/tab.types";
-import { sendMessageToContent, notify } from "@/utils/browser";
+import { sendMessageToTab, notify } from "@/utils/browser";
 import { safeParseJson } from "@/utils/util";
 
 export default function commentRequest(
@@ -86,9 +86,6 @@ async function restorePlaybackTime(tabId: number, tab: Tab) {
 
   await Promise.all([
     setTab({ playbackTime: 0 }, tabId),
-    sendMessageToContent(tabId, {
-      type: "set-playback-time",
-      data: playbackTime,
-    }),
+    sendMessageToTab(tabId, { type: "set-playback-time", data: playbackTime }),
   ]);
 }

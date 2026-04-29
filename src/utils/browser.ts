@@ -2,13 +2,13 @@ import type { Browser } from "#imports";
 import type { BackgroundMessage } from "@/entrypoints/background/message";
 import type { ContentMessage } from "@/entrypoints/content/message";
 
-export async function sendMessageToBackground(
+export async function sendMessage(
   message: BackgroundMessage,
 ): Promise<unknown> {
   return await browser.runtime.sendMessage(message);
 }
 
-export async function sendMessageToContent(
+export async function sendMessageToTab(
   tabId: number,
   message: ContentMessage,
 ): Promise<unknown> {

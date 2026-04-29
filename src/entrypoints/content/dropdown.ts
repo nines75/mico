@@ -1,4 +1,4 @@
-import { sendMessageToBackground } from "@/utils/browser";
+import { sendMessage } from "@/utils/browser";
 import { catchAsync, replace } from "@/utils/util";
 
 interface DropdownContent {
@@ -14,13 +14,13 @@ export async function mountToDropdown(element: Element) {
     {
       text: "ユーザーをNG登録($1)",
       callback: async () => {
-        await sendMessageToBackground({ type: "on-click-dropdown" });
+        await sendMessage({ type: "on-click-dropdown" });
       },
     },
     {
       text: "この動画だけユーザーをNG登録($1)",
       callback: async () => {
-        await sendMessageToBackground({
+        await sendMessage({
           type: "on-click-dropdown",
           data: { videoOnly: true },
         });
@@ -29,11 +29,11 @@ export async function mountToDropdown(element: Element) {
     {
       text: "ユーザーが投稿したコメント($1)",
       callback: async () => {
-        const comments = (await sendMessageToBackground({
+        const comments = (await sendMessage({
           type: "get-comments-for-dropdown",
         })) as string | undefined;
         if (comments === undefined) {
-          await sendMessageToBackground({
+          await sendMessage({
             type: "notify",
             data: "コメントの取得に失敗しました",
           });
@@ -45,7 +45,7 @@ export async function mountToDropdown(element: Element) {
     },
   ]);
 
-  await sendMessageToBackground({ type: "mount-to-dropdown" });
+  await sendMessage({ type: "mount-to-dropdown" });
 }
 
 function appendButton(

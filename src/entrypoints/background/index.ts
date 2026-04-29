@@ -11,7 +11,7 @@ import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
 import {
   getActiveTab,
-  sendMessageToContent,
+  sendMessageToTab,
   tryWithPermission,
 } from "@/utils/browser";
 import { openLog } from "@/utils/log";
@@ -91,7 +91,7 @@ export default defineBackground(() => {
         const tabId = tab?.id;
         if (tabId === undefined || !isWatchPage(tab?.url)) return;
 
-        await sendMessageToContent(tabId, { type: command });
+        await sendMessageToTab(tabId, { type: command });
       }
 
       if (command === "open-settings") {
