@@ -20,7 +20,7 @@ export type BackgroundMessage =
     }
   | {
       type: "on-click-dropdown";
-      data: Parameters<typeof onClickDropdown>[0];
+      data?: Parameters<typeof onClickDropdown>[0];
     }
   | {
       type: "get-comments-for-dropdown";
@@ -153,7 +153,7 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
 }
 
 async function onClickDropdown(
-  data: { videoOnly: boolean },
+  data: { videoOnly: boolean } | undefined,
   sender: browser.runtime.MessageSender,
 ) {
   const tabId = sender.tab?.id;
@@ -170,7 +170,7 @@ async function onClickDropdown(
       context: `comment-body: ${comment.body}`,
       source: "dropdown",
       target: { commentUserId: true },
-      ...(data.videoOnly && {
+      ...(data?.videoOnly === true && {
         include: { videoIds: [[comment.$videoId]] },
       }),
     },

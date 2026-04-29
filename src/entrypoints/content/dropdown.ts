@@ -14,10 +14,7 @@ export async function mountToDropdown(element: Element) {
     {
       text: "ユーザーをNG登録($1)",
       callback: async () => {
-        await sendMessageToBackground({
-          type: "on-click-dropdown",
-          data: { videoOnly: false },
-        });
+        await sendMessageToBackground({ type: "on-click-dropdown" });
       },
     },
     {
