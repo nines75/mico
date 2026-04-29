@@ -26,12 +26,12 @@ const config = [
     heading: "フィルタリング",
     items: [
       {
-        id: "enablePaidFilter",
-        label: "有料動画を非表示にする",
-      },
-      {
         id: "hideCommentPreview",
         label: "コメントプレビューを非表示にする",
+      },
+      {
+        id: "enablePaidFilter",
+        label: "有料動画を非表示にする",
       },
       {
         id: "enableViewCountFilter",

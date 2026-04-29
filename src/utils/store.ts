@@ -10,7 +10,7 @@ import { getLogId } from "./log";
 
 interface StorageState {
   settings: Settings;
-  log: Log | undefined;
+  log?: Log | undefined;
   isLoading: boolean;
   isWatchPage: boolean;
   loadSettings: () => void;
@@ -22,7 +22,6 @@ interface StorageState {
 export const useStorageStore = create<StorageState>()(
   subscribeWithSelector((set) => ({
     settings: defaultSettings,
-    log: undefined,
     isLoading: true,
     isWatchPage: false,
     loadSettings: catchAsync(async () => {

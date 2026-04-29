@@ -241,7 +241,7 @@ export function parseFilter(
     rules.push({
       pattern: regex ?? line,
       ...rule,
-      ...(includeIndex ? { index } : {}),
+      ...(includeIndex && { index }),
     });
   }
 

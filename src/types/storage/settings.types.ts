@@ -51,9 +51,9 @@ export interface Settings {
   ignoreByNicoruThreshold: number;
 
   // ドロップダウン
-  autoReload: boolean;
   showUserIdInDropdown: boolean;
   showScoreInDropdown: boolean;
+  autoReload: boolean;
 
   // -------------------------------------------------------------------------------------------
   // 動画フィルター
@@ -62,8 +62,8 @@ export interface Settings {
   enableVideoFilter: boolean;
 
   // フィルタリング
-  enablePaidFilter: boolean;
   hideCommentPreview: boolean;
+  enablePaidFilter: boolean;
   enableViewCountFilter: boolean;
   viewCountFilterThreshold: number;
 

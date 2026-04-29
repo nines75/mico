@@ -86,7 +86,7 @@ export function safeParseJson<T>(
   try {
     if (text === null || text === undefined) return;
 
-    const data = JSON.parse(text) as string;
+    const data = JSON.parse(text) as unknown;
     const result = schema.safeParse(data);
 
     return result.success ? result.data : undefined;

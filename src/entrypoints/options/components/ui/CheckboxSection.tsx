@@ -2,14 +2,14 @@ import type { CheckboxProps } from "./Checkbox";
 import Checkbox from "./Checkbox";
 import H2 from "./H2";
 
-export type CheckboxGroups = {
-  heading?: string;
-  hasChildren?: boolean;
-  items: CheckboxProps[];
-}[];
+export type CheckboxGroups = CheckboxSectionProps["groups"];
 
 export interface CheckboxSectionProps {
-  groups: CheckboxGroups;
+  groups: {
+    heading?: string;
+    hasChildren?: boolean;
+    items: CheckboxProps[];
+  }[];
   children?: React.ReactNode;
 }
 

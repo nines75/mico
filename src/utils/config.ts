@@ -100,9 +100,9 @@ export const defaultSettings: Settings = {
   ignoreByNicoruThreshold: 30,
 
   // ドロップダウン
-  autoReload: false,
   showUserIdInDropdown: false,
   showScoreInDropdown: false,
+  autoReload: false,
 
   // -------------------------------------------------------------------------------------------
   // 動画フィルター
@@ -111,8 +111,8 @@ export const defaultSettings: Settings = {
   enableVideoFilter: true,
 
   // フィルタリング
-  enablePaidFilter: false,
   hideCommentPreview: false,
+  enablePaidFilter: false,
   enableViewCountFilter: false,
   viewCountFilterThreshold: 1000,
 
