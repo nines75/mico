@@ -3,7 +3,7 @@
 #root {
   background: var(--background);
   color: var(--dim-white);
-  padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
+  padding: 0 50px 15px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
 
   /* エディタの高さをウインドウサイズに応じて変える */
   height: 100vh;
@@ -50,6 +50,7 @@ input[type="checkbox"] {
 .rule-container {
   border: gray 1px solid;
   border-radius: 10px;
+  font-family: var(--font);
 
   /* 仮想スクロールする要素の高さをウインドウサイズに応じて変える */
   flex: 1; /* 指定しなくても同じ挙動だが、明示的に残りの領域を割り当てる */
