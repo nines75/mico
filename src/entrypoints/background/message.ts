@@ -1,5 +1,4 @@
 import { loadSettings } from "@/utils/storage";
-import type { Settings } from "@/types/storage/settings.types";
 import {
   setSettings,
   removeAllData,
@@ -7,17 +6,10 @@ import {
   removeAutoRule,
 } from "@/utils/storage-write";
 import { getLog, setTab } from "@/utils/db";
-import type { Tab } from "@/types/storage/tab.types";
 import { setBadgeState, sendMessageToContent, notify } from "@/utils/browser";
 import { getLogId } from "@/utils/log";
 import { escapeNewline } from "@/utils/util";
 import { getDropdownComment } from "./scripting";
-import type { SetOptional } from "type-fest";
-import type { AutoRule } from "./rule";
-
-type ExtractData<
-  T extends Extract<BackgroundMessage, { data: unknown }>["type"],
-> = Extract<BackgroundMessage, { type: T }>["data"];
 
 export type BackgroundMessage =
   // -------------------------------------------------------------------------------------------
@@ -28,7 +20,7 @@ export type BackgroundMessage =
     }
   | {
       type: "on-click-dropdown";
-      data: { videoOnly: boolean };
+      data: Parameters<typeof onClickDropdown>[0];
     }
   | {
       type: "get-comments-for-dropdown";
@@ -41,30 +33,30 @@ export type BackgroundMessage =
   // -------------------------------------------------------------------------------------------
   | {
       type: "set-settings";
-      data: Partial<Settings>;
+      data: Parameters<typeof setSettings>[0];
     }
   | {
       type: "set-tab";
-      data: Partial<Tab>;
+      data: Parameters<typeof setTab>[0];
     }
   | {
       type: "remove-all-data";
     }
   | {
       type: "add-auto-rule";
-      data: SetOptional<AutoRule, "id">[];
+      data: Parameters<typeof addAutoRule>[0];
     }
   | {
       type: "remove-auto-rule";
-      data: string[];
+      data: Parameters<typeof removeAutoRule>[0];
     }
   | {
       type: "get-log";
-      data: string | undefined | null;
+      data: Parameters<typeof getLog>[0] | undefined | null;
     }
   | {
       type: "notify";
-      data: string;
+      data: Parameters<typeof notify>[0];
     };
 
 export async function backgroundMessageHandler(
@@ -161,7 +153,7 @@ async function mountToDropdown(sender: browser.runtime.MessageSender) {
 }
 
 async function onClickDropdown(
-  data: ExtractData<"on-click-dropdown">,
+  data: { videoOnly: boolean },
   sender: browser.runtime.MessageSender,
 ) {
   const tabId = sender.tab?.id;

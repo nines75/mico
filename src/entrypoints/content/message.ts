@@ -1,24 +1,21 @@
 import type { LogId } from "@/types/storage/log.types";
 import { sendMessageToBackground } from "@/utils/browser";
 
-type ExtractData<T extends Extract<ContentMessage, { data: unknown }>["type"]> =
-  Extract<ContentMessage, { type: T }>["data"];
-
 export type ContentMessage =
   | {
       type: "reload";
     }
   | {
       type: "set-playback-time";
-      data: number;
+      data: Parameters<typeof setPlaybackTime>[0];
     }
   | {
       type: "mount-to-dropdown";
-      data: string[];
+      data: Parameters<typeof mountToDropdown>[0];
     }
   | {
       type: "mount-log-id";
-      data: LogId;
+      data: Parameters<typeof mountLogId>[0];
     }
   | {
       type: "get-log-id";
@@ -73,7 +70,7 @@ async function reload() {
   location.reload();
 }
 
-function setPlaybackTime(time: ExtractData<"set-playback-time">) {
+function setPlaybackTime(time: number) {
   const id = setInterval(() => {
     const video = document.querySelector("video");
     if (video !== null) {
@@ -84,7 +81,7 @@ function setPlaybackTime(time: ExtractData<"set-playback-time">) {
   }, 10);
 }
 
-function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
+function mountToDropdown(texts: string[]) {
   const parent = document.querySelector(".z_dropdown > div");
   if (parent === null) return;
 
@@ -103,7 +100,7 @@ function mountToDropdown(texts: ExtractData<"mount-to-dropdown">) {
   }
 }
 
-function mountLogId(logId: ExtractData<"mount-log-id">) {
+function mountLogId(logId: LogId) {
   const id = `${browser.runtime.getManifest().name}-log-id`;
   const current = document.querySelector(`#${id}`);
 
