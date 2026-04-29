@@ -51,13 +51,13 @@ function Page() {
         を確認することをお勧めします。
       </span>
       <div className="tab-container">
-        <div className="tab-inner">
+        <div className="tab">
           {config.map((filter) => (
             <button
               key={filter.id}
               className={clsx(
                 "tab-button",
-                selectedTab === filter.id && "selected-tab-button",
+                selectedTab === filter.id && "selected",
               )}
               onClick={() => {
                 save({ selectedSettingsTab: filter.id });

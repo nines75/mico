@@ -98,7 +98,7 @@ export function RuleCell(
   return (
     <div className="rule">
       <button
-        className="remove-rule-button"
+        className="rule-remove-button"
         onClick={catchAsync(async () => {
           if (!confirm(`以下のルールを削除しますか？\n\n${value}`)) return;
 

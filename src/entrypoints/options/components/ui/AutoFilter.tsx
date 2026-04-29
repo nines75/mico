@@ -36,7 +36,7 @@ function Rule({ rule }: RuleProps) {
     <div className="rule">
       <div className="rule-pattern">
         <button
-          className="rule-delete-button"
+          className="rule-remove-button"
           onClick={() => {
             if (!confirm(`以下のルールを削除しますか？\n\n${pattern}`)) return;
 

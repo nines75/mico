@@ -1,8 +1,14 @@
 @import "../../assets/global.css";
 
-body {
+#root {
   background: var(--background);
   color: var(--dim-white);
+  padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
+
+  /* エディタの高さをウインドウサイズに応じて変える */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 h2 {
   border-bottom: 2px solid gray;
@@ -41,10 +47,6 @@ input[type="checkbox"] {
     height: 30px;
   }
 }
-.link {
-  display: flex;
-  align-items: center;
-}
 .rule-container {
   border: gray 1px solid;
   border-radius: 10px;
@@ -80,7 +82,7 @@ input[type="checkbox"] {
     padding-inline: 4px;
   }
 }
-.rule-delete-button {
+.rule-remove-button {
   border: none;
   color: gray;
 
@@ -91,14 +93,6 @@ input[type="checkbox"] {
   color: red;
   font-size: 13px;
   margin-top: 5px;
-}
-#root {
-  padding: 0 50px 50px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
-
-  /* エディタの高さをウインドウサイズに応じて変える */
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -116,9 +110,9 @@ tab
   padding-top: 20px; /* bodyで指定したりmarginを使うと上書きできない */
   z-index: 1000;
 }
-/* tab-containerはスクロール時に上書きできるように右端まで伸ばす
-ただし下線はボタンの幅に合わせたいので中間にtab-innerを作り調整する */
-.tab-inner {
+/* .tab-containerはスクロール時に上書きできるように右端まで伸ばす
+ただし下線はボタンの幅に合わせたいので中間に.tabを作り調整する */
+.tab {
   width: fit-content;
   border-bottom: 2px solid gray;
 }
@@ -126,11 +120,11 @@ tab
   border: none;
   font-size: 20px;
   padding: 12px;
-}
-.selected-tab-button {
-  color: lightskyblue;
-  border-bottom: 2px solid lightskyblue;
-  margin-bottom: -2px; /* 親のボーダーに重ねる */
+  &.selected {
+    color: lightskyblue;
+    border-bottom: 2px solid lightskyblue;
+    margin-bottom: -2px; /* 親のボーダーに重ねる */
+  }
 }
 .tab-content {
   /* フィルター以外のタブは#rootのpadding-bottomが効かない */
@@ -157,9 +151,9 @@ button
 .filter-button {
   padding: 7px 12px;
   height: 40px; /* import-filter-buttonの有無で位置がずれないようにする */
-}
-.selected-button {
-  border-color: lightskyblue;
+  &.selected {
+    border-color: lightskyblue;
+  }
 }
 .support-button {
   display: inline-block; /* anchorをbuttonのように扱う */

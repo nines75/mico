@@ -31,7 +31,7 @@ function Page() {
         {config.map(({ id, name }) => (
           <button
             key={id}
-            className={clsx("tab-button", id === tab && "selected-tab-button")}
+            className={clsx("tab-button", id === tab && "selected")}
             onClick={() => {
               setTab(id);
             }}

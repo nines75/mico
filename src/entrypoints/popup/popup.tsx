@@ -26,7 +26,7 @@ function Page() {
   return (
     <>
       <header>
-        <span id="version">{`${name} ${version}`}</span>
+        <span className="version">{`${name} ${version}`}</span>
         <div className="link-container">
           <a className="link" href="https://github.com/nines75/mico">
             <SiGithub size={24} />

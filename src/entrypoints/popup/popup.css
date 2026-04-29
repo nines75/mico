@@ -1,5 +1,13 @@
 @import "../../assets/global.css";
 
+#root {
+  background: var(--background);
+  color: var(--dim-white);
+  width: auto;
+  height: auto;
+  text-align: center;
+  display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
+}
 header {
   background: #3b3c4a;
   width: 100%;
@@ -12,7 +20,7 @@ section {
   margin: 10px 30px;
 }
 .info {
-  color: var(--lighter-gray);
+  color: silver;
   .value {
     font-weight: bold;
   }
@@ -45,16 +53,8 @@ section {
     border: none;
   }
 }
-#root {
-  background: #292a2d;
-  color: var(--dim-white);
-  width: auto;
-  height: auto;
-  text-align: center;
-  display: flow-root; /* marginの折り畳み(最下部に背景色が適用されない)を防止 */
-}
-#version {
+.version {
   font-size: 17px;
-  color: var(--lighter-gray);
+  color: silver;
   margin: 0 8px;
 }

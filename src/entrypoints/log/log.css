@@ -14,7 +14,7 @@
   height: 40px;
 }
 .blocked {
-  color: var(--lighter-gray);
+  color: silver;
 }
 .log {
   /* 高さをウインドウサイズに応じて変える */
@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
 }
-.remove-rule-button {
+.rule-remove-button {
   border: none;
 }
 .tab {
@@ -35,9 +35,9 @@
   border: none;
   font-size: 18px;
   padding: 12px;
-}
-.selected-tab-button {
-  color: lightskyblue;
-  border-bottom: 2px solid lightskyblue;
-  margin-bottom: -2px; /* 親のボーダーに重ねる */
+  &.selected {
+    color: lightskyblue;
+    border-bottom: 2px solid lightskyblue;
+    margin-bottom: -2px; /* 親のボーダーに重ねる */
+  }
 }
