@@ -15,4 +15,13 @@ export abstract class Filter {
   getFilteredVideos() {
     return this.filteredVideos;
   }
+
+  protected traverseVideos(
+    data: { videos: Video[] },
+    callback: (video: Video) => boolean,
+  ) {
+    data.videos = data.videos.filter((video) => {
+      return callback(video);
+    });
+  }
 }

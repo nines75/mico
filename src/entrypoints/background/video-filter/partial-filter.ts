@@ -6,7 +6,7 @@ export abstract class PartialFilter extends RuleFilter {
   protected abstract pickTarget(video: Video): string | null;
 
   override apply(data: { videos: Video[] }): void {
-    data.videos = data.videos.filter((video) => {
+    this.traverseVideos(data, (video) => {
       const target = this.pickTarget(video);
       if (target === null) return true;
 

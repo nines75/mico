@@ -5,7 +5,7 @@ export class PaidFilter extends Filter {
   override apply(data: { videos: Video[] }): void {
     if (!this.settings.enablePaidFilter) return;
 
-    data.videos = data.videos.filter((video) => {
+    this.traverseVideos(data, (video) => {
       if (video.isPaymentRequired) {
         this.filteredVideos.push({
           video,
