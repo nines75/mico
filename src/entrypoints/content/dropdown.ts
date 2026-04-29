@@ -1,16 +1,10 @@
+import type { NvComment } from "@/types/api/comment.types";
 import { sendMessage } from "@/utils/browser";
+import { loadSettings } from "@/utils/storage";
 import { catchAsync, replace } from "@/utils/util";
 
-interface DropdownContent {
-  parent: HTMLDivElement;
-  button: HTMLButtonElement;
-}
-
-export async function mountToDropdown(element: Element) {
-  const dropdownContent = getDropdownContent(element);
-  if (dropdownContent === undefined) return;
-
-  appendButton(dropdownContent, [
+export async function mountToDropdown() {
+  appendButton(
     {
       text: "ユーザーをNG登録($1)",
       callback: async () => {
@@ -43,37 +37,57 @@ export async function mountToDropdown(element: Element) {
         alert(comments);
       },
     },
-  ]);
+  );
 
-  await sendMessage({ type: "mount-to-dropdown" });
+  await appendInformation();
 }
 
 function appendButton(
-  dropdownContent: DropdownContent,
-  data: { text: string; callback: () => Promise<void> }[],
+  ...data: { text: string; callback: () => Promise<void> }[]
 ) {
+  const parent = document.querySelector(".z_dropdown > div > div:last-of-type");
+  if (parent === null) return;
+
+  const sample = parent.querySelector(":scope > button");
+  if (sample === null) return;
+
   for (const { text, callback } of data) {
     const button = document.createElement("button");
 
     button.addEventListener("click", catchAsync(callback));
     button.textContent = replace(text, [browser.runtime.getManifest().name]);
-    for (const attribute of dropdownContent.button.attributes) {
+    for (const attribute of sample.attributes) {
       button.setAttribute(attribute.name, attribute.value);
     }
 
-    dropdownContent.parent.append(button);
+    parent.append(button);
   }
 }
 
-function getDropdownContent(element: Element): DropdownContent | undefined {
-  const parent = element.querySelector(":scope > div > div:last-of-type");
-  if (!(parent instanceof HTMLDivElement)) return;
+async function appendInformation() {
+  const comment = (await sendMessage({
+    type: "get-dropdown-comment",
+  })) as NvComment | undefined;
+  if (comment === undefined) return;
 
-  const button = parent.querySelector(":scope > button");
-  if (!(button instanceof HTMLButtonElement)) return;
+  const settings = await loadSettings();
+  const texts = [
+    ...(settings.showUserIdInDropdown ? [`ユーザーID：${comment.userId}`] : []),
+    ...(settings.showScoreInDropdown ? [`スコア：${comment.score}`] : []),
+  ];
+  if (texts.length === 0) return;
 
-  return {
-    parent,
-    button,
-  };
+  const sample = document.querySelector(".z_dropdown > div > div:nth-child(2)");
+  const parent = document.querySelector(".z_dropdown > div > div:last-of-type");
+  if (sample === null || parent === null) return;
+
+  for (const text of texts) {
+    const div = document.createElement("div");
+    div.textContent = `${text} (${browser.runtime.getManifest().name})`;
+    for (const attribute of sample.attributes) {
+      div.setAttribute(attribute.name, attribute.value);
+    }
+
+    parent.before(div);
+  }
 }

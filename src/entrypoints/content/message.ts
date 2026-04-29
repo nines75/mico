@@ -10,10 +10,6 @@ export type ContentMessage =
       data: Parameters<typeof setPlaybackTime>[0];
     }
   | {
-      type: "mount-to-dropdown";
-      data: Parameters<typeof mountToDropdown>[0];
-    }
-  | {
       type: "mount-log-id";
       data: Parameters<typeof mountLogId>[0];
     }
@@ -36,10 +32,6 @@ export async function contentMessageHandler(
       }
       case "set-playback-time": {
         setPlaybackTime(message.data);
-        break;
-      }
-      case "mount-to-dropdown": {
-        mountToDropdown(message.data);
         break;
       }
       case "mount-log-id": {
@@ -79,25 +71,6 @@ function setPlaybackTime(time: number) {
       video.currentTime = time;
     }
   }, 10);
-}
-
-function mountToDropdown(texts: string[]) {
-  const parent = document.querySelector(".z_dropdown > div");
-  if (parent === null) return;
-
-  const sample = parent.querySelector(":scope > div:nth-child(2)");
-  const buttons = parent.querySelector(":scope > div:last-of-type");
-  if (sample === null || buttons === null) return;
-
-  for (const text of texts) {
-    const div = document.createElement("div");
-    div.textContent = `${text} (${browser.runtime.getManifest().name})`;
-    for (const attribute of sample.attributes) {
-      div.setAttribute(attribute.name, attribute.value);
-    }
-
-    buttons.before(div);
-  }
 }
 
 function mountLogId(logId: LogId) {

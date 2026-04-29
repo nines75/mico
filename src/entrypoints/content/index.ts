@@ -43,7 +43,7 @@ async function observerCallback(records: MutationRecord[]) {
 
       // ドロップダウン
       if (isWatchPage(location.href) && node.className === "z_dropdown") {
-        await mountToDropdown(node);
+        await mountToDropdown();
 
         continue;
       }

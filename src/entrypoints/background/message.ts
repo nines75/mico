@@ -16,9 +16,6 @@ export type BackgroundMessage =
   // このファイルの関数を呼び出すもの
   // -------------------------------------------------------------------------------------------
   | {
-      type: "mount-to-dropdown";
-    }
-  | {
       type: "on-click-dropdown";
       data?: Parameters<typeof onClickDropdown>[0];
     }
@@ -55,6 +52,9 @@ export type BackgroundMessage =
       data: Parameters<typeof getLog>[0] | undefined | null;
     }
   | {
+      type: "get-dropdown-comment";
+    }
+  | {
       type: "notify";
       data: Parameters<typeof notify>[0];
     };
@@ -71,10 +71,6 @@ export async function backgroundMessageHandler(
       // -------------------------------------------------------------------------------------------
       // このファイルの関数を呼び出すもの
       // -------------------------------------------------------------------------------------------
-      case "mount-to-dropdown": {
-        await mountToDropdown(sender);
-        break;
-      }
       case "on-click-dropdown": {
         await onClickDropdown(message.data, sender);
         break;
@@ -118,6 +114,9 @@ export async function backgroundMessageHandler(
 
         return await getLog(message.data);
       }
+      case "get-dropdown-comment": {
+        return await getDropdownComment(sender);
+      }
       case "notify": {
         await notify(message.data);
         break;
@@ -132,22 +131,6 @@ export async function backgroundMessageHandler(
 // -------------------------------------------------------------------------------------------
 // メッセージを処理する関数
 // -------------------------------------------------------------------------------------------
-
-async function mountToDropdown(sender: browser.runtime.MessageSender) {
-  const tabId = sender.tab?.id;
-  const comment = await getDropdownComment(sender);
-  if (tabId === undefined || comment === undefined) return;
-
-  const settings = await loadSettings();
-  const texts: string[] = [];
-  if (settings.showUserIdInDropdown)
-    texts.push(`ユーザーID：${comment.userId}`);
-  if (settings.showScoreInDropdown) texts.push(`スコア：${comment.score}`);
-
-  if (texts.length > 0) {
-    await sendMessageToTab(tabId, { type: "mount-to-dropdown", data: texts });
-  }
-}
 
 async function onClickDropdown(
   data: { videoOnly: boolean } | undefined,
