@@ -9,9 +9,9 @@ export class BodyFilter extends StrictFilter {
   }
 
   override apply(threads: Thread[], strictOnly = false): void {
-    const rules = strictOnly
-      ? this.rules.filter((rule) => rule.strict)
-      : this.rules.filter((rule) => !rule.strict);
+    const rules = this.rules.filter((rule) =>
+      strictOnly ? rule.strict : !rule.strict,
+    );
     if (rules.length === 0) return;
 
     this.traverseThreads(threads, (comment) => {

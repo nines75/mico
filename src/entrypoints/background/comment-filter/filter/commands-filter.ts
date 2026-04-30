@@ -2,7 +2,6 @@ import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { isString } from "@/utils/util";
 import { StrictFilter } from "../strict-filter";
-import type { Rule } from "../../rule";
 
 export class CommandsFilter extends StrictFilter {
   private disableCount = 0;
@@ -25,15 +24,19 @@ export class CommandsFilter extends StrictFilter {
   }
 
   override apply(threads: Thread[], strictOnly = false): void {
-    const rules = strictOnly
-      ? this.rules.filter((rule) => this.isStrict(rule))
-      : this.rules
-          .filter((rule) => !this.isStrict(rule))
-          // 無効化ルールを後から適用するためにソート
-          .toSorted((a, b) => {
-            if (a.disable === b.disable) return 0;
-            return a.disable ? 1 : -1;
-          });
+    const rules = this.rules
+      .filter((rule) => {
+        // strictルールと無効化ルールが併用されている場合、strictルールを無視する
+        const isStrict = rule.strict && !rule.disable;
+
+        return strictOnly ? isStrict : !isStrict;
+      })
+      // 無効化ルールを後から適用するためにソート
+      .toSorted((a, b) => {
+        if (a.disable === b.disable) return 0;
+
+        return a.disable ? 1 : -1;
+      });
     if (rules.length === 0) return;
 
     this.traverseThreads(threads, (comment) => {
@@ -92,10 +95,5 @@ export class CommandsFilter extends StrictFilter {
 
       return true;
     });
-  }
-
-  isStrict(rule: Rule): boolean {
-    // strictルールと無効化ルールが併用されている場合、strictルールを無視する
-    return rule.strict && !rule.disable;
   }
 }

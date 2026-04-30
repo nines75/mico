@@ -17,7 +17,7 @@ export abstract class Filter {
     return this.filteredComments;
   }
 
-  traverseThreads(
+  protected traverseThreads(
     threads: Thread[],
     callback: (comment: NvComment, thread: Thread) => boolean,
   ) {
