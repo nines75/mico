@@ -41,16 +41,11 @@ export function createCommentLog(
   const filteredComments = Object.values(result.filters).flatMap((filter) =>
     filter.getFilteredComments(),
   );
-  const renderedComments = result.threads.flatMap((thread) =>
-    thread.comments.map(({ body, userId, score }) => {
-      return { body, userId, score };
-    }),
-  );
 
   return {
     strictRuleIds,
     filteredComments,
-    renderedComments,
+    allComments: result.allComments,
   };
 }
 

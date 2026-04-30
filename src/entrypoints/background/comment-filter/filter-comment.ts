@@ -10,6 +10,7 @@ import { getRuleFilters } from "./rule-filter";
 import type { StrictData } from "./strict-filter";
 import { getStrictFilters } from "./strict-filter";
 import type { Tab } from "@/types/storage/tab.types";
+import type { PartialComment } from "@/types/storage/log.types";
 
 export type Filters = FilteringResult["filters"];
 
@@ -24,7 +25,7 @@ export interface FilteringResult {
   };
   loadedCommentCount: number;
   strictData: StrictData[];
-  threads: Thread[];
+  allComments: PartialComment[];
 }
 
 export function filterComment(
@@ -42,6 +43,13 @@ export function filterComment(
   const loadedCommentCount = threads.reduce(
     (sum, thread) => sum + thread.comments.length,
     0,
+  );
+
+  // 全てのコメントを保存
+  const allComments = threads.flatMap((thread) =>
+    thread.comments.map(({ body, userId, score }) => {
+      return { body, userId, score };
+    }),
   );
 
   // -------------------------------------------------------------------------------------------
@@ -110,6 +118,6 @@ export function filterComment(
     filters,
     loadedCommentCount,
     strictData,
-    threads,
+    allComments,
   };
 }

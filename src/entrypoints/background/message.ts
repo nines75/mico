@@ -177,7 +177,7 @@ async function getCommentsForDropdown(sender: browser.runtime.MessageSender) {
   const userId = dropdownComment?.userId;
   if (userId === undefined) return;
 
-  return log.comment?.renderedComments
+  return log.comment?.allComments
     .filter((comment) => comment.userId === userId)
     .toSorted((a, b) => a.body.localeCompare(b.body))
     .toSorted((a, b) => a.score - b.score)

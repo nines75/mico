@@ -30,7 +30,11 @@ const log = {
       ...getComments(["1004"], "commands", "big"),
       ...getComments(["1003"], "body", "コメント"),
     ],
-    renderedComments: [],
+    allComments: testThreads.flatMap((thread) =>
+      thread.comments.map(({ body, userId, score }) => {
+        return { body, userId, score };
+      }),
+    ),
   },
 } as const satisfies Log;
 

@@ -1,4 +1,4 @@
-import type { RenderedComment } from "../api/comment-api.types";
+import type { OmitIndexSignature } from "type-fest";
 import type { NvComment } from "../api/comment.types";
 import type { Video } from "../api/video.types";
 import type { Tab } from "./tab.types";
@@ -6,11 +6,16 @@ import type { Tab } from "./tab.types";
 export type LogId = `${string}-${string}-${string}-${string}-${string}`;
 export type LogTab = "commentFilter" | "videoFilter";
 
+export type PartialComment = Pick<
+  OmitIndexSignature<NvComment>,
+  "body" | "userId" | "score"
+>;
+
 export interface Log {
   comment?: {
     strictRuleIds: string[];
     filteredComments: FilteredComment[];
-    renderedComments: RenderedComment[];
+    allComments: PartialComment[];
   };
   video?: {
     filteredVideos: FilteredVideo[];

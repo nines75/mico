@@ -23,9 +23,3 @@ export const commentApiSchema = z.looseObject({
 
 export type CommentApi = z.infer<typeof commentApiSchema>;
 export type Thread = CommentApi["data"]["threads"][number];
-
-export interface RenderedComment {
-  body: string;
-  userId: string;
-  score: number;
-}
