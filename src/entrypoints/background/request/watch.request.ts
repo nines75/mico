@@ -66,7 +66,10 @@ function watchApiFilter(
     const next = video?.next;
 
     if (video !== undefined && next !== null && next !== undefined) {
-      if ((filterVideo([next], settings)?.filteredIds.size ?? 0) > 0) {
+      const data = { items: [next] };
+      filterVideo(data, (item) => item, settings);
+
+      if (data.items.length === 0) {
         video.next = null;
       }
 

@@ -1,5 +1,5 @@
+import type { ApplyParams } from "../filter";
 import { Filter } from "../filter";
-import type { Video } from "@/types/api/video.types";
 import type { Settings } from "@/types/storage/settings.types";
 
 export class ViewCountFilter extends Filter {
@@ -11,10 +11,10 @@ export class ViewCountFilter extends Filter {
     this.isEnabled = isEnabled;
   }
 
-  override apply(data: { videos: Video[] }): void {
+  override apply<T>(params: ApplyParams<T>): void {
     if (!this.isEnabled || !this.settings.enableViewCountFilter) return;
 
-    this.traverseVideos(data, (video) => {
+    this.traverseVideos(params, (video) => {
       const view = video.count.view;
       if (view <= this.settings.viewCountFilterThreshold) {
         this.filteredVideos.push({ video, target: "view-count" });

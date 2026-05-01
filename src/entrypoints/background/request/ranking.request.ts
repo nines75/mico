@@ -52,13 +52,13 @@ function rankingApiFilter(
   settings: Settings,
   meta?: Element | null,
 ) {
-  const videos = rankingApi.data.response.$getTeibanRanking.data.items;
-  const result = filterVideo(videos, settings);
+  const result = filterVideo(
+    rankingApi.data.response.$getTeibanRanking.data,
+    (item) => item,
+    settings,
+  );
   if (result === undefined) return;
 
-  const filteredVideos = videos.filter(({ id }) => !result.filteredIds.has(id));
-
-  rankingApi.data.response.$getTeibanRanking.data.items = filteredVideos;
   meta?.setAttribute("content", JSON.stringify(rankingApi));
 
   return result;

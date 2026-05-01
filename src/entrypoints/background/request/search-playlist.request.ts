@@ -16,15 +16,12 @@ export function searchPlaylistRequest(
     );
     if (playlistApi === undefined) return true;
 
-    // フィルタリング対象の動画IDを調べる
-    const videos = playlistApi.data.items.map((item) => item.content);
-    const result = filterVideo(videos, settings);
-    if (result === undefined) return true;
-
-    // 実際にフィルタリング
-    playlistApi.data.items = playlistApi.data.items.filter(
-      (item) => !result.filteredIds.has(item.watchId),
+    const result = filterVideo(
+      playlistApi.data,
+      (item) => item.content,
+      settings,
     );
+    if (result === undefined) return true;
 
     filter.write(encoder.encode(JSON.stringify(playlistApi)));
     filter.disconnect();

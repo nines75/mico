@@ -1,11 +1,11 @@
 import { OwnerNameFilter } from "./filter/owner-name-filter";
 import { TitleFilter } from "./filter/title-filter";
 import type { Settings } from "@/types/storage/settings.types";
-import type { Video } from "@/types/api/video.types";
 import { PaidFilter } from "./filter/paid-filter";
 import { ViewCountFilter } from "./filter/view-count-filter";
 import { IdFilter } from "./filter/id-filter";
 import { OwnerIdFilter } from "./filter/owner-id-filter";
+import type { ApplyParams } from "./filter";
 
 export type Filters = FilteringResult["filters"];
 
@@ -19,15 +19,19 @@ export interface FilteringResult {
     titleFilter: TitleFilter;
   };
   loadedVideoCount: number;
-  filteredIds: Set<string>;
 }
 
-export function filterVideo(
-  videos: Video[],
+export function filterVideo<T>(
+  data: ApplyParams<T>["data"],
+  pickVideo: ApplyParams<T>["pickVideo"],
   settings: Settings,
   forRecommendApi = false,
 ): FilteringResult | undefined {
   if (!settings.enableVideoFilter) return;
+
+  const loadedVideoCount = data.items
+    .map((item) => pickVideo(item))
+    .filter((video) => video !== undefined).length;
 
   const idFilter = new IdFilter(settings);
   const ownerIdFilter = new OwnerIdFilter(settings);
@@ -45,25 +49,21 @@ export function filterVideo(
     titleFilter,
   };
 
-  // フィルタリングの重複を避けるためにオブジェクトを作って渡す
-  const data = { videos };
   for (const filter of Object.values(filters)) {
-    filter.apply(data);
+    filter.apply({ data, pickVideo });
   }
 
-  const filteredIds = new Set(
-    Object.values(filters).flatMap((filter) =>
-      filter.getFilteredVideos().map(({ video }) => video.id),
-    ),
-  );
-
   if (settings.hideCommentPreview) {
-    for (const video of data.videos) video.latestCommentSummary = "";
+    for (const item of data.items) {
+      const video = pickVideo(item);
+      if (video === undefined) continue;
+
+      video.latestCommentSummary = "";
+    }
   }
 
   return {
     filters,
-    loadedVideoCount: videos.length,
-    filteredIds,
+    loadedVideoCount,
   };
 }

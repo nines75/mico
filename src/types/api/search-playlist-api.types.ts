@@ -9,7 +9,6 @@ export const searchPlaylistApiSchema = z.looseObject({
   data: z.looseObject({
     items: z.array(
       z.looseObject({
-        watchId: z.string(),
         content: videoSchema,
       }),
     ),

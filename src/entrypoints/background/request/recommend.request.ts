@@ -36,17 +36,15 @@ export function recommendRequest(
       }
     }
 
-    // フィルタリング対象の動画IDを調べる
-    const videos = recommendApi.data.items
-      .filter((item) => item.contentType === "video")
-      .map((item) => item.content);
-    const result = filterVideo(videos, settings, true);
-    if (result === undefined) return true;
-
-    // 実際にフィルタリング
-    recommendApi.data.items = recommendApi.data.items.filter(
-      (item) => !result.filteredIds.has(item.id),
+    const result = filterVideo(
+      recommendApi.data,
+      (item) => {
+        if (item.contentType === "video") return item.content;
+      },
+      settings,
+      true,
     );
+    if (result === undefined) return true;
 
     filter.write(encoder.encode(JSON.stringify(recommendApi)));
     filter.disconnect();

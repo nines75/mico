@@ -2,6 +2,11 @@ import type { Settings } from "@/types/storage/settings.types";
 import type { Video } from "@/types/api/video.types";
 import type { FilteredVideo } from "@/types/storage/log.types";
 
+export interface ApplyParams<T> {
+  data: { items: T[] };
+  pickVideo: (item: T) => Video | undefined;
+}
+
 export abstract class Filter {
   protected settings: Settings;
   protected filteredVideos: FilteredVideo[] = [];
@@ -10,17 +15,20 @@ export abstract class Filter {
     this.settings = settings;
   }
 
-  abstract apply(data: { videos: Video[] }): void;
+  abstract apply<T>(params: ApplyParams<T>): void;
 
   getFilteredVideos() {
     return this.filteredVideos;
   }
 
-  protected traverseVideos(
-    data: { videos: Video[] },
+  protected traverseVideos<T>(
+    { data, pickVideo }: ApplyParams<T>,
     callback: (video: Video) => boolean,
   ) {
-    data.videos = data.videos.filter((video) => {
+    data.items = data.items.filter((item) => {
+      const video = pickVideo(item);
+      if (video === undefined) return true;
+
       return callback(video);
     });
   }

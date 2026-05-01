@@ -1,11 +1,11 @@
+import type { ApplyParams } from "../filter";
 import { Filter } from "../filter";
-import type { Video } from "@/types/api/video.types";
 
 export class PaidFilter extends Filter {
-  override apply(data: { videos: Video[] }): void {
+  override apply<T>(params: ApplyParams<T>): void {
     if (!this.settings.enablePaidFilter) return;
 
-    this.traverseVideos(data, (video) => {
+    this.traverseVideos(params, (video) => {
       if (video.isPaymentRequired) {
         this.filteredVideos.push({
           video,

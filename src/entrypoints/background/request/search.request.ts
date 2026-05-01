@@ -53,17 +53,13 @@ function searchApiFilter(
   settings: Settings,
   meta?: Element | null,
 ) {
-  // フィルタリング対象の動画IDを調べる
-  const videos = searchApi.data.response.$getSearchVideoV2.data.items;
-  const result = filterVideo(videos, settings);
+  const result = filterVideo(
+    searchApi.data.response.$getSearchVideoV2.data,
+    (item) => item,
+    settings,
+  );
   if (result === undefined) return;
 
-  // 実際にフィルタリング
-  const filteredVideos = videos.filter(
-    (video) => !result.filteredIds.has(video.id),
-  );
-
-  searchApi.data.response.$getSearchVideoV2.data.items = filteredVideos;
   meta?.setAttribute("content", JSON.stringify(searchApi));
 
   return result;
