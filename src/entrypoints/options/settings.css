@@ -1,7 +1,10 @@
 @import "../../assets/global.css";
 
-#root {
+body {
+  /* #rootで指定するとページ下部に背景色が適用されないことがある */
   background: var(--background);
+}
+#root {
   color: var(--dim-white);
   padding: 0 50px 15px 50px; /* 100vhを指定した場所が基準になるためbodyではなくここで指定 */
 
