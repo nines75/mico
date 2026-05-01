@@ -19,7 +19,10 @@ export async function removeAllData() {
   await Promise.all([
     queue.add(async () => {
       // すべてのデータを削除するとバージョン情報まで消えるため単体で削除
-      await storage.removeItem(`${storageArea}:settings`);
+      //
+      // removeItemを使うと次のアクセス時にイニシャライザが実行されるため、
+      // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない
+      await storage.setItem(`${storageArea}:settings`, {});
     }),
     clearDb(),
   ]);
@@ -30,12 +33,13 @@ export async function setSettings(
 ) {
   await queue.add(async () => {
     const settings = await getSettings();
-    const newSettings = {
-      ...settings,
-      ...(typeof value === "function" ? await value() : value),
-    };
+    const newSettings = typeof value === "function" ? await value() : value;
 
-    await storage.setItem(`${storageArea}:settings`, newSettings);
+    await storage.setItem(`${storageArea}:settings`, {
+      ...settings,
+      ...newSettings,
+      ...(newSettings.storeId === undefined && { storeId: "" }), // storeIdを必ず上書き
+    });
   });
 }
 

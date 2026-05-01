@@ -71,6 +71,8 @@ export interface Settings {
   // その他
   // -------------------------------------------------------------------------------------------
 
+  storeId: string;
+
   // タブ
   selectedSettingsTab: SettingsTab;
 }

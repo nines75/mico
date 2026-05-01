@@ -9,6 +9,7 @@ import { getActiveTab, sendMessage } from "./browser";
 import { getLogId } from "./log";
 
 interface StorageState {
+  storeId: string;
   settings: Settings;
   log?: Log | undefined;
   isLoading: boolean;
@@ -21,6 +22,7 @@ interface StorageState {
 
 export const useStorageStore = create<StorageState>()(
   subscribeWithSelector((set) => ({
+    storeId: crypto.randomUUID(),
     settings: defaultSettings,
     isLoading: true,
     isWatchPage: false,
@@ -54,7 +56,7 @@ export const useStorageStore = create<StorageState>()(
       set({ log, isLoading: false });
     }),
     saveSettings: catchAsync(async (settings) => {
-      const currentSettings = useStorageStore.getState().settings;
+      const { settings: currentSettings, storeId } = useStorageStore.getState();
 
       // 書き込まれる予定の値を生成してstoreに反映
       // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない
@@ -65,7 +67,10 @@ export const useStorageStore = create<StorageState>()(
 
       // 書き込む
       try {
-        await sendMessage({ type: "set-settings", data: settings });
+        await sendMessage({
+          type: "set-settings",
+          data: { ...settings, storeId },
+        });
       } catch {
         // ロールバック
         set({ settings: currentSettings });
@@ -84,15 +89,14 @@ export function settingsChangeHandler(
   for (const [key, value] of Object.entries(changes)) {
     if (key !== "settings") continue;
 
-    const oldSettings = useStorageStore.getState().settings;
+    const storeId = useStorageStore.getState().storeId;
     const newSettings = {
       ...defaultSettings,
       ...(value.newValue as Partial<Settings>),
     };
 
-    // ユーザー入力による発火を弾く
-    // settingsはjsonに変換可能なのでJSON.stringifyで比較
-    if (JSON.stringify(oldSettings) === JSON.stringify(newSettings)) continue;
+    // 同一storeでの変更による発火を弾く
+    if (storeId === newSettings.storeId) continue;
 
     useStorageStore.setState({ settings: newSettings });
   }

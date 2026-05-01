@@ -120,6 +120,8 @@ export const defaultSettings: Settings = {
   // その他
   // -------------------------------------------------------------------------------------------
 
+  storeId: "",
+
   // タブ
   selectedSettingsTab: "general",
 } as const;
