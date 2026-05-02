@@ -52,7 +52,7 @@ describe(UserIdFilter.name, () => {
 
   it(UserIdFilter.prototype.updateFilter.name, () => {
     const userIdFilter = runFilter({ filter: "user-id-main-1" });
-    userIdFilter.updateFilter([{ userId: "user-id-main-2", context: "" }]);
+    userIdFilter.updateFilter(["user-id-main-2"]);
     userIdFilter.apply(threads);
 
     expect(getFilteredIds(userIdFilter)).toEqual(["1002", "1003"]);

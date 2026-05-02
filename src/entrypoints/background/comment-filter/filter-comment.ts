@@ -99,7 +99,9 @@ export function filterComment(
   }
 
   // strictルールによってフィルタリングされたユーザーIDをフィルターに反映
-  const ruleIds = userIdFilter.updateFilter(strictData);
+  const ruleIds = userIdFilter.updateFilter(
+    strictData.map(({ userId }) => userId),
+  );
 
   // 生成されたルールIDをstrictDataに反映
   for (const [index, ruleId] of ruleIds.entries()) {
