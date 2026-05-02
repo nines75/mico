@@ -1,7 +1,6 @@
 import { printInvalidRule } from "@/utils/util";
-import { createDefaultToggle, type Rule } from "./rule";
+import { createDefaultRule, type Rule } from "./rule";
 import type { Settings } from "@/types/storage/settings.types";
-import type { Except } from "type-fest";
 
 export type Directive =
   | {
@@ -109,21 +108,7 @@ export function parseFilter(
     // ルールに適用するディレクティブを決定
     // -------------------------------------------------------------------------------------------
 
-    const rule: Except<Rule, "pattern"> = {
-      strict: false,
-      disable: false,
-      include: createDefaultToggle(),
-      exclude: createDefaultToggle(),
-      target: {
-        commentUserId: false,
-        commentCommands: false,
-        commentBody: false,
-        videoId: false,
-        videoOwnerId: false,
-        videoOwnerName: false,
-        videoTitle: false,
-      },
-    };
+    const rule = createDefaultRule();
 
     for (const directive of directives) {
       switch (directive.type) {
