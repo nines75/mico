@@ -104,14 +104,13 @@ tab
 ------------------------------------------------------------------------------------------- */
 
 .tab-container {
-  margin-bottom: 30px;
+  margin-block: 10px;
   white-space: nowrap; /* 折り返さない */
 
   /* 上部への固定用 */
   position: sticky;
   top: 0;
   background: var(--background); /* デフォルトは透明なので上書き */
-  padding-top: 20px; /* bodyで指定したりmarginを使うと上書きできない */
   z-index: 1000;
 }
 /* .tab-containerはスクロール時に上書きできるように右端まで伸ばす
