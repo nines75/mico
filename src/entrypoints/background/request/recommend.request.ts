@@ -27,7 +27,11 @@ export function recommendRequest(
     if (seriesNext !== undefined) {
       const videoId = seriesNext.id;
 
-      if (recommendApi.data.items.every((item) => item.id !== videoId)) {
+      if (
+        !recommendApi.data.items.some(
+          (item) => item.contentType === "video" && item.id === videoId,
+        )
+      ) {
         recommendApi.data.items.push({
           id: videoId,
           content: seriesNext,
