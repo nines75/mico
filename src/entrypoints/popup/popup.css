@@ -21,25 +21,25 @@ section {
 }
 .info {
   color: silver;
-  .value {
-    font-weight: bold;
-  }
+}
+.info-value {
+  font-weight: bold;
 }
 .link-container {
   display: flex;
   margin-right: 14px;
   gap: 8px;
-  .link {
-    color: var(--dim-white);
-    display: flex;
-    align-items: center;
+}
+.link {
+  color: var(--dim-white);
+  display: flex;
+  align-items: center;
 
-    /* buttonをanchor風にする */
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0;
-  }
+  /* buttonをanchor風にする */
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
 }
 .button-ng-container {
   display: flex;
@@ -47,11 +47,11 @@ section {
   align-items: center;
   gap: 10px;
   margin-block: 5px;
-  .button-ng {
-    padding: 0;
-    margin: 0;
-    border: none;
-  }
+}
+.button-ng {
+  padding: 0;
+  margin: 0;
+  border: none;
 }
 .version {
   font-size: 17px;

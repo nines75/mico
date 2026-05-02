@@ -31,7 +31,7 @@ export default function Checkbox({
 
   return (
     <div className="setting">
-      <label>
+      <label className="setting-label">
         <input
           type="checkbox"
           checked={value}

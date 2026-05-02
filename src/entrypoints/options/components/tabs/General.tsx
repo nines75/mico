@@ -45,7 +45,7 @@ export default function General() {
               <Checkbox key={props.id} {...props} />
             ))}
             <div className="setting">
-              <label>
+              <label className="setting-label">
                 {"インポートするローカルフィルターのパス"}
                 <input
                   className="input"

@@ -34,7 +34,7 @@ export default function Count() {
           <section key={name}>
             <span className="info">
               {name}
-              <span className="value">{value}</span>
+              <span className="info-value">{value}</span>
             </span>
           </section>
         );

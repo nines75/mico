@@ -85,7 +85,7 @@ function Detail({ name, children }: DetailProps) {
   return (
     <span>
       {name}
-      <span className="value">{children}</span>
+      <span className="rule-details-value">{children}</span>
     </span>
   );
 }

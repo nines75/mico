@@ -30,25 +30,24 @@ input[type="checkbox"] {
 }
 .setting {
   margin: 12px;
-  > label {
-    font-weight: bold;
-  }
-  .setting-details {
-    font-size: 12px;
-    margin-left: 25px;
-    padding: 4px;
-  }
-  .checkbox-input {
-    margin-left: 20px;
-    font-size: 13px;
-    font-weight: normal;
-  }
-  .input {
-    font-family: var(--font);
-    margin-left: 20px;
-    width: 530px;
-    height: 30px;
-  }
+}
+.setting-label {
+  font-weight: bold;
+}
+.setting-details {
+  font-size: 12px;
+  margin: 4px;
+  margin-left: 25px;
+}
+.checkbox-input {
+  margin-left: 20px;
+  font-size: 13px;
+}
+.input {
+  font-family: var(--font);
+  margin-left: 20px;
+  width: 530px;
+  height: 30px;
 }
 .rule-container {
   border: gray 1px solid;
@@ -79,12 +78,12 @@ input[type="checkbox"] {
   display: flex;
   gap: 20px;
   margin-top: 10px;
-  .value {
-    margin-left: 5px;
-    border: gray 1px solid;
-    border-radius: 5px;
-    padding-inline: 4px;
-  }
+}
+.rule-details-value {
+  margin-left: 5px;
+  border: gray 1px solid;
+  border-radius: 5px;
+  padding-inline: 4px;
 }
 .rule-remove-button {
   border: none;
@@ -189,9 +188,9 @@ CodeMirror
   .cm-trailingSpace {
     background: transparent;
   }
-  .cm-line:not(.cm-activeLine) .cm-trailingSpace {
-    border: 1px solid white;
-  }
+}
+.cm-line:not(.cm-activeLine) .cm-trailingSpace {
+  border: 1px solid white;
 }
 .cm-content,
 .cm-gutter,
