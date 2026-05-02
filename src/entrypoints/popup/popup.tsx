@@ -53,16 +53,16 @@ function Page() {
       <main>
         {useStorageStore.getState().isWatchPage && (
           <section>
-            <div className="ng-button-container">
+            <div className="button-ng-container">
               <button
-                className="ng-button"
+                className="button-ng"
                 title="クリックしてこの動画をNG登録"
                 onClick={catchAsync(onClickNgVideo)}
               >
                 <ScreenShareOff size={28} />
               </button>
               <button
-                className="ng-button"
+                className="button-ng"
                 title="クリックしてこの動画の投稿者をNG登録"
                 onClick={catchAsync(onClickNgOwner)}
               >

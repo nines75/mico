@@ -8,7 +8,7 @@ export default function Support() {
           {items.map(({ name, url }) => (
             <a
               key={name}
-              className="button support-button"
+              className="button button-support"
               href={url}
               target="_blank"
               rel="noreferrer"

@@ -24,7 +24,7 @@ export default function FilterArea() {
             key={id}
             className={clsx(
               "button",
-              "filter-button",
+              "button-filter",
               id === selectedFilter && "selected",
             )}
             onClick={() => {

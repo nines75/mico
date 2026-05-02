@@ -41,13 +41,13 @@ section {
     padding: 0;
   }
 }
-.ng-button-container {
+.button-ng-container {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
   margin-block: 5px;
-  .ng-button {
+  .button-ng {
     padding: 0;
     margin: 0;
     border: none;

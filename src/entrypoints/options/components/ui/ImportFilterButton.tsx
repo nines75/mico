@@ -10,7 +10,7 @@ export default function ImportFilterButton() {
   return (
     <>
       <button
-        className="button import-filter-button"
+        className="button button-import-filter"
         onClick={() => {
           if (input.current !== null) input.current.click();
         }}

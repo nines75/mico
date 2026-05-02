@@ -48,7 +48,7 @@ export function Viewer<T>({
     <>
       <div>
         <select
-          className="filter-select"
+          className="select-filter"
           value={filter}
           onChange={(event) => {
             setFilter(event.target.value);

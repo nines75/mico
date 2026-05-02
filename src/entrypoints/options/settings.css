@@ -152,19 +152,19 @@ button
   border-radius: 10px;
   font-size: 14px;
 }
-.filter-button {
+.button-filter {
   padding: 7px 12px;
-  height: 40px; /* import-filter-buttonの有無で位置がずれないようにする */
+  height: 40px; /* .button-import-filterの有無で位置がずれないようにする */
   &.selected {
     border-color: lightskyblue;
   }
 }
-.support-button {
+.button-support {
   display: inline-block; /* anchorをbuttonのように扱う */
   text-decoration: none;
   color: inherit;
 }
-.import-filter-button {
+.button-import-filter {
   padding: 7px 12px;
   display: flex;
   align-items: center;
