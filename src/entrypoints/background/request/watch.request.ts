@@ -5,7 +5,7 @@ import { filterResponse, spaFilter } from "./request";
 import type { WatchApi } from "@/types/api/watch-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
 import { setLog, setTab } from "@/utils/db";
-import type { Series, Tab } from "@/types/storage/tab.types";
+import type { Tab } from "@/types/storage/tab.types";
 import { createLogId, mountLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 
@@ -57,22 +57,21 @@ function watchApiFilter(watchApi: WatchApi, settings: Settings): Tab {
   const response = watchApi.data.response;
   const metadata = watchApi.data.metadata;
 
-  const series: Series = (() => {
+  const seriesNext = (() => {
     const video = response.series?.video;
-    const next = video?.next;
+    if (video === undefined) return;
 
-    if (video !== undefined && next !== null && next !== undefined) {
-      const data = { items: [next] };
-      filterVideo(data, (item) => item, settings);
+    const next = video.next;
+    if (next === null) return;
 
-      if (data.items.length === 0) {
-        video.next = null;
-      }
+    const data = { items: [next] };
+    filterVideo(data, (item) => item, settings);
 
-      return { hasNext: true, video: next };
-    } else {
-      return { hasNext: false };
+    if (data.items.length === 0) {
+      video.next = null;
     }
+
+    return next;
   })();
 
   const ownerId = (
@@ -90,7 +89,7 @@ function watchApiFilter(watchApi: WatchApi, settings: Settings): Tab {
   const tags = response.tag.items.map(({ name }) => name);
 
   return {
-    series,
+    seriesNext,
     seriesId: response.series?.id.toString(),
     videoId: response.video.id,
     title: response.video.title,

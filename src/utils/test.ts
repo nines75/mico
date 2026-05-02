@@ -94,9 +94,7 @@ export const testThreads = [
 ] satisfies Thread[];
 
 export const testTab = {
-  series: {
-    hasNext: false,
-  },
+  seriesNext: undefined,
   videoId: "sm1",
   seriesId: "1",
   title: "title",

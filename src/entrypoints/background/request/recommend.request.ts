@@ -23,14 +23,14 @@ export function recommendRequest(
     if (recommendApi === undefined) return true;
 
     // シリーズの次の動画を追加
-    const series = tab?.series;
-    if (series?.video !== undefined && series.hasNext) {
-      const videoId = series.video.id;
+    const seriesNext = tab?.seriesNext;
+    if (seriesNext !== undefined) {
+      const videoId = seriesNext.id;
 
       if (recommendApi.data.items.every((item) => item.id !== videoId)) {
         recommendApi.data.items.push({
           id: videoId,
-          content: series.video,
+          content: seriesNext,
           contentType: "video",
         });
       }
