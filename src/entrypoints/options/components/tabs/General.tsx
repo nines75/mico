@@ -18,7 +18,7 @@ import Checkbox from "../ui/Checkbox";
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
-  const [isAdvancedFeaturesVisible, localFilterPath, save] = useStorageStore(
+  const [showAdvancedFeatures, localFilterPath, save] = useStorageStore(
     useShallow((state) => [
       state.settings.showAdvancedFeatures,
       state.settings.localFilterPath,
@@ -38,10 +38,10 @@ export default function General() {
 
   return (
     <div className="tab-content">
-      <CheckboxSection groups={config}>
-        {isAdvancedFeaturesVisible && (
+      <CheckboxSection groups={config.groups}>
+        {showAdvancedFeatures && (
           <>
-            {advancedFeaturesConfig.map((props) => (
+            {config.children.map((props) => (
               <Checkbox key={props.id} {...props} />
             ))}
             <div className="setting">
@@ -153,54 +153,55 @@ async function reset() {
 // config
 // -------------------------------------------------------------------------------------------
 
-const config = [
-  {
-    heading: "エディター",
-    items: [
-      {
-        id: "enableCloseBrackets",
-        label: "括弧を自動で閉じる",
-      },
-      {
-        id: "enableHighlightTrailingWhitespace",
-        label: "行末の空白文字をハイライトする",
-      },
-    ],
-  },
-  {
-    heading: "通知",
-    items: [
-      {
-        id: "notifyOnManualNg",
-        label: "手動でNG登録した際に通知する",
-      },
-      {
-        id: "notifyOnAutoNg",
-        label: "自動でNG登録した際に通知する",
-      },
-    ],
-  },
-  {
-    heading: "高度な機能",
-    hasChildren: true,
-    items: [
-      {
-        id: "showAdvancedFeatures",
-        label: "高度な機能を表示する",
-      },
-    ],
-  },
-] satisfies CheckboxGroups;
-
-const advancedFeaturesConfig = [
-  {
-    id: "importLocalFilterOnLoad",
-    label: "ページ読み込み時にローカルフィルターをインポートする",
-    childrenProps: [
-      {
-        id: "importOnlyWhenWslRunning",
-        label: "WSL起動時のみインポートする",
-      },
-    ],
-  },
-] satisfies CheckboxProps[];
+const config = {
+  groups: [
+    {
+      heading: "エディター",
+      items: [
+        {
+          id: "enableCloseBrackets",
+          label: "括弧を自動で閉じる",
+        },
+        {
+          id: "enableHighlightTrailingWhitespace",
+          label: "行末の空白文字をハイライトする",
+        },
+      ],
+    },
+    {
+      heading: "通知",
+      items: [
+        {
+          id: "notifyOnManualNg",
+          label: "手動でNG登録した際に通知する",
+        },
+        {
+          id: "notifyOnAutoNg",
+          label: "自動でNG登録した際に通知する",
+        },
+      ],
+    },
+    {
+      heading: "高度な機能",
+      hasChildren: true,
+      items: [
+        {
+          id: "showAdvancedFeatures",
+          label: "高度な機能を表示する",
+        },
+      ],
+    },
+  ],
+  children: [
+    {
+      id: "importLocalFilterOnLoad",
+      label: "ページ読み込み時にローカルフィルターをインポートする",
+      childrenProps: [
+        {
+          id: "importOnlyWhenWslRunning",
+          label: "WSL起動時のみインポートする",
+        },
+      ],
+    },
+  ],
+} satisfies { groups: CheckboxGroups; children: CheckboxProps[] };

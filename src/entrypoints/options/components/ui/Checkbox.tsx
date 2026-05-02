@@ -25,7 +25,7 @@ export default function Checkbox({
   input,
   childrenProps,
 }: CheckboxProps) {
-  const [isChecked, save] = useStorageStore(
+  const [value, save] = useStorageStore(
     useShallow((state) => [state.settings[id], state.saveSettings]),
   );
 
@@ -34,7 +34,7 @@ export default function Checkbox({
       <label>
         <input
           type="checkbox"
-          checked={isChecked}
+          checked={value}
           onChange={(event) => {
             save({
               [id]: event.target.checked,

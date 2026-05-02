@@ -72,16 +72,12 @@ export async function cleanUpDb() {
   const tabs = await browser.tabs.query({});
   const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined);
 
-  const deleteKeys = async (...tables: Dexie.Table[]) => {
-    for (const table of tables) {
-      await db.transaction("rw", table, async () => {
-        const keys = await table.where("tabId").noneOf(tabIds).primaryKeys();
-        if (keys.length > 0) await table.bulkDelete(keys);
-      });
-    }
-  };
-
-  await deleteKeys(db.log, db.tab);
+  for (const table of [db.log, db.tab] as Dexie.Table[]) {
+    await db.transaction("rw", table, async () => {
+      const keys = await table.where("tabId").noneOf(tabIds).primaryKeys();
+      if (keys.length > 0) await table.bulkDelete(keys);
+    });
+  }
 }
 
 export async function clearDb() {
