@@ -36,7 +36,7 @@ export function spaFilter<T, U>(
   buf: string,
   settings: Settings,
   schema: z.ZodType<T>,
-  callback: (data: T, settings: Settings, meta?: Element | null) => U,
+  callback: (data: T, settings: Settings) => U,
 ) {
   if (details.type === "main_frame") {
     const parser = new DOMParser();
@@ -47,8 +47,9 @@ export function spaFilter<T, U>(
     const data = safeParseJson(content, schema);
     if (data === undefined) return;
 
-    // callbackではhtmlを変更するため先に呼び出す
-    const filteringResult = callback(data, settings, meta);
+    // callbackではdataを変更するため先に呼び出す
+    const filteringResult = callback(data, settings);
+    meta?.setAttribute("content", JSON.stringify(data));
 
     return {
       filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,

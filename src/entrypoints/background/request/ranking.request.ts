@@ -47,19 +47,10 @@ export function rankingRequest(
   });
 }
 
-function rankingApiFilter(
-  rankingApi: RankingApi,
-  settings: Settings,
-  meta?: Element | null,
-) {
-  const result = filterVideo(
+function rankingApiFilter(rankingApi: RankingApi, settings: Settings) {
+  return filterVideo(
     rankingApi.data.response.$getTeibanRanking.data,
     (item) => item,
     settings,
   );
-  if (result === undefined) return;
-
-  meta?.setAttribute("content", JSON.stringify(rankingApi));
-
-  return result;
 }

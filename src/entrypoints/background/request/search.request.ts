@@ -48,19 +48,10 @@ export function searchRequest(
   });
 }
 
-function searchApiFilter(
-  searchApi: SearchApi,
-  settings: Settings,
-  meta?: Element | null,
-) {
-  const result = filterVideo(
+function searchApiFilter(searchApi: SearchApi, settings: Settings) {
+  return filterVideo(
     searchApi.data.response.$getSearchVideoV2.data,
     (item) => item,
     settings,
   );
-  if (result === undefined) return;
-
-  meta?.setAttribute("content", JSON.stringify(searchApi));
-
-  return result;
 }

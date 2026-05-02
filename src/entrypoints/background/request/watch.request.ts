@@ -53,11 +53,7 @@ export function watchRequest(
   });
 }
 
-function watchApiFilter(
-  watchApi: WatchApi,
-  settings: Settings,
-  meta?: Element | null,
-): Tab {
+function watchApiFilter(watchApi: WatchApi, settings: Settings): Tab {
   const response = watchApi.data.response;
   const metadata = watchApi.data.metadata;
 
@@ -72,8 +68,6 @@ function watchApiFilter(
       if (data.items.length === 0) {
         video.next = null;
       }
-
-      meta?.setAttribute("content", JSON.stringify(watchApi));
 
       return { hasNext: true, video: next };
     } else {
