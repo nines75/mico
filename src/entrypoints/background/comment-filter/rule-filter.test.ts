@@ -41,7 +41,12 @@ describe(RuleFilter.prototype.filterRules.name, () => {
   describe("@include-tags", () => {
     it.each([
       {
-        name: "動画タグが単数",
+        name: "0",
+        tags: [],
+        expected: [],
+      },
+      {
+        name: "1",
         tags: ["tag"],
         expected: mockRules(
           { include: mockToggle({ tags: [["tag"]] }) },
@@ -49,7 +54,7 @@ describe(RuleFilter.prototype.filterRules.name, () => {
         ).rules,
       },
       {
-        name: "動画タグが複数",
+        name: "複数",
         tags: ["tag", "tag2"],
         expected: mockRules(
           { include: mockToggle({ tags: [["tag"]] }) },
@@ -58,12 +63,7 @@ describe(RuleFilter.prototype.filterRules.name, () => {
           { include: mockToggle({ tags: [["tag"], ["tag2"]] }) },
         ).rules,
       },
-      {
-        name: "動画タグなし",
-        tags: [],
-        expected: [],
-      },
-    ])("$name", ({ tags, expected }) => {
+    ])("動画タグの数: $name", ({ tags, expected }) => {
       const filter = `
 @include-tags tag
 rule
@@ -95,20 +95,7 @@ rule
   describe("@exclude-tags", () => {
     it.each([
       {
-        name: "動画タグが単数",
-        tags: ["tag"],
-        expected: mockRules(
-          { exclude: mockToggle({ tags: [["tag2"]] }) },
-          { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
-        ).rules,
-      },
-      {
-        name: "動画タグが複数",
-        tags: ["tag", "tag2"],
-        expected: [],
-      },
-      {
-        name: "動画タグなし",
+        name: "0",
         tags: [],
         expected: mockRules(
           { exclude: mockToggle({ tags: [["tag"]] }) },
@@ -117,7 +104,20 @@ rule
           { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
         ).rules,
       },
-    ])("$name", ({ tags, expected }) => {
+      {
+        name: "1",
+        tags: ["tag"],
+        expected: mockRules(
+          { exclude: mockToggle({ tags: [["tag2"]] }) },
+          { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+        ).rules,
+      },
+      {
+        name: "複数",
+        tags: ["tag", "tag2"],
+        expected: [],
+      },
+    ])("動画タグの数: $name", ({ tags, expected }) => {
       const filter = `
 @exclude-tags tag
 rule
