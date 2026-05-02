@@ -6,7 +6,6 @@ import {
   isRankingPage,
   isSearchPage,
   isWatchPage,
-  replace,
   sum,
 } from "./util";
 
@@ -86,30 +85,6 @@ describe(sum.name, () => {
       expect(sum(numbers)).toEqual(expected);
     },
   );
-});
-
-describe(replace.name, () => {
-  it.each([
-    {
-      name: "単数",
-      text: "$1",
-      placeholders: ["test"],
-      expected: "test",
-    },
-    {
-      name: "複数",
-      text: "$1 $2",
-      placeholders: ["test", "string"],
-      expected: "test string",
-    },
-  ] satisfies {
-    name: string;
-    text: string;
-    placeholders: string[];
-    expected: string;
-  }[])(`$name`, ({ text, placeholders, expected }) => {
-    expect(replace(text, placeholders)).toEqual(expected);
-  });
 });
 
 it("customMerge", () => {

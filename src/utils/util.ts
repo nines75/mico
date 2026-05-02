@@ -40,15 +40,6 @@ export function sum(numbers: number[]) {
   return numbers.reduce((result, num) => result + num, 0);
 }
 
-export function replace(text: string, placeholders: string[]) {
-  let result = text;
-  for (const [index, placeholder] of placeholders.entries()) {
-    result = result.replace(`$${index + 1}`, placeholder);
-  }
-
-  return result;
-}
-
 export function catchAsync<T extends unknown[]>(
   fn: (...args: T) => Promise<void>,
 ) {

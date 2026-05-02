@@ -1,18 +1,18 @@
 import type { NvComment } from "@/types/api/comment.types";
 import { sendMessage } from "@/utils/browser";
 import { loadSettings } from "@/utils/storage";
-import { catchAsync, replace } from "@/utils/util";
+import { catchAsync } from "@/utils/util";
 
 export async function mountToDropdown() {
   appendButton(
     {
-      text: "ユーザーをNG登録($1)",
+      text: "ユーザーをNG登録",
       callback: async () => {
         await sendMessage({ type: "on-click-dropdown" });
       },
     },
     {
-      text: "この動画だけユーザーをNG登録($1)",
+      text: "この動画だけユーザーをNG登録",
       callback: async () => {
         await sendMessage({
           type: "on-click-dropdown",
@@ -21,7 +21,7 @@ export async function mountToDropdown() {
       },
     },
     {
-      text: "ユーザーが投稿したコメント($1)",
+      text: "ユーザーが投稿したコメント",
       callback: async () => {
         const comments = (await sendMessage({
           type: "get-comments-for-dropdown",
@@ -55,7 +55,7 @@ function appendButton(
     const button = document.createElement("button");
 
     button.addEventListener("click", catchAsync(callback));
-    button.textContent = replace(text, [browser.runtime.getManifest().name]);
+    button.textContent = `${text}(${browser.runtime.getManifest().name})`;
     for (const attribute of sample.attributes) {
       button.setAttribute(attribute.name, attribute.value);
     }
