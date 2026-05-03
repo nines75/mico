@@ -9,7 +9,9 @@ import {
 import type { Thread } from "@/types/api/comment-api.types";
 import type { NvComment } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
+import type { PartialDeep } from "type-fest";
 import { expect } from "vitest";
+import { merge } from "./util";
 
 export function mockComments(...comments: Partial<NvComment>[]): NvComment[] {
   return comments.map((comment) => {
@@ -127,15 +129,11 @@ export function checkComment(
 }
 
 export function mockRules(
-  ...rules: Partial<Rule>[]
+  ...rules: PartialDeep<Rule>[]
 ): ReturnType<typeof parseFilter> {
   return {
     rules: rules.map((rule): Rule => {
-      return {
-        pattern: "rule",
-        ...createDefaultRule(),
-        ...rule,
-      };
+      return merge({ ...createDefaultRule(), pattern: "rule" }, rule);
     }),
     invalidCount: 0,
   };

@@ -139,6 +139,41 @@ rule
   });
 
   // -------------------------------------------------------------------------------------------
+  // ターゲットを指定するディレクティブ
+  // -------------------------------------------------------------------------------------------
+
+  describe("ターゲットを指定するディレクティブ", () => {
+    it.each([
+      {
+        name: "0",
+        filter: "rule",
+        expected: mockRules({}),
+      },
+      {
+        name: "1",
+        filter: `
+@comment-body
+rule
+`,
+        expected: mockRules({ target: { commentBody: true } }),
+      },
+      {
+        name: "複数",
+        filter: `
+@comment-body
+@video-title
+rule
+`,
+        expected: mockRules({
+          target: { commentBody: true, videoTitle: true },
+        }),
+      },
+    ])("ターゲットの数: $name", ({ filter, expected }) => {
+      expect(parseFilter(createSettings(filter))).toEqual(expected);
+    });
+  });
+
+  // -------------------------------------------------------------------------------------------
   // @strict
   // -------------------------------------------------------------------------------------------
 
