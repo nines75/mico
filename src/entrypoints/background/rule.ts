@@ -56,7 +56,7 @@ export function createDefaultRule(): SetOptional<Rule, "pattern"> {
   };
 }
 
-export function createDefaultToggle(): Toggle {
+function createDefaultToggle(): Toggle {
   return {
     tags: [],
     videoIds: [],

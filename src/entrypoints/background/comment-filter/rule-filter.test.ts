@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { mockRules, mockToggle, testTab } from "@/utils/test";
+import { mockRules, testTab } from "@/utils/test";
 import { RuleFilter } from "./rule-filter";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
@@ -49,18 +49,18 @@ describe(RuleFilter.prototype.filterRules.name, () => {
         name: "1",
         tags: ["tag"],
         expected: mockRules(
-          { include: mockToggle({ tags: [["tag"]] }) },
-          { include: mockToggle({ tags: [["tag", "tag2"]] }) },
+          { include: { tags: [["tag"]] } },
+          { include: { tags: [["tag", "tag2"]] } },
         ).rules,
       },
       {
         name: "複数",
         tags: ["tag", "tag2"],
         expected: mockRules(
-          { include: mockToggle({ tags: [["tag"]] }) },
-          { include: mockToggle({ tags: [["tag2"]] }) },
-          { include: mockToggle({ tags: [["tag", "tag2"]] }) },
-          { include: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+          { include: { tags: [["tag"]] } },
+          { include: { tags: [["tag2"]] } },
+          { include: { tags: [["tag", "tag2"]] } },
+          { include: { tags: [["tag"], ["tag2"]] } },
         ).rules,
       },
     ])("動画タグの数: $name", ({ tags, expected }) => {
@@ -98,18 +98,18 @@ rule
         name: "0",
         tags: [],
         expected: mockRules(
-          { exclude: mockToggle({ tags: [["tag"]] }) },
-          { exclude: mockToggle({ tags: [["tag2"]] }) },
-          { exclude: mockToggle({ tags: [["tag", "tag2"]] }) },
-          { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+          { exclude: { tags: [["tag"]] } },
+          { exclude: { tags: [["tag2"]] } },
+          { exclude: { tags: [["tag", "tag2"]] } },
+          { exclude: { tags: [["tag"], ["tag2"]] } },
         ).rules,
       },
       {
         name: "1",
         tags: ["tag"],
         expected: mockRules(
-          { exclude: mockToggle({ tags: [["tag2"]] }) },
-          { exclude: mockToggle({ tags: [["tag"], ["tag2"]] }) },
+          { exclude: { tags: [["tag2"]] } },
+          { exclude: { tags: [["tag"], ["tag2"]] } },
         ).rules,
       },
       {
@@ -151,8 +151,8 @@ rule
         name: "@include-tagsのみマッチ",
         tags: ["tag"],
         expected: mockRules({
-          include: mockToggle({ tags: [["tag"]] }),
-          exclude: mockToggle({ tags: [["tag2"]] }),
+          include: { tags: [["tag"]] },
+          exclude: { tags: [["tag2"]] },
         }).rules,
       },
       {
@@ -190,14 +190,14 @@ rule
     {
       name: "@include-video-ids",
       expected: mockRules(
-        { include: mockToggle({ videoIds: [["sm1"]] }) },
-        { include: mockToggle({ videoIds: [["sm1", "sm2"]] }) },
+        { include: { videoIds: [["sm1"]] } },
+        { include: { videoIds: [["sm1", "sm2"]] } },
       ).rules,
     },
     {
       name: "@exclude-video-ids",
       expected: mockRules({
-        exclude: mockToggle({ videoIds: [["sm2"]] }),
+        exclude: { videoIds: [["sm2"]] },
       }).rules,
     },
   ])("$name", ({ name, expected }) => {
@@ -229,27 +229,27 @@ rule
     {
       name: "@include-user-ids",
       expected: mockRules(
-        { include: mockToggle({ userIds: [["1"]] }) },
-        { include: mockToggle({ userIds: [["1", "2"]] }) },
+        { include: { userIds: [["1"]] } },
+        { include: { userIds: [["1", "2"]] } },
       ).rules,
     },
     {
       name: "@exclude-user-ids",
       expected: mockRules({
-        exclude: mockToggle({ userIds: [["2"]] }),
+        exclude: { userIds: [["2"]] },
       }).rules,
     },
     {
       name: "@include-series-ids",
       expected: mockRules(
-        { include: mockToggle({ seriesIds: [["1"]] }) },
-        { include: mockToggle({ seriesIds: [["1", "2"]] }) },
+        { include: { seriesIds: [["1"]] } },
+        { include: { seriesIds: [["1", "2"]] } },
       ).rules,
     },
     {
       name: "@exclude-series-ids",
       expected: mockRules({
-        exclude: mockToggle({ seriesIds: [["2"]] }),
+        exclude: { seriesIds: [["2"]] },
       }).rules,
     },
   ])("$name", ({ name, expected }) => {

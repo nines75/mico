@@ -1,11 +1,6 @@
 import type { Filter } from "@/entrypoints/background/comment-filter/filter";
 import type { parseFilter } from "@/entrypoints/background/parse-filter";
-import type { Toggle } from "@/entrypoints/background/rule";
-import {
-  createDefaultRule,
-  createDefaultToggle,
-  type Rule,
-} from "@/entrypoints/background/rule";
+import { createDefaultRule, type Rule } from "@/entrypoints/background/rule";
 import type { Thread } from "@/types/api/comment-api.types";
 import type { NvComment } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
@@ -136,13 +131,6 @@ export function mockRules(
       return merge({ ...createDefaultRule(), pattern: "rule" }, rule);
     }),
     invalidCount: 0,
-  };
-}
-
-export function mockToggle(toggle: Partial<Toggle>): Toggle {
-  return {
-    ...createDefaultToggle(),
-    ...toggle,
   };
 }
 

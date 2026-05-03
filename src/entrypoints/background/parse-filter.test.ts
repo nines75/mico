@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseArgs, parseFilter } from "./parse-filter";
-import { mockToggle, mockRules } from "@/utils/test";
+import { mockRules } from "@/utils/test";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -219,7 +219,7 @@ rule
 @end
 `,
         expected: mockRules({
-          include: mockToggle({ tags: [tags.slice(0, 2)] }),
+          include: { tags: [tags.slice(0, 2)] },
         }),
       },
     ])("$name", ({ filter, expected }) => {
@@ -339,30 +339,30 @@ rule
 `,
         expected: mockRules(
           {
-            include: mockToggle({ tags: [[tags[0]]] }),
+            include: { tags: [[tags[0]]] },
           },
           {
-            include: mockToggle({ tags: [[tags[0]]] }),
-            exclude: mockToggle({ tags: [[tags[1]]] }),
+            include: { tags: [[tags[0]]] },
+            exclude: { tags: [[tags[1]]] },
           },
           {
-            include: mockToggle({ tags: [[tags[0]]] }),
-            exclude: mockToggle({ tags: [[tags[1]]] }),
+            include: { tags: [[tags[0]]] },
+            exclude: { tags: [[tags[1]]] },
             strict: true,
           },
           {
-            include: mockToggle({ tags: [[tags[0]]] }),
-            exclude: mockToggle({ tags: [[tags[1]]] }),
+            include: { tags: [[tags[0]]] },
+            exclude: { tags: [[tags[1]]] },
             strict: true,
             disable: true,
           },
           {
-            include: mockToggle({ tags: [[tags[0]], [tags[2]]] }),
-            exclude: mockToggle({ tags: [[tags[1]]] }),
+            include: { tags: [[tags[0]], [tags[2]]] },
+            exclude: { tags: [[tags[1]]] },
           },
           {
-            include: mockToggle({ tags: [[tags[0]]] }),
-            exclude: mockToggle({ tags: [[tags[1]], [tags[3]]] }),
+            include: { tags: [[tags[0]]] },
+            exclude: { tags: [[tags[1]], [tags[3]]] },
           },
           {},
         ),
