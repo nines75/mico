@@ -4,7 +4,12 @@ import { loadSettings } from "@/utils/storage";
 import { catchAsync } from "@/utils/util";
 
 export async function mountToDropdown() {
-  appendButton(
+  appendButton();
+  await appendInformation();
+}
+
+function appendButton() {
+  const data = [
     {
       text: "ユーザーをNG登録",
       callback: async () => {
@@ -37,14 +42,8 @@ export async function mountToDropdown() {
         alert(comments);
       },
     },
-  );
+  ];
 
-  await appendInformation();
-}
-
-function appendButton(
-  ...data: { text: string; callback: () => Promise<void> }[]
-) {
   const parent = document.querySelector(".z_dropdown > div > div:last-of-type");
   if (parent === null) return;
 
