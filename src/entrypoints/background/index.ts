@@ -2,19 +2,16 @@ import { backgroundMessageHandler } from "./message";
 import commentRequest from "./request/comment.request";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/recommend.request";
-import { catchAsync, isWatchPage } from "@/utils/util";
+import { catchAsync } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
 import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
-import {
-  getActiveTab,
-  sendMessageToTab,
-  tryWithPermission,
-} from "@/utils/browser";
+import { tryWithPermission } from "@/utils/browser";
 import { openLog } from "@/utils/log";
+import { reload } from "../popup/popup";
 
 export default defineBackground(() => {
   // 視聴ページのメインリクエストを監視
@@ -87,11 +84,7 @@ export default defineBackground(() => {
   browser.commands.onCommand.addListener(
     catchAsync(async (command) => {
       if (command === "reload") {
-        const tab = await getActiveTab();
-        const tabId = tab?.id;
-        if (tabId === undefined || !isWatchPage(tab?.url)) return;
-
-        await sendMessageToTab(tabId, { type: command });
+        await reload();
       }
 
       if (command === "open-settings") {

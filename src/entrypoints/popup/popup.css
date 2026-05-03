@@ -1,7 +1,10 @@
 @import "../../assets/global.css";
 
-#root {
+body {
+  /* #rootで指定するとページ下部に背景色が適用されないことがある */
   background: var(--background);
+}
+#root {
   color: var(--dim-white);
   width: auto;
   height: auto;
@@ -25,33 +28,23 @@ section {
 .info-value {
   font-weight: bold;
 }
-.link-container {
+.tools {
   display: flex;
-  margin-right: 14px;
-  gap: 8px;
+  border-top: 2px solid gray;
 }
-.link {
-  color: var(--dim-white);
-  display: flex;
-  align-items: center;
+.tool {
+  flex: 1; /* 等幅に並べる */
+  padding: 5px 0; /* デフォルトCSSを上書き */
 
-  /* buttonをanchor風にする */
+  /* buttonとanchorの差異を無くす */
+  color: inherit;
   border: none;
   background-color: transparent;
   cursor: pointer;
-  padding: 0;
-}
-.button-ng-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-block: 5px;
-}
-.button-ng {
-  padding: 0;
-  margin: 0;
-  border: none;
+
+  &:hover {
+    background-color: #52525e;
+  }
 }
 .version {
   font-size: 17px;

@@ -1,11 +1,23 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
 import { useStorageStore } from "@/utils/store";
-import { SiGithub } from "@icons-pack/react-simple-icons";
-import { History, ScreenShareOff, SettingsIcon, UserX } from "lucide-react";
-import { catchAsync } from "@/utils/util";
-import { sendMessage, notify } from "@/utils/browser";
+import {
+  History,
+  RotateCw,
+  ScreenShareOff,
+  SettingsIcon,
+  UserX,
+} from "lucide-react";
+import { catchAsync, isWatchPage } from "@/utils/util";
+import {
+  sendMessage,
+  notify,
+  getActiveTab,
+  sendMessageToTab,
+} from "@/utils/browser";
 import { openLog } from "@/utils/log";
+
+const TOOL_SIZE = 30;
 
 export function Init() {
   const isLoading = useStorageStore((state) => state.isLoading);
@@ -22,57 +34,58 @@ export function Init() {
 function Page() {
   const name = browser.runtime.getManifest().name;
   const version = `v${browser.runtime.getManifest().version}`;
+  const state = useStorageStore.getState();
 
   return (
     <>
       <header>
         <span className="version">{`${name} ${version}`}</span>
-        <div className="link-container">
-          <a className="link" href="https://github.com/nines75/mico">
-            <SiGithub size={24} />
-          </a>
-          <button
-            className="link"
-            title="ログを開く"
-            onClick={catchAsync(async () => {
-              await openLog();
-            })}
-          >
-            <History size={24} />
-          </button>
-          <a
-            className="link"
-            href="/options.html"
-            target="_blank"
-            title="設定を開く"
-          >
-            <SettingsIcon size={24} />
-          </a>
-        </div>
       </header>
       <main>
-        {useStorageStore.getState().isWatchPage && (
-          <section>
-            <div className="button-ng-container">
-              <button
-                className="button-ng"
-                title="クリックしてこの動画をNG登録"
-                onClick={catchAsync(onClickNgVideo)}
-              >
-                <ScreenShareOff size={28} />
-              </button>
-              <button
-                className="button-ng"
-                title="クリックしてこの動画の投稿者をNG登録"
-                onClick={catchAsync(onClickNgOwner)}
-              >
-                <UserX size={28} />
-              </button>
-            </div>
-          </section>
-        )}
         <Count />
       </main>
+      <div className="tools">
+        {state.isWatchPage && (
+          <>
+            <button
+              className="tool"
+              title="この動画をNG登録"
+              onClick={catchAsync(onClickNgVideo)}
+            >
+              <ScreenShareOff size={TOOL_SIZE} />
+            </button>
+            <button
+              className="tool"
+              title="この動画の投稿者をNG登録"
+              onClick={catchAsync(onClickNgOwner)}
+            >
+              <UserX size={TOOL_SIZE} />
+            </button>
+            <button
+              className="tool"
+              title="リロードして現在の再生時間を復元"
+              onClick={catchAsync(reload)}
+            >
+              <RotateCw size={TOOL_SIZE} />
+            </button>
+          </>
+        )}
+        <button
+          className="tool"
+          title="ログを開く"
+          onClick={catchAsync(openLog)}
+        >
+          <History size={TOOL_SIZE} />
+        </button>
+        <a
+          className="tool"
+          href="/options.html"
+          target="_blank"
+          title="設定を開く"
+        >
+          <SettingsIcon size={TOOL_SIZE} />
+        </a>
+      </div>
     </>
   );
 }
@@ -122,4 +135,12 @@ async function onClickNgOwner() {
     ],
   });
   await notify(`以下のユーザーIDをNG登録しました\n\n${ownerId} (${ownerName})`);
+}
+
+export async function reload() {
+  const tab = await getActiveTab();
+  const tabId = tab?.id;
+  if (tabId === undefined || !isWatchPage(tab?.url)) return;
+
+  await sendMessageToTab(tabId, { type: "reload" });
 }
