@@ -19,8 +19,13 @@ header {
   justify-content: space-between;
   align-items: center;
 }
-section {
-  margin: 10px 30px;
+.info-container {
+  margin: 15px 30px;
+
+  /* 子要素を上下に並べて間隔を調整 */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .info {
   color: silver;
