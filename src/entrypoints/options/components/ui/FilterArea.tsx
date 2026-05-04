@@ -2,7 +2,7 @@ import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store";
 import clsx from "clsx";
-import ManualFilterButton from "./ImportFilterButton";
+import ManualFilterButton from "./ManualFilterButton";
 import AutoFilter from "./AutoFilter";
 
 export type FilterId = "manual" | "auto";
