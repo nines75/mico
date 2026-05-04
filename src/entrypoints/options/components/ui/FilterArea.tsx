@@ -2,7 +2,7 @@ import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { useStorageStore } from "@/utils/store";
 import clsx from "clsx";
-import ImportFilterButton from "./ImportFilterButton";
+import ManualFilterButton from "./ImportFilterButton";
 import AutoFilter from "./AutoFilter";
 
 export type FilterId = "manual" | "auto";
@@ -19,22 +19,24 @@ export default function FilterArea() {
   return (
     <>
       <div className="button-container">
-        {config.map(({ id, name }) => (
-          <button
-            key={id}
-            className={clsx(
-              "button",
-              "button-filter",
-              id === selectedFilter && "selected",
-            )}
-            onClick={() => {
-              save({ selectedFilter: id });
-            }}
-          >
-            {name}
-          </button>
-        ))}
-        {selectedFilter === "manual" && <ImportFilterButton />}
+        <div className="button-group">
+          {config.map(({ id, name }) => (
+            <button
+              key={id}
+              className={clsx(
+                "button",
+                "button-filter",
+                id === selectedFilter && "selected",
+              )}
+              onClick={() => {
+                save({ selectedFilter: id });
+              }}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+        {selectedFilter === "manual" && <ManualFilterButton />}
       </div>
       {selectedFilter === "manual" && (
         <Editor

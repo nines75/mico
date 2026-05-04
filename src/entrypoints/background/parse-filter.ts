@@ -1,4 +1,3 @@
-import { printInvalidRule } from "@/utils/util";
 import { createDefaultRule, type Rule } from "./rule";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -51,17 +50,20 @@ export const noArgsDirectives = [
   "video-title",
 ] as const satisfies Exclude<Directive, { args: string[] }>["type"][];
 
+export interface InvalidLine {
+  index: number;
+  line: string;
+  type: "directive" | "regex" | "regex-flag";
+}
+
 export function parseFilter(
   settings: Settings,
   includeIndex = false, // テストが複雑になるためindexはデフォルトで含めない
-): {
-  rules: Rule[];
-  invalidCount: number;
-} {
-  let invalidCount = 0;
+): { rules: Rule[]; invalidLines: InvalidLine[] } {
   let strictAlias = false;
   const directives: Directive[] = [];
   const rules: Rule[] = [];
+  const invalidLines: InvalidLine[] = [];
 
   const lines = settings.manualFilter
     .split("\n")
@@ -102,7 +104,10 @@ export function parseFilter(
     }
 
     // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
-    if (line.startsWith("@")) continue;
+    if (line.startsWith("@")) {
+      invalidLines.push({ index, line, type: "directive" });
+      continue;
+    }
 
     // -------------------------------------------------------------------------------------------
     // ルールに適用するディレクティブを決定
@@ -209,16 +214,14 @@ export function parseFilter(
     if (regexStr !== undefined && flags !== undefined) {
       // 想定外のフラグが含まれている場合はルールとして解釈しない
       if (!/^[isuvm]*$/.test(flags)) {
-        invalidCount++;
-        printInvalidRule(line);
+        invalidLines.push({ index, line, type: "regex-flag" });
         continue;
       }
 
       try {
         regex = new RegExp(regexStr, flags);
       } catch {
-        invalidCount++;
-        printInvalidRule(line);
+        invalidLines.push({ index, line, type: "regex" });
         continue;
       }
     }
@@ -230,7 +233,7 @@ export function parseFilter(
     });
   }
 
-  return { rules, invalidCount };
+  return { rules, invalidLines };
 }
 
 export function parseArgs(line: string) {

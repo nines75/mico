@@ -85,8 +85,3 @@ export function safeParseJson<T>(
     return;
   }
 }
-
-// TODO: Lintを実装したら消す
-export function printInvalidRule(rule: string) {
-  console.error(`[mico] 無効なルール: ${rule}`);
-}

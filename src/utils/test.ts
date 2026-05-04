@@ -130,7 +130,7 @@ export function mockRules(
     rules: rules.map((rule): Rule => {
       return merge({ ...createDefaultRule(), pattern: "rule" }, rule);
     }),
-    invalidCount: 0,
+    invalidLines: [],
   };
 }
 

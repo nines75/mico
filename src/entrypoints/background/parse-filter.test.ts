@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { InvalidLine } from "./parse-filter";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockRules } from "@/utils/test";
 import { defaultSettings } from "@/utils/config";
@@ -69,32 +70,44 @@ rule
     });
 
     describe("異常系", () => {
+      // 別のルールとしてパースされるもの
+      it("先頭に空白文字を含む", () => {
+        expect(parseFilter(createSettings(" /rule/"))).toEqual(
+          mockRules({ pattern: " /rule/" }),
+        );
+      });
+
+      // 無効な行としてパースされるもの
       it.each([
-        {
-          name: "先頭に空白文字を含む",
-          filter: " /rule/",
-          expected: mockRules({ pattern: " /rule/" }),
-        },
         {
           name: "末尾に空白文字を含む",
           filter: "/rule/ ",
+          type: "regex-flag",
         },
         {
           name: "対応していないフラグ",
           filter: "/rule/g",
+          type: "regex-flag",
         },
         {
           name: "併用できないフラグ",
           filter: "/rule/uv",
+          type: "regex",
         },
         {
-          name: "無効な正規表現",
+          name: "無効なパターン",
           filter: "/(rule/",
+          type: "regex",
         },
-      ])("$name", ({ filter, expected }) => {
-        expect(parseFilter(createSettings(filter))).toEqual(
-          expected ?? { rules: [], invalidCount: 1 },
-        );
+      ] satisfies {
+        name: string;
+        filter: string;
+        type: InvalidLine["type"];
+      }[])("$name", ({ filter, type }) => {
+        expect(parseFilter(createSettings(filter))).toEqual({
+          rules: [],
+          invalidLines: [{ index: 0, line: filter, type }],
+        });
       });
     });
   });
@@ -246,7 +259,12 @@ rule
 rule
 @end
 `,
-          expected: mockRules({}),
+          expected: {
+            rules: mockRules({}).rules,
+            invalidLines: [
+              { index: 1, line: "@include-tagss tag0 tag1", type: "directive" },
+            ],
+          },
         },
       ])("$name", ({ filter, expected }) => {
         expect(parseFilter(createSettings(filter))).toEqual(expected);
@@ -305,7 +323,10 @@ rule
 @directive
 rule
 `,
-        expected: mockRules({}),
+        expected: {
+          rules: mockRules({}).rules,
+          invalidLines: [{ index: 1, line: "@directive", type: "directive" }],
+        },
       },
       {
         name: "ネスト",

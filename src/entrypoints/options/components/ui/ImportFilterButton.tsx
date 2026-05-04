@@ -1,22 +1,51 @@
+import type { InvalidLine } from "@/entrypoints/background/parse-filter";
+import { parseFilter } from "@/entrypoints/background/parse-filter";
+import { notify } from "@/utils/browser";
 import { useStorageStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
-import { Import } from "lucide-react";
+import { Import, TriangleAlert } from "lucide-react";
 import { useRef } from "react";
 
-export default function ImportFilterButton() {
+const ICON_SIZE = 20;
+
+export default function ManualFilterButton() {
   const input = useRef<HTMLInputElement | null>(null);
   const save = useStorageStore((state) => state.saveSettings);
 
   return (
-    <>
+    <div className="button-group">
       <button
-        className="button button-import-filter"
+        className="button button-manual-filter"
         onClick={() => {
           if (input.current !== null) input.current.click();
         }}
       >
-        <Import size={20} />
+        <Import size={ICON_SIZE} />
         インポート
+      </button>
+      <button
+        className="button button-manual-filter"
+        onClick={catchAsync(async () => {
+          const { invalidLines } = parseFilter(
+            useStorageStore.getState().settings,
+          );
+          if (invalidLines.length === 0) {
+            await notify("無効な行はありません");
+            return;
+          }
+
+          alert(
+            invalidLines
+              .map(
+                ({ index, line, type }) =>
+                  `${index + 1}行目: ${line}\nエラー: ${getErrorMessage(type)}`,
+              )
+              .join("\n\n"),
+          );
+        })}
+      >
+        <TriangleAlert size={ICON_SIZE} />
+        エラーを表示
       </button>
       <input
         type="file"
@@ -30,6 +59,20 @@ export default function ImportFilterButton() {
           save({ manualFilter: text });
         })}
       />
-    </>
+    </div>
   );
+}
+
+function getErrorMessage(type: InvalidLine["type"]) {
+  switch (type) {
+    case "directive": {
+      return "無効なディレクティブ";
+    }
+    case "regex": {
+      return "無効な正規表現";
+    }
+    case "regex-flag": {
+      return "無効な正規表現フラグ";
+    }
+  }
 }

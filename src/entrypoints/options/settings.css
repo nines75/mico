@@ -142,6 +142,10 @@ button
 .button-container {
   display: flex;
   align-items: center;
+  gap: 50px;
+}
+.button-group {
+  display: flex; /* 子要素を横に並べる */
 }
 .button {
   font-weight: bold;
@@ -153,7 +157,7 @@ button
 }
 .button-filter {
   padding: 7px 12px;
-  height: 40px; /* .button-import-filterの有無で位置がずれないようにする */
+  height: 40px; /* .button-manual-filterの有無で位置がずれないようにする */
   &.selected {
     border-color: lightskyblue;
   }
@@ -163,11 +167,10 @@ button
   text-decoration: none;
   color: inherit;
 }
-.button-import-filter {
+.button-manual-filter {
   padding: 7px 12px;
   display: flex;
   align-items: center;
-  margin-left: 50px;
 }
 
 /* -------------------------------------------------------------------------------------------
