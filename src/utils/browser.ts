@@ -64,10 +64,10 @@ export async function hasPermission(
 
 export async function tryWithPermission(
   permission: Browser.runtime.ManifestPermission,
-  callback: () => void | Promise<void>,
+  onGranted: () => void | Promise<void>,
 ) {
   await ((await hasPermission(permission))
-    ? callback()
+    ? onGranted()
     : notify(`以下の権限が必要です\n\n${permission}`));
 }
 

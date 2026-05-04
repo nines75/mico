@@ -19,7 +19,7 @@ export abstract class Filter {
 
   protected traverseThreads(
     threads: Thread[],
-    callback: (comment: NvComment, thread: Thread) => boolean,
+    predicate: (comment: NvComment, thread: Thread) => boolean,
   ) {
     for (const thread of threads) {
       thread.comments = thread.comments.filter((comment): boolean => {
@@ -30,7 +30,7 @@ export abstract class Filter {
         )
           return true;
 
-        return callback(comment, thread);
+        return predicate(comment, thread);
       });
     }
   }

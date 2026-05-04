@@ -26,12 +26,8 @@ export default function General() {
     ]),
   );
 
-  const clickInput = () => {
-    if (input.current !== null) input.current.click();
-  };
-
   const buttons = [
-    ["インポート", clickInput],
+    ["インポート", () => input.current?.click()],
     ["エクスポート", catchAsync(exportBackup)],
     ["リセット", catchAsync(reset)],
   ] as const;
@@ -67,8 +63,8 @@ export default function General() {
           // https://github.com/facebook/react/issues/34775
 
           // eslint-disable-next-line react-hooks/refs
-          buttons.map(([text, callback]) => (
-            <button key={text} className="button" onClick={callback}>
+          buttons.map(([text, onClick]) => (
+            <button key={text} className="button" onClick={onClick}>
               {text}
             </button>
           ))

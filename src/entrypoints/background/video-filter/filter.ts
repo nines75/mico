@@ -23,13 +23,13 @@ export abstract class Filter {
 
   protected traverseVideos<T>(
     { data, pickVideo }: ApplyParams<T>,
-    callback: (video: Video) => boolean,
+    predicate: (video: Video) => boolean,
   ) {
     data.items = data.items.filter((item) => {
       const video = pickVideo(item);
       if (video === undefined) return true;
 
-      return callback(video);
+      return predicate(video);
     });
   }
 }

@@ -5,7 +5,7 @@ import type { z } from "@/utils/zod";
 export function filterResponse(
   details: browser.webRequest._OnBeforeRequestDetails,
   method: "GET" | "POST",
-  callback: (
+  onStop: (
     filter: browser.webRequest.StreamFilter,
     encoder: TextEncoder,
     buf: string,
@@ -23,7 +23,7 @@ export function filterResponse(
   };
 
   filter.onstop = catchAsync(async () => {
-    const shouldCancel = await callback(filter, encoder, buf);
+    const shouldCancel = await onStop(filter, encoder, buf);
     if (shouldCancel) {
       filter.write(encoder.encode(buf));
       filter.disconnect();
@@ -36,7 +36,7 @@ export function spaFilter<T, U>(
   buf: string,
   settings: Settings,
   schema: z.ZodType<T>,
-  callback: (data: T, settings: Settings) => U,
+  filter: (data: T, settings: Settings) => U,
 ) {
   if (details.type === "main_frame") {
     const parser = new DOMParser();
@@ -47,8 +47,8 @@ export function spaFilter<T, U>(
     const data = safeParseJson(content, schema);
     if (data === undefined) return;
 
-    // callbackではdataを変更するため先に呼び出す
-    const filteringResult = callback(data, settings);
+    // filterではdataを変更するため先に呼び出す
+    const filteringResult = filter(data, settings);
     meta?.setAttribute("content", JSON.stringify(data));
 
     return {
@@ -61,8 +61,8 @@ export function spaFilter<T, U>(
     const data = safeParseJson(buf, schema);
     if (data === undefined) return;
 
-    // callbackではdataを変更するため先に呼び出す
-    const filteringResult = callback(data, settings);
+    // filterではdataを変更するため先に呼び出す
+    const filteringResult = filter(data, settings);
 
     return {
       filteredBuf: JSON.stringify(data),

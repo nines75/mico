@@ -13,7 +13,7 @@ export default defineContentScript({
   matches: ["https://www.nicovideo.jp/*"],
 
   main() {
-    const observer = new MutationObserver(catchAsync(observerCallback));
+    const observer = new MutationObserver(catchAsync(onBodyChange));
     observer.observe(document.body, {
       childList: true,
       subtree: true,
@@ -36,7 +36,7 @@ export default defineContentScript({
   },
 });
 
-async function observerCallback(records: MutationRecord[]) {
+async function onBodyChange(records: MutationRecord[]) {
   for (const record of records) {
     for (const node of record.addedNodes) {
       if (!(node instanceof Element)) continue;

@@ -122,7 +122,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 
   const getExtensions = () => {
     const settings = useStorageStore.getState().settings;
-    const updateCallback = EditorView.updateListener.of((update) => {
+    const onUpdate = EditorView.updateListener.of((update) => {
       if (
         update.docChanged &&
         // ユーザー入力以外ではonChangeを発火させない
@@ -140,7 +140,7 @@ export default function Editor({ value, onChange }: EditorProps) {
         ? [highlightTrailingWhitespace()]
         : []),
       ...extensions,
-      updateCallback,
+      onUpdate,
     ];
   };
   const createEditorState = useEffectEvent(() => {

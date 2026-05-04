@@ -12,13 +12,13 @@ function appendButton() {
   const data = [
     {
       text: "ユーザーをNG登録",
-      callback: async () => {
+      onClick: async () => {
         await sendMessage({ type: "on-click-dropdown" });
       },
     },
     {
       text: "この動画だけユーザーをNG登録",
-      callback: async () => {
+      onClick: async () => {
         await sendMessage({
           type: "on-click-dropdown",
           data: { videoOnly: true },
@@ -27,7 +27,7 @@ function appendButton() {
     },
     {
       text: "ユーザーが投稿したコメント",
-      callback: async () => {
+      onClick: async () => {
         const comments = (await sendMessage({
           type: "get-comments-for-dropdown",
         })) as string | undefined;
@@ -50,10 +50,10 @@ function appendButton() {
   const sample = parent.querySelector(":scope > button");
   if (sample === null) return;
 
-  for (const { text, callback } of data) {
+  for (const { text, onClick } of data) {
     const button = document.createElement("button");
 
-    button.addEventListener("click", catchAsync(callback));
+    button.addEventListener("click", catchAsync(onClick));
     button.textContent = `${text}(${browser.runtime.getManifest().name})`;
     for (const attribute of sample.attributes) {
       button.setAttribute(attribute.name, attribute.value);
