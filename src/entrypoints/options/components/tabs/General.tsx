@@ -11,10 +11,11 @@ import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
-import { notify, sendMessage } from "@/utils/browser";
+import { notify } from "@/utils/browser";
 import { objectKeys } from "ts-extras";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
+import { proxy } from "@/utils/proxy";
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
@@ -142,7 +143,7 @@ async function reset() {
   )
     return;
 
-  await sendMessage({ type: "remove-all-data" });
+  await proxy.removeAllData();
 }
 
 // -------------------------------------------------------------------------------------------

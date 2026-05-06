@@ -1,41 +1,34 @@
-import type { NvComment } from "@/types/api/comment.types";
-import { sendMessage } from "@/utils/browser";
+import { proxy } from "@/utils/proxy";
 import { loadSettings } from "@/utils/storage";
-import { catchAsync } from "@/utils/util";
+import { catchAsync, escapeNewline } from "@/utils/util";
+import { getLogId } from "@/utils/log";
+import { reload } from "@/utils/dom";
 
 export async function mountToDropdown() {
   appendButton();
   await appendInformation();
 }
 
+// -------------------------------------------------------------------------------------------
+// button
+// -------------------------------------------------------------------------------------------
+
 function appendButton() {
   const data = [
     {
       text: "ユーザーをNG登録",
-      onClick: async () => {
-        await sendMessage({ type: "on-click-dropdown" });
-      },
+      onClick: onClickNgUser(),
     },
     {
       text: "この動画だけユーザーをNG登録",
-      onClick: async () => {
-        await sendMessage({
-          type: "on-click-dropdown",
-          data: { videoOnly: true },
-        });
-      },
+      onClick: onClickNgUser(true),
     },
     {
       text: "ユーザーが投稿したコメント",
       onClick: async () => {
-        const comments = (await sendMessage({
-          type: "get-comments-for-dropdown",
-        })) as string | undefined;
+        const comments = await getComments();
         if (comments === undefined) {
-          await sendMessage({
-            type: "notify",
-            data: "コメントの取得に失敗しました",
-          });
+          await proxy.notify("コメントの取得に失敗しました");
           return;
         }
 
@@ -63,10 +56,64 @@ function appendButton() {
   }
 }
 
+function onClickNgUser(videoOnly = false) {
+  return async () => {
+    const settings = await loadSettings();
+    const comment = await proxy.getDropdownComment();
+    if (comment?.$videoId === undefined) {
+      await proxy.notify("NG登録に失敗しました");
+      return;
+    }
+
+    await proxy.addAutoRule([
+      {
+        pattern: comment.userId,
+        context: `comment-body: ${comment.body}`,
+        source: "dropdown",
+        target: { commentUserId: true },
+        ...(videoOnly && {
+          include: { videoIds: [[comment.$videoId]] },
+        }),
+      },
+    ]);
+
+    if (settings.notifyOnManualNg && !settings.autoReload)
+      await proxy.notify(
+        `以下のユーザーIDをNG登録しました\n\n${comment.userId}`,
+      );
+
+    if (settings.autoReload) await reload();
+  };
+}
+
+async function getComments() {
+  const logId = getLogId();
+  if (logId === undefined) return;
+
+  const log = await proxy.getLog(logId);
+  if (log === undefined) return;
+
+  const dropdownComment = await proxy.getDropdownComment();
+  const userId = dropdownComment?.userId;
+  if (userId === undefined) return;
+
+  return log.comment?.allComments
+    .filter((comment) => comment.userId === userId)
+    .toSorted((a, b) => a.body.localeCompare(b.body))
+    .toSorted((a, b) => a.score - b.score)
+    .map(
+      (comment) =>
+        `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,
+    )
+    .join("\n");
+}
+
+// -------------------------------------------------------------------------------------------
+// information
+// -------------------------------------------------------------------------------------------
+
 async function appendInformation() {
-  const comment = (await sendMessage({
-    type: "get-dropdown-comment",
-  })) as NvComment | undefined;
+  const comment = await proxy.getDropdownComment();
   if (comment === undefined) return;
 
   const settings = await loadSettings();

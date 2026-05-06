@@ -6,8 +6,9 @@ import type { WatchApi } from "@/types/api/watch-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
 import { setLog, setTab } from "@/utils/db";
 import type { Tab } from "@/types/storage/tab.types";
-import { createLogId, mountLogId } from "@/utils/log";
+import { createLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
+import { mountLogId } from "@/utils/messaging";
 
 export function watchRequest(
   details: browser.webRequest._OnBeforeRequestDetails,

@@ -5,8 +5,9 @@ import { defaultSettings } from "./config";
 import { loadSettings } from "./storage";
 import type { Log } from "../types/storage/log.types";
 import { catchAsync, isWatchPage } from "./util";
-import { getActiveTab, sendMessage } from "./browser";
-import { getLogId } from "./log";
+import { getActiveTab } from "./browser";
+import { proxy } from "./proxy";
+import { getLogIdViaMessage } from "./messaging";
 
 interface StorageState {
   storeId: string;
@@ -33,10 +34,9 @@ export const useStorageStore = create<StorageState>()(
     }),
     loadPopup: catchAsync(async () => {
       const tab = await getActiveTab();
-      const log = (await sendMessage({
-        type: "get-log",
-        data: await getLogId(tab?.id),
-      })) as Log | undefined;
+      const logId = await getLogIdViaMessage(tab?.id);
+
+      const log = logId === undefined ? undefined : await proxy.getLog(logId);
 
       set({
         log,
@@ -48,10 +48,7 @@ export const useStorageStore = create<StorageState>()(
       const params = new URLSearchParams(location.search);
       const id = params.get("id");
 
-      const log = (await sendMessage({
-        type: "get-log",
-        data: id,
-      })) as Log | undefined;
+      const log = id === null ? undefined : await proxy.getLog(id);
 
       set({ log, isLoading: false });
     }),
@@ -67,10 +64,7 @@ export const useStorageStore = create<StorageState>()(
 
       // 書き込む
       try {
-        await sendMessage({
-          type: "set-settings",
-          data: { ...settings, storeId },
-        });
+        await proxy.setSettings({ ...settings, storeId });
       } catch {
         // ロールバック
         set({ settings: currentSettings });

@@ -6,8 +6,9 @@ import { filterResponse, spaFilter } from "./request";
 import type { RankingApi } from "@/types/api/ranking-api.types";
 import { rankingApiSchema } from "@/types/api/ranking-api.types";
 import { cleanUpDb } from "@/utils/db";
-import { createLogId, mountLogId } from "@/utils/log";
+import { createLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
+import { mountLogId } from "@/utils/messaging";
 
 export function rankingRequest(
   details: browser.webRequest._OnBeforeRequestDetails,

@@ -1,19 +1,4 @@
 import type { Browser } from "#imports";
-import type { BackgroundMessage } from "@/entrypoints/background/message";
-import type { ContentMessage } from "@/entrypoints/content/message";
-
-export async function sendMessage(
-  message: BackgroundMessage,
-): Promise<unknown> {
-  return await browser.runtime.sendMessage(message);
-}
-
-export async function sendMessageToTab(
-  tabId: number,
-  message: ContentMessage,
-): Promise<unknown> {
-  return await browser.tabs.sendMessage(tabId, message);
-}
 
 export async function setBadgeState(
   value: number,

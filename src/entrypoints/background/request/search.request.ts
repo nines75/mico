@@ -6,8 +6,9 @@ import { filterResponse, spaFilter } from "./request";
 import type { SearchApi } from "@/types/api/search-api.types";
 import { searchApiSchema } from "@/types/api/search-api.types";
 import { cleanUpDb } from "@/utils/db";
-import { createLogId, mountLogId } from "@/utils/log";
+import { createLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
+import { mountLogId } from "@/utils/messaging";
 
 export function searchRequest(
   details: browser.webRequest._OnBeforeRequestDetails,

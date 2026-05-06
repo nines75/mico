@@ -1,4 +1,3 @@
-import { backgroundMessageHandler } from "./message";
 import commentRequest from "./request/comment.request";
 import { defineBackground } from "#imports";
 import { recommendRequest } from "./request/recommend.request";
@@ -11,7 +10,10 @@ import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
 import { tryWithPermission } from "@/utils/browser";
 import { openLog } from "@/utils/log";
-import { reload } from "../popup/popup";
+import { registerService } from "@webext-core/proxy-service";
+import { PROXY_SERVICE_KEY } from "@/utils/proxy";
+import { proxyService } from "@/utils/proxy-service";
+import { reloadViaMessage } from "@/utils/messaging";
 
 export default defineBackground(() => {
   // 視聴ページのメインリクエストを監視
@@ -84,7 +86,7 @@ export default defineBackground(() => {
   browser.commands.onCommand.addListener(
     catchAsync(async (command) => {
       if (command === "reload") {
-        await reload();
+        await reloadViaMessage();
       }
 
       if (command === "open-settings") {
@@ -109,9 +111,6 @@ export default defineBackground(() => {
       }
     }),
   );
-
-  // コンテンツスクリプトからメッセージを受け取った際のコールバック関数を設定
-  browser.runtime.onMessage.addListener(backgroundMessageHandler);
 
   // ブラウザの起動時に実行する処理
   browser.runtime.onStartup.addListener(
@@ -139,4 +138,6 @@ export default defineBackground(() => {
       }
     }),
   );
+
+  registerService(PROXY_SERVICE_KEY, proxyService);
 });

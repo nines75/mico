@@ -8,14 +8,11 @@ import {
   SettingsIcon,
   UserX,
 } from "lucide-react";
-import { catchAsync, isWatchPage } from "@/utils/util";
-import {
-  sendMessage,
-  notify,
-  getActiveTab,
-  sendMessageToTab,
-} from "@/utils/browser";
+import { catchAsync } from "@/utils/util";
+import { notify } from "@/utils/browser";
 import { openLog } from "@/utils/log";
+import { proxy } from "@/utils/proxy";
+import { reloadViaMessage } from "@/utils/messaging";
 
 const TOOL_SIZE = 30;
 
@@ -64,7 +61,7 @@ function Page() {
             <button
               className="tool"
               title="リロードして現在の再生時間を復元"
-              onClick={catchAsync(reload)}
+              onClick={catchAsync(reloadViaMessage)}
             >
               <RotateCw size={TOOL_SIZE} />
             </button>
@@ -99,17 +96,14 @@ async function onClickNgVideo() {
     return;
   }
 
-  await sendMessage({
-    type: "add-auto-rule",
-    data: [
-      {
-        pattern: videoId,
-        context: `video-title: ${title}`,
-        source: "popup",
-        target: { videoId: true },
-      },
-    ],
-  });
+  await proxy.addAutoRule([
+    {
+      pattern: videoId,
+      context: `video-title: ${title}`,
+      source: "popup",
+      target: { videoId: true },
+    },
+  ]);
   await notify(`以下の動画IDをNG登録しました\n\n${videoId} (${title})`);
 }
 
@@ -123,24 +117,13 @@ async function onClickNgOwner() {
     return;
   }
 
-  await sendMessage({
-    type: "add-auto-rule",
-    data: [
-      {
-        pattern: ownerId,
-        context: `owner-name: ${ownerName}`,
-        source: "popup",
-        target: { videoOwnerId: true },
-      },
-    ],
-  });
+  await proxy.addAutoRule([
+    {
+      pattern: ownerId,
+      context: `owner-name: ${ownerName}`,
+      source: "popup",
+      target: { videoOwnerId: true },
+    },
+  ]);
   await notify(`以下のユーザーIDをNG登録しました\n\n${ownerId} (${ownerName})`);
-}
-
-export async function reload() {
-  const tab = await getActiveTab();
-  const tabId = tab?.id;
-  if (tabId === undefined || !isWatchPage(tab?.url)) return;
-
-  await sendMessageToTab(tabId, { type: "reload" });
 }

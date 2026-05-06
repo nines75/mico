@@ -1,5 +1,4 @@
 import { useMemo } from "#imports";
-import { sendMessage } from "@/utils/browser";
 import { isString, catchAsync } from "@/utils/util";
 import { AG_GRID_LOCALE_JP } from "@ag-grid-community/locale";
 import type {
@@ -13,6 +12,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Trash } from "lucide-react";
 import type { Row as CommentRow } from "./CommentViewer";
 import type { Row as VideoRow } from "./VideoViewer";
+import { proxy } from "@/utils/proxy";
 
 interface ViewerProps<T> {
   filter: string;
@@ -102,7 +102,7 @@ export function RuleCell(
         onClick={catchAsync(async () => {
           if (!confirm(`以下のルールを削除しますか？\n\n${value}`)) return;
 
-          await sendMessage({ type: "remove-auto-rule", data: [ruleId] });
+          await proxy.removeAutoRule([ruleId]);
         })}
       >
         <Trash size={16} />

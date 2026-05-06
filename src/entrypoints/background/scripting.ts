@@ -1,4 +1,5 @@
 import { commentSchema } from "@/types/api/comment.types";
+import { getActiveTab } from "@/utils/browser";
 
 type Fiber = Record<
   string,
@@ -12,10 +13,9 @@ type Fiber = Record<
   }
 >;
 
-export async function getDropdownComment(
-  sender: browser.runtime.MessageSender,
-) {
-  const tabId = sender.tab?.id;
+export async function getDropdownComment() {
+  const tab = await getActiveTab();
+  const tabId = tab?.id;
   if (tabId === undefined) return;
 
   const results = await browser.scripting.executeScript({

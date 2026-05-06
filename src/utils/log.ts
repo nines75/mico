@@ -1,41 +1,20 @@
-import type { LogId } from "@/types/storage/log.types";
-import delay from "delay";
-import { getActiveTab, sendMessageToTab, notify } from "./browser";
+import { getActiveTab, notify } from "./browser";
+import { getLogIdViaMessage } from "./messaging";
 
 export function createLogId() {
   return crypto.randomUUID();
 }
 
-export async function mountLogId(logId: LogId, tabId: number) {
-  const mount = async () => {
-    try {
-      await sendMessageToTab(tabId, { type: "mount-log-id", data: logId });
-    } catch {
-      await delay(1);
-      await mount();
-    }
-  };
-  await mount();
-}
+export function getLogId() {
+  const id = `${browser.runtime.getManifest().name}-log-id`;
+  const element = document.querySelector(`#${id}`);
 
-export async function getLogId(
-  tabId: number | undefined,
-): Promise<string | undefined> {
-  if (tabId === undefined) return;
-
-  // host権限がないタブではエラーが発生する
-  try {
-    return (await sendMessageToTab(tabId, {
-      type: "get-log-id",
-    })) as string | undefined;
-  } catch {
-    return;
-  }
+  return element?.textContent;
 }
 
 export async function openLog() {
   const tab = await getActiveTab();
-  const logId = await getLogId(tab?.id);
+  const logId = await getLogIdViaMessage(tab?.id);
   if (logId === undefined) {
     await notify("ログIDが抽出できませんでした");
     return;

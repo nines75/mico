@@ -1,5 +1,4 @@
 import { mountToDropdown } from "./dropdown";
-import { contentMessageHandler } from "./message";
 import { defineContentScript } from "#imports";
 import {
   catchAsync,
@@ -7,7 +6,10 @@ import {
   isSearchPage,
   isWatchPage,
 } from "@/utils/util";
-import { sendMessage } from "@/utils/browser";
+import { proxy } from "@/utils/proxy";
+import { getLogId } from "@/utils/log";
+import { onMessage } from "@/utils/messaging";
+import { reload } from "@/utils/dom";
 
 export default defineContentScript({
   matches: ["https://www.nicovideo.jp/*"],
@@ -19,8 +21,6 @@ export default defineContentScript({
       subtree: true,
     });
 
-    browser.runtime.onMessage.addListener(contentMessageHandler);
-
     // ブラウザの進む/戻るで消えたバッジを復元
     if (isRankingPage(location.href) || isSearchPage(location.href)) {
       window.addEventListener(
@@ -29,7 +29,16 @@ export default defineContentScript({
           // キャッシュによる発火か判定
           if (!event.persisted) return;
 
-          await sendMessage({ type: "restore-badge" });
+          const tab = await proxy.getActiveTab();
+          const tabId = tab?.id;
+          const logId = getLogId();
+          if (tabId === undefined || logId === undefined) return;
+
+          const log = await proxy.getLog(logId);
+          const count = log?.count?.blockedVideo;
+          if (count === undefined) return;
+
+          await proxy.setBadgeState(count, "video", tabId);
         }),
       );
     }
@@ -50,3 +59,37 @@ async function onBodyChange(records: MutationRecord[]) {
     }
   }
 }
+
+// -------------------------------------------------------------------------------------------
+// メッセージリスナー登録
+// -------------------------------------------------------------------------------------------
+
+onMessage("reload", reload);
+onMessage("getLogId", getLogId);
+
+onMessage("mountLogId", ({ data: logId }) => {
+  const id = `${browser.runtime.getManifest().name}-log-id`;
+  const current = document.querySelector(`#${id}`);
+
+  if (current === null) {
+    const div = document.createElement("div");
+    div.style.display = "none";
+    div.id = id;
+    div.textContent = logId;
+
+    document.body.append(div);
+  } else {
+    current.textContent = logId;
+  }
+});
+
+onMessage("setPlaybackTime", ({ data: time }) => {
+  const id = setInterval(() => {
+    const video = document.querySelector("video");
+    if (video !== null) {
+      clearInterval(id);
+
+      video.currentTime = time;
+    }
+  }, 10);
+});
