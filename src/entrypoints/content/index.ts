@@ -38,7 +38,7 @@ export default defineContentScript({
           const count = log?.count?.blockedVideo;
           if (count === undefined) return;
 
-          await proxy.setBadgeState(count, "video", tabId);
+          await proxy.setBadgeState(count, tabId, "video");
         }),
       );
     }

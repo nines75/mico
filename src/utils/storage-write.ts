@@ -15,13 +15,14 @@ import type { SetOptional } from "type-fest";
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
 
-export async function removeAllData() {
+export async function reset() {
   await Promise.all([
     queue.add(async () => {
-      // すべてのデータを削除するとバージョン情報まで消えるため単体で削除
-      //
-      // removeItemを使うと次のアクセス時にイニシャライザが実行されるため、
-      // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない
+      // clear()を使用するとバージョン情報まで消えるため個別で削除
+      // -----------------------------------------------------------
+      // removeItem()を使うと次のアクセス時にイニシャライザが実行されるため、
+      // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない。
+      // そのためsetItem()を使用し削除ではなく上書きを行う
       await storage.setItem(`${storageArea}:settings`, {});
     }),
     clearDb(),

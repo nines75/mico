@@ -113,11 +113,7 @@ export default defineBackground(() => {
   );
 
   // ブラウザの起動時に実行する処理
-  browser.runtime.onStartup.addListener(
-    catchAsync(async () => {
-      await clearDb();
-    }),
-  );
+  browser.runtime.onStartup.addListener(catchAsync(clearDb));
 
   browser.contextMenus.create({
     id: "add-rule",

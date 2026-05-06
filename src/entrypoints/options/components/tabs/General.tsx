@@ -143,7 +143,7 @@ async function reset() {
   )
     return;
 
-  await proxy.removeAllData();
+  await proxy.reset();
 }
 
 // -------------------------------------------------------------------------------------------

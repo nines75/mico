@@ -2,8 +2,8 @@ import type { Browser } from "#imports";
 
 export async function setBadgeState(
   value: number,
-  target: "comment" | "video",
   tabId: number,
+  target: "comment" | "video",
 ) {
   const text = (() => {
     if (value === 0) return "";

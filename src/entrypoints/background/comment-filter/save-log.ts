@@ -26,7 +26,7 @@ export async function saveLog(
       logId,
       tabId,
     ),
-    setBadgeState(count.blockedComment, "comment", tabId),
+    setBadgeState(count.blockedComment, tabId, "comment"),
   ]);
 }
 

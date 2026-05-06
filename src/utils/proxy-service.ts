@@ -8,7 +8,7 @@ import { getLog, setTab } from "./db";
 import { getActiveTab, notify, setBadgeState } from "./browser";
 import {
   addAutoRule,
-  removeAllData,
+  reset,
   removeAutoRule,
   setSettings,
 } from "./storage-write";
@@ -19,7 +19,7 @@ export const proxyService = {
   getActiveTab,
   getDropdownComment,
   // storage
-  removeAllData,
+  reset,
   setSettings,
   addAutoRule,
   removeAutoRule,

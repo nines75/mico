@@ -24,7 +24,7 @@ export async function saveLog(
       logId,
       tabId,
     ),
-    ...(setBadge ? [setBadgeState(count.blockedVideo, "video", tabId)] : []),
+    ...(setBadge ? [setBadgeState(count.blockedVideo, tabId, "video")] : []),
   ]);
 }
 
