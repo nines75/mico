@@ -47,8 +47,8 @@ export function filterComment(
 
   // 全てのコメントを保存
   const allComments = threads.flatMap((thread) =>
-    thread.comments.map(({ body, userId, score }) => {
-      return { body, userId, score };
+    thread.comments.map(({ body, userId, score, nicoruCount }) => {
+      return { body, userId, score, nicoruCount };
     }),
   );
 

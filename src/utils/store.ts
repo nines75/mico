@@ -11,6 +11,7 @@ import { getLogIdViaMessage } from "./messaging";
 
 interface StorageState {
   storeId: string;
+  userId?: string;
   settings: Settings;
   log?: Log | undefined;
   isLoading: boolean;
@@ -47,10 +48,15 @@ export const useStorageStore = create<StorageState>()(
     loadLog: catchAsync(async () => {
       const params = new URLSearchParams(location.search);
       const id = params.get("id");
+      const userId = params.get("userId");
 
       const log = id === null ? undefined : await proxy.getLog(id);
 
-      set({ log, isLoading: false });
+      set({
+        log,
+        isLoading: false,
+        ...(userId !== null && { userId }),
+      });
     }),
     saveSettings: catchAsync(async (settings) => {
       const { settings: currentSettings, storeId } = useStorageStore.getState();

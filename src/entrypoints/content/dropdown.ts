@@ -1,7 +1,6 @@
 import { proxy } from "@/utils/proxy";
 import { loadSettings } from "@/utils/storage";
-import { catchAsync, escapeNewline } from "@/utils/util";
-import { getLogId } from "@/utils/log";
+import { catchAsync } from "@/utils/util";
 import { reload } from "@/utils/dom";
 
 export async function mountToDropdown() {
@@ -26,13 +25,14 @@ function appendButton() {
     {
       text: "ユーザーが投稿したコメント",
       onClick: async () => {
-        const comments = await getComments();
-        if (comments === undefined) {
-          await proxy.notify("コメントの取得に失敗しました");
+        const comment = await proxy.getDropdownComment();
+        const userId = comment?.userId;
+        if (userId === undefined) {
+          await proxy.notify("ユーザー情報の取得に失敗しました");
           return;
         }
 
-        alert(comments);
+        await proxy.openLog(`&userId=${userId}`);
       },
     },
   ];
@@ -84,28 +84,6 @@ function onClickNgUser(videoOnly = false) {
 
     if (settings.autoReload) await reload();
   };
-}
-
-async function getComments() {
-  const logId = getLogId();
-  if (logId === undefined) return;
-
-  const log = await proxy.getLog(logId);
-  if (log === undefined) return;
-
-  const dropdownComment = await proxy.getDropdownComment();
-  const userId = dropdownComment?.userId;
-  if (userId === undefined) return;
-
-  return log.comment?.allComments
-    .filter((comment) => comment.userId === userId)
-    .toSorted((a, b) => a.body.localeCompare(b.body))
-    .toSorted((a, b) => a.score - b.score)
-    .map(
-      (comment) =>
-        `${comment.score < 0 ? `[🚫:${comment.score}]` : ""}${escapeNewline(comment.body)}`,
-    )
-    .join("\n");
 }
 
 // -------------------------------------------------------------------------------------------

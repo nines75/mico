@@ -10,6 +10,7 @@ import { useStorageStore } from "@/utils/store";
 import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
+import { Select } from "./Select";
 
 export type Row = Merge<
   FilteredComment,
@@ -98,12 +99,9 @@ export function CommentViewer() {
   );
 
   return (
-    <Viewer<Row>
-      filter={filter}
-      filters={filters}
-      setFilter={setFilter}
-      rows={rows}
-      cols={cols}
-    />
+    <>
+      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
+      <Viewer<Row> {...{ rows, cols }} />
+    </>
   );
 }

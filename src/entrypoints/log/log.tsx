@@ -4,6 +4,7 @@ import type { LogTab } from "@/types/storage/log.types";
 import clsx from "clsx";
 import { CommentViewer } from "./components/CommentViewer";
 import { VideoViewer } from "./components/VideoViewer";
+import { PartialCommentViewer } from "./components/PartialCommentViewer";
 
 export function Init() {
   const isLoading = useStorageStore((state) => state.isLoading);
@@ -13,6 +14,10 @@ export function Init() {
   }, []);
 
   if (isLoading) return null;
+
+  if (useStorageStore.getState().userId !== undefined) {
+    return <PartialCommentViewer />;
+  }
 
   return <Page />;
 }

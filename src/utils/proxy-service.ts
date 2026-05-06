@@ -12,12 +12,14 @@ import {
   removeAutoRule,
   setSettings,
 } from "./storage-write";
+import { openLog } from "./log";
 
 export const proxyService = {
   notify,
   setBadgeState,
   getActiveTab,
   getDropdownComment,
+  openLog,
   // storage
   reset,
   setSettings,

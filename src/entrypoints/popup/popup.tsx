@@ -70,7 +70,7 @@ function Page() {
         <button
           className="tool"
           title="ログを開く"
-          onClick={catchAsync(openLog)}
+          onClick={catchAsync(() => openLog())}
         >
           <History size={TOOL_SIZE} />
         </button>

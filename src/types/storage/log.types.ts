@@ -8,7 +8,7 @@ export type LogTab = "commentFilter" | "videoFilter";
 
 export type PartialComment = Pick<
   OmitIndexSignature<NvComment>,
-  "body" | "userId" | "score"
+  "body" | "userId" | "score" | "nicoruCount"
 >;
 
 export interface Log {

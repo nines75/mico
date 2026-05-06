@@ -12,7 +12,7 @@ export function getLogId() {
   return element?.textContent;
 }
 
-export async function openLog() {
+export async function openLog(params = "") {
   const tab = await getActiveTab();
   const logId = await getLogIdViaMessage(tab?.id);
   if (logId === undefined) {
@@ -21,7 +21,7 @@ export async function openLog() {
   }
 
   await browser.windows.create({
-    url: [`log.html?id=${logId}`],
+    url: [`log.html?id=${logId}${params}`],
     type: "popup",
     titlePreface: "ログ",
     height: 800,

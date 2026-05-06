@@ -31,8 +31,8 @@ const log = {
       ...getComments(["1003"], "body", "コメント"),
     ],
     allComments: testThreads.flatMap((thread) =>
-      thread.comments.map(({ body, userId, score }) => {
-        return { body, userId, score };
+      thread.comments.map(({ body, userId, score, nicoruCount }) => {
+        return { body, userId, score, nicoruCount };
       }),
     ),
   },

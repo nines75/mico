@@ -15,20 +15,11 @@ import type { Row as VideoRow } from "./VideoViewer";
 import { proxy } from "@/utils/proxy";
 
 interface ViewerProps<T> {
-  filter: string;
-  filters: string[];
-  setFilter: (filter: string) => void;
   rows: T[];
   cols: ColDef<T>[];
 }
 
-export function Viewer<T>({
-  filter,
-  filters,
-  setFilter,
-  rows,
-  cols,
-}: ViewerProps<T>) {
+export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
   // コンポーネントに渡すプロパティのうちobjectであるものにはuseMemoを使う
   // https://www.ag-grid.com/react-data-grid/react-hooks/#object-properties
   const defaultColDef = useMemo<ColDef>(() => ({ filter: true }), []);
@@ -46,22 +37,6 @@ export function Viewer<T>({
 
   return (
     <>
-      <div>
-        <select
-          className="select-filter"
-          value={filter}
-          onChange={(event) => {
-            setFilter(event.target.value);
-          }}
-        >
-          {filters.map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-        <span className="blocked">ブロック数:{rows.length}</span>
-      </div>
       <div className="log">
         <AgGridReact<T>
           rowData={rows}

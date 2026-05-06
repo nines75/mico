@@ -5,6 +5,7 @@ import { useStorageStore } from "@/utils/store";
 import type { FilteredVideo } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import type { Video } from "@/types/api/video.types";
+import { Select } from "./Select";
 
 export type Row = Merge<FilteredVideo, { video: OmitIndexSignature<Video> }>;
 
@@ -79,12 +80,9 @@ export function VideoViewer() {
   );
 
   return (
-    <Viewer<Row>
-      filter={filter}
-      filters={filters}
-      setFilter={setFilter}
-      rows={rows}
-      cols={cols}
-    />
+    <>
+      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
+      <Viewer<Row> {...{ rows, cols }} />
+    </>
   );
 }
