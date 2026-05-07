@@ -8,18 +8,18 @@ import type {
 import { Viewer } from "./Viewer";
 import { useLogStore } from "@/utils/store";
 import type { PartialComment } from "@/types/storage/log.types";
+import { useShallow } from "zustand/shallow";
 
 type Row = PartialComment;
 
 export function PartialCommentViewer() {
-  const log = useLogStore((state) => state.log);
+  const [allComments, userId] = useLogStore(
+    useShallow((state) => [state.log?.comment?.allComments, state.userId]),
+  );
 
   const rows = useMemo<Row[]>(
-    () =>
-      log?.comment?.allComments.filter(
-        ({ userId }) => userId === useLogStore.getState().userId,
-      ) ?? [],
-    [log],
+    () => allComments?.filter((comment) => comment.userId === userId) ?? [],
+    [allComments, userId],
   );
   const cols = useMemo<ColDef<Row>[]>(
     () => [

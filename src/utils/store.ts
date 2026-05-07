@@ -22,7 +22,7 @@ interface SettingsState {
 }
 
 export const useSettingsStore = create<SettingsState>()(
-  subscribeWithSelector((set) => ({
+  subscribeWithSelector((set, get) => ({
     storeId: crypto.randomUUID(),
     settings: defaultSettings,
     isLoading: true,
@@ -32,8 +32,7 @@ export const useSettingsStore = create<SettingsState>()(
       set({ settings, isLoading: false });
     }),
     saveSettings: catchAsync(async (settings) => {
-      const { settings: currentSettings, storeId } =
-        useSettingsStore.getState();
+      const { settings: currentSettings, storeId } = get();
 
       // 書き込まれる予定の値を生成してstoreに反映
       // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない

@@ -20,13 +20,13 @@ const filters = [
 
 export function VideoViewer() {
   const [filter, setFilter] = useState<string>(filters[0]);
-  const log = useLogStore((state) => state.log);
+  const filteredVideos = useLogStore(
+    (state) => state.log?.video?.filteredVideos,
+  );
 
   const rows = useMemo<Row[]>(
-    () =>
-      log?.video?.filteredVideos.filter(({ target }) => target === filter) ??
-      [],
-    [log, filter],
+    () => filteredVideos?.filter(({ target }) => target === filter) ?? [],
+    [filteredVideos, filter],
   );
   const cols = useMemo<ColDef<Row>[]>(
     () => [

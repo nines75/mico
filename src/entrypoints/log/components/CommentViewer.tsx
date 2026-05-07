@@ -11,6 +11,7 @@ import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import { Select } from "./Select";
+import { useShallow } from "zustand/shallow";
 
 export type Row = Merge<
   FilteredComment,
@@ -31,22 +32,26 @@ const filters = [
 
 export function CommentViewer() {
   const [filter, setFilter] = useState<string>(filters[0]);
-  const log = useLogStore((state) => state.log);
+  const [filteredComments, ruleIds] = useLogStore(
+    useShallow((state) => [
+      state.log?.comment?.filteredComments,
+      state.log?.comment?.strictRuleIds,
+    ]),
+  );
 
   const rows = useMemo<Row[]>(
     () =>
-      log?.comment?.filteredComments
-        .filter(({ target }) => target === filter)
+      filteredComments
+        ?.filter(({ target }) => target === filter)
         .map((comment) => {
           const ruleId = comment.ruleId;
-          const ruleIds = log.comment?.strictRuleIds;
 
           return {
             ...comment,
             strict: ruleId !== undefined && ruleIds?.includes(ruleId) === true,
           };
         }) ?? [],
-    [log, filter],
+    [filteredComments, ruleIds, filter],
   );
   const cols = useMemo<ColDef<Row>[]>(
     () => [

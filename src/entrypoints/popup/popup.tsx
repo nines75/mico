@@ -13,15 +13,18 @@ import { notify } from "@/utils/browser";
 import { openLog } from "@/utils/log";
 import { proxy } from "@/utils/proxy";
 import { reloadViaMessage } from "@/utils/messaging";
+import { useShallow } from "zustand/shallow";
 
 const TOOL_SIZE = 30;
 
 export function Init() {
-  const isLoading = usePopupStore((state) => state.isLoading);
+  const [isLoading, load] = usePopupStore(
+    useShallow((state) => [state.isLoading, state.load]),
+  );
 
   useEffect(() => {
-    usePopupStore.getState().load();
-  }, []);
+    load();
+  }, [load]);
 
   if (isLoading) return null;
 
@@ -31,7 +34,7 @@ export function Init() {
 function Page() {
   const name = browser.runtime.getManifest().name;
   const version = `v${browser.runtime.getManifest().version}`;
-  const state = usePopupStore.getState();
+  const isWatchPage = usePopupStore((state) => state.isWatchPage);
 
   return (
     <>
@@ -42,7 +45,7 @@ function Page() {
         <Count />
       </main>
       <div className="tools">
-        {state.isWatchPage && (
+        {isWatchPage && (
           <>
             <button
               className="tool"

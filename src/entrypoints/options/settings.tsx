@@ -11,11 +11,13 @@ import FilterArea from "./components/ui/FilterArea";
 import { defaultSettings } from "@/utils/config";
 
 export function Init() {
-  const isLoading = useSettingsStore((state) => state.isLoading);
+  const [isLoading, load] = useSettingsStore(
+    useShallow((state) => [state.isLoading, state.load]),
+  );
 
   useEffect(() => {
-    useSettingsStore.getState().load();
-  }, []);
+    load();
+  }, [load]);
 
   if (isLoading) return null;
 

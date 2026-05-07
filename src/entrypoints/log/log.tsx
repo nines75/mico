@@ -5,17 +5,20 @@ import clsx from "clsx";
 import { CommentViewer } from "./components/CommentViewer";
 import { VideoViewer } from "./components/VideoViewer";
 import { PartialCommentViewer } from "./components/PartialCommentViewer";
+import { useShallow } from "zustand/shallow";
 
 export function Init() {
-  const isLoading = useLogStore((state) => state.isLoading);
+  const [isLoading, userId, load] = useLogStore(
+    useShallow((state) => [state.isLoading, state.userId, state.load]),
+  );
 
   useEffect(() => {
-    useLogStore.getState().load();
-  }, []);
+    load();
+  }, [load]);
 
   if (isLoading) return null;
 
-  if (useLogStore.getState().userId !== undefined) {
+  if (userId !== undefined) {
     return <PartialCommentViewer />;
   }
 
@@ -23,9 +26,11 @@ export function Init() {
 }
 
 function Page() {
-  const log = useLogStore.getState().log;
+  const [comment, video] = useLogStore(
+    useShallow((state) => [state.log?.comment, state.log?.video]),
+  );
   const [tab, setTab] = useState<LogTab>(
-    log?.comment === undefined && log?.video !== undefined
+    comment === undefined && video !== undefined
       ? "videoFilter"
       : "commentFilter",
   );
