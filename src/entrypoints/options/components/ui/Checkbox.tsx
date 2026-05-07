@@ -3,7 +3,7 @@ import CheckboxInput from "./CheckboxInput";
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 
 export interface CheckboxProps {
   id: keyof ConditionalPick<Settings, boolean>;
@@ -25,7 +25,7 @@ export default function Checkbox({
   input,
   childrenProps,
 }: CheckboxProps) {
-  const [value, save] = useStorageStore(
+  const [value, save] = useSettingsStore(
     useShallow((state) => [state.settings[id], state.saveSettings]),
   );
 

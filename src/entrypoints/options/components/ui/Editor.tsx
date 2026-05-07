@@ -30,7 +30,7 @@ import {
   closeBrackets,
   completionKeymap,
 } from "@codemirror/autocomplete";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import {
   argsDirectives,
   noArgsDirectives,
@@ -121,7 +121,7 @@ export default function Editor({ value, onChange }: EditorProps) {
   const parent = useRef<HTMLDivElement | null>(null);
 
   const getExtensions = () => {
-    const settings = useStorageStore.getState().settings;
+    const settings = useSettingsStore.getState().settings;
     const onUpdate = EditorView.updateListener.of((update) => {
       if (
         update.docChanged &&

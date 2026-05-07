@@ -6,7 +6,7 @@ import type {
   ValueFormatterParams,
 } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
-import { useStorageStore } from "@/utils/store";
+import { useLogStore } from "@/utils/store";
 import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
@@ -31,7 +31,7 @@ const filters = [
 
 export function CommentViewer() {
   const [filter, setFilter] = useState<string>(filters[0]);
-  const log = useStorageStore((state) => state.log);
+  const log = useLogStore((state) => state.log);
 
   const rows = useMemo<Row[]>(
     () =>

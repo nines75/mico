@@ -1,5 +1,5 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import decamelize from "decamelize";
 import { X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
@@ -7,7 +7,7 @@ import { VList } from "virtua";
 import { escapeNewline } from "@/utils/util";
 
 export default function AutoFilter() {
-  const autoFilter = useStorageStore((state) => state.settings.autoFilter);
+  const autoFilter = useSettingsStore((state) => state.settings.autoFilter);
 
   return (
     <VList className="rule-container">
@@ -25,7 +25,7 @@ interface RuleProps {
 }
 
 function Rule({ rule }: RuleProps) {
-  const [autoFilter, save] = useStorageStore(
+  const [autoFilter, save] = useSettingsStore(
     useShallow((state) => [state.settings.autoFilter, state.saveSettings]),
   );
 

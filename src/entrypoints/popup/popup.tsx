@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
-import { useStorageStore } from "@/utils/store";
+import { usePopupStore } from "@/utils/store";
 import {
   History,
   RotateCw,
@@ -17,10 +17,10 @@ import { reloadViaMessage } from "@/utils/messaging";
 const TOOL_SIZE = 30;
 
 export function Init() {
-  const isLoading = useStorageStore((state) => state.isLoading);
+  const isLoading = usePopupStore((state) => state.isLoading);
 
   useEffect(() => {
-    useStorageStore.getState().loadPopup();
+    usePopupStore.getState().load();
   }, []);
 
   if (isLoading) return null;
@@ -31,7 +31,7 @@ export function Init() {
 function Page() {
   const name = browser.runtime.getManifest().name;
   const version = `v${browser.runtime.getManifest().version}`;
-  const state = useStorageStore.getState();
+  const state = usePopupStore.getState();
 
   return (
     <>
@@ -88,8 +88,8 @@ function Page() {
 }
 
 async function onClickNgVideo() {
-  const videoId = useStorageStore.getState().log?.tab?.videoId;
-  const title = useStorageStore.getState().log?.tab?.title;
+  const videoId = usePopupStore.getState().log?.tab?.videoId;
+  const title = usePopupStore.getState().log?.tab?.title;
 
   if (videoId === undefined || title === undefined) {
     alert("NG登録に失敗しました");
@@ -108,8 +108,8 @@ async function onClickNgVideo() {
 }
 
 async function onClickNgOwner() {
-  const ownerId = useStorageStore.getState().log?.tab?.ownerId;
-  const ownerName = useStorageStore.getState().log?.tab?.ownerName;
+  const ownerId = usePopupStore.getState().log?.tab?.ownerId;
+  const ownerName = usePopupStore.getState().log?.tab?.ownerName;
 
   // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
   if (ownerId === undefined || ownerName === undefined) {

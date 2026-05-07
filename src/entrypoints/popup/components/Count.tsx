@@ -1,7 +1,7 @@
-import { useStorageStore } from "@/utils/store";
+import { usePopupStore } from "@/utils/store";
 
 export default function Count() {
-  const count = useStorageStore((state) => state.log?.count);
+  const count = usePopupStore((state) => state.log?.count);
 
   return (
     <>

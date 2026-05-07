@@ -1,19 +1,20 @@
 import { useEffect } from "react";
-import { useStorageStore, settingsChangeHandler } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
 import General from "./components/tabs/General";
 import Support from "./components/tabs/Support";
 import VideoFilter from "./components/tabs/VideoFilter";
 import clsx from "clsx";
-import type { SettingsTab } from "@/types/storage/settings.types";
+import type { Settings, SettingsTab } from "@/types/storage/settings.types";
 import FilterArea from "./components/ui/FilterArea";
+import { defaultSettings } from "@/utils/config";
 
 export function Init() {
-  const isLoading = useStorageStore((state) => state.isLoading);
+  const isLoading = useSettingsStore((state) => state.isLoading);
 
   useEffect(() => {
-    useStorageStore.getState().loadSettings();
+    useSettingsStore.getState().load();
   }, []);
 
   if (isLoading) return null;
@@ -22,7 +23,7 @@ export function Init() {
 }
 
 function Page() {
-  const [selectedTab, save] = useStorageStore(
+  const [selectedTab, save] = useSettingsStore(
     useShallow((state) => [
       state.settings.selectedSettingsTab,
       state.saveSettings,
@@ -89,6 +90,29 @@ function Page() {
       })()}
     </>
   );
+}
+
+// 外部での変更を反映させるために必要
+function settingsChangeHandler(
+  changes: Record<string, browser.storage.StorageChange>,
+  area: string,
+) {
+  if (area !== "local") return;
+
+  for (const [key, value] of Object.entries(changes)) {
+    if (key !== "settings") continue;
+
+    const storeId = useSettingsStore.getState().storeId;
+    const newSettings = {
+      ...defaultSettings,
+      ...(value.newValue as Partial<Settings>),
+    };
+
+    // 同一storeでの変更による発火を弾く
+    if (storeId === newSettings.storeId) continue;
+
+    useSettingsStore.setState({ settings: newSettings });
+  }
 }
 
 // -------------------------------------------------------------------------------------------

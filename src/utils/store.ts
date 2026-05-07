@@ -9,57 +9,31 @@ import { getActiveTab } from "./browser";
 import { proxy } from "./proxy";
 import { getLogIdViaMessage } from "./messaging";
 
-interface StorageState {
+// -------------------------------------------------------------------------------------------
+// settings
+// -------------------------------------------------------------------------------------------
+
+interface SettingsState {
   storeId: string;
-  userId?: string;
   settings: Settings;
-  log?: Log | undefined;
   isLoading: boolean;
-  isWatchPage: boolean;
-  loadSettings: () => void;
-  loadPopup: () => void;
-  loadLog: () => void;
+  load: () => void;
   saveSettings: (settings: Partial<Settings>) => void;
 }
 
-export const useStorageStore = create<StorageState>()(
+export const useSettingsStore = create<SettingsState>()(
   subscribeWithSelector((set) => ({
     storeId: crypto.randomUUID(),
     settings: defaultSettings,
     isLoading: true,
-    isWatchPage: false,
-    loadSettings: catchAsync(async () => {
+    load: catchAsync(async () => {
       const settings = await loadSettings();
 
       set({ settings, isLoading: false });
     }),
-    loadPopup: catchAsync(async () => {
-      const tab = await getActiveTab();
-      const logId = await getLogIdViaMessage(tab?.id);
-
-      const log = logId === undefined ? undefined : await proxy.getLog(logId);
-
-      set({
-        log,
-        isWatchPage: isWatchPage(tab?.url),
-        isLoading: false,
-      });
-    }),
-    loadLog: catchAsync(async () => {
-      const params = new URLSearchParams(location.search);
-      const id = params.get("id");
-      const userId = params.get("userId");
-
-      const log = id === null ? undefined : await proxy.getLog(id);
-
-      set({
-        log,
-        isLoading: false,
-        ...(userId !== null && { userId }),
-      });
-    }),
     saveSettings: catchAsync(async (settings) => {
-      const { settings: currentSettings, storeId } = useStorageStore.getState();
+      const { settings: currentSettings, storeId } =
+        useSettingsStore.getState();
 
       // 書き込まれる予定の値を生成してstoreに反映
       // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない
@@ -79,25 +53,62 @@ export const useStorageStore = create<StorageState>()(
   })),
 );
 
-// 外部での変更を反映させるために必要
-export function settingsChangeHandler(
-  changes: Record<string, browser.storage.StorageChange>,
-  area: string,
-) {
-  if (area !== "local") return;
+// -------------------------------------------------------------------------------------------
+// popup
+// -------------------------------------------------------------------------------------------
 
-  for (const [key, value] of Object.entries(changes)) {
-    if (key !== "settings") continue;
-
-    const storeId = useStorageStore.getState().storeId;
-    const newSettings = {
-      ...defaultSettings,
-      ...(value.newValue as Partial<Settings>),
-    };
-
-    // 同一storeでの変更による発火を弾く
-    if (storeId === newSettings.storeId) continue;
-
-    useStorageStore.setState({ settings: newSettings });
-  }
+interface PopupState {
+  log?: Log | undefined;
+  isWatchPage: boolean;
+  isLoading: boolean;
+  load: () => void;
 }
+
+export const usePopupStore = create<PopupState>()(
+  subscribeWithSelector((set) => ({
+    isWatchPage: false,
+    isLoading: true,
+    load: catchAsync(async () => {
+      const tab = await getActiveTab();
+      const logId = await getLogIdViaMessage(tab?.id);
+
+      const log = logId === undefined ? undefined : await proxy.getLog(logId);
+
+      set({
+        log,
+        isWatchPage: isWatchPage(tab?.url),
+        isLoading: false,
+      });
+    }),
+  })),
+);
+
+// -------------------------------------------------------------------------------------------
+// log
+// -------------------------------------------------------------------------------------------
+
+interface LogState {
+  log?: Log | undefined;
+  userId?: string;
+  isLoading: boolean;
+  load: () => void;
+}
+
+export const useLogStore = create<LogState>()(
+  subscribeWithSelector((set) => ({
+    isLoading: true,
+    load: catchAsync(async () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const userId = params.get("userId");
+
+      const log = id === null ? undefined : await proxy.getLog(id);
+
+      set({
+        log,
+        isLoading: false,
+        ...(userId !== null && { userId }),
+      });
+    }),
+  })),
+);

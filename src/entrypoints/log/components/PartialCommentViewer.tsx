@@ -6,18 +6,18 @@ import type {
   ValueFormatterParams,
 } from "ag-grid-community";
 import { Viewer } from "./Viewer";
-import { useStorageStore } from "@/utils/store";
+import { useLogStore } from "@/utils/store";
 import type { PartialComment } from "@/types/storage/log.types";
 
 type Row = PartialComment;
 
 export function PartialCommentViewer() {
-  const log = useStorageStore((state) => state.log);
+  const log = useLogStore((state) => state.log);
 
   const rows = useMemo<Row[]>(
     () =>
       log?.comment?.allComments.filter(
-        ({ userId }) => userId === useStorageStore.getState().userId,
+        ({ userId }) => userId === useLogStore.getState().userId,
       ) ?? [],
     [log],
   );

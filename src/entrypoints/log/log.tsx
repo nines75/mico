@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useStorageStore } from "@/utils/store";
+import { useLogStore } from "@/utils/store";
 import type { LogTab } from "@/types/storage/log.types";
 import clsx from "clsx";
 import { CommentViewer } from "./components/CommentViewer";
@@ -7,15 +7,15 @@ import { VideoViewer } from "./components/VideoViewer";
 import { PartialCommentViewer } from "./components/PartialCommentViewer";
 
 export function Init() {
-  const isLoading = useStorageStore((state) => state.isLoading);
+  const isLoading = useLogStore((state) => state.isLoading);
 
   useEffect(() => {
-    useStorageStore.getState().loadLog();
+    useLogStore.getState().load();
   }, []);
 
   if (isLoading) return null;
 
-  if (useStorageStore.getState().userId !== undefined) {
+  if (useLogStore.getState().userId !== undefined) {
     return <PartialCommentViewer />;
   }
 
@@ -23,7 +23,7 @@ export function Init() {
 }
 
 function Page() {
-  const log = useStorageStore.getState().log;
+  const log = useLogStore.getState().log;
   const [tab, setTab] = useState<LogTab>(
     log?.comment === undefined && log?.video !== undefined
       ? "videoFilter"

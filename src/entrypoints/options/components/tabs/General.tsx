@@ -1,6 +1,6 @@
 import { defaultSettings } from "@/utils/config";
 import H2 from "../ui/H2";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import type { Backup } from "@/types/storage/backup.types";
 import type { Settings } from "@/types/storage/settings.types";
 import { getSettings } from "@/utils/storage";
@@ -19,7 +19,7 @@ import { proxy } from "@/utils/proxy";
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
-  const [showAdvancedFeatures, localFilterPath, save] = useStorageStore(
+  const [showAdvancedFeatures, localFilterPath, save] = useSettingsStore(
     useShallow((state) => [
       state.settings.showAdvancedFeatures,
       state.settings.localFilterPath,

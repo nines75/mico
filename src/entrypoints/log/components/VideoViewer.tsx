@@ -1,7 +1,7 @@
 import { useMemo, useState } from "#imports";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
-import { useStorageStore } from "@/utils/store";
+import { useLogStore } from "@/utils/store";
 import type { FilteredVideo } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import type { Video } from "@/types/api/video.types";
@@ -20,7 +20,7 @@ const filters = [
 
 export function VideoViewer() {
   const [filter, setFilter] = useState<string>(filters[0]);
-  const log = useStorageStore((state) => state.log);
+  const log = useLogStore((state) => state.log);
 
   const rows = useMemo<Row[]>(
     () =>

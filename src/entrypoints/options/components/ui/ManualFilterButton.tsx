@@ -1,7 +1,7 @@
 import type { InvalidLine } from "@/entrypoints/background/parse-filter";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
 import { notify } from "@/utils/browser";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
 import { Import, TriangleAlert } from "lucide-react";
 import { useRef } from "react";
@@ -10,7 +10,7 @@ const ICON_SIZE = 20;
 
 export default function ManualFilterButton() {
   const input = useRef<HTMLInputElement | null>(null);
-  const save = useStorageStore((state) => state.saveSettings);
+  const save = useSettingsStore((state) => state.saveSettings);
 
   return (
     <div className="button-group">
@@ -27,7 +27,7 @@ export default function ManualFilterButton() {
         className="button button-manual-filter"
         onClick={catchAsync(async () => {
           const { invalidLines } = parseFilter(
-            useStorageStore.getState().settings,
+            useSettingsStore.getState().settings,
           );
           if (invalidLines.length === 0) {
             await notify("無効な行はありません");

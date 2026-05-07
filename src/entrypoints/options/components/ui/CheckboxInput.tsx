@@ -1,5 +1,5 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { useStorageStore } from "@/utils/store";
+import { useSettingsStore } from "@/utils/store";
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 
@@ -16,7 +16,7 @@ export default function CheckboxInput({
   min,
   max,
 }: CheckboxInputProps) {
-  const [value, save] = useStorageStore(
+  const [value, save] = useSettingsStore(
     useShallow((state) => [state.settings[id], state.saveSettings]),
   );
 
