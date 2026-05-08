@@ -93,11 +93,6 @@ input[type="checkbox"] {
   /* アイコンを揃える */
   display: flex;
 }
-.v7-message {
-  color: red;
-  font-size: 13px;
-  margin-top: 5px;
-}
 
 /* -------------------------------------------------------------------------------------------
 tab

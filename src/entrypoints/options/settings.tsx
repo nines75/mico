@@ -43,17 +43,6 @@ function Page() {
 
   return (
     <>
-      <span className="v7-message">
-        v7に更新されました。
-        <a
-          href="https://github.com/nines75/mico/releases/tag/v7.0.0"
-          target="_blank"
-          rel="noreferrer"
-        >
-          リリースノート
-        </a>
-        を確認することをお勧めします。
-      </span>
       <div className="tab-container">
         <div className="tab">
           {config.map((filter) => (
