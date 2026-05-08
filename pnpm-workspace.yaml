@@ -1,9 +1,10 @@
 # https://pnpm.io/supply-chain-security 
 
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-blockExoticSubdeps: true
+allowBuilds:
+  esbuild: true
+  sharp: true
+  spawn-sync: false
+  unrs-resolver: false # https://github.com/unrs/unrs-resolver/issues/193
 minimumReleaseAge: 4320 # 3日
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 144000 # 100日
