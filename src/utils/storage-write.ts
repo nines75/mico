@@ -3,15 +3,9 @@
 // https://github.com/nines75/mico/issues/33
 // -------------------------------------------------------------------------------------------
 
-import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
-import {
-  getSettings,
-  storageArea,
-  loadSettings,
-  settingsStorage,
-} from "./storage";
+import { getSettings, loadSettings, settingsStorage } from "./storage";
 import { clearDb } from "./db";
 import { hasPermission, notify, tryWithPermission } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
@@ -28,7 +22,7 @@ export async function reset() {
       // removeItem()を使うと次のアクセス時にイニシャライザが実行されるため、
       // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない。
       // そのためsetItem()を使用し削除ではなく上書きを行う
-      await storage.setItem(`${storageArea}:settings`, {});
+      await settingsStorage.setValue({});
     }),
     clearDb(),
   ]);
@@ -41,7 +35,7 @@ export async function setSettings(
     const settings = await getSettings();
     const newSettings = typeof value === "function" ? await value() : value;
 
-    await storage.setItem(`${storageArea}:settings`, {
+    await settingsStorage.setValue({
       ...settings,
       ...newSettings,
       ...(newSettings.storeId === undefined && { storeId: "" }), // storeIdを必ず上書き
@@ -51,7 +45,7 @@ export async function setSettings(
 
 export async function setSettingsMeta(value: Record<string, unknown>) {
   await queue.add(async () => {
-    await storage.setMeta(`${storageArea}:settings`, value);
+    await settingsStorage.setMeta(value);
   });
 }
 
@@ -60,10 +54,7 @@ export async function migrateSettings() {
     // migrationはsetSettingsを経由せずに書き込みを行うため、
     // 結果が画面に反映されるようにここでstoreIdを上書きする
     const settings = await getSettings();
-    await storage.setItem(`${storageArea}:settings`, {
-      ...settings,
-      storeId: "",
-    });
+    await settingsStorage.setValue({ ...settings, storeId: "" });
 
     await settingsStorage.migrate();
   });

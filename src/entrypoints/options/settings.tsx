@@ -9,6 +9,7 @@ import clsx from "clsx";
 import type { Settings, SettingsTab } from "@/types/storage/settings.types";
 import FilterArea from "./components/ui/FilterArea";
 import { defaultSettings } from "@/utils/config";
+import { storageArea } from "@/utils/storage";
 
 export function Init() {
   const [isLoading, load] = useSettingsStore(
@@ -99,7 +100,7 @@ function settingsChangeHandler(
   changes: Record<string, browser.storage.StorageChange>,
   area: string,
 ) {
-  if (area !== "local") return;
+  if (area !== storageArea) return;
 
   for (const [key, value] of Object.entries(changes)) {
     if (key !== "settings") continue;
