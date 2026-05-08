@@ -8,9 +8,7 @@ export default function H2({ name, children }: H2Props) {
     children
   ) : (
     <section>
-      <div className="heading-container">
-        <h2>{name}</h2>
-      </div>
+      <h2>{name}</h2>
       <div className="settings-container">{children}</div>
     </section>
   );

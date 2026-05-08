@@ -56,7 +56,7 @@ function Page() {
                 save({ selectedSettingsTab: filter.id });
               }}
             >
-              <span>{filter.name}</span>
+              {filter.name}
             </button>
           ))}
         </div>

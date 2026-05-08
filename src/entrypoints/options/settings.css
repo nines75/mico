@@ -17,14 +17,11 @@ body {
 h2 {
   border-bottom: 2px solid gray;
   font-size: 18px;
+  width: fit-content;
+  margin-block: 20px;
 }
 input[type="checkbox"] {
   margin: 3px;
-}
-.heading-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 .settings-container {
   margin-left: 20px;
