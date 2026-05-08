@@ -1,18 +1,14 @@
-import { defaultSettings } from "@/utils/config";
 import H2 from "../ui/H2";
+import type { SettingsState } from "@/utils/store";
 import { useSettingsStore } from "@/utils/store";
 import type { Backup } from "@/types/storage/backup.types";
-import type { Settings } from "@/types/storage/settings.types";
-import { getSettings } from "@/utils/storage";
-import type { ValueOf } from "type-fest";
+import { getSettings, getSettingsMeta } from "@/utils/storage";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
 import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
-import { notify } from "@/utils/browser";
-import { objectKeys } from "ts-extras";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
 import { proxy } from "@/utils/proxy";
@@ -86,7 +82,7 @@ export default function General() {
 
 async function importBackup(
   event: ChangeEvent<HTMLInputElement>,
-  saveSettings: (settings: Partial<Settings>) => void,
+  saveSettings: SettingsState["saveSettings"],
 ) {
   const text = await event.target.files?.[0]?.text();
   if (text === undefined) return;
@@ -94,33 +90,22 @@ async function importBackup(
   const backup = JSON.parse(text) as Backup;
   if (backup.settings === undefined) return;
 
-  const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
-  const keys = Object.keys(defaultSettings);
-
-  // defaultSettingsに存在するキーのみを抽出
-  let importedCount = 0;
-  for (const key of objectKeys(backup.settings)) {
-    if (keys.includes(key)) {
-      const value = backup.settings[key];
-
-      if (value !== undefined) {
-        newSettings[key] = value;
-        importedCount++;
-      }
-    }
+  if (backup.settingsMeta !== undefined) {
+    await proxy.setSettingsMeta(backup.settingsMeta);
   }
 
-  saveSettings(newSettings);
-
-  const totalCount = Object.keys(backup.settings).length;
-  await notify(`${totalCount}件中${importedCount}件の設定をインポートしました`);
+  saveSettings(backup.settings, proxy.migrateSettings);
 }
 
 async function exportBackup() {
-  const settings = await getSettings();
+  const [settings, settingsMeta] = await Promise.all([
+    getSettings(),
+    getSettingsMeta(),
+  ]);
 
   const backup: Backup = {
     settings,
+    settingsMeta,
   };
   const backupStr = JSON.stringify(backup);
 

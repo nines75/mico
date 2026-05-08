@@ -11,7 +11,7 @@ export async function loadSettings(): Promise<Settings> {
   return { ...defaultSettings, ...settings };
 }
 
-const settingsStorage = storage.defineItem<Partial<Settings>>(
+export const settingsStorage = storage.defineItem<Partial<Settings>>(
   `${storageArea}:settings`,
   {
     version: 4,
@@ -32,4 +32,8 @@ const settingsStorage = storage.defineItem<Partial<Settings>>(
 
 export async function getSettings() {
   return await settingsStorage.getValue();
+}
+
+export async function getSettingsMeta() {
+  return await settingsStorage.getMeta();
 }

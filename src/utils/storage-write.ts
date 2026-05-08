@@ -6,7 +6,12 @@
 import { storage } from "#imports";
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
-import { getSettings, storageArea, loadSettings } from "./storage";
+import {
+  getSettings,
+  storageArea,
+  loadSettings,
+  settingsStorage,
+} from "./storage";
 import { clearDb } from "./db";
 import { hasPermission, notify, tryWithPermission } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
@@ -41,6 +46,26 @@ export async function setSettings(
       ...newSettings,
       ...(newSettings.storeId === undefined && { storeId: "" }), // storeIdを必ず上書き
     });
+  });
+}
+
+export async function setSettingsMeta(value: Record<string, unknown>) {
+  await queue.add(async () => {
+    await storage.setMeta(`${storageArea}:settings`, value);
+  });
+}
+
+export async function migrateSettings() {
+  await queue.add(async () => {
+    // migrationはsetSettingsを経由せずに書き込みを行うため、
+    // 結果が画面に反映されるようにここでstoreIdを上書きする
+    const settings = await getSettings();
+    await storage.setItem(`${storageArea}:settings`, {
+      ...settings,
+      storeId: "",
+    });
+
+    await settingsStorage.migrate();
   });
 }
 

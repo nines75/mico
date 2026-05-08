@@ -13,12 +13,15 @@ import { getLogIdViaMessage } from "./messaging";
 // settings
 // -------------------------------------------------------------------------------------------
 
-interface SettingsState {
+export interface SettingsState {
   storeId: string;
   settings: Settings;
   isLoading: boolean;
   load: () => void;
-  saveSettings: (settings: Partial<Settings>) => void;
+  saveSettings: (
+    settings: Partial<Settings>,
+    onSuccess?: () => Promise<void>,
+  ) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -31,7 +34,7 @@ export const useSettingsStore = create<SettingsState>()(
 
       set({ settings, isLoading: false });
     }),
-    saveSettings: catchAsync(async (settings) => {
+    saveSettings: catchAsync(async (settings, onSuccess) => {
       const { settings: currentSettings, storeId } = get();
 
       // 書き込まれる予定の値を生成してstoreに反映
@@ -44,6 +47,7 @@ export const useSettingsStore = create<SettingsState>()(
       // 書き込む
       try {
         await proxy.setSettings({ ...settings, storeId });
+        await onSuccess?.();
       } catch {
         // ロールバック
         set({ settings: currentSettings });

@@ -11,6 +11,8 @@ import {
   reset,
   removeAutoRule,
   setSettings,
+  setSettingsMeta,
+  migrateSettings,
 } from "./storage-write";
 import { openLog } from "./log";
 
@@ -23,6 +25,8 @@ export const proxyService = {
   // storage
   reset,
   setSettings,
+  setSettingsMeta,
+  migrateSettings,
   addAutoRule,
   removeAutoRule,
   // db
