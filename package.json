@@ -3,6 +3,22 @@
   "description": "ニコニコ動画用のコンテンツブロッカー",
   "version": "7.2.0",
   "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.15.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.0.9",
+      "onFail": "download"
+    }
+  },
   "scripts": {
     "dev": "wxt -b firefox --mv2",
     "build": "wxt build -b firefox --mv2",
@@ -69,9 +85,5 @@
     "typescript-eslint": "^8.59.1",
     "vitest": "^4.1.5",
     "wxt": "^0.20.25"
-  },
-  "engines": {
-    "node": ">=24",
-    "pnpm": ">=11"
   }
 }
