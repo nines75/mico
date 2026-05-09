@@ -1,4 +1,4 @@
-name: test
+name: Check
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  check:
     name: ${{ matrix.task }}
     timeout-minutes: 30
     runs-on: ubuntu-latest
