@@ -30,6 +30,11 @@
 
 対応状況は[こちら](https://github.com/nines75/mico/wiki/動画フィルター#対応状況)を参照してください
 
+## サポート
+
+要望・バグ報告は[Issues](https://github.com/nines75/mico/issues)、質問は[Discussions](https://github.com/nines75/mico/discussions)で受け付けています。  
+また、[メール](mailto:mico.counting258@simplelogin.com)での対応も可能です。
+
 ## Development
 
 ### Requirements
