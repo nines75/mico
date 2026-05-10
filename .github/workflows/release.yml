@@ -19,14 +19,15 @@ jobs:
         run: pnpm check
 
       - name: URL生成
+        id: generate_url
         run: |
           git fetch --tags -f
           PREVIOUS_TAG=$(git tag | sort -V --reverse | sed -n 2p)
           echo "一つ前のタグ: $PREVIOUS_TAG"
           if [ -n "$PREVIOUS_TAG" ]; then
-              echo "URL=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_ENV
+              echo "url=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-              echo "URL=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_ENV
+              echo "url=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
 
       - name: ビルド
@@ -39,7 +40,7 @@ jobs:
           name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body: |
-            **Full Changelog**: ${{ env.URL }}
+            **Full Changelog**: ${{ steps.generate_url.outputs.url }}
 
       - name: ストアに提出
         run: |
