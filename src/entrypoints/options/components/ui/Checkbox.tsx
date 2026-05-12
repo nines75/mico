@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import CheckboxInput from "./CheckboxInput";
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
@@ -45,14 +44,7 @@ export default function Checkbox({
       </label>
       {input !== undefined && <CheckboxInput {...input} />}
       {details !== undefined && (
-        <div className="setting-details">
-          {details.split("\n").map((line, index, array) => (
-            <Fragment key={index}>
-              {line}
-              {index !== array.length - 1 && <br />}
-            </Fragment>
-          ))}
-        </div>
+        <div className="setting-details">{details}</div>
       )}
       {childrenProps !== undefined && (
         <div className="settings-container">
