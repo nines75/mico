@@ -82,6 +82,7 @@ input[type="checkbox"] {
   border: gray 1px solid;
   border-radius: 5px;
   padding-inline: 4px;
+  white-space: pre-wrap; /* 連続する空白文字を折り畳まない */
 }
 .rule-remove-button {
   border: none;
