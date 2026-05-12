@@ -19,6 +19,7 @@ export interface Log {
   };
   video?: {
     filteredVideos: FilteredVideo[];
+    allVideos: Video[];
   };
   count?: Count;
   tab?: Tab;

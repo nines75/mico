@@ -6,6 +6,7 @@ import { ViewCountFilter } from "./filter/view-count-filter";
 import { IdFilter } from "./filter/id-filter";
 import { OwnerIdFilter } from "./filter/owner-id-filter";
 import type { ApplyParams } from "./filter";
+import type { Video } from "@/types/api/video.types";
 
 export type Filters = FilteringResult["filters"];
 
@@ -19,6 +20,7 @@ export interface FilteringResult {
     titleFilter: TitleFilter;
   };
   loadedVideoCount: number;
+  allVideos: Video[];
 }
 
 export function filterVideo<T>(
@@ -32,6 +34,10 @@ export function filterVideo<T>(
   const loadedVideoCount = data.items
     .map((item) => pickVideo(item))
     .filter((video) => video !== undefined).length;
+
+  const allVideos = data.items
+    .map((item) => pickVideo(item))
+    .filter((video) => video !== undefined);
 
   const idFilter = new IdFilter(settings);
   const ownerIdFilter = new OwnerIdFilter(settings);
@@ -65,5 +71,6 @@ export function filterVideo<T>(
   return {
     filters,
     loadedVideoCount,
+    allVideos,
   };
 }

@@ -6,10 +6,17 @@
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
 import { getSettings, loadSettings, settingsStorage } from "./storage";
-import { clearDb } from "./db";
-import { hasPermission, notify, tryWithPermission } from "./browser";
+import { clearDb, getLog } from "./db";
+import {
+  getActiveTab,
+  hasPermission,
+  notify,
+  tryWithPermission,
+} from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional } from "type-fest";
+import { getLogIdViaMessage } from "./messaging";
+import { isString } from "./util";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
@@ -101,39 +108,59 @@ export async function removeAutoRule(ids: string[]) {
 export async function addRuleFromUrl(url: string | undefined) {
   const settings = await loadSettings();
 
+  const tab = await getActiveTab();
+  const logId = await getLogIdViaMessage(tab?.id);
+  const log = logId === undefined ? undefined : await getLog(logId);
+
   const videoId = url?.match(
     /^https:\/\/www\.nicovideo\.jp\/watch\/([^?]+)/,
   )?.[1];
   if (videoId !== undefined) {
+    const videoTitle = log?.video?.allVideos.find(
+      (video) => video.id === videoId,
+    )?.title;
+
     await addAutoRule([
       {
         pattern: videoId,
         source: "contextMenu",
         target: { videoId: true },
+        ...(videoTitle !== undefined && {
+          context: `video-title: ${videoTitle}`,
+        }),
       },
     ]);
 
     if (settings.notifyOnManualNg) {
-      await notify(`以下の動画IDをNG登録しました\n\n${videoId}`);
+      const context = videoTitle === undefined ? "" : ` (${videoTitle})`;
+
+      await notify(`以下の動画IDをNG登録しました\n\n${videoId}${context}`);
     }
 
     return;
   }
 
-  const userId = url?.match(
+  const ownerId = url?.match(
     /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
   )?.[1];
-  if (userId !== undefined) {
+  if (ownerId !== undefined) {
+    const ownerName = log?.video?.allVideos.find(
+      (video) => video.owner.id === ownerId,
+    )?.owner.name;
+
     await addAutoRule([
       {
-        pattern: userId,
+        pattern: ownerId,
         source: "contextMenu",
         target: { videoOwnerId: true },
+        ...(isString(ownerName) && { context: `owner-name: ${ownerName}` }),
       },
     ]);
 
     if (settings.notifyOnManualNg) {
-      await notify(`以下のユーザーIDをNG登録しました\n\n${userId}`);
+      const context = isString(ownerName) ? ` (${ownerName})` : "";
+
+      await notify(`以下のユーザーIDをNG登録しました\n\n${ownerId}${context}`);
     }
 
     return;

@@ -33,7 +33,7 @@ function createVideoLog(result: FilteringResult): NonNullable<Log["video"]> {
     filter.getFilteredVideos(),
   );
 
-  return { filteredVideos };
+  return { filteredVideos, allVideos: result.allVideos };
 }
 
 function createCountLog(result: FilteringResult) {
