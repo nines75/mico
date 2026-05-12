@@ -27,6 +27,7 @@ interface AutoRuleOnly {
   pattern: string; // 正規表現には対応しない
   source: "dropdown" | "strict" | "contextMenu" | "popup";
   context?: string;
+  memo?: string;
 }
 
 export type AutoRule = Merge<PartialDeep<Rule>, AutoRuleOnly>;

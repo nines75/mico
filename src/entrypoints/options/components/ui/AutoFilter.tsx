@@ -71,6 +71,7 @@ function Rule({ rule }: RuleProps) {
         {rule.context !== undefined && (
           <Detail name="コンテキスト">{escapeNewline(rule.context)}</Detail>
         )}
+        {rule.memo !== undefined && <Detail name="メモ">{rule.memo}</Detail>}
       </div>
     </div>
   );

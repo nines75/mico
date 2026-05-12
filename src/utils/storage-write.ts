@@ -105,7 +105,7 @@ export async function removeAutoRule(ids: string[]) {
   await setSettings(transaction);
 }
 
-export async function addRuleFromUrl(url: string | undefined) {
+export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   const settings = await loadSettings();
 
   const tab = await getActiveTab();
@@ -128,6 +128,7 @@ export async function addRuleFromUrl(url: string | undefined) {
         ...(videoTitle !== undefined && {
           context: `video-title: ${videoTitle}`,
         }),
+        ...(memo !== undefined && { memo }),
       },
     ]);
 
@@ -154,6 +155,7 @@ export async function addRuleFromUrl(url: string | undefined) {
         source: "contextMenu",
         target: { videoOwnerId: true },
         ...(isString(ownerName) && { context: `owner-name: ${ownerName}` }),
+        ...(memo !== undefined && { memo }),
       },
     ]);
 

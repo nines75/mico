@@ -93,3 +93,7 @@ onMessage("setPlaybackTime", ({ data: time }) => {
     }
   }, 10);
 });
+
+onMessage("prompt", ({ data: message }) => {
+  return prompt(message);
+});

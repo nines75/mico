@@ -9,6 +9,7 @@ interface ProtocolMap {
   getLogId(): string | undefined;
   mountLogId(logId: LogId): void;
   setPlaybackTime(data: number): void;
+  prompt(message: string): string | null;
 }
 
 const messanger = defineExtensionMessaging<ProtocolMap>();
