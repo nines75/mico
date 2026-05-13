@@ -30,7 +30,7 @@ export default function ManualFilterButton() {
             useSettingsStore.getState().settings,
           );
           if (invalidLines.length === 0) {
-            await notify("無効な行はありません");
+            await notify("エラーはありません");
             return;
           }
 

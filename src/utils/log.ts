@@ -16,7 +16,7 @@ export async function openLog(params = "") {
   const tab = await getActiveTab();
   const logId = await getLogIdViaMessage(tab?.id);
   if (logId === undefined) {
-    await notify("ログIDが抽出できませんでした");
+    await notify("ログが存在しません");
     return;
   }
 
