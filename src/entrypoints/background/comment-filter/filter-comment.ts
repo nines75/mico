@@ -11,6 +11,7 @@ import type { StrictData } from "./strict-filter";
 import { getStrictFilters } from "./strict-filter";
 import type { Tab } from "@/types/storage/tab.types";
 import type { PartialComment } from "@/types/storage/log.types";
+import { VposFilter } from "./filter/vpos-filter";
 
 export type Filters = FilteringResult["filters"];
 
@@ -20,6 +21,7 @@ export interface FilteringResult {
     easyCommentFilter: EasyCommentFilter;
     commentAssistFilter: CommentAssistFilter;
     scoreFilter: ScoreFilter;
+    vposFilter: VposFilter;
     commandsFilter: CommandsFilter;
     bodyFilter: BodyFilter;
   };
@@ -61,6 +63,7 @@ export function filterComment(
   const easyCommentFilter = new EasyCommentFilter(settings);
   const commentAssistFilter = new CommentAssistFilter(settings);
   const scoreFilter = new ScoreFilter(settings);
+  const vposFilter = new VposFilter(settings, tab.duration);
   const commandsFilter = new CommandsFilter(settings);
   const bodyFilter = new BodyFilter(settings);
 
@@ -69,6 +72,7 @@ export function filterComment(
     easyCommentFilter,
     commentAssistFilter,
     scoreFilter,
+    vposFilter,
     commandsFilter,
     bodyFilter,
   };

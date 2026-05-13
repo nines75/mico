@@ -38,6 +38,7 @@ export const watchApiSchema = z.looseObject({
       video: z.looseObject({
         id: z.string(),
         title: z.string(),
+        duration: z.number().int(),
       }),
       channel: z
         .looseObject({

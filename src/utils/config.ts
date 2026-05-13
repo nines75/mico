@@ -95,6 +95,7 @@ export const defaultSettings: Settings = {
   enableCommentAssistFilter: false,
   enableScoreFilter: false,
   scoreFilterThreshold: -4800,
+  enableVposFilter: false,
   ignoreMyComments: true,
   ignoreByNicoru: false,
   ignoreByNicoruThreshold: 30,

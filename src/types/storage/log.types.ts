@@ -34,6 +34,7 @@ export interface FilteredComment {
     | "easy-comment"
     | "comment-assist"
     | "score"
+    | "vpos"
     | "commands"
     | "body";
 }

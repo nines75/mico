@@ -43,6 +43,10 @@ const config = [
         },
       },
       {
+        id: "enableVposFilter",
+        label: "動画の長さを超える位置に投稿されたコメントを非表示にする",
+      },
+      {
         id: "ignoreMyComments",
         label: "自分が投稿したコメントをフィルタリングの対象外にする",
       },

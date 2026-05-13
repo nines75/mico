@@ -94,6 +94,7 @@ function watchApiFilter(watchApi: WatchApi, settings: Settings): Tab {
     seriesId: response.series?.id.toString(),
     videoId: response.video.id,
     title: response.video.title,
+    duration: response.video.duration,
     ownerId,
     ownerName,
     tags,

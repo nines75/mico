@@ -92,6 +92,7 @@ export const testThreads = [
 
 export const testTab = {
   seriesNext: undefined,
+  duration: 1,
   videoId: "sm1",
   seriesId: "1",
   title: "title",

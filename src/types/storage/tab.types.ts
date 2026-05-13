@@ -4,6 +4,7 @@ export interface Tab {
   seriesNext: Video | undefined;
 
   playbackTime?: number;
+  duration: number;
 
   logId?: string;
   videoId: string;

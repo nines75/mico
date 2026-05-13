@@ -46,6 +46,7 @@ export interface Settings {
   enableCommentAssistFilter: boolean;
   enableScoreFilter: boolean;
   scoreFilterThreshold: number;
+  enableVposFilter: boolean;
   ignoreMyComments: boolean;
   ignoreByNicoru: boolean;
   ignoreByNicoruThreshold: number;
