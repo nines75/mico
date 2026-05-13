@@ -128,7 +128,7 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
         ...(videoTitle !== undefined && {
           context: `video-title: ${videoTitle}`,
         }),
-        ...(memo !== undefined && { memo }),
+        ...(memo !== undefined && memo !== "" && { memo }),
       },
     ]);
 
@@ -155,7 +155,7 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
         source: "contextMenu",
         target: { videoOwnerId: true },
         ...(isString(ownerName) && { context: `owner-name: ${ownerName}` }),
-        ...(memo !== undefined && { memo }),
+        ...(memo !== undefined && memo !== "" && { memo }),
       },
     ]);
 
