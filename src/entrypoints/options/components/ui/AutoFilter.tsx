@@ -37,9 +37,8 @@ function Rule({ rule }: RuleProps) {
       <div className="rule-pattern">
         <button
           className="rule-remove-button"
+          title="ルールを削除"
           onClick={() => {
-            if (!confirm(`以下のルールを削除しますか？\n\n${pattern}`)) return;
-
             save({
               autoFilter: autoFilter.filter(({ id }) => id !== rule.id),
             });
