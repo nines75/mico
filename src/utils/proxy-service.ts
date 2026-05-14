@@ -13,6 +13,7 @@ import {
   setSettings,
   setSettingsMeta,
   migrateSettings,
+  cleanUp,
 } from "./storage-write";
 import { openLog } from "./log";
 
@@ -24,6 +25,7 @@ export const proxyService = {
   openLog,
   // storage
   reset,
+  cleanUp,
   setSettings,
   setSettingsMeta,
   migrateSettings,

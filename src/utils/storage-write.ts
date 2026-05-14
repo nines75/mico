@@ -6,7 +6,7 @@
 import type { Settings } from "@/types/storage/settings.types";
 import PQueue from "p-queue";
 import { getSettings, loadSettings, settingsStorage } from "./storage";
-import { clearDb, getLog } from "./db";
+import { cleanUpDb, clearDb, getLog } from "./db";
 import {
   getActiveTab,
   hasPermission,
@@ -14,9 +14,11 @@ import {
   tryWithPermission,
 } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
-import type { SetOptional } from "type-fest";
+import type { SetOptional, ValueOf } from "type-fest";
 import { getLogIdViaMessage } from "./messaging";
 import { isString } from "./util";
+import { objectKeys } from "ts-extras";
+import { defaultSettings } from "./config";
 
 // ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
@@ -32,6 +34,31 @@ export async function reset() {
       await settingsStorage.setValue({});
     }),
     clearDb(),
+  ]);
+}
+
+export async function cleanUp() {
+  await Promise.all([
+    queue.add(async () => {
+      const settings = await getSettings();
+
+      const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
+      const keys = Object.keys(defaultSettings);
+
+      // defaultSettingsに存在するキーのみを抽出
+      for (const key of objectKeys(settings)) {
+        if (keys.includes(key)) {
+          const value = settings[key];
+
+          if (value !== undefined) {
+            newSettings[key] = value;
+          }
+        }
+      }
+
+      await settingsStorage.setValue({ ...newSettings, storeId: "" });
+    }),
+    cleanUpDb(),
   ]);
 }
 

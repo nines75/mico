@@ -23,9 +23,12 @@ export default function General() {
     ]),
   );
 
-  const buttons = [
+  const backupButtons = [
     ["インポート", () => input.current?.click()],
     ["エクスポート", catchAsync(exportBackup)],
+  ] as const;
+  const storageButtons = [
+    ["クリーンアップ", catchAsync(cleanUp)],
     ["リセット", catchAsync(reset)],
   ] as const;
 
@@ -60,7 +63,7 @@ export default function General() {
           // https://github.com/facebook/react/issues/34775
 
           // eslint-disable-next-line react-hooks/refs
-          buttons.map(([text, onClick]) => (
+          backupButtons.map(([text, onClick]) => (
             <button key={text} className="button" onClick={onClick}>
               {text}
             </button>
@@ -75,6 +78,13 @@ export default function General() {
             await importBackup(event, save);
           })}
         />
+      </H2>
+      <H2 name="ストレージ">
+        {storageButtons.map(([text, onClick]) => (
+          <button key={text} className="button" onClick={onClick}>
+            {text}
+          </button>
+        ))}
       </H2>
     </div>
   );
@@ -129,6 +139,12 @@ async function reset() {
     return;
 
   await proxy.reset();
+}
+
+async function cleanUp() {
+  if (!confirm("不要な設定やログを削除します。")) return;
+
+  await proxy.cleanUp();
 }
 
 // -------------------------------------------------------------------------------------------
