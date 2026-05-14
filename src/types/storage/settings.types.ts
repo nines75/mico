@@ -1,5 +1,5 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
-import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
+import type { FilterId } from "@/entrypoints/options/components/tabs/Filter";
 
 export type SettingsTab =
   | "general"

@@ -1,11 +1,11 @@
 import { parseFilter } from "@/entrypoints/background/parse-filter";
-import type { FilterId } from "@/entrypoints/options/components/ui/FilterArea";
 import type { Settings } from "@/types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { isString } from "./util";
 import { objectEntries, objectValues } from "ts-extras";
 import type { AutoRule, Rule } from "@/entrypoints/background/rule";
 import type { Except, ValueOf } from "type-fest";
+import type { FilterId } from "@/entrypoints/options/components/tabs/Filter";
 
 type FilterTab = "commentFilter" | "videoFilter";
 type SettingsTab =

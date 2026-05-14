@@ -1,13 +1,13 @@
-import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { useSettingsStore } from "@/utils/store";
 import clsx from "clsx";
-import ManualFilterButton from "./ManualFilterButton";
-import AutoFilter from "./AutoFilter";
+import ManualFilterButton from "../ui/ManualFilterButton";
+import Editor from "../ui/Editor";
+import AutoFilter from "../ui/AutoFilter";
 
 export type FilterId = "manual" | "auto";
 
-export default function FilterArea() {
+export default function Filter() {
   const [selectedFilter, manualFilter, save] = useSettingsStore(
     useShallow((state) => [
       state.settings.selectedFilter,

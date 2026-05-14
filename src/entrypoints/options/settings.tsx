@@ -7,9 +7,9 @@ import Support from "./components/tabs/Support";
 import VideoFilter from "./components/tabs/VideoFilter";
 import clsx from "clsx";
 import type { Settings, SettingsTab } from "@/types/storage/settings.types";
-import FilterArea from "./components/ui/FilterArea";
 import { defaultSettings } from "@/utils/config";
 import { storageArea } from "@/utils/storage";
+import Filter from "./components/tabs/Filter";
 
 export function Init() {
   const [isLoading, load] = useSettingsStore(
@@ -67,7 +67,7 @@ function Page() {
             return <General />;
           }
           case "filter": {
-            return <FilterArea />;
+            return <Filter />;
           }
           case "commentFilter": {
             return <CommentFilter />;
