@@ -1,11 +1,22 @@
+import {
+  BookText,
+  CircleQuestionMark,
+  GitBranch,
+  History,
+  Mail,
+  MessageSquare,
+  Scale,
+} from "lucide-react";
 import H2 from "../ui/H2";
+
+const ICON_SIZE = 18;
 
 export default function Support() {
   return (
     <div className="tab-content">
       {config.map(({ heading, items }) => (
         <H2 key={heading} name={heading}>
-          {items.map(({ name, url }) => (
+          {items.map(({ name, url, icon }) => (
             <a
               key={name}
               className="button button-support"
@@ -13,6 +24,7 @@ export default function Support() {
               target="_blank"
               rel="noreferrer"
             >
+              {icon}
               {name}
             </a>
           ))}
@@ -30,19 +42,40 @@ const config = [
   {
     heading: "リンク",
     items: [
-      { name: "リポジトリ", url: "https://github.com/nines75/mico" },
-      { name: "変更履歴", url: "https://github.com/nines75/mico/releases" },
-      { name: "wiki", url: "https://github.com/nines75/mico/wiki" },
+      {
+        name: "リポジトリ",
+        url: "https://github.com/nines75/mico",
+        icon: <GitBranch size={ICON_SIZE} />,
+      },
+      {
+        name: "変更履歴",
+        url: "https://github.com/nines75/mico/releases",
+        icon: <History size={ICON_SIZE} />,
+      },
+      {
+        name: "wiki",
+        url: "https://github.com/nines75/mico/wiki",
+        icon: <BookText size={ICON_SIZE} />,
+      },
     ],
   },
   {
     heading: "コンタクト",
     items: [
-      { name: "要望・バグ報告", url: "https://github.com/nines75/mico/issues" },
-      { name: "質問", url: "https://github.com/nines75/mico/discussions" },
+      {
+        name: "要望・バグ報告",
+        url: "https://github.com/nines75/mico/issues",
+        icon: <MessageSquare size={ICON_SIZE} />,
+      },
+      {
+        name: "質問",
+        url: "https://github.com/nines75/mico/discussions",
+        icon: <CircleQuestionMark size={ICON_SIZE} />,
+      },
       {
         name: "メール",
         url: "mailto:mico.counting258@simplelogin.com",
+        icon: <Mail size={ICON_SIZE} />,
       },
     ],
   },
@@ -52,6 +85,7 @@ const config = [
       {
         name: "サードパーティライセンス",
         url: "/third-party-notices.txt",
+        icon: <Scale size={ICON_SIZE} />,
       },
     ],
   },
@@ -60,5 +94,6 @@ const config = [
   items: {
     name: string;
     url: string;
+    icon: React.ReactNode;
   }[];
 }[];

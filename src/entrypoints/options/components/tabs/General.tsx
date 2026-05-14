@@ -1,5 +1,4 @@
 import H2 from "../ui/H2";
-import type { SettingsState } from "@/utils/store";
 import { useSettingsStore } from "@/utils/store";
 import type { Backup } from "@/types/storage/backup.types";
 import { getSettings, getSettingsMeta } from "@/utils/storage";
@@ -12,6 +11,9 @@ import { catchAsync } from "@/utils/util";
 import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
 import { proxy } from "@/utils/proxy";
+import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
+
+const ICON_SIZE = 18;
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
@@ -22,15 +24,6 @@ export default function General() {
       state.saveSettings,
     ]),
   );
-
-  const backupButtons = [
-    ["インポート", () => input.current?.click()],
-    ["エクスポート", catchAsync(exportBackup)],
-  ] as const;
-  const storageButtons = [
-    ["クリーンアップ", catchAsync(cleanUp)],
-    ["リセット", catchAsync(reset)],
-  ] as const;
 
   return (
     <div className="tab-content">
@@ -58,42 +51,52 @@ export default function General() {
         )}
       </CheckboxSection>
       <H2 name="バックアップ">
-        {
-          // eslint-plugin-react-hooksのバグにより誤った警告が出るため無効化
-          // https://github.com/facebook/react/issues/34775
-
-          // eslint-disable-next-line react-hooks/refs
-          backupButtons.map(([text, onClick]) => (
-            <button key={text} className="button" onClick={onClick}>
-              {text}
-            </button>
-          ))
-        }
+        <button className="button" onClick={() => input.current?.click()}>
+          <Download size={ICON_SIZE} />
+          インポート
+        </button>
+        <button className="button" onClick={catchAsync(exportBackup)}>
+          <Upload size={ICON_SIZE} />
+          エクスポート
+        </button>
         <input
           type="file"
           accept=".json"
           style={{ display: "none" }}
           ref={input}
-          onChange={catchAsync(async (event) => {
-            await importBackup(event, save);
-          })}
+          onChange={catchAsync(importBackup)}
         />
       </H2>
       <H2 name="ストレージ">
-        {storageButtons.map(([text, onClick]) => (
-          <button key={text} className="button" onClick={onClick}>
-            {text}
-          </button>
-        ))}
+        <button
+          className="button"
+          onClick={catchAsync(async () => {
+            if (!confirm("不要な設定やログを削除します。")) return;
+
+            await proxy.cleanUp();
+          })}
+        >
+          <BrushCleaning size={ICON_SIZE} />
+          クリーンアップ
+        </button>
+        <button
+          className="button"
+          onClick={catchAsync(async () => {
+            if (!confirm("全ての設定とログを削除します。")) return;
+
+            await proxy.reset();
+          })}
+        >
+          <RotateCcw size={ICON_SIZE} />
+          リセット
+        </button>
       </H2>
     </div>
   );
 }
 
-async function importBackup(
-  event: ChangeEvent<HTMLInputElement>,
-  saveSettings: SettingsState["saveSettings"],
-) {
+async function importBackup(event: ChangeEvent<HTMLInputElement>) {
+  const saveSettings = useSettingsStore.getState().saveSettings;
   const text = await event.target.files?.[0]?.text();
   if (text === undefined) return;
 
@@ -128,23 +131,6 @@ async function exportBackup() {
   a.href = url;
   a.download = fileName;
   a.click();
-}
-
-async function reset() {
-  if (
-    !confirm(
-      "ストレージに保存されている全てのデータを削除します。\nこの操作により、設定やログがリセットされます。",
-    )
-  )
-    return;
-
-  await proxy.reset();
-}
-
-async function cleanUp() {
-  if (!confirm("不要な設定やログを削除します。")) return;
-
-  await proxy.cleanUp();
 }
 
 // -------------------------------------------------------------------------------------------

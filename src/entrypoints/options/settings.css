@@ -132,14 +132,10 @@ tab
 button
 ------------------------------------------------------------------------------------------- */
 
-/* アイコンを含むボタンを中央に揃える */
 .button-container {
   display: flex;
   align-items: center;
   gap: 50px;
-}
-.button-group {
-  display: flex; /* 子要素を横に並べる */
 }
 .button {
   font-weight: bold;
@@ -148,23 +144,20 @@ button
   border: gray 3px solid;
   border-radius: 10px;
   font-size: 14px;
+
+  display: inline-flex; /* 横並びになるflex */
+  align-items: center;
 }
 .button-filter {
   padding: 7px 12px;
-  height: 40px; /* .button-manual-filterの有無で位置がずれないようにする */
+  height: 40px; /* フィルター切り替え時のずれを防止 */
   &.selected {
     border-color: lightskyblue;
   }
 }
 .button-support {
-  display: inline-block; /* anchorをbuttonのように扱う */
   text-decoration: none;
   color: inherit;
-}
-.button-manual-filter {
-  padding: 7px 12px;
-  display: flex;
-  align-items: center;
 }
 
 /* -------------------------------------------------------------------------------------------

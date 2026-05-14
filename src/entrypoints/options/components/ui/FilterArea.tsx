@@ -19,7 +19,7 @@ export default function FilterArea() {
   return (
     <>
       <div className="button-container">
-        <div className="button-group">
+        <div>
           {config.map(({ id, name }) => (
             <button
               key={id}

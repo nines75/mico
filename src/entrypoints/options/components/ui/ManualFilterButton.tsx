@@ -3,7 +3,7 @@ import { parseFilter } from "@/entrypoints/background/parse-filter";
 import { notify } from "@/utils/browser";
 import { useSettingsStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
-import { Import, TriangleAlert } from "lucide-react";
+import { Download, TriangleAlert } from "lucide-react";
 import { useRef } from "react";
 
 const ICON_SIZE = 20;
@@ -13,18 +13,18 @@ export default function ManualFilterButton() {
   const save = useSettingsStore((state) => state.saveSettings);
 
   return (
-    <div className="button-group">
+    <div>
       <button
-        className="button button-manual-filter"
+        className="button button-filter"
         onClick={() => {
           if (input.current !== null) input.current.click();
         }}
       >
-        <Import size={ICON_SIZE} />
+        <Download size={ICON_SIZE} />
         インポート
       </button>
       <button
-        className="button button-manual-filter"
+        className="button button-filter"
         onClick={catchAsync(async () => {
           const { invalidLines } = parseFilter(
             useSettingsStore.getState().settings,
