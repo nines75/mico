@@ -101,6 +101,7 @@ function settingsChangeHandler(
     };
 
     // 同一storeでの変更による発火を弾く
+    // https://github.com/nines75/mico/issues/71
     if (storeId === newSettings.storeId) continue;
 
     useSettingsStore.setState({ settings: newSettings });

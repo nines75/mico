@@ -29,8 +29,6 @@ export class BodyFilter extends StrictFilter {
             });
           }
 
-          // strictルールにマッチしたコメントはNGユーザーIDによるフィルタリングログに表示させる
-          // そのためここではフィルタリングしない
           return true;
         }
 

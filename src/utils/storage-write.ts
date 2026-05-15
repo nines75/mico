@@ -1,5 +1,8 @@
 // -------------------------------------------------------------------------------------------
-// このファイルの関数はbackground以外からは呼び出さない
+// ブラウザ拡張ストレージにはIndexedDBと異なりトランザクションの仕組みが存在しない。
+// そのためロストアップデートを避けるために全ての書き込みは単一のqueueを通して行うようにしたいが、
+// options_uiなど別のコンテキストからこのファイルをインポートすると複数のqueueが生成されてしまうため、
+// このファイルはbackground以外からはインポートしない
 // https://github.com/nines75/mico/issues/33
 // -------------------------------------------------------------------------------------------
 
@@ -20,7 +23,6 @@ import { isString } from "./util";
 import { objectKeys } from "ts-extras";
 import { defaultSettings } from "./config";
 
-// ストレージへ書き込みをする際、ロストアップデートを避けるためにキューを使用する
 const queue = new PQueue({ concurrency: 1 });
 
 export async function reset() {
