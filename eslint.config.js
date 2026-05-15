@@ -16,7 +16,7 @@ const pathsExceptBackground = [
 export default defineConfig(
   // 下に行くほど優先される
 
-  globalIgnores([".output/", ".wxt/", "eslint.config.mjs"]),
+  globalIgnores([".output/", ".wxt/", "eslint.config.js"]),
 
   // https://typescript-eslint.io/getting-started
   js.configs.recommended,
