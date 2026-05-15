@@ -9,7 +9,7 @@ import unicorn from "eslint-plugin-unicorn";
 
 const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
-  "./src/utils/{browser,log,store,util}.ts",
+  "./src/utils/{browser,dom,log,messaging,store,util}.ts",
   "./src/entrypoints/!(background)/**/*",
 ];
 
