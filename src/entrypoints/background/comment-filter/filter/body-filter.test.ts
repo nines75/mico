@@ -12,12 +12,12 @@ const baseThreads = [
     commentCount: 2,
     comments: mockComments(
       {
-        id: "1001",
+        id: "1",
         userId: "user-id-1",
         body: "foo",
       },
       {
-        id: "1002",
+        id: "2",
         userId: "user-id-2",
         body: "bar",
       },
@@ -55,13 +55,13 @@ describe(BodyFilter.name, () => {
     it("完全一致", () => {
       const filter = "foo";
 
-      assertor.assert(["1001"], runFilter({ filter }));
+      assertor.assert(["1"], runFilter({ filter }));
     });
 
     it("部分一致", () => {
       const filter = "fo";
 
-      assertor.assert(["1001"], runFilter({ filter }));
+      assertor.assert(["1"], runFilter({ filter }));
     });
 
     it("大小文字が異なる", () => {
@@ -74,7 +74,7 @@ describe(BodyFilter.name, () => {
   it("正規表現ルール", () => {
     const filter = "/foo/";
 
-    assertor.assert(["1001"], runFilter({ filter }));
+    assertor.assert(["1"], runFilter({ filter }));
   });
 
   it("@strict", () => {

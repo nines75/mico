@@ -12,19 +12,19 @@ const baseThreads = [
     commentCount: 4,
     comments: mockComments(
       {
-        id: "1001",
+        id: "1",
         vposMs: 9000, // 9秒
       },
       {
-        id: "1002",
+        id: "2",
         vposMs: 9999, // 9.999秒
       },
       {
-        id: "1003",
+        id: "3",
         vposMs: 10_000, // 10秒
       },
       {
-        id: "1004",
+        id: "4",
         vposMs: 11_000, // 11秒
       },
     ),
@@ -57,7 +57,7 @@ describe(VposFilter.name, () => {
     it.each([
       {
         isEnabled: true,
-        ids: ["1003", "1004"],
+        ids: ["3", "4"],
       },
       {
         isEnabled: false,

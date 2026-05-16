@@ -11,14 +11,14 @@ const baseThreads = [
     commentCount: 2,
     comments: mockComments(
       {
-        id: "1001",
+        id: "1",
         commands: ["184", "big"],
         userId: "user-id-1",
         body: "foo",
         nicoruCount: 29,
       },
       {
-        id: "1002",
+        id: "2",
         commands: ["184"],
         userId: "user-id-2",
         body: "bar",
@@ -59,7 +59,7 @@ bar
   it("基本", () => {
     runFilter();
 
-    assertor.assert(["1001", "1002"]);
+    assertor.assert(["1", "2"]);
   });
 
   it("strictルールの先行適用", () => {
@@ -85,7 +85,7 @@ bar
 `,
     });
 
-    assertor.assert(["1001", "1002"], result?.filters.userIdFilter);
+    assertor.assert(["1", "2"], result?.filters.userIdFilter);
     expect(result?.strictData.map(({ userId }) => userId)).toEqual([
       "user-id-1",
       "user-id-2",
@@ -111,7 +111,7 @@ foo
 `,
     });
 
-    assertor.assert(["1001"], result?.filters.userIdFilter);
+    assertor.assert(["1"], result?.filters.userIdFilter);
     expect(result?.strictData.map(({ userId }) => userId)).toEqual([
       // 重複がないことを確認
       "user-id-1",
@@ -136,6 +136,6 @@ foo
   it(`Settings.${"ignoreByNicoru" satisfies keyof Settings}`, () => {
     runFilter({ ignoreByNicoru: true });
 
-    assertor.assert(["1001"]);
+    assertor.assert(["1"]);
   });
 });

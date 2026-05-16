@@ -9,7 +9,7 @@ const baseThreads = [
     fork: "main",
     commentCount: 1,
     comments: mockComments({
-      id: "1001",
+      id: "1",
       userId: "user-id",
     }),
   },
@@ -40,7 +40,7 @@ describe(UserIdFilter.name, () => {
     it("完全一致", () => {
       const filter = "user-id";
 
-      assertor.assert(["1001"], runFilter(filter));
+      assertor.assert(["1"], runFilter(filter));
     });
 
     it("部分一致", () => {
@@ -53,7 +53,7 @@ describe(UserIdFilter.name, () => {
   it("正規表現ルール", () => {
     const filter = "/user-id/";
 
-    assertor.assert(["1001"], runFilter(filter));
+    assertor.assert(["1"], runFilter(filter));
   });
 
   it(UserIdFilter.prototype.updateFilter.name, () => {
@@ -64,6 +64,6 @@ describe(UserIdFilter.name, () => {
     userIdFilter.updateFilter(["user-id"]);
     userIdFilter.apply(threads);
 
-    assertor.assert(["1001"], userIdFilter);
+    assertor.assert(["1"], userIdFilter);
   });
 });

@@ -11,7 +11,7 @@ const baseThreads = [
     fork: "owner",
     commentCount: 1,
     comments: mockComments({
-      id: "1001",
+      id: "1",
       commands: [],
       postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
     }),
@@ -21,17 +21,17 @@ const baseThreads = [
     commentCount: 3,
     comments: mockComments(
       {
-        id: "1002",
+        id: "2",
         commands: [],
         postedAt: "2025-02-25T23:59:59+09:00", // リリース直前
       },
       {
-        id: "1003",
+        id: "3",
         commands: [],
         postedAt: "2025-02-26T00:00:00+09:00", // リリース
       },
       {
-        id: "1004",
+        id: "4",
         commands: [],
         postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
       },
@@ -65,7 +65,7 @@ describe(CommentAssistFilter.name, () => {
     it.each([
       {
         isEnabled: true,
-        ids: ["1003", "1004"],
+        ids: ["3", "4"],
       },
       {
         isEnabled: false,

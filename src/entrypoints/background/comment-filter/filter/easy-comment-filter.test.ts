@@ -11,7 +11,7 @@ const baseThreads = [
     fork: "main",
     commentCount: 1,
     comments: mockComments({
-      id: "1001",
+      id: "1",
     }),
   },
   {
@@ -19,10 +19,10 @@ const baseThreads = [
     commentCount: 2,
     comments: mockComments(
       {
-        id: "1002",
+        id: "2",
       },
       {
-        id: "1003",
+        id: "3",
       },
     ),
   },
@@ -54,7 +54,7 @@ describe(EasyCommentFilter.name, () => {
     it.each([
       {
         isEnabled: true,
-        ids: ["1002", "1003"],
+        ids: ["2", "3"],
       },
       {
         isEnabled: false,

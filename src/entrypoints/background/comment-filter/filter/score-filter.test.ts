@@ -11,15 +11,15 @@ const baseThreads = [
     commentCount: 3,
     comments: mockComments(
       {
-        id: "1001",
+        id: "1",
         score: 0,
       },
       {
-        id: "1002",
+        id: "2",
         score: -1000,
       },
       {
-        id: "1003",
+        id: "3",
         score: -2400,
       },
     ),
@@ -55,10 +55,10 @@ describe(ScoreFilter.name, () => {
 
   describe(`Settings.${"scoreFilterThreshold" satisfies keyof Settings}`, () => {
     it.each([
-      { threshold: 0, ids: ["1001", "1002", "1003"] },
-      { threshold: -999, ids: ["1002", "1003"] },
-      { threshold: -1000, ids: ["1002", "1003"] },
-      { threshold: -1001, ids: ["1003"] },
+      { threshold: 0, ids: ["1", "2", "3"] },
+      { threshold: -999, ids: ["2", "3"] },
+      { threshold: -1000, ids: ["2", "3"] },
+      { threshold: -1001, ids: ["3"] },
       { threshold: -10_000, ids: [] },
     ])("閾値: $threshold", ({ threshold, ids }) => {
       assertor.assert(ids, runFilter(true, threshold));

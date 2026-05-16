@@ -11,12 +11,12 @@ const baseThreads = [
     commentCount: 2,
     comments: mockComments(
       {
-        id: "1001",
+        id: "1",
         commands: ["184", "big"],
         userId: "user-id-1",
       },
       {
-        id: "1002",
+        id: "2",
         commands: ["184", "red"],
         userId: "user-id-2",
       },
@@ -60,7 +60,7 @@ describe(CommandsFilter.name, () => {
     it("完全一致", () => {
       const filter = "big";
 
-      assertor.assert(["1001"], runFilter({ filter }));
+      assertor.assert(["1"], runFilter({ filter }));
     });
 
     it("部分一致", () => {
@@ -72,14 +72,14 @@ describe(CommandsFilter.name, () => {
     it("大小文字が異なる", () => {
       const filter = "BIG";
 
-      assertor.assert(["1001"], runFilter({ filter }));
+      assertor.assert(["1"], runFilter({ filter }));
     });
   });
 
   it("正規表現ルール", () => {
     const filter = "/big/";
 
-    assertor.assert(["1001"], runFilter({ filter }));
+    assertor.assert(["1"], runFilter({ filter }));
   });
 
   it("@strict", () => {
@@ -148,7 +148,7 @@ big
 big
 `;
 
-    assertor.assert(["1001"], runFilter({ filter }));
+    assertor.assert(["1"], runFilter({ filter }));
   });
 
   // https://github.com/nines75/mico/issues/61
