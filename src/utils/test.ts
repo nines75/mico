@@ -101,27 +101,47 @@ export const testTab = {
   tags: [],
 } as const satisfies Tab;
 
-export function checkComment(
-  threads: Thread[],
-  filteredIds: string[],
-  baseThreads?: Thread[],
-) {
-  // 実際のコメントIDを抽出
-  const actualIds = threads.flatMap((thread) =>
-    thread.comments.map(({ id }) => id),
-  );
+export class CommentAssertor {
+  private threads: Thread[];
+  private baseThreads: Thread[];
 
-  // 全てのコメントIDからフィルタリングされた想定のIDを除外したものを抽出
-  const expectedIds: string[] = [];
-  for (const thread of baseThreads ?? testThreads) {
-    for (const { id } of thread.comments) {
-      if (!filteredIds.includes(id)) {
-        expectedIds.push(id);
-      }
-    }
+  constructor(threads: Thread[], baseThreads: Thread[]) {
+    this.threads = threads;
+    this.baseThreads = baseThreads;
   }
 
-  expect(actualIds.toSorted()).toEqual(expectedIds.toSorted());
+  assert(filteredIds: string[], filter?: Filter) {
+    // -------------------------------------------------------------------------------------------
+    // フィルタリング結果の検証
+    // -------------------------------------------------------------------------------------------
+
+    // 実際のコメントIDを抽出
+    const actualIds = this.threads.flatMap((thread) =>
+      thread.comments.map(({ id }) => id),
+    );
+
+    // 全てのコメントIDからフィルタリングされた想定のIDを除外
+    const expectedIds: string[] = [];
+    for (const thread of this.baseThreads) {
+      for (const { id } of thread.comments) {
+        if (!filteredIds.includes(id)) {
+          expectedIds.push(id);
+        }
+      }
+    }
+
+    expect(actualIds.toSorted()).toEqual(expectedIds.toSorted());
+
+    // -------------------------------------------------------------------------------------------
+    // ログの検証
+    // -------------------------------------------------------------------------------------------
+
+    if (filter !== undefined) {
+      expect(
+        filter.getFilteredComments().map(({ comment }) => comment.id),
+      ).toEqual(filteredIds);
+    }
+  }
 }
 
 export function mockRules(
@@ -133,8 +153,4 @@ export function mockRules(
     }),
     invalidLines: [],
   };
-}
-
-export function getFilteredIds(filter: Filter | undefined) {
-  return filter?.getFilteredComments().map(({ comment }) => comment.id);
 }

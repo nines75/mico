@@ -1,20 +1,40 @@
 import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
-import {
-  checkComment,
-  getFilteredIds,
-  testTab,
-  testThreads,
-} from "@/utils/test";
+import { CommentAssertor, mockComments, testTab } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
 
+const baseThreads = [
+  {
+    fork: "main",
+    commentCount: 2,
+    comments: mockComments(
+      {
+        id: "1001",
+        commands: ["184", "big"],
+        userId: "user-id-1",
+        body: "foo",
+        nicoruCount: 29,
+      },
+      {
+        id: "1002",
+        commands: ["184"],
+        userId: "user-id-2",
+        body: "bar",
+        nicoruCount: 30,
+      },
+    ),
+  },
+] satisfies Thread[];
+
 describe(filterComment.name, () => {
   let threads: Thread[];
+  let assertor: CommentAssertor;
 
   beforeEach(() => {
-    threads = structuredClone(testThreads);
+    threads = structuredClone(baseThreads);
+    assertor = new CommentAssertor(threads, baseThreads);
   });
 
   const runFilter = (settings?: Partial<Settings>) => {
@@ -22,19 +42,13 @@ describe(filterComment.name, () => {
       threads,
       {
         ...defaultSettings,
-        scoreFilterThreshold: -1001,
         manualFilter: `
-@comment-user-id
-user-id-owner
-@end
-
 @comment-commands
 big
 @end
 
 @comment-body
-コメント
-@end
+bar
 `,
         ...settings,
       },
@@ -45,67 +59,69 @@ big
   it("基本", () => {
     runFilter();
 
-    checkComment(threads, ["1000", "1001", "1002", "1003", "1004"]);
+    assertor.assert(["1001", "1002"]);
   });
 
   it("strictルールの先行適用", () => {
     const result = runFilter({
       manualFilter: `
 @comment-commands
+
 big
+
 @s
 big
-device:Switch
+
 @end
 
+#============================================================
+
 @comment-body
-コメント
+
+bar
+
 @s
-コメント
+bar
 `,
     });
 
+    assertor.assert(["1001", "1002"], result?.filters.userIdFilter);
     expect(result?.strictData.map(({ userId }) => userId)).toEqual([
-      "user-id-main-1",
-      "user-id-main-3",
-      "user-id-main-2",
+      "user-id-1",
+      "user-id-2",
     ]);
-    expect(getFilteredIds(result?.filters.userIdFilter)).toEqual([
-      "1002",
-      "1003",
-      "1004",
-    ]);
-    checkComment(threads, ["1002", "1003", "1004"]);
   });
 
   it("strictルールによるフィルタリングの重複", () => {
     const result = runFilter({
       manualFilter: `
 @comment-commands
-# 1003と1004に一致
+
 @s
-device:switch
+big
+
 @end
 
+#============================================================
+
 @comment-body
-# 1003に一致
+
 @s
-テストコメント
+foo
 `,
     });
 
-    // 重複がないことを確認
+    assertor.assert(["1001"], result?.filters.userIdFilter);
     expect(result?.strictData.map(({ userId }) => userId)).toEqual([
-      "user-id-main-2",
-      "user-id-main-3",
+      // 重複がないことを確認
+      "user-id-1",
     ]);
-    checkComment(threads, ["1003", "1004"]);
   });
 
   it(`Settings.${"enableCommentFilter" satisfies keyof Settings}`, () => {
     runFilter({ enableCommentFilter: false });
 
-    checkComment(threads, []);
+    assertor.assert([]);
   });
 
   it(`Settings.${"ignoreMyComments" satisfies keyof Settings}`, () => {
@@ -114,12 +130,12 @@ device:switch
     }
     runFilter({ ignoreMyComments: true });
 
-    checkComment(threads, []);
+    assertor.assert([]);
   });
 
   it(`Settings.${"ignoreByNicoru" satisfies keyof Settings}`, () => {
     runFilter({ ignoreByNicoru: true });
 
-    checkComment(threads, ["1000", "1001", "1002"]);
+    assertor.assert(["1001"]);
   });
 });

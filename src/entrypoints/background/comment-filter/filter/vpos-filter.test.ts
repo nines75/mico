@@ -1,12 +1,12 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { checkComment, getFilteredIds } from "@/utils/test";
-import { beforeEach, describe, expect, it } from "vitest";
+import { CommentAssertor } from "@/utils/test";
+import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 import { mockComments } from "@/utils/test";
 import { VposFilter } from "./vpos-filter";
 
-export const vposThreads = [
+const baseThreads = [
   {
     fork: "main",
     commentCount: 4,
@@ -33,18 +33,16 @@ export const vposThreads = [
 
 describe(VposFilter.name, () => {
   let threads: Thread[];
+  let assertor: CommentAssertor;
 
   beforeEach(() => {
-    threads = structuredClone(vposThreads);
+    threads = structuredClone(baseThreads);
+    assertor = new CommentAssertor(threads, baseThreads);
   });
 
-  const runFilter = (options: { settings?: Partial<Settings> }) => {
+  const runFilter = (enableVposFilter: boolean) => {
     const vposFilter = new VposFilter(
-      {
-        ...defaultSettings,
-        enableVposFilter: true,
-        ...options.settings,
-      },
+      { ...defaultSettings, enableVposFilter },
       9,
     );
 
@@ -66,14 +64,7 @@ describe(VposFilter.name, () => {
         ids: [],
       },
     ])("$isEnabled", ({ isEnabled, ids }) => {
-      expect(
-        getFilteredIds(
-          runFilter({
-            settings: { enableVposFilter: isEnabled },
-          }),
-        ),
-      ).toEqual(ids);
-      checkComment(threads, ids, vposThreads);
+      assertor.assert(ids, runFilter(isEnabled));
     });
   });
 });

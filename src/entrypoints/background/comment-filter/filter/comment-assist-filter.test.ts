@@ -1,44 +1,39 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { checkComment, getFilteredIds } from "@/utils/test";
-import { beforeEach, describe, expect, it } from "vitest";
+import { CommentAssertor } from "@/utils/test";
+import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 import { CommentAssistFilter } from "./comment-assist-filter";
 import { mockComments } from "@/utils/test";
 
-// コメントアシストは既存のコメントデータでテストできないので別で用意
-export const commentAssistThreads = [
+const baseThreads = [
   {
     fork: "owner",
     commentCount: 1,
     comments: mockComments({
+      id: "1001",
       commands: [],
+      postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
     }),
   },
   {
     fork: "main",
-    commentCount: 4,
+    commentCount: 3,
     comments: mockComments(
-      {
-        id: "1001",
-        commands: [],
-        postedAt: "2025-02-26T00:00:00+09:00", // リリース丁度
-      },
       {
         id: "1002",
         commands: [],
-        userId: "user-id-main-2",
         postedAt: "2025-02-25T23:59:59+09:00", // リリース直前
       },
       {
         id: "1003",
-        body: "test2",
         commands: [],
+        postedAt: "2025-02-26T00:00:00+09:00", // リリース
       },
       {
         id: "1004",
-        body: "test2",
         commands: [],
+        postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
       },
     ),
   },
@@ -46,16 +41,17 @@ export const commentAssistThreads = [
 
 describe(CommentAssistFilter.name, () => {
   let threads: Thread[];
+  let assertor: CommentAssertor;
 
   beforeEach(() => {
-    threads = structuredClone(commentAssistThreads);
+    threads = structuredClone(baseThreads);
+    assertor = new CommentAssertor(threads, baseThreads);
   });
 
-  const runFilter = (options: { settings?: Partial<Settings> }) => {
+  const runFilter = (enableCommentAssistFilter: boolean) => {
     const commentAssistFilter = new CommentAssistFilter({
       ...defaultSettings,
-      enableCommentAssistFilter: true,
-      ...options.settings,
+      enableCommentAssistFilter,
     });
 
     commentAssistFilter.apply(threads);
@@ -69,21 +65,14 @@ describe(CommentAssistFilter.name, () => {
     it.each([
       {
         isEnabled: true,
-        ids: ["1001", "1003", "1004"],
+        ids: ["1003", "1004"],
       },
       {
         isEnabled: false,
         ids: [],
       },
     ])("$isEnabled", ({ isEnabled, ids }) => {
-      expect(
-        getFilteredIds(
-          runFilter({
-            settings: { enableCommentAssistFilter: isEnabled },
-          }),
-        ),
-      ).toEqual(ids);
-      checkComment(threads, ids, commentAssistThreads);
+      assertor.assert(ids, runFilter(isEnabled));
     });
   });
 });

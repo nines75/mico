@@ -1,15 +1,36 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CommandsFilter } from "./commands-filter";
 import { defaultSettings } from "@/utils/config";
-import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
+import { CommentAssertor, mockComments } from "@/utils/test";
 import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
 
+const baseThreads = [
+  {
+    fork: "main",
+    commentCount: 2,
+    comments: mockComments(
+      {
+        id: "1001",
+        commands: ["184", "big"],
+        userId: "user-id-1",
+      },
+      {
+        id: "1002",
+        commands: ["184", "red"],
+        userId: "user-id-2",
+      },
+    ),
+  },
+] satisfies Thread[];
+
 describe(CommandsFilter.name, () => {
   let threads: Thread[];
+  let assertor: CommentAssertor;
 
   beforeEach(() => {
-    threads = structuredClone(testThreads);
+    threads = structuredClone(baseThreads);
+    assertor = new CommentAssertor(threads, baseThreads);
   });
 
   const runFilter = (options: {
@@ -26,72 +47,59 @@ describe(CommandsFilter.name, () => {
 
     return commandsFilter;
   };
-  const hasCommand = (targets: string[]) =>
+  const hasCommand = (target: string) =>
     threads.some((thread) =>
       thread.comments.some(({ commands }) =>
-        commands.some((command) => targets.includes(command.toLowerCase())),
+        commands.some((command) => command.toLowerCase() === target),
       ),
     );
 
   // -------------------------------------------------------------------------------------------
 
   describe("文字列ルール", () => {
-    it("基本", () => {
+    it("完全一致", () => {
       const filter = "big";
 
-      expect(getFilteredIds(runFilter({ filter }))).toEqual(["1002", "1004"]);
-      checkComment(threads, ["1002", "1004"]);
-    });
-
-    it("大小文字が異なる", () => {
-      const filter = "BiG";
-
-      expect(getFilteredIds(runFilter({ filter }))).toEqual(["1002", "1004"]);
-      checkComment(threads, ["1002", "1004"]);
+      assertor.assert(["1001"], runFilter({ filter }));
     });
 
     it("部分一致", () => {
       const filter = "bi";
 
-      expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
-      checkComment(threads, []);
+      assertor.assert([], runFilter({ filter }));
+    });
+
+    it("大小文字が異なる", () => {
+      const filter = "BIG";
+
+      assertor.assert(["1001"], runFilter({ filter }));
     });
   });
 
   it("正規表現ルール", () => {
-    const filter = "/big|device:switch/";
+    const filter = "/big/";
 
-    expect(getFilteredIds(runFilter({ filter }))).toEqual([
-      "1002",
-      "1003",
-      "1004",
-    ]);
-    checkComment(threads, ["1002", "1003", "1004"]);
+    assertor.assert(["1001"], runFilter({ filter }));
   });
 
   it("@strict", () => {
     const filter = `
 @strict
 big
+red
 `;
     const commandsFilter = runFilter({
       filter,
       strictOnly: true,
       settings: {
-        autoFilter: [
-          {
-            pattern: "user-id-main-3",
-            target: { commentUserId: true },
-          },
-        ],
+        autoFilter: [{ pattern: "user-id-2", target: { commentUserId: true } }],
       },
     });
 
-    expect(getFilteredIds(commandsFilter)).toEqual([]);
+    assertor.assert([], commandsFilter);
     expect(commandsFilter.getStrictData()).toEqual([
-      { userId: "user-id-main-1", context: "comment-commands: big" },
+      { userId: "user-id-1", context: "comment-commands: big" },
     ]);
-    checkComment(threads, []);
   });
 
   describe("@disable", () => {
@@ -101,20 +109,18 @@ big
         filter: `
 @disable
 big
-device:switch
 `,
       },
       {
         name: "正規表現ルール",
         filter: `
 @disable
-/big|device:switch/
+/big/
 `,
       },
     ])("$name", ({ filter }) => {
-      expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
-      expect(hasCommand(["big", "device:switch"])).toBe(false);
-      checkComment(threads, []);
+      assertor.assert([], runFilter({ filter }));
+      expect(hasCommand("big")).toBe(false);
     });
   });
 
@@ -127,10 +133,9 @@ big
     const commandsFilter = runFilter({ filter });
     const strictCommandsFilter = runFilter({ filter, strictOnly: true });
 
-    expect(getFilteredIds(commandsFilter)).toEqual([]);
+    assertor.assert([], commandsFilter);
     expect(strictCommandsFilter.getStrictData()).toEqual([]);
-    expect(hasCommand(["big"])).toBe(false);
-    checkComment(threads, []);
+    expect(hasCommand("big")).toBe(false);
   });
 
   // https://github.com/nines75/mico/issues/31
@@ -142,8 +147,8 @@ big
 
 big
 `;
-    expect(getFilteredIds(runFilter({ filter }))).toEqual(["1002", "1004"]);
-    checkComment(threads, ["1002", "1004"]);
+
+    assertor.assert(["1001"], runFilter({ filter }));
   });
 
   // https://github.com/nines75/mico/issues/61
@@ -152,16 +157,15 @@ big
 @s
 big
 
-device:switch
-
 @disable
 184
+
+red
 `;
     const commandsFilter = runFilter({ filter, strictOnly: true });
 
-    expect(getFilteredIds(commandsFilter)).toEqual([]);
+    assertor.assert([], commandsFilter);
     expect(commandsFilter.getDisableCount()).toEqual(0);
-    expect(hasCommand(["184"])).toBe(true);
-    checkComment(threads, []);
+    expect(hasCommand("184")).toBe(true);
   });
 });

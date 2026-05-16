@@ -1,20 +1,33 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import { checkComment, getFilteredIds, testThreads } from "@/utils/test";
+import { CommentAssertor, mockComments } from "@/utils/test";
 import type { Thread } from "@/types/api/comment-api.types";
 import { UserIdFilter } from "./user-id-filter";
 
+const baseThreads = [
+  {
+    fork: "main",
+    commentCount: 1,
+    comments: mockComments({
+      id: "1001",
+      userId: "user-id",
+    }),
+  },
+] satisfies Thread[];
+
 describe(UserIdFilter.name, () => {
   let threads: Thread[];
+  let assertor: CommentAssertor;
 
   beforeEach(() => {
-    threads = structuredClone(testThreads);
+    threads = structuredClone(baseThreads);
+    assertor = new CommentAssertor(threads, baseThreads);
   });
 
-  const runFilter = (options: { filter: string }) => {
+  const runFilter = (filter: string) => {
     const userIdFilter = new UserIdFilter({
       ...defaultSettings,
-      manualFilter: `@comment-user-id\n${options.filter}`,
+      manualFilter: `@comment-user-id\n${filter}`,
     });
     userIdFilter.apply(threads);
 
@@ -24,38 +37,33 @@ describe(UserIdFilter.name, () => {
   // -------------------------------------------------------------------------------------------
 
   describe("文字列ルール", () => {
-    it("基本", () => {
-      const filter = "user-id-owner";
+    it("完全一致", () => {
+      const filter = "user-id";
 
-      expect(getFilteredIds(runFilter({ filter }))).toEqual(["1000", "1001"]);
-      checkComment(threads, ["1000", "1001"]);
+      assertor.assert(["1001"], runFilter(filter));
     });
 
     it("部分一致", () => {
-      const filter = "user-id";
+      const filter = "user";
 
-      expect(getFilteredIds(runFilter({ filter }))).toEqual([]);
-      checkComment(threads, []);
+      assertor.assert([], runFilter(filter));
     });
   });
 
   it("正規表現ルール", () => {
-    const filter = "/^user-id-main/";
+    const filter = "/user-id/";
 
-    expect(getFilteredIds(runFilter({ filter }))).toEqual([
-      "1002",
-      "1003",
-      "1004",
-    ]);
-    checkComment(threads, ["1002", "1003", "1004"]);
+    assertor.assert(["1001"], runFilter(filter));
   });
 
   it(UserIdFilter.prototype.updateFilter.name, () => {
-    const userIdFilter = runFilter({ filter: "user-id-main-1" });
-    userIdFilter.updateFilter(["user-id-main-2"]);
+    const userIdFilter = runFilter("");
+
+    assertor.assert([], userIdFilter);
+
+    userIdFilter.updateFilter(["user-id"]);
     userIdFilter.apply(threads);
 
-    expect(getFilteredIds(userIdFilter)).toEqual(["1002", "1003"]);
-    checkComment(threads, ["1002", "1003"]);
+    assertor.assert(["1001"], userIdFilter);
   });
 });
