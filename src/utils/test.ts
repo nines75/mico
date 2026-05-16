@@ -11,18 +11,18 @@ import { merge } from "./util";
 export function mockComments(...comments: Partial<NvComment>[]): NvComment[] {
   return comments.map((comment) => {
     return {
-      id: "1000",
+      id: "1",
       no: 1,
       vposMs: 0,
-      body: "test",
-      commands: ["184"],
+      body: "foo",
+      commands: [],
       isMyPost: false,
       isPremium: false,
       nicoruCount: 0,
       nicoruId: null,
       postedAt: "2025-05-07T15:00:00+09:00",
       score: 0,
-      userId: "user-id-owner",
+      userId: "user-id",
       ...comment,
     };
   });
@@ -33,9 +33,9 @@ export const testTab = {
   duration: 1,
   videoId: "sm1",
   seriesId: "1",
-  title: "title",
+  title: "foo",
   ownerId: "1",
-  ownerName: "user-name",
+  ownerName: "foo",
   tags: [],
 } as const satisfies Tab;
 
