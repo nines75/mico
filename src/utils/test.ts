@@ -28,68 +28,6 @@ export function mockComments(...comments: Partial<NvComment>[]): NvComment[] {
   });
 }
 
-export const testThreads = [
-  {
-    fork: "owner",
-    commentCount: 2,
-    comments: mockComments(
-      {
-        commands: [], // 投稿者コメントは184コマンドが付与されない
-      },
-      {
-        id: "1001",
-        commands: [],
-      },
-    ),
-  },
-  {
-    fork: "main",
-    commentCount: 3,
-    comments: mockComments(
-      {
-        id: "1002",
-        commands: ["big", "184"],
-        userId: "user-id-main-1",
-        score: -1001,
-        body: "テスト",
-        nicoruCount: 29,
-      },
-      {
-        id: "1003",
-        commands: ["184", "device:Switch"],
-        userId: "user-id-main-2",
-        score: -1000,
-        body: "テストコメント",
-        nicoruCount: 30,
-      },
-      {
-        id: "1004",
-        commands: ["big", "184", "device:Switch"],
-        userId: "user-id-main-3",
-        score: -999,
-        body: "コメント",
-        nicoruCount: 31,
-      },
-    ),
-  },
-  {
-    fork: "easy",
-    commentCount: 2,
-    comments: mockComments(
-      {
-        id: "1005",
-        userId: "user-id-easy",
-        body: "！？",
-      },
-      {
-        id: "1006",
-        userId: "user-id-easy",
-        body: "うぽつ",
-      },
-    ),
-  },
-] satisfies Thread[];
-
 export const testTab = {
   seriesNext: undefined,
   duration: 1,
