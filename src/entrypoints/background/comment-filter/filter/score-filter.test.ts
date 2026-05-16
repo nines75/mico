@@ -1,29 +1,25 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { CommentAssertor, mockComments } from "@/utils/test";
+import { CommentAssertor, mockThread } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { ScoreFilter } from "./score-filter";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 
 const baseThreads = [
-  {
-    fork: "main",
-    commentCount: 3,
-    comments: mockComments(
-      {
-        id: "1",
-        score: 0,
-      },
-      {
-        id: "2",
-        score: -1000,
-      },
-      {
-        id: "3",
-        score: -2400,
-      },
-    ),
-  },
+  mockThread("main", [
+    {
+      id: "1",
+      score: 0,
+    },
+    {
+      id: "2",
+      score: -1000,
+    },
+    {
+      id: "3",
+      score: -2400,
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(ScoreFilter.name, () => {

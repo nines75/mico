@@ -1,18 +1,16 @@
 import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import { CommentAssertor, mockComments } from "@/utils/test";
+import { CommentAssertor, mockThread } from "@/utils/test";
 import type { Thread } from "@/types/api/comment-api.types";
 import { UserIdFilter } from "./user-id-filter";
 
 const baseThreads = [
-  {
-    fork: "main",
-    commentCount: 1,
-    comments: mockComments({
+  mockThread("main", [
+    {
       id: "1",
       userId: "user-id",
-    }),
-  },
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(UserIdFilter.name, () => {

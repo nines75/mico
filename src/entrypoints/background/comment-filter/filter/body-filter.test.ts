@@ -1,28 +1,24 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import { CommentAssertor } from "@/utils/test";
-import { mockComments } from "@/utils/test";
+import { mockThread } from "@/utils/test";
 import type { Thread } from "@/types/api/comment-api.types";
 import { BodyFilter } from "./body-filter";
 import type { Settings } from "@/types/storage/settings.types";
 
 const baseThreads = [
-  {
-    fork: "main",
-    commentCount: 2,
-    comments: mockComments(
-      {
-        id: "1",
-        userId: "user-id-1",
-        body: "foo",
-      },
-      {
-        id: "2",
-        userId: "user-id-2",
-        body: "bar",
-      },
-    ),
-  },
+  mockThread("main", [
+    {
+      id: "1",
+      userId: "user-id-1",
+      body: "foo",
+    },
+    {
+      id: "2",
+      userId: "user-id-2",
+      body: "bar",
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(BodyFilter.name, () => {

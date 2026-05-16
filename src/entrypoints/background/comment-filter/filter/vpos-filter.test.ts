@@ -3,32 +3,28 @@ import { CommentAssertor } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
-import { mockComments } from "@/utils/test";
+import { mockThread } from "@/utils/test";
 import { VposFilter } from "./vpos-filter";
 
 const baseThreads = [
-  {
-    fork: "main",
-    commentCount: 4,
-    comments: mockComments(
-      {
-        id: "1",
-        vposMs: 9000, // 9秒
-      },
-      {
-        id: "2",
-        vposMs: 9999, // 9.999秒
-      },
-      {
-        id: "3",
-        vposMs: 10_000, // 10秒
-      },
-      {
-        id: "4",
-        vposMs: 11_000, // 11秒
-      },
-    ),
-  },
+  mockThread("main", [
+    {
+      id: "1",
+      vposMs: 9000, // 9秒
+    },
+    {
+      id: "2",
+      vposMs: 9999, // 9.999秒
+    },
+    {
+      id: "3",
+      vposMs: 10_000, // 10秒
+    },
+    {
+      id: "4",
+      vposMs: 11_000, // 11秒
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(VposFilter.name, () => {

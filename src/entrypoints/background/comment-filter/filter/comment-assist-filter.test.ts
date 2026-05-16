@@ -4,39 +4,33 @@ import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
 import type { Settings } from "@/types/storage/settings.types";
 import { CommentAssistFilter } from "./comment-assist-filter";
-import { mockComments } from "@/utils/test";
+import { mockThread } from "@/utils/test";
 
 const baseThreads = [
-  {
-    fork: "owner",
-    commentCount: 1,
-    comments: mockComments({
+  mockThread("owner", [
+    {
       id: "1",
       commands: [],
       postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
-    }),
-  },
-  {
-    fork: "main",
-    commentCount: 3,
-    comments: mockComments(
-      {
-        id: "2",
-        commands: [],
-        postedAt: "2025-02-25T23:59:59+09:00", // リリース直前
-      },
-      {
-        id: "3",
-        commands: [],
-        postedAt: "2025-02-26T00:00:00+09:00", // リリース
-      },
-      {
-        id: "4",
-        commands: [],
-        postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
-      },
-    ),
-  },
+    },
+  ]),
+  mockThread("main", [
+    {
+      id: "2",
+      commands: [],
+      postedAt: "2025-02-25T23:59:59+09:00", // リリース直前
+    },
+    {
+      id: "3",
+      commands: [],
+      postedAt: "2025-02-26T00:00:00+09:00", // リリース
+    },
+    {
+      id: "4",
+      commands: [],
+      postedAt: "2025-02-27T00:00:00+09:00", // リリースから1日後
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(CommentAssistFilter.name, () => {

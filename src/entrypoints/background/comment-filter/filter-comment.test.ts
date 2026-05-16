@@ -1,31 +1,27 @@
 import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { CommentAssertor, mockComments, testTab } from "@/utils/test";
+import { CommentAssertor, mockThread, testTab } from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
 
 const baseThreads = [
-  {
-    fork: "main",
-    commentCount: 2,
-    comments: mockComments(
-      {
-        id: "1",
-        commands: ["184", "big"],
-        userId: "user-id-1",
-        body: "foo",
-        nicoruCount: 29,
-      },
-      {
-        id: "2",
-        commands: ["184"],
-        userId: "user-id-2",
-        body: "bar",
-        nicoruCount: 30,
-      },
-    ),
-  },
+  mockThread("main", [
+    {
+      id: "1",
+      commands: ["184", "big"],
+      userId: "user-id-1",
+      body: "foo",
+      nicoruCount: 29,
+    },
+    {
+      id: "2",
+      commands: ["184"],
+      userId: "user-id-2",
+      body: "bar",
+      nicoruCount: 30,
+    },
+  ]),
 ] satisfies Thread[];
 
 describe(filterComment.name, () => {
