@@ -20,7 +20,7 @@ export function rankingRequest(
       await mountLogId(logId, tabId);
     }
 
-    await importLocalFilter();
+    await importLocalFilter("load");
 
     const settings = await loadSettings();
     const result = spaFilter(

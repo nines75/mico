@@ -107,7 +107,7 @@ export default defineBackground(() => {
       }
 
       if (command === "import-local-filter") {
-        await importLocalFilter(true);
+        await importLocalFilter("shortcut");
       }
 
       if (command === "save-backup") {

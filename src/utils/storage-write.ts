@@ -200,7 +200,7 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   await notify("NG登録に失敗しました");
 }
 
-export async function importLocalFilter(isManual = false) {
+export async function importLocalFilter(type: "load" | "shortcut") {
   // 不要な設定のロードを避けるため最初に権限を確認
   if (!(await hasPermission("nativeMessaging"))) return;
 
@@ -210,7 +210,7 @@ export async function importLocalFilter(isManual = false) {
 
   // 権限があるか確認する前に設定を確認
   // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
-  if (!isManual && !settings.importLocalFilterOnLoad) return;
+  if (type === "load" && !settings.importLocalFilterOnLoad) return;
 
   await tryWithPermission("nativeMessaging", async () => {
     if (settings.localFilterPath === "") {
@@ -221,7 +221,7 @@ export async function importLocalFilter(isManual = false) {
     const response = (await browser.runtime.sendNativeMessage("mico.native", {
       type: "importLocalFilter",
       path: settings.localFilterPath,
-      shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
+      shouldCheckWsl: type === "load" && settings.importOnlyWhenWslRunning,
     })) as { settings?: Partial<Settings> };
 
     // キャンセルされた場合
@@ -235,7 +235,7 @@ export async function importLocalFilter(isManual = false) {
 
     await setSettings(response.settings);
 
-    if (isManual) {
+    if (type === "shortcut") {
       await notify("ローカルフィルターをインポートしました");
     }
   });

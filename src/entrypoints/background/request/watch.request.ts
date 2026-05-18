@@ -22,7 +22,7 @@ export function watchRequest(
       await mountLogId(logId, tabId);
     }
 
-    await importLocalFilter();
+    await importLocalFilter("load");
 
     const settings = await loadSettings();
     const result = spaFilter(
