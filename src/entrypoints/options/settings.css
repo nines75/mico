@@ -42,11 +42,17 @@ input[type="checkbox"] {
   margin-left: 20px;
   font-size: 13px;
 }
+.input-container {
+  /* 子要素の長さを固定 */
+  display: flex;
+  align-items: center;
+  width: 900px;
+}
 .input {
   font-family: var(--font);
   margin-left: 20px;
-  width: 530px;
   height: 30px;
+  flex: 1; /* 残りの領域を割り当てる */
 }
 .rule-container {
   border: gray 1px solid;

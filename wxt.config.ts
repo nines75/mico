@@ -97,10 +97,18 @@ export default defineConfig({
             : {},
         },
         "import-local-filter": {
-          description: "ローカルフィルターをインポート",
+          description: "ローカルフィルターをインポート (native)",
           suggested_key: isDevelopment
             ? {
                 default: "Ctrl+Alt+N",
+              }
+            : {},
+        },
+        "save-backup": {
+          description: "バックアップを保存 (native)",
+          suggested_key: isDevelopment
+            ? {
+                default: "Ctrl+Alt+B",
               }
             : {},
         },

@@ -8,7 +8,7 @@ import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
-import { tryWithPermission } from "@/utils/browser";
+import { saveBackup, tryWithPermission } from "@/utils/browser";
 import { openLog } from "@/utils/log";
 import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
@@ -109,11 +109,19 @@ export default defineBackground(() => {
       if (command === "import-local-filter") {
         await importLocalFilter(true);
       }
+
+      if (command === "save-backup") {
+        await saveBackup("shortcut");
+      }
     }),
   );
 
   // ブラウザの起動時に実行する処理
-  browser.runtime.onStartup.addListener(catchAsync(clearDb));
+  browser.runtime.onStartup.addListener(
+    catchAsync(async () => {
+      await Promise.all([clearDb(), saveBackup("startup")]);
+    }),
+  );
 
   for (const data of [
     {

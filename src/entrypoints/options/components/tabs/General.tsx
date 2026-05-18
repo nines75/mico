@@ -4,7 +4,6 @@ import type { Backup } from "@/types/storage/backup.types";
 import { getSettings, getSettingsMeta } from "@/utils/storage";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
-import { useShallow } from "zustand/shallow";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
@@ -12,17 +11,14 @@ import type { CheckboxProps } from "../ui/Checkbox";
 import Checkbox from "../ui/Checkbox";
 import { proxy } from "@/utils/proxy";
 import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
+import Input from "../ui/Input";
 
 const ICON_SIZE = 18;
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
-  const [showAdvancedFeatures, localFilterPath, save] = useSettingsStore(
-    useShallow((state) => [
-      state.settings.showAdvancedFeatures,
-      state.settings.localFilterPath,
-      state.saveSettings,
-    ]),
+  const showAdvancedFeatures = useSettingsStore(
+    (state) => state.settings.showAdvancedFeatures,
   );
 
   return (
@@ -30,23 +26,20 @@ export default function General() {
       <CheckboxSection groups={config.groups}>
         {showAdvancedFeatures && (
           <>
-            {config.children.map((props) => (
+            {config.importLocalFilter.map((props) => (
               <Checkbox key={props.id} {...props} />
             ))}
-            <div className="setting">
-              <label className="setting-label">
-                {"インポートするローカルフィルターのパス"}
-                <input
-                  className="input"
-                  value={localFilterPath}
-                  onChange={(event) => {
-                    save({
-                      localFilterPath: event.target.value,
-                    });
-                  }}
-                />
-              </label>
-            </div>
+            <Input
+              id="localFilterPath"
+              label="インポートするローカルフィルターのパス"
+            />
+            {config.saveBackup.map((props) => (
+              <Checkbox key={props.id} {...props} />
+            ))}
+            <Input
+              id="backupPath"
+              label="バックアップを保存するディレクトリのパス"
+            />
           </>
         )}
       </CheckboxSection>
@@ -116,7 +109,7 @@ async function exportBackup() {
     getSettingsMeta(),
   ]);
 
-  const backup: Backup = {
+  const backup: Required<Backup> = {
     settings,
     settingsMeta,
   };
@@ -176,7 +169,7 @@ const config = {
       ],
     },
   ],
-  children: [
+  importLocalFilter: [
     {
       id: "importLocalFilterOnLoad",
       label: "ページ読み込み時にローカルフィルターをインポートする",
@@ -188,4 +181,29 @@ const config = {
       ],
     },
   ],
-} satisfies { groups: CheckboxGroups; children: CheckboxProps[] };
+  saveBackup: [
+    {
+      id: "saveBackupOnStartup",
+      label: "起動時にバックアップを保存する",
+      childrenProps: [
+        {
+          id: "saveBackupWithoutManualFilter",
+          label: "Manualフィルターなしで保存する",
+        },
+        {
+          id: "saveBackupOnlyAfterInterval",
+          label: "前回の保存から一定時間経過したときのみ保存する",
+          input: {
+            id: "backupIntervalThreshold",
+            label: "時間",
+            min: 1,
+          },
+        },
+      ],
+    },
+  ],
+} satisfies {
+  groups: CheckboxGroups;
+  importLocalFilter: CheckboxProps[];
+  saveBackup: CheckboxProps[];
+};

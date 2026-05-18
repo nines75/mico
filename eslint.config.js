@@ -70,6 +70,7 @@ export default defineConfig(
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
+          ignoreRestSiblings: true, // objectの構造分解での未使用変数を許可
         },
       ],
       // テンプレートリテラルでstringとnumber以外の埋め込みを禁止

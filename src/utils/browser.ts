@@ -1,4 +1,6 @@
 import type { Browser } from "#imports";
+import { getSettings, getSettingsMeta, loadSettings } from "./storage";
+import type { Backup } from "@/types/storage/backup.types";
 
 export async function setBadgeState(
   value: number,
@@ -63,4 +65,42 @@ export async function getActiveTab() {
   });
 
   return tabs[0];
+}
+
+export async function saveBackup(type: "startup" | "shortcut") {
+  const settings = await loadSettings();
+  if (type === "startup" && !settings.saveBackupOnStartup) return;
+
+  const [rawSettings, meta] = await Promise.all([
+    getSettings(),
+    getSettingsMeta(),
+  ]);
+  const { manualFilter, ...rawSettingsWithoutManualFilter } = rawSettings;
+
+  await tryWithPermission("nativeMessaging", async () => {
+    if (settings.backupPath === "") {
+      await notify("パスが設定されていません");
+      return;
+    }
+
+    const backup: Required<Backup> = {
+      settings: settings.saveBackupWithoutManualFilter
+        ? rawSettingsWithoutManualFilter
+        : rawSettings,
+      settingsMeta: meta,
+    };
+
+    const response = (await browser.runtime.sendNativeMessage("mico.native", {
+      type: "saveBackup",
+      path: settings.backupPath,
+      shouldCheckInterval:
+        type === "startup" && settings.saveBackupOnlyAfterInterval,
+      intervalThreshold: settings.backupIntervalThreshold,
+      backup,
+    })) as { status?: "completed" | "skipped" };
+
+    if (type === "shortcut" && response.status === "completed") {
+      await notify("バックアップを保存しました");
+    }
+  });
 }

@@ -204,7 +204,8 @@ export async function importLocalFilter(isManual = false) {
   // 不要な設定のロードを避けるため最初に権限を確認
   if (!(await hasPermission("nativeMessaging"))) return;
 
-  // この関数は設定を更新するため、呼び出し元でロードした設定を流用できない
+  // この関数は設定を更新するため、呼び出し元でロードした設定を流用する意味がない
+  // なぜならこの関数を呼び出した後に設定を読み込まないと設定の更新が後続の処理に反映されないから
   const settings = await loadSettings();
 
   // 権限があるか確認する前に設定を確認
@@ -218,6 +219,7 @@ export async function importLocalFilter(isManual = false) {
     }
 
     const response = (await browser.runtime.sendNativeMessage("mico.native", {
+      type: "importLocalFilter",
       path: settings.localFilterPath,
       shouldCheckWsl: !isManual && settings.importOnlyWhenWslRunning,
     })) as { settings?: Partial<Settings> };

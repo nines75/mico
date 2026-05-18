@@ -26,6 +26,11 @@ export interface Settings {
   importLocalFilterOnLoad: boolean;
   importOnlyWhenWslRunning: boolean;
   localFilterPath: string;
+  saveBackupOnStartup: boolean;
+  saveBackupWithoutManualFilter: boolean;
+  saveBackupOnlyAfterInterval: boolean;
+  backupIntervalThreshold: number;
+  backupPath: string;
 
   // -------------------------------------------------------------------------------------------
   // フィルター

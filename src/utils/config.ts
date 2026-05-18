@@ -18,6 +18,11 @@ export const defaultSettings: Settings = {
   importLocalFilterOnLoad: false,
   importOnlyWhenWslRunning: false,
   localFilterPath: "",
+  saveBackupOnStartup: false,
+  saveBackupWithoutManualFilter: false,
+  saveBackupOnlyAfterInterval: false,
+  backupIntervalThreshold: 24,
+  backupPath: "",
 
   // -------------------------------------------------------------------------------------------
   // フィルター
