@@ -202,7 +202,17 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
 
 export async function importLocalFilter(type: "load" | "shortcut") {
   // 不要な設定のロードを避けるため最初に権限を確認
-  if (!(await hasPermission("nativeMessaging"))) return;
+  if (!(await hasPermission("nativeMessaging"))) {
+    // 本来はSettings.importLocalFilterOnLoadを有効にしているユーザーが
+    // 権限を持っていない場合のみ通知したいがロード回避との両立はできない。
+    // この設定に関わらず通知を送信すると邪魔になるため送信しない
+
+    // ショートカット経由なら設定に関わらず常に通知する
+    if (type === "shortcut")
+      await notify("以下の権限が必要です\n\nnativeMessaging");
+
+    return;
+  }
 
   // この関数は設定を更新するため、呼び出し元でロードした設定を流用する意味がない
   // なぜならこの関数を呼び出した後に設定を読み込まないと設定の更新が後続の処理に反映されないから
