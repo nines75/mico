@@ -14,6 +14,7 @@ import {
   getActiveTab,
   hasPermission,
   notify,
+  sendNativeMessage,
   tryWithPermission,
 } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
@@ -228,25 +229,18 @@ export async function importLocalFilter(type: "load" | "shortcut") {
       return;
     }
 
-    const response = (await browser.runtime.sendNativeMessage("mico.native", {
+    const response = await sendNativeMessage({
       type: "importLocalFilter",
       path: settings.localFilterPath,
       shouldCheckWsl: type === "load" && settings.importOnlyWhenWslRunning,
-    })) as { settings?: Partial<Settings> };
+    });
 
-    // キャンセルされた場合
-    if (response.settings === undefined) return;
+    if (response.status === "completed") {
+      await setSettings(response.data as Partial<Settings>);
 
-    // ファイルが見つからなかった場合
-    if (Object.keys(response.settings).length === 0) {
-      await notify("ローカルフィルターが見つかりませんでした");
-      return;
-    }
-
-    await setSettings(response.settings);
-
-    if (type === "shortcut") {
-      await notify("ローカルフィルターをインポートしました");
+      if (type === "shortcut") {
+        await notify("ローカルフィルターをインポートしました");
+      }
     }
   });
 }

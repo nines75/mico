@@ -67,6 +67,33 @@ export async function getActiveTab() {
   return tabs[0];
 }
 
+export async function sendNativeMessage(message: unknown) {
+  const response = (await browser.runtime.sendNativeMessage(
+    "mico.native",
+    message,
+  )) as
+    | {
+        status: "completed";
+        data?: unknown;
+      }
+    | {
+        status: "failed";
+        error: string;
+      }
+    | {
+        status: "skipped";
+      };
+
+  if (response.status === "failed") {
+    const error = response.error;
+
+    await notify(error);
+    console.error(error);
+  }
+
+  return response;
+}
+
 export async function saveBackup(type: "startup" | "shortcut") {
   const settings = await loadSettings();
   if (type === "startup" && !settings.saveBackupOnStartup) return;
@@ -90,14 +117,14 @@ export async function saveBackup(type: "startup" | "shortcut") {
       settingsMeta: meta,
     };
 
-    const response = (await browser.runtime.sendNativeMessage("mico.native", {
+    const response = await sendNativeMessage({
       type: "saveBackup",
       path: settings.backupPath,
       shouldCheckInterval:
         type === "startup" && settings.saveBackupOnlyAfterInterval,
       intervalThreshold: settings.backupIntervalThreshold,
       backup,
-    })) as { status?: "completed" | "skipped" };
+    });
 
     if (type === "shortcut" && response.status === "completed") {
       await notify("バックアップを保存しました");
