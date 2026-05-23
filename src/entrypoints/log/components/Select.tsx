@@ -1,5 +1,5 @@
 interface SelectProps {
-  filter: string;
+  filter: string | undefined;
   filters: string[];
   setFilter: (filter: string) => void;
   blockedCount: number;
@@ -11,6 +11,8 @@ export function Select({
   setFilter,
   blockedCount,
 }: SelectProps) {
+  if (filter === undefined) return null;
+
   return (
     <div>
       <select

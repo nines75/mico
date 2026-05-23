@@ -21,7 +21,7 @@ export type Row = Merge<
   strict: boolean;
 };
 
-const filters = [
+const rawFilters = [
   "user-id",
   "easy-comment",
   "comment-assist",
@@ -32,13 +32,22 @@ const filters = [
 ] as const satisfies FilteredComment["target"][];
 
 export function CommentViewer() {
-  const [filter, setFilter] = useState<string>(filters[0]);
   const [filteredComments, ruleIds] = useLogStore(
     useShallow((state) => [
       state.log?.comment?.filteredComments,
       state.log?.comment?.strictRuleIds,
     ]),
   );
+
+  const filters = rawFilters.filter((filter) => {
+    const count = filteredComments?.filter(
+      ({ target }) => target === filter,
+    ).length;
+    if (count === undefined) return false;
+
+    return count > 0;
+  });
+  const [filter, setFilter] = useState<string | undefined>(filters[0]);
 
   const rows = useMemo<Row[]>(
     () =>
@@ -106,7 +115,14 @@ export function CommentViewer() {
 
   return (
     <>
-      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
+      <Select
+        {...{
+          filter,
+          filters,
+          setFilter,
+          blockedCount: rows.length,
+        }}
+      />
       <Viewer<Row> {...{ rows, cols }} />
     </>
   );

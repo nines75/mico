@@ -9,7 +9,7 @@ import { Select } from "./Select";
 
 export type Row = Merge<FilteredVideo, { video: OmitIndexSignature<Video> }>;
 
-const filters = [
+const rawFilters = [
   "id",
   "owner-id",
   "paid",
@@ -19,10 +19,19 @@ const filters = [
 ] as const satisfies FilteredVideo["target"][];
 
 export function VideoViewer() {
-  const [filter, setFilter] = useState<string>(filters[0]);
   const filteredVideos = useLogStore(
     (state) => state.log?.video?.filteredVideos,
   );
+
+  const filters = rawFilters.filter((filter) => {
+    const count = filteredVideos?.filter(
+      ({ target }) => target === filter,
+    ).length;
+    if (count === undefined) return false;
+
+    return count > 0;
+  });
+  const [filter, setFilter] = useState<string | undefined>(filters[0]);
 
   const rows = useMemo<Row[]>(
     () => filteredVideos?.filter(({ target }) => target === filter) ?? [],
@@ -81,7 +90,14 @@ export function VideoViewer() {
 
   return (
     <>
-      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
+      <Select
+        {...{
+          filter,
+          filters,
+          setFilter,
+          blockedCount: rows.length,
+        }}
+      />
       <Viewer<Row> {...{ rows, cols }} />
     </>
   );
