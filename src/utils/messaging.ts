@@ -12,11 +12,8 @@ interface ProtocolMap {
   prompt(message: string): string | null;
 }
 
-const messanger = defineExtensionMessaging<ProtocolMap>();
-
-// unbound-methodエラー回避のためにbindする
-export const sendMessage = messanger.sendMessage.bind(messanger);
-export const onMessage = messanger.onMessage.bind(messanger);
+export const { sendMessage, onMessage } =
+  defineExtensionMessaging<ProtocolMap>();
 
 // -------------------------------------------------------------------------------------------
 // ラッパー関数
