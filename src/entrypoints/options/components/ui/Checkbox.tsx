@@ -4,6 +4,10 @@ import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
 import { useSettingsStore } from "@/utils/store";
 
+export default function Checkboxes({ items }: { items: CheckboxProps[] }) {
+  return items.map((props) => <Checkbox key={props.id} {...props} />);
+}
+
 export interface CheckboxProps {
   id: keyof ConditionalPick<Settings, boolean>;
   label: string;
@@ -17,13 +21,7 @@ export interface CheckboxProps {
   childrenProps?: CheckboxProps[];
 }
 
-export default function Checkbox({
-  id,
-  label,
-  details,
-  input,
-  childrenProps,
-}: CheckboxProps) {
+function Checkbox({ id, label, details, input, childrenProps }: CheckboxProps) {
   const [value, save] = useSettingsStore(
     useShallow((state) => [state.settings[id], state.saveSettings]),
   );
@@ -48,9 +46,7 @@ export default function Checkbox({
       )}
       {childrenProps !== undefined && (
         <div className="settings-container">
-          {childrenProps.map((props) => (
-            <Checkbox key={props.id} {...props} />
-          ))}
+          <Checkboxes items={childrenProps} />
         </div>
       )}
     </div>

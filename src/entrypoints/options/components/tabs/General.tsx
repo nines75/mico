@@ -8,10 +8,10 @@ import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
 import type { CheckboxProps } from "../ui/Checkbox";
-import Checkbox from "../ui/Checkbox";
 import { proxy } from "@/utils/proxy";
 import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
 import Input from "../ui/Input";
+import Checkboxes from "../ui/Checkbox";
 
 const ICON_SIZE = 18;
 
@@ -26,16 +26,12 @@ export default function General() {
       <CheckboxSection groups={config.groups}>
         {showAdvancedFeatures && (
           <>
-            {config.importLocalFilter.map((props) => (
-              <Checkbox key={props.id} {...props} />
-            ))}
+            <Checkboxes items={config.importLocalFilter} />
             <Input
               id="localFilterPath"
               label="インポートするローカルフィルターのパス"
             />
-            {config.saveBackup.map((props) => (
-              <Checkbox key={props.id} {...props} />
-            ))}
+            <Checkboxes items={config.saveBackup} />
             <Input
               id="backupPath"
               label="バックアップを保存するディレクトリのパス"

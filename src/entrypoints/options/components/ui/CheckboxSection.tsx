@@ -1,5 +1,5 @@
 import type { CheckboxProps } from "./Checkbox";
-import Checkbox from "./Checkbox";
+import Checkboxes from "./Checkbox";
 import H2 from "./H2";
 
 export type CheckboxGroups = CheckboxSectionProps["groups"];
@@ -19,9 +19,7 @@ export default function CheckboxSection({
 }: CheckboxSectionProps) {
   return groups.map(({ heading, hasChildren, items }) => (
     <H2 name={heading} key={items[0]?.id}>
-      {items.map((props) => (
-        <Checkbox key={props.id} {...props} />
-      ))}
+      <Checkboxes items={items} />
       {hasChildren === true && children}
     </H2>
   ));
