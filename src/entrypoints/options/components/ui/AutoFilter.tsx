@@ -3,11 +3,13 @@ import { useSettingsStore } from "@/utils/store";
 import decamelize from "decamelize";
 import { X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
+import type { VListHandle } from "virtua";
 import { VList } from "virtua";
 import { escapeNewline } from "@/utils/util";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function AutoFilter() {
+  const ref = useRef<VListHandle>(null);
   const [query, setQuery] = useState("");
   const autoFilter = useSettingsStore((state) => state.settings.autoFilter);
 
@@ -34,6 +36,14 @@ export default function AutoFilter() {
     [autoFilter, query],
   );
 
+  useEffect(() => {
+    const handle = ref.current;
+    if (handle === null) return;
+
+    // ブラウザによって復元されたスクロール位置をリセット
+    handle.scrollTo(0);
+  }, []);
+
   return (
     <>
       <input
@@ -44,7 +54,7 @@ export default function AutoFilter() {
           setQuery(event.target.value);
         }}
       />
-      <VList className="rule-container">
+      <VList className="rule-container" ref={ref}>
         {rules.map((rule) => {
           if (rule.id === undefined) return null;
 
