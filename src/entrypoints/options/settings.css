@@ -54,6 +54,10 @@ input[type="checkbox"] {
   height: 30px;
   flex: 1; /* 残りの領域を割り当てる */
 }
+.search {
+  margin: 10px;
+  width: 300px;
+}
 .rule-container {
   border: gray 1px solid;
   border-radius: 10px;
