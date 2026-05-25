@@ -4,8 +4,8 @@ import type { Backup } from "@/types/storage/backup.types";
 import { getSettings, getSettingsMeta } from "@/utils/storage";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
-import type { CheckboxGroups } from "../ui/CheckboxSection";
-import CheckboxSection from "../ui/CheckboxSection";
+import type { SectionsItem } from "../ui/CheckboxSection";
+import Sections from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
 import { proxy } from "@/utils/proxy";
 import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
@@ -17,7 +17,7 @@ export default function General() {
 
   return (
     <div className="tab-content">
-      <CheckboxSection groups={config} />
+      <Sections sections={config} />
       <H2 name="バックアップ">
         <button className="button" onClick={() => input.current?.click()}>
           <Download size={ICON_SIZE} />
@@ -110,10 +110,12 @@ const config = [
     heading: "エディター",
     items: [
       {
+        type: "checkbox",
         id: "enableCloseBrackets",
         label: "括弧を自動で閉じる",
       },
       {
+        type: "checkbox",
         id: "enableHighlightTrailingWhitespace",
         label: "行末の空白文字をハイライトする",
       },
@@ -123,10 +125,12 @@ const config = [
     heading: "通知",
     items: [
       {
+        type: "checkbox",
         id: "notifyOnManualNg",
         label: "手動でNG登録した際に通知する",
       },
       {
+        type: "checkbox",
         id: "notifyOnAutoNg",
         label: "自動でNG登録した際に通知する",
       },
@@ -136,9 +140,10 @@ const config = [
     heading: "その他",
     items: [
       {
+        type: "checkbox",
         id: "showAdvancedFeatures",
         label: "高度な機能を表示する",
       },
     ],
   },
-] satisfies CheckboxGroups;
+] satisfies SectionsItem;

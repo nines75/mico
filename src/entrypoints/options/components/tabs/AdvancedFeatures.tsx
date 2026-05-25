@@ -1,17 +1,10 @@
-import type { CheckboxProps } from "../ui/Checkbox";
-import Input from "../ui/Input";
-import Checkboxes from "../ui/Checkbox";
+import type { SectionsItem } from "../ui/CheckboxSection";
+import Sections from "../ui/CheckboxSection";
 
 export default function AdvancedFeatures() {
   return (
     <div className="tab-content">
-      <Checkboxes items={config.importLocalFilter} />
-      <Input
-        id="localFilterPath"
-        label="インポートするローカルフィルターのパス"
-      />
-      <Checkboxes items={config.saveBackup} />
-      <Input id="backupPath" label="バックアップを保存するディレクトリのパス" />
+      <Sections sections={config} />
     </div>
   );
 }
@@ -20,41 +13,59 @@ export default function AdvancedFeatures() {
 // config
 // -------------------------------------------------------------------------------------------
 
-const config = {
-  importLocalFilter: [
-    {
-      id: "importLocalFilterOnLoad",
-      label: "ページ読み込み時にローカルフィルターをインポートする",
-      childrenProps: [
-        {
-          id: "importOnlyWhenWslRunning",
-          label: "WSL起動時のみインポートする",
-        },
-      ],
-    },
-  ],
-  saveBackup: [
-    {
-      id: "saveBackupOnStartup",
-      label: "起動時にバックアップを保存する",
-      childrenProps: [
-        {
-          id: "saveBackupWithoutManualFilter",
-          label: "Manualフィルターなしで保存する",
-        },
-        {
-          id: "saveBackupOnlyAfterInterval",
-          label: "前回の保存から一定時間経過したときのみ保存する",
-          input: {
-            id: "backupIntervalThreshold",
-            label: "時間",
-            min: 1,
+const config = [
+  {
+    heading: "ローカルフィルター",
+    items: [
+      {
+        type: "checkbox",
+        id: "importLocalFilterOnLoad",
+        label: "ページ読み込み時にローカルフィルターをインポートする",
+        childrenProps: [
+          {
+            type: "checkbox",
+            id: "importOnlyWhenWslRunning",
+            label: "WSL起動時のみインポートする",
           },
-        },
-      ],
-    },
-  ],
-} satisfies {
-  importLocalFilter: CheckboxProps[];
-  saveBackup: CheckboxProps[];
-};
+        ],
+      },
+      {
+        type: "input",
+        id: "localFilterPath",
+        label: "インポートするローカルフィルターのパス",
+      },
+    ],
+  },
+  {
+    heading: "自動バックアップ",
+    items: [
+      {
+        type: "checkbox",
+        id: "saveBackupOnStartup",
+        label: "起動時にバックアップを保存する",
+        childrenProps: [
+          {
+            type: "checkbox",
+            id: "saveBackupWithoutManualFilter",
+            label: "Manualフィルターなしで保存する",
+          },
+          {
+            type: "checkbox",
+            id: "saveBackupOnlyAfterInterval",
+            label: "前回の保存から一定時間経過したときのみ保存する",
+            input: {
+              id: "backupIntervalThreshold",
+              label: "時間",
+              min: 1,
+            },
+          },
+        ],
+      },
+      {
+        type: "input",
+        id: "backupPath",
+        label: "バックアップを保存するディレクトリのパス",
+      },
+    ],
+  },
+] satisfies SectionsItem;

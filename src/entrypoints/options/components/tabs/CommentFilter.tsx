@@ -1,10 +1,10 @@
-import type { CheckboxGroups } from "../ui/CheckboxSection";
-import CheckboxSection from "../ui/CheckboxSection";
+import type { SectionsItem } from "../ui/CheckboxSection";
+import Sections from "../ui/CheckboxSection";
 
 export default function CommentFilter() {
   return (
     <div className="tab-content">
-      <CheckboxSection groups={config} />
+      <Sections sections={config} />
     </div>
   );
 }
@@ -17,6 +17,7 @@ const config = [
   {
     items: [
       {
+        type: "checkbox",
         id: "enableCommentFilter",
         label: "コメントフィルターを有効にする",
       },
@@ -26,14 +27,17 @@ const config = [
     heading: "フィルタリング",
     items: [
       {
+        type: "checkbox",
         id: "enableEasyCommentFilter",
         label: "かんたんコメントを非表示にする",
       },
       {
+        type: "checkbox",
         id: "enableCommentAssistFilter",
         label: "コメントアシストによって投稿されたコメントを非表示にする",
       },
       {
+        type: "checkbox",
         id: "enableScoreFilter",
         label: "スコアによるフィルタリングを有効にする",
         input: {
@@ -43,14 +47,17 @@ const config = [
         },
       },
       {
+        type: "checkbox",
         id: "enableVposFilter",
         label: "動画の長さを超える位置に投稿されたコメントを非表示にする",
       },
       {
+        type: "checkbox",
         id: "ignoreMyComments",
         label: "自分が投稿したコメントをフィルタリングの対象外にする",
       },
       {
+        type: "checkbox",
         id: "ignoreByNicoru",
         label: "ニコるの数に応じてフィルタリングの対象外にする",
         input: {
@@ -65,14 +72,17 @@ const config = [
     heading: "ドロップダウン",
     items: [
       {
+        type: "checkbox",
         id: "showUserIdInDropdown",
         label: "ユーザーIDを表示する",
       },
       {
+        type: "checkbox",
         id: "showScoreInDropdown",
         label: "スコアを表示する",
       },
       {
+        type: "checkbox",
         id: "autoReload",
         label: "自動リロードを有効にする",
         details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
@@ -80,4 +90,4 @@ const config = [
       },
     ],
   },
-] satisfies CheckboxGroups;
+] satisfies SectionsItem;

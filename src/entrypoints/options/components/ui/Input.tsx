@@ -4,6 +4,7 @@ import type { Settings } from "@/types/storage/settings.types";
 import { useSettingsStore } from "@/utils/store";
 
 export interface InputProps {
+  type: "input";
   id: keyof ConditionalPick<Settings, string>;
   label: string;
 }
