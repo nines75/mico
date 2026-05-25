@@ -1,5 +1,5 @@
 import type { CheckboxProps } from "./Checkbox";
-import { Checkbox } from "./Checkbox";
+import Checkbox from "./Checkbox";
 import H2 from "./H2";
 import type { InputProps } from "./Input";
 import Input from "./Input";

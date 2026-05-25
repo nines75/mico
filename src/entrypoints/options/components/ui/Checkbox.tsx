@@ -18,7 +18,7 @@ export interface CheckboxProps {
   childrenProps?: CheckboxProps[];
 }
 
-export function Checkbox({
+export default function Checkbox({
   id,
   label,
   details,

@@ -38,15 +38,23 @@ export default function Filter() {
         </div>
         {selectedFilter === "manual" && <ManualFilterButton />}
       </div>
-      {selectedFilter === "manual" && (
-        <Editor
-          value={manualFilter}
-          onChange={(value) => {
-            save({ manualFilter: value });
-          }}
-        />
-      )}
-      {selectedFilter === "auto" && <AutoFilter />}
+      {(() => {
+        switch (selectedFilter) {
+          case "manual": {
+            return (
+              <Editor
+                value={manualFilter}
+                onChange={(value) => {
+                  save({ manualFilter: value });
+                }}
+              />
+            );
+          }
+          case "auto": {
+            return <AutoFilter />;
+          }
+        }
+      })()}
     </>
   );
 }
