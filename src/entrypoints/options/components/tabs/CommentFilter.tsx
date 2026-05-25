@@ -1,5 +1,5 @@
-import type { SectionsItem } from "../ui/CheckboxSection";
-import Sections from "../ui/CheckboxSection";
+import type { SectionsItem } from "../ui/Sections";
+import Sections from "../ui/Sections";
 
 export default function CommentFilter() {
   return (
