@@ -46,11 +46,6 @@ const config = [
         childrenProps: [
           {
             type: "checkbox",
-            id: "saveBackupWithoutManualFilter",
-            label: "Manualフィルターなしで保存する",
-          },
-          {
-            type: "checkbox",
             id: "saveBackupOnlyAfterInterval",
             label: "前回の保存から一定時間経過したときのみ保存する",
             input: {
@@ -60,6 +55,11 @@ const config = [
             },
           },
         ],
+      },
+      {
+        type: "checkbox",
+        id: "saveBackupWithoutManualFilter",
+        label: "Manualフィルターなしで保存する",
       },
       {
         type: "input",
