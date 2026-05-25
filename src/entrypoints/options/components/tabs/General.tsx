@@ -7,38 +7,17 @@ import { useRef } from "react";
 import type { CheckboxGroups } from "../ui/CheckboxSection";
 import CheckboxSection from "../ui/CheckboxSection";
 import { catchAsync } from "@/utils/util";
-import type { CheckboxProps } from "../ui/Checkbox";
 import { proxy } from "@/utils/proxy";
 import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
-import Input from "../ui/Input";
-import Checkboxes from "../ui/Checkbox";
 
 const ICON_SIZE = 18;
 
 export default function General() {
   const input = useRef<HTMLInputElement | null>(null);
-  const showAdvancedFeatures = useSettingsStore(
-    (state) => state.settings.showAdvancedFeatures,
-  );
 
   return (
     <div className="tab-content">
-      <CheckboxSection groups={config.groups}>
-        {showAdvancedFeatures && (
-          <>
-            <Checkboxes items={config.importLocalFilter} />
-            <Input
-              id="localFilterPath"
-              label="インポートするローカルフィルターのパス"
-            />
-            <Checkboxes items={config.saveBackup} />
-            <Input
-              id="backupPath"
-              label="バックアップを保存するディレクトリのパス"
-            />
-          </>
-        )}
-      </CheckboxSection>
+      <CheckboxSection groups={config} />
       <H2 name="バックアップ">
         <button className="button" onClick={() => input.current?.click()}>
           <Download size={ICON_SIZE} />
@@ -126,80 +105,40 @@ async function exportBackup() {
 // config
 // -------------------------------------------------------------------------------------------
 
-const config = {
-  groups: [
-    {
-      heading: "エディター",
-      items: [
-        {
-          id: "enableCloseBrackets",
-          label: "括弧を自動で閉じる",
-        },
-        {
-          id: "enableHighlightTrailingWhitespace",
-          label: "行末の空白文字をハイライトする",
-        },
-      ],
-    },
-    {
-      heading: "通知",
-      items: [
-        {
-          id: "notifyOnManualNg",
-          label: "手動でNG登録した際に通知する",
-        },
-        {
-          id: "notifyOnAutoNg",
-          label: "自動でNG登録した際に通知する",
-        },
-      ],
-    },
-    {
-      heading: "高度な機能",
-      hasChildren: true,
-      items: [
-        {
-          id: "showAdvancedFeatures",
-          label: "高度な機能を表示する",
-        },
-      ],
-    },
-  ],
-  importLocalFilter: [
-    {
-      id: "importLocalFilterOnLoad",
-      label: "ページ読み込み時にローカルフィルターをインポートする",
-      childrenProps: [
-        {
-          id: "importOnlyWhenWslRunning",
-          label: "WSL起動時のみインポートする",
-        },
-      ],
-    },
-  ],
-  saveBackup: [
-    {
-      id: "saveBackupOnStartup",
-      label: "起動時にバックアップを保存する",
-      childrenProps: [
-        {
-          id: "saveBackupWithoutManualFilter",
-          label: "Manualフィルターなしで保存する",
-        },
-        {
-          id: "saveBackupOnlyAfterInterval",
-          label: "前回の保存から一定時間経過したときのみ保存する",
-          input: {
-            id: "backupIntervalThreshold",
-            label: "時間",
-            min: 1,
-          },
-        },
-      ],
-    },
-  ],
-} satisfies {
-  groups: CheckboxGroups;
-  importLocalFilter: CheckboxProps[];
-  saveBackup: CheckboxProps[];
-};
+const config = [
+  {
+    heading: "エディター",
+    items: [
+      {
+        id: "enableCloseBrackets",
+        label: "括弧を自動で閉じる",
+      },
+      {
+        id: "enableHighlightTrailingWhitespace",
+        label: "行末の空白文字をハイライトする",
+      },
+    ],
+  },
+  {
+    heading: "通知",
+    items: [
+      {
+        id: "notifyOnManualNg",
+        label: "手動でNG登録した際に通知する",
+      },
+      {
+        id: "notifyOnAutoNg",
+        label: "自動でNG登録した際に通知する",
+      },
+    ],
+  },
+  {
+    heading: "その他",
+    items: [
+      {
+        id: "showAdvancedFeatures",
+        label: "高度な機能を表示する",
+      },
+    ],
+  },
+] satisfies CheckboxGroups;

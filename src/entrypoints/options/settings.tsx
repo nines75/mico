@@ -10,6 +10,7 @@ import type { Settings, SettingsTab } from "@/types/storage/settings.types";
 import { defaultSettings } from "@/utils/config";
 import { storageArea } from "@/utils/storage";
 import Filter from "./components/tabs/Filter";
+import AdvancedFeatures from "./components/tabs/AdvancedFeatures";
 
 export function Init() {
   const [isLoading, load] = useSettingsStore(
@@ -26,9 +27,10 @@ export function Init() {
 }
 
 function Page() {
-  const [selectedTab, save] = useSettingsStore(
+  const [selectedTab, showAdvancedFeatures, save] = useSettingsStore(
     useShallow((state) => [
       state.settings.selectedSettingsTab,
+      state.settings.showAdvancedFeatures,
       state.saveSettings,
     ]),
   );
@@ -45,20 +47,25 @@ function Page() {
     <>
       <div className="tab-container">
         <div className="tab">
-          {config.map((filter) => (
-            <button
-              key={filter.id}
-              className={clsx(
-                "tab-button",
-                selectedTab === filter.id && "selected",
-              )}
-              onClick={() => {
-                save({ selectedSettingsTab: filter.id });
-              }}
-            >
-              {filter.name}
-            </button>
-          ))}
+          {config.map((filter) => {
+            if (filter.id === "advancedFeatures" && !showAdvancedFeatures)
+              return null;
+
+            return (
+              <button
+                key={filter.id}
+                className={clsx(
+                  "tab-button",
+                  selectedTab === filter.id && "selected",
+                )}
+                onClick={() => {
+                  save({ selectedSettingsTab: filter.id });
+                }}
+              >
+                {filter.name}
+              </button>
+            );
+          })}
         </div>
       </div>
       {(() => {
@@ -74,6 +81,9 @@ function Page() {
           }
           case "videoFilter": {
             return <VideoFilter />;
+          }
+          case "advancedFeatures": {
+            return <AdvancedFeatures />;
           }
           case "support": {
             return <Support />;
@@ -128,6 +138,10 @@ const config = [
   {
     id: "videoFilter",
     name: "動画フィルター",
+  },
+  {
+    id: "advancedFeatures",
+    name: "高度な機能",
   },
   {
     id: "support",

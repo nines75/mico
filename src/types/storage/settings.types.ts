@@ -6,6 +6,7 @@ export type SettingsTab =
   | "filter"
   | "commentFilter"
   | "videoFilter"
+  | "advancedFeatures"
   | "support";
 
 export interface Settings {
