@@ -17,7 +17,6 @@ export function searchRequest(
     const tabId = details.tabId;
     const logId = createLogId();
     if (details.type === "xmlhttprequest") {
-      // XHRでないとmountできない
       await mountLogId(logId, tabId);
     }
 

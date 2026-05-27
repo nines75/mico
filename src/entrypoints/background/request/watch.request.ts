@@ -16,7 +16,8 @@ export function watchRequest(
   filterResponse(details, "GET", async (filter, encoder, buf) => {
     const tabId = details.tabId;
 
-    // 削除動画でもログIDを更新するためにcomment/recommendではなくここで生成する
+    // xhrでは以前のログIDが残っている可能性があるため、
+    // フィルタリングするかに関わらず必ずマウントし上書きする
     const logId = createLogId();
     if (details.type === "xmlhttprequest") {
       await mountLogId(logId, tabId);
@@ -46,6 +47,8 @@ export function watchRequest(
     filter.write(encoder.encode(filteredBuf));
     filter.disconnect();
 
+    // main_frameでは以前のログIDがマウントされていることはないため、必要なときだけマウントする
+    // そもそもmain_frameではフィルタを切断するまでDOM構築が終わらないため、切断前はマウントできない
     if (details.type === "main_frame") {
       await mountLogId(logId, tabId);
     }
