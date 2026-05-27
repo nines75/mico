@@ -142,11 +142,6 @@ tab
 button
 ------------------------------------------------------------------------------------------- */
 
-.button-container {
-  display: flex;
-  align-items: center;
-  gap: 50px;
-}
 .button {
   font-weight: bold;
   padding: 10px 20px;
@@ -159,8 +154,7 @@ button
   align-items: center;
 }
 .button-filter {
-  padding: 7px 12px;
-  height: 40px; /* フィルター切り替え時のずれを防止 */
+  padding: 8px 12px;
   &.selected {
     border-color: lightskyblue;
   }

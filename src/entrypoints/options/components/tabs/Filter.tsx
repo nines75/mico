@@ -1,54 +1,39 @@
 import { useShallow } from "zustand/shallow";
 import { useSettingsStore } from "@/utils/store";
 import clsx from "clsx";
-import ManualFilterButton from "../ui/ManualFilterButton";
-import Editor from "../ui/Editor";
+import ManualFilter from "../ui/ManualFilter";
 import AutoFilter from "../ui/AutoFilter";
 
 export type FilterId = "manual" | "auto";
 
 export default function Filter() {
-  const [selectedFilter, manualFilter, save] = useSettingsStore(
-    useShallow((state) => [
-      state.settings.selectedFilter,
-      state.settings.manualFilter,
-      state.saveSettings,
-    ]),
+  const [selectedFilter, save] = useSettingsStore(
+    useShallow((state) => [state.settings.selectedFilter, state.saveSettings]),
   );
 
   return (
     <>
-      <div className="button-container">
-        <div>
-          {config.map(({ id, name }) => (
-            <button
-              key={id}
-              className={clsx(
-                "button",
-                "button-filter",
-                id === selectedFilter && "selected",
-              )}
-              onClick={() => {
-                save({ selectedFilter: id });
-              }}
-            >
-              {name}
-            </button>
-          ))}
-        </div>
-        {selectedFilter === "manual" && <ManualFilterButton />}
+      <div>
+        {config.map(({ id, name }) => (
+          <button
+            key={id}
+            className={clsx(
+              "button",
+              "button-filter",
+              id === selectedFilter && "selected",
+            )}
+            onClick={() => {
+              save({ selectedFilter: id });
+            }}
+          >
+            {name}
+          </button>
+        ))}
       </div>
       {(() => {
         switch (selectedFilter) {
           case "manual": {
-            return (
-              <Editor
-                value={manualFilter}
-                onChange={(value) => {
-                  save({ manualFilter: value });
-                }}
-              />
-            );
+            return <ManualFilter />;
           }
           case "auto": {
             return <AutoFilter />;
