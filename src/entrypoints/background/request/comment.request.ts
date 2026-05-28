@@ -44,13 +44,10 @@ export default function commentRequest(
     filter.write(encoder.encode(JSON.stringify(commentApi)));
     filter.disconnect();
 
-    const tasks: Promise<void>[] = [];
-    const strictData = result.strictData;
-
-    // ログを保存
-    tasks.push(saveLog(result, logId, tabId));
+    const tasks: Promise<void>[] = [saveLog(result, logId, tabId), cleanUpDb()];
 
     // 通知を送信
+    const strictData = result.strictData;
     if (strictData.length > 0 && settings.notifyOnAutoNg) {
       tasks.push(notify(`${strictData.length}件のユーザーIDをNG登録しました`));
     }
@@ -75,7 +72,6 @@ export default function commentRequest(
     }
 
     await Promise.all(tasks);
-    await cleanUpDb();
 
     return false;
   });

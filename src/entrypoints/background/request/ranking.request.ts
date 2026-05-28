@@ -40,9 +40,9 @@ export function rankingRequest(
 
     await Promise.all([
       saveLog(filteringResult, logId, tabId),
+      cleanUpDb(),
       ...(details.type === "main_frame" ? [mountLogId(logId, tabId)] : []),
     ]);
-    await cleanUpDb();
 
     return false;
   });
