@@ -235,7 +235,7 @@ export async function importLocalFilter(type: "load" | "shortcut") {
       shouldCheckWsl: type === "load" && settings.importOnlyWhenWslRunning,
     });
 
-    if (response.status === "completed") {
+    if (response?.status === "completed") {
       await setSettings(response.data as Partial<Settings>);
 
       if (type === "shortcut") {

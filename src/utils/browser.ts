@@ -68,30 +68,39 @@ export async function getActiveTab() {
 }
 
 export async function sendNativeMessage(message: unknown) {
-  const response = (await browser.runtime.sendNativeMessage(
-    "mico.native",
-    message,
-  )) as
-    | {
-        status: "completed";
-        data?: unknown;
-      }
-    | {
-        status: "failed";
-        error: string;
-      }
-    | {
-        status: "skipped";
-      };
+  const errorMessage = "ネイティブメッセージング中にエラーが発生しました\n\n";
 
-  if (response.status === "failed") {
-    const error = response.error;
+  try {
+    const response = (await browser.runtime.sendNativeMessage(
+      "mico.native",
+      message,
+    )) as
+      | {
+          status: "completed";
+          data?: unknown;
+        }
+      | {
+          status: "failed";
+          error: string;
+        }
+      | {
+          status: "skipped";
+        };
 
-    await notify(error);
+    if (response.status === "failed") {
+      const error = response.error;
+
+      await notify(`${errorMessage}${error}`);
+      console.error(error);
+    }
+
+    return response;
+  } catch (error) {
+    // ネイティブメッセージングホストがインストールされていない場合などにエラーが発生する
+
+    await notify(`${errorMessage}${String(error)}`);
     console.error(error);
   }
-
-  return response;
 }
 
 export async function saveBackup(type: "startup" | "shortcut") {
@@ -126,7 +135,7 @@ export async function saveBackup(type: "startup" | "shortcut") {
       backup,
     });
 
-    if (type === "shortcut" && response.status === "completed") {
+    if (type === "shortcut" && response?.status === "completed") {
       await notify("バックアップを保存しました");
     }
   });
