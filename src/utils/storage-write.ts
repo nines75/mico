@@ -143,7 +143,7 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   const log = logId === undefined ? undefined : await getLog(logId);
 
   const videoId = url?.match(
-    /^https:\/\/www\.nicovideo\.jp\/watch\/([^?]+)/,
+    /^https:\/\/www\.nicovideo\.jp\/(?:watch|shorts)\/([^?]+)/,
   )?.[1];
   if (videoId !== undefined) {
     const videoTitle = log?.video?.allVideos.find(

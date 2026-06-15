@@ -1,6 +1,6 @@
 import type { FilteringResult } from "./filter-video";
 import { sum } from "@/utils/util";
-import { mergeCount, setLog } from "@/utils/db";
+import { mergeCount, mergeVideo, setLog } from "@/utils/db";
 import { setBadgeState } from "@/utils/browser";
 import type { Count, Log } from "@/types/storage/log.types";
 
@@ -17,7 +17,8 @@ export async function saveLog(
     setLog(
       async () => {
         return {
-          video,
+          // レコメンドは複数回ログを保存するためマージが必要
+          video: await mergeVideo(video, logId),
           count: await mergeCount(count, logId),
         };
       },

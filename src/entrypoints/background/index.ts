@@ -40,10 +40,7 @@ export default defineBackground(() => {
   browser.webRequest.onBeforeRequest.addListener(
     recommendRequest,
     {
-      urls: [
-        "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation*",
-        "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_channel_watch_recommendation*",
-      ],
+      urls: ["https://nvapi.nicovideo.jp/v1/recommend/items"],
       types: ["xmlhttprequest"],
     },
     ["blocking"],
@@ -139,6 +136,7 @@ export default defineBackground(() => {
       documentUrlPatterns: ["https://www.nicovideo.jp/*"],
       targetUrlPatterns: [
         "https://www.nicovideo.jp/watch/*",
+        "https://www.nicovideo.jp/shorts/*",
         "https://www.nicovideo.jp/user/*",
         "https://ch.nicovideo.jp/channel/*",
       ],

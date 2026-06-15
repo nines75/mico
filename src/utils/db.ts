@@ -86,6 +86,21 @@ export async function clearDb() {
   await Promise.all([db.log.clear(), db.tab.clear()]);
 }
 
+export async function mergeVideo(
+  video: NonNullable<Log["video"]>,
+  logId: string,
+): Promise<NonNullable<Log["video"]>> {
+  const log = await getLog(logId);
+
+  return {
+    filteredVideos: [
+      ...(log?.video?.filteredVideos ?? []),
+      ...video.filteredVideos,
+    ],
+    allVideos: [...(log?.video?.allVideos ?? []), ...video.allVideos],
+  };
+}
+
 // 現在はコメントフィルターと動画フィルターでプロパティを共有していないが、将来的には一部共有する予定なのでマージ関数を用意しておく
 export async function mergeCount(count: Count, logId: string): Promise<Count> {
   const log = await getLog(logId);
