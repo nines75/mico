@@ -58,7 +58,7 @@ export function VideoViewer() {
 
           return (
             <a
-              href={`https://www.nicovideo.jp/watch/${videoId}`}
+              href={`https://www.nicovideo.jp/${videoId.startsWith("ss") ? "shorts" : "watch"}/${videoId}`}
               target="_blank"
               rel="noreferrer"
             >
