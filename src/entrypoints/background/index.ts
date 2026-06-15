@@ -136,6 +136,7 @@ export default defineBackground(() => {
       documentUrlPatterns: ["https://www.nicovideo.jp/*"],
       targetUrlPatterns: [
         "https://www.nicovideo.jp/watch/*",
+        "https://www.nicovideo.jp/shorts/*",
         "https://www.nicovideo.jp/user/*",
         "https://ch.nicovideo.jp/channel/*",
       ],
