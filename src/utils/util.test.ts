@@ -47,7 +47,9 @@ describe(isRankingPage.name, () => {
 describe(isSearchPage.name, () => {
   it.each([
     { url: "https://www.nicovideo.jp/search/test" },
+    { url: "https://www.nicovideo.jp/search_shorts/test" },
     { url: "https://www.nicovideo.jp/tag/test" },
+    { url: "https://www.nicovideo.jp/tag_shorts/test" },
     { url: "https://www.nicovideo.jp/series_search/test", expected: false },
     { url: "https://www.nicovideo.jp/mylist_search/test", expected: false },
     { url: "https://www.nicovideo.jp/user_search/test", expected: false },

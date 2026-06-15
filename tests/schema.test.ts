@@ -12,7 +12,11 @@ const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";
 const CHANNEL_WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/so15013657"; // 海外からのアクセスでも視聴可能なチャンネル動画
 const RANKING_PAGE_URL = "https://www.nicovideo.jp/ranking/genre/";
 const SEARCH_PAGE_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
+const SEARCH_SHORTS_PAGE_URL =
+  "https://www.nicovideo.jp/search_shorts/%E6%96%99%E7%90%86";
 const TAG_SEARCH_PAGE_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
+const TAG_SEARCH_SHORTS_PAGE_URL =
+  "https://www.nicovideo.jp/tag_shorts/%E6%96%99%E7%90%86";
 
 for (const { title, url, responseUrl, method, schema, selector } of [
   {
@@ -89,8 +93,18 @@ for (const { title, url, schema } of [
     schema: searchApiSchema,
   },
   {
+    title: "SearchApi(ショート)",
+    url: SEARCH_SHORTS_PAGE_URL,
+    schema: searchApiSchema,
+  },
+  {
     title: "SearchApi(タグ)",
     url: TAG_SEARCH_PAGE_URL,
+    schema: searchApiSchema,
+  },
+  {
+    title: "SearchApi(タグ-ショート)",
+    url: TAG_SEARCH_SHORTS_PAGE_URL,
     schema: searchApiSchema,
   },
 ] satisfies {

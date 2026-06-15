@@ -62,7 +62,9 @@ export default defineBackground(() => {
     {
       urls: [
         "https://www.nicovideo.jp/search/*",
+        "https://www.nicovideo.jp/search_shorts/*",
         "https://www.nicovideo.jp/tag/*",
+        "https://www.nicovideo.jp/tag_shorts/*",
       ],
       types: ["main_frame", "xmlhttprequest"],
     },

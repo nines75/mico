@@ -33,7 +33,9 @@ export function isSearchPage(url: string | undefined) {
 
   return (
     url.startsWith("https://www.nicovideo.jp/search/") ||
-    url.startsWith("https://www.nicovideo.jp/tag/")
+    url.startsWith("https://www.nicovideo.jp/search_shorts/") ||
+    url.startsWith("https://www.nicovideo.jp/tag/") ||
+    url.startsWith("https://www.nicovideo.jp/tag_shorts/")
   );
 }
 
