@@ -29,17 +29,15 @@ for (const { title, url, responseUrl, method, schema, selector } of [
   {
     title: "RecommendApi",
     url: WATCH_PAGE_URL,
-    responseUrl:
-      "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_watch_recommendation",
-    method: "GET",
+    responseUrl: "https://nvapi.nicovideo.jp/v1/recommend/items",
+    method: "POST",
     schema: recommendApiSchema,
   },
   {
     title: "RecommendApi(チャンネル動画)",
     url: CHANNEL_WATCH_PAGE_URL,
-    responseUrl:
-      "https://nvapi.nicovideo.jp/v1/recommend?recipeId=video_channel_watch_recommendation",
-    method: "GET",
+    responseUrl: "https://nvapi.nicovideo.jp/v1/recommend/items",
+    method: "POST",
     schema: recommendApiSchema,
   },
   {
