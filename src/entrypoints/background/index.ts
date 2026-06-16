@@ -26,7 +26,7 @@ export default defineBackground(() => {
     ["blocking"],
   );
 
-  // コメントAPIのリクエストを監視
+  // コメントのリクエストを監視
   browser.webRequest.onBeforeRequest.addListener(
     commentRequest,
     {
@@ -36,7 +36,7 @@ export default defineBackground(() => {
     ["blocking"],
   );
 
-  // 関連動画のリクエストを監視
+  // レコメンドのリクエストを監視
   browser.webRequest.onBeforeRequest.addListener(
     recommendRequest,
     {

@@ -40,13 +40,13 @@ const config = [
         type: "checkbox",
         id: "enableShortsFilter",
         label: "ショート動画を非表示にする",
-        details: "対象となるのは視聴ページの関連動画のみです。",
+        details: "対象となるのは視聴ページのレコメンドのみです。",
       },
       {
         type: "checkbox",
         id: "enableViewCountFilter",
         label: "再生回数によるフィルタリングを有効にする",
-        details: "対象となるのは視聴ページの関連動画のみです。",
+        details: "対象となるのは視聴ページのレコメンドのみです。",
         input: {
           id: "viewCountFilterThreshold",
           label: "再生以下だった場合にフィルタリング",
