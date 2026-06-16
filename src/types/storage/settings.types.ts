@@ -71,6 +71,7 @@ export interface Settings {
   // フィルタリング
   hideCommentPreview: boolean;
   enablePaidFilter: boolean;
+  enableShortsFilter: boolean;
   enableViewCountFilter: boolean;
   viewCountFilterThreshold: number;
 

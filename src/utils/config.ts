@@ -119,6 +119,7 @@ export const defaultSettings: Settings = {
   // フィルタリング
   hideCommentPreview: false,
   enablePaidFilter: false,
+  enableShortsFilter: false,
   enableViewCountFilter: false,
   viewCountFilterThreshold: 1000,
 

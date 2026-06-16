@@ -43,7 +43,14 @@ export interface FilteredVideo {
   ruleId?: string;
   pattern?: string | RegExp;
   video: Video;
-  target: "id" | "owner-id" | "paid" | "view-count" | "owner-name" | "title";
+  target:
+    | "id"
+    | "owner-id"
+    | "paid"
+    | "shorts"
+    | "view-count"
+    | "owner-name"
+    | "title";
 }
 
 export interface Count {

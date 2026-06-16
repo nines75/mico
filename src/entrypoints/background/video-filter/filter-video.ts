@@ -7,6 +7,7 @@ import { IdFilter } from "./filter/id-filter";
 import { OwnerIdFilter } from "./filter/owner-id-filter";
 import type { ApplyParams } from "./filter";
 import type { Video } from "@/types/api/video.types";
+import { ShortsFilter } from "./filter/shorts-filter";
 
 export type Filters = FilteringResult["filters"];
 
@@ -15,6 +16,7 @@ export interface FilteringResult {
     idFilter: IdFilter;
     ownerIdFilter: OwnerIdFilter;
     paidFilter: PaidFilter;
+    shortsFilter: ShortsFilter;
     viewCountFilter: ViewCountFilter;
     ownerNameFilter: OwnerNameFilter;
     titleFilter: TitleFilter;
@@ -42,6 +44,7 @@ export function filterVideo<T>(
   const idFilter = new IdFilter(settings);
   const ownerIdFilter = new OwnerIdFilter(settings);
   const paidFilter = new PaidFilter(settings);
+  const shortsFilter = new ShortsFilter(settings, forRecommendApi);
   const viewCountFilter = new ViewCountFilter(settings, forRecommendApi);
   const ownerNameFilter = new OwnerNameFilter(settings);
   const titleFilter = new TitleFilter(settings);
@@ -50,6 +53,7 @@ export function filterVideo<T>(
     idFilter,
     ownerIdFilter,
     paidFilter,
+    shortsFilter,
     viewCountFilter,
     ownerNameFilter,
     titleFilter,

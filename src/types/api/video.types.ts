@@ -15,6 +15,10 @@ export const videoSchema = z.looseObject({
     id: z.string(),
     name: z.string().nullable(), // ユーザーが退会済みならnull
   }),
+  contentType: z.union([
+    z.literal(["long", "short"]),
+    z.string() as z.ZodType<string & {}>,
+  ]),
 });
 
 export type Video = z.infer<typeof videoSchema>;

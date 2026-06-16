@@ -13,6 +13,7 @@ const rawFilters = [
   "id",
   "owner-id",
   "paid",
+  "shorts",
   "view-count",
   "owner-name",
   "title",

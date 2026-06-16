@@ -38,6 +38,12 @@ const config = [
       },
       {
         type: "checkbox",
+        id: "enableShortsFilter",
+        label: "ショート動画を非表示にする",
+        details: "対象となるのは視聴ページの関連動画のみです。",
+      },
+      {
+        type: "checkbox",
         id: "enableViewCountFilter",
         label: "再生回数によるフィルタリングを有効にする",
         details: "対象となるのは視聴ページの関連動画のみです。",
