@@ -8,6 +8,7 @@ export default defineConfig({
   fullyParallel: true, // ファイル内のテストを並列実行
   forbidOnly: isCi, // CIでのみtest.onlyを禁止
   retries: isCi ? 2 : 0, // CIでのみリトライ
+  timeout: 15_000, // 30秒 => 15秒
   projects: [
     {
       name: "firefox",
