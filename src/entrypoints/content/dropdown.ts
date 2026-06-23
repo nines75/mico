@@ -107,7 +107,8 @@ async function appendInformation() {
 
   for (const text of texts) {
     const div = document.createElement("div");
-    div.textContent = `${text} (${browser.runtime.getManifest().name})`;
+    div.textContent = text;
+
     for (const attribute of sample.attributes) {
       div.setAttribute(attribute.name, attribute.value);
     }
