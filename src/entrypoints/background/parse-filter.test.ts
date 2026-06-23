@@ -51,22 +51,30 @@ rule
   describe("正規表現ルール", () => {
     it.each([
       {
-        name: "フラグなし",
+        name: "0",
         filter: "/rule/",
         expected: mockRules({ pattern: /rule/ }),
       },
       {
-        name: "フラグあり",
+        name: "1",
         filter: "/rule/i",
         expected: mockRules({ pattern: /rule/i }),
       },
       {
-        name: "複数のフラグ",
+        name: "複数",
         filter: "/rule/iu",
         expected: mockRules({ pattern: /rule/iu }),
       },
-    ])("$name", ({ filter, expected }) => {
+    ])("フラグの数: $name", ({ filter, expected }) => {
       expect(parseFilter(createSettings(filter))).toEqual(expected);
+    });
+
+    it("パターンにスラッシュを含む", () => {
+      const filter = "///";
+
+      expect(parseFilter(createSettings(filter))).toEqual(
+        mockRules({ pattern: /\// }),
+      );
     });
 
     describe("異常系", () => {
