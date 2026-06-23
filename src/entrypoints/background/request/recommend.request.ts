@@ -37,6 +37,7 @@ export function recommendRequest(
           id: videoId,
           content: seriesNext,
           contentType: "video",
+          recommendType: "recommend", // スキーマには定義していないが、プロパティが欠けるのは望ましくないため追加
         });
       }
     }
