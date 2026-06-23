@@ -45,6 +45,7 @@ function Page() {
 
   return (
     <>
+      <title>{`${browser.runtime.getManifest().name} - 設定`}</title>
       <div className="tab-container">
         <div className="tab">
           {config.map((filter) => {
