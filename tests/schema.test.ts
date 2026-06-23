@@ -9,12 +9,10 @@ import { test, expect } from "@playwright/test";
 
 const WATCH_URL = "https://www.nicovideo.jp/watch/sm9";
 const RANKING_URL = "https://www.nicovideo.jp/ranking/genre/";
-const SEARCH_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
-const SEARCH_SHORTS_URL =
-  "https://www.nicovideo.jp/search_shorts/%E6%96%99%E7%90%86";
-const TAG_SEARCH_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
-const TAG_SEARCH_SHORTS_URL =
-  "https://www.nicovideo.jp/tag_shorts/%E6%96%99%E7%90%86";
+const SEARCH_URL = "https://www.nicovideo.jp/search/料理";
+const SEARCH_SHORTS_URL = "https://www.nicovideo.jp/search_shorts/料理";
+const TAG_SEARCH_URL = "https://www.nicovideo.jp/tag/料理";
+const TAG_SEARCH_SHORTS_URL = "https://www.nicovideo.jp/tag_shorts/料理";
 
 for (const { title, url, responseUrl, method, schema, selector } of [
   {
