@@ -47,7 +47,7 @@ export function spaFilter<T, U>(
     const data = safeParseJson(content, schema);
     if (data === undefined) return;
 
-    // filterではdataを変更するため先に呼び出す
+    // filter()ではdataを変更するため先に呼び出す
     const filteringResult = filter(data, settings);
     meta?.setAttribute("content", JSON.stringify(data));
 
@@ -61,7 +61,7 @@ export function spaFilter<T, U>(
     const data = safeParseJson(buf, schema);
     if (data === undefined) return;
 
-    // filterではdataを変更するため先に呼び出す
+    // filter()ではdataを変更するため先に呼び出す
     const filteringResult = filter(data, settings);
 
     return {

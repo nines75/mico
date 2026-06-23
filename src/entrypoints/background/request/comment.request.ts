@@ -46,14 +46,16 @@ export default function commentRequest(
 
     const tasks: Promise<void>[] = [saveLog(result, logId, tabId), cleanUpDb()];
 
-    // 通知を送信
     const strictData = result.strictData;
-    if (strictData.length > 0 && settings.notifyOnAutoNg) {
-      tasks.push(notify(`${strictData.length}件のユーザーIDをNG登録しました`));
-    }
-
-    // strictルールによってフィルタリングされたユーザーIDをNG登録
     if (strictData.length > 0) {
+      // 通知を送信
+      if (settings.notifyOnAutoNg) {
+        tasks.push(
+          notify(`${strictData.length}件のユーザーIDをNG登録しました`),
+        );
+      }
+
+      // strictルールによってフィルタリングされたユーザーIDをNG登録
       tasks.push(
         addAutoRule(
           strictData.map((data) => {

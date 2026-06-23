@@ -7,26 +7,26 @@ import { watchApiSchema } from "@/types/api/watch-api.types";
 import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
 
-const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";
-const RANKING_PAGE_URL = "https://www.nicovideo.jp/ranking/genre/";
-const SEARCH_PAGE_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
-const SEARCH_SHORTS_PAGE_URL =
+const WATCH_URL = "https://www.nicovideo.jp/watch/sm9";
+const RANKING_URL = "https://www.nicovideo.jp/ranking/genre/";
+const SEARCH_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
+const SEARCH_SHORTS_URL =
   "https://www.nicovideo.jp/search_shorts/%E6%96%99%E7%90%86";
-const TAG_SEARCH_PAGE_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
-const TAG_SEARCH_SHORTS_PAGE_URL =
+const TAG_SEARCH_URL = "https://www.nicovideo.jp/tag/%E6%96%99%E7%90%86";
+const TAG_SEARCH_SHORTS_URL =
   "https://www.nicovideo.jp/tag_shorts/%E6%96%99%E7%90%86";
 
 for (const { title, url, responseUrl, method, schema, selector } of [
   {
     title: "CommentApi",
-    url: WATCH_PAGE_URL,
+    url: WATCH_URL,
     responseUrl: "https://public.nvcomment.nicovideo.jp/v1/threads",
     method: "POST",
     schema: commentApiSchema,
   },
   {
     title: "SearchPlaylistApi",
-    url: SEARCH_PAGE_URL,
+    url: SEARCH_URL,
     responseUrl: "https://nvapi.nicovideo.jp/v1/playlist/search",
     method: "GET",
     schema: searchPlaylistApiSchema,
@@ -61,32 +61,32 @@ for (const { title, url, responseUrl, method, schema, selector } of [
 for (const { title, url, schema } of [
   {
     title: "WatchApi",
-    url: WATCH_PAGE_URL,
+    url: WATCH_URL,
     schema: watchApiSchema,
   },
   {
     title: "RankingApi",
-    url: RANKING_PAGE_URL,
+    url: RANKING_URL,
     schema: rankingApiSchema,
   },
   {
     title: "SearchApi",
-    url: SEARCH_PAGE_URL,
+    url: SEARCH_URL,
     schema: searchApiSchema,
   },
   {
     title: "SearchApi(ショート)",
-    url: SEARCH_SHORTS_PAGE_URL,
+    url: SEARCH_SHORTS_URL,
     schema: searchApiSchema,
   },
   {
     title: "SearchApi(タグ)",
-    url: TAG_SEARCH_PAGE_URL,
+    url: TAG_SEARCH_URL,
     schema: searchApiSchema,
   },
   {
     title: "SearchApi(タグ-ショート)",
-    url: TAG_SEARCH_SHORTS_PAGE_URL,
+    url: TAG_SEARCH_SHORTS_URL,
     schema: searchApiSchema,
   },
 ] satisfies {
