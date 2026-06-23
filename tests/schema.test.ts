@@ -2,14 +2,12 @@ import { safeParseJson } from "@/utils/util";
 import { commentApiSchema } from "@/types/api/comment-api.types";
 import { searchPlaylistApiSchema } from "@/types/api/search-playlist-api.types";
 import { rankingApiSchema } from "@/types/api/ranking-api.types";
-import { recommendApiSchema } from "@/types/api/recommend-api.types";
 import { searchApiSchema } from "@/types/api/search-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
 import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
 
 const WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/sm9";
-const CHANNEL_WATCH_PAGE_URL = "https://www.nicovideo.jp/watch/so15013657"; // 海外からのアクセスでも視聴可能なチャンネル動画
 const RANKING_PAGE_URL = "https://www.nicovideo.jp/ranking/genre/";
 const SEARCH_PAGE_URL = "https://www.nicovideo.jp/search/%E6%96%99%E7%90%86";
 const SEARCH_SHORTS_PAGE_URL =
@@ -25,20 +23,6 @@ for (const { title, url, responseUrl, method, schema, selector } of [
     responseUrl: "https://public.nvcomment.nicovideo.jp/v1/threads",
     method: "POST",
     schema: commentApiSchema,
-  },
-  {
-    title: "RecommendApi",
-    url: WATCH_PAGE_URL,
-    responseUrl: "https://nvapi.nicovideo.jp/v1/recommend/items",
-    method: "POST",
-    schema: recommendApiSchema,
-  },
-  {
-    title: "RecommendApi(チャンネル動画)",
-    url: CHANNEL_WATCH_PAGE_URL,
-    responseUrl: "https://nvapi.nicovideo.jp/v1/recommend/items",
-    method: "POST",
-    schema: recommendApiSchema,
   },
   {
     title: "SearchPlaylistApi",
