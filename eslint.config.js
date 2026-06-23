@@ -6,6 +6,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import react from "eslint-plugin-react";
 import { importX } from "eslint-plugin-import-x";
 import unicorn from "eslint-plugin-unicorn";
+import regex from "eslint-plugin-regexp";
 
 const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
@@ -35,6 +36,9 @@ export default defineConfig(
 
   // https://github.com/sindresorhus/eslint-plugin-unicorn
   unicorn.configs.recommended,
+
+  // https://github.com/ota-meshi/eslint-plugin-regexp
+  regex.configs.recommended,
 
   // TypeScript
   {

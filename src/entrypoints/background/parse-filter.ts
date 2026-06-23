@@ -205,7 +205,7 @@ export function parseFilter(
     // ルールのパース
     // -------------------------------------------------------------------------------------------
 
-    const results = /^\/(.*)\/(.*)$/.exec(line);
+    const results = /^\/(.*)\/([^/]*)$/.exec(line);
 
     const regexStr = results?.[1];
     const flags = results?.[2];
