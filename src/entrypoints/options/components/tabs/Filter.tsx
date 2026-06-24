@@ -14,21 +14,22 @@ export default function Filter() {
   return (
     <>
       <div>
-        {config.map(({ id, name }) => (
-          <button
-            key={id}
-            className={clsx(
-              "button",
-              "button-filter",
-              id === selectedFilter && "selected",
-            )}
-            onClick={() => {
-              save({ selectedFilter: id });
-            }}
-          >
-            {name}
-          </button>
-        ))}
+        <button
+          className={clsx("button", "button-filter")}
+          onClick={() => {
+            save({
+              selectedFilter: selectedFilter === "manual" ? "auto" : "manual",
+            });
+          }}
+        >
+          フィルター切り替え
+        </button>
+        <span className="info">
+          現在のフィルター:
+          <span className="info-value">
+            {selectedFilter === "manual" ? "Manual" : "Auto"}
+          </span>
+        </span>
       </div>
       {(() => {
         switch (selectedFilter) {
@@ -43,21 +44,3 @@ export default function Filter() {
     </>
   );
 }
-
-// -------------------------------------------------------------------------------------------
-// config
-// -------------------------------------------------------------------------------------------
-
-const config = [
-  {
-    id: "manual",
-    name: "Manual",
-  },
-  {
-    id: "auto",
-    name: "Auto",
-  },
-] satisfies {
-  id: FilterId;
-  name: string;
-}[];

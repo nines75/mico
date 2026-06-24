@@ -27,12 +27,6 @@ header {
   flex-direction: column;
   gap: 5px;
 }
-.info {
-  color: silver;
-}
-.info-value {
-  font-weight: bold;
-}
 .tools {
   display: flex;
   border-top: 2px solid gray;

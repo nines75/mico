@@ -155,9 +155,6 @@ button
 }
 .button-filter {
   padding: 8px 12px;
-  &.selected {
-    border-color: lightskyblue;
-  }
 }
 .button-support {
   text-decoration: none;
