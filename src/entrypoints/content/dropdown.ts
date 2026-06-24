@@ -19,11 +19,11 @@ function appendButton() {
       onClick: onClickNgUser(),
     },
     {
-      text: "この動画だけユーザーをNG登録",
+      text: "この動画のみユーザーをNG登録",
       onClick: onClickNgUser(true),
     },
     {
-      text: "ユーザーが投稿したコメント",
+      text: "ユーザーが投稿したコメントを表示",
       onClick: async () => {
         const comment = await proxy.getDropdownComment();
         const userId = comment?.userId;
@@ -45,9 +45,17 @@ function appendButton() {
 
   for (const { text, onClick } of data) {
     const button = document.createElement("button");
+    const textContent = `${text}(${browser.runtime.getManifest().name})`;
 
     button.addEventListener("click", catchAsync(onClick));
-    button.textContent = `${text}(${browser.runtime.getManifest().name})`;
+    button.textContent = textContent;
+    button.title = textContent;
+
+    button.style.maxWidth = "160px";
+    button.style.whiteSpace = "nowrap"; // テキストを折り返さない
+    button.style.textOverflow = "ellipsis"; // テキストがはみ出た場合に省略記号を表示する
+    button.style.overflow = "hidden"; // ellipsisとセットで使う
+
     for (const attribute of sample.attributes) {
       button.setAttribute(attribute.name, attribute.value);
     }
