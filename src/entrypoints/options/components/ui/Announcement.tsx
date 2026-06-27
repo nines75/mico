@@ -10,9 +10,7 @@ export function Announcement() {
     ]),
   );
 
-  const version = browser.runtime.getManifest().version;
-  const majorVersion = version[0];
-
+  const majorVersion = browser.runtime.getManifest().version[0];
   if (!showAnnouncement || majorVersion === undefined) return null;
 
   return (
@@ -28,7 +26,7 @@ export function Announcement() {
       v{majorVersion}に更新されました。
       <a
         className="announcement-link"
-        href={`https://github.com/nines75/mico/releases/tag/v${version}`}
+        href={`https://github.com/nines75/mico/releases/tag/v${majorVersion}.0.0`}
         target="_blank"
         rel="noreferrer"
       >
