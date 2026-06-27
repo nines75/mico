@@ -83,4 +83,7 @@ export interface Settings {
 
   // タブ
   selectedSettingsTab: SettingsTab;
+
+  // アナウンス
+  showAnnouncement: boolean;
 }

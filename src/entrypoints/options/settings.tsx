@@ -11,6 +11,7 @@ import { defaultSettings } from "@/utils/config";
 import { storageArea } from "@/utils/storage";
 import Filter from "./components/tabs/Filter";
 import AdvancedFeatures from "./components/tabs/AdvancedFeatures";
+import { Announcement } from "./components/ui/Announcement";
 
 export function Init() {
   const [isLoading, load] = useSettingsStore(
@@ -46,6 +47,7 @@ function Page() {
   return (
     <>
       <title>{`${browser.runtime.getManifest().name} - 設定`}</title>
+      <Announcement />
       <div className="tab-container">
         <div className="tab">
           {config.map((filter) => {

@@ -58,6 +58,22 @@ input[type="checkbox"] {
   margin: 10px;
   width: 300px;
 }
+.announcement {
+  color: red;
+
+  /* アイコンを揃える */
+  display: flex;
+  align-items: center;
+}
+.announcement-link {
+  text-decoration: underline;
+  color: inherit;
+  font-weight: bold;
+}
+.announcement-dismiss-button {
+  border: none;
+  color: gray;
+}
 .rule-container {
   border: gray 1px solid;
   border-radius: 10px;

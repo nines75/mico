@@ -131,4 +131,7 @@ export const defaultSettings: Settings = {
 
   // タブ
   selectedSettingsTab: "general",
+
+  // アナウンス
+  showAnnouncement: false,
 } as const;

@@ -4,7 +4,11 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { addRuleFromUrl, importLocalFilter } from "@/utils/storage-write";
+import {
+  addRuleFromUrl,
+  importLocalFilter,
+  setSettings,
+} from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
@@ -119,6 +123,23 @@ export default defineBackground(() => {
   browser.runtime.onStartup.addListener(
     catchAsync(async () => {
       await Promise.all([clearDb(), saveBackup("startup")]);
+    }),
+  );
+
+  // 拡張機能の更新時に実行する処理
+  browser.runtime.onInstalled.addListener(
+    catchAsync(async (details) => {
+      if (details.reason !== "update") return;
+
+      const previousMajorVersion = details.previousVersion?.[0];
+      const majorVersion = browser.runtime.getManifest().version[0];
+      if (previousMajorVersion === undefined || majorVersion === undefined)
+        return;
+
+      // メジャーバージョンが変わった時のみアナウンスを表示
+      if (previousMajorVersion !== majorVersion) {
+        await setSettings({ showAnnouncement: true });
+      }
     }),
   );
 
