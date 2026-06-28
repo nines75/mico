@@ -101,6 +101,7 @@ input[type="checkbox"] {
   color: silver;
   font-size: 15px;
   display: flex;
+  align-items: center;
   gap: 20px;
   margin-top: 10px;
 }
@@ -117,6 +118,9 @@ input[type="checkbox"] {
 
   /* アイコンを揃える */
   display: flex;
+}
+.rule-memo-edit-button {
+  border: none;
 }
 
 /* -------------------------------------------------------------------------------------------

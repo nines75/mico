@@ -1,7 +1,7 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
 import { useSettingsStore } from "@/utils/store";
 import decamelize from "decamelize";
-import { X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
@@ -94,6 +94,24 @@ function Rule({ rule }: RuleProps) {
         {pattern}
       </div>
       <div className="rule-details">
+        <button
+          className="rule-memo-edit-button"
+          title="メモを編集"
+          onClick={() => {
+            const memo = prompt("メモを入力してください", rule.memo ?? "");
+            if (memo === null) return;
+
+            save({
+              autoFilter: autoFilter.map((target) => {
+                if (target.id !== rule.id) return target;
+
+                return { ...target, memo };
+              }),
+            });
+          }}
+        >
+          <Pencil size={20} />
+        </button>
         {rule.target !== undefined &&
           Object.entries(rule.target).map(([key, value]) => {
             if (!value) return null;
