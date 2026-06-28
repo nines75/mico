@@ -1,6 +1,5 @@
 import { useShallow } from "zustand/shallow";
 import { useSettingsStore } from "@/utils/store";
-import clsx from "clsx";
 import ManualFilter from "../ui/ManualFilter";
 import AutoFilter from "../ui/AutoFilter";
 
@@ -15,7 +14,7 @@ export default function Filter() {
     <>
       <div>
         <button
-          className={clsx("button", "button-filter")}
+          className="button button-filter"
           onClick={() => {
             save({
               selectedFilter: selectedFilter === "manual" ? "auto" : "manual",
