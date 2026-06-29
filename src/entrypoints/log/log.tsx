@@ -77,6 +77,8 @@ function Page() {
 
 function createKeydownHandler(setTab: (tab: LogTab) => void) {
   return (event: KeyboardEvent) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+
     const activeElement = document.activeElement;
     if (!(activeElement instanceof HTMLElement)) return;
 

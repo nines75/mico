@@ -125,6 +125,9 @@ function settingsChangeHandler(
 }
 
 function keydownHandler(event: KeyboardEvent) {
+  // Macに対応するためにmetaKeyもチェック
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+
   const saveSettings = useSettingsStore.getState().saveSettings;
   const settings = useSettingsStore.getState().settings;
 
