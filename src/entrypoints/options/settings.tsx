@@ -162,10 +162,6 @@ function keydownHandler(event: KeyboardEvent) {
       tab: "videoFilter",
     },
     {
-      key: "a",
-      tab: "advancedFeatures",
-    },
-    {
       key: "s",
       tab: "support",
     },
@@ -173,6 +169,9 @@ function keydownHandler(event: KeyboardEvent) {
     if (event.key === key) {
       saveSettings({ selectedSettingsTab: tab });
     }
+  }
+  if (event.key === "a" && settings.showAdvancedFeatures) {
+    saveSettings({ selectedSettingsTab: "advancedFeatures" });
   }
 
   // フィルター
