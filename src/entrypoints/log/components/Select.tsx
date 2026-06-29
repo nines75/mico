@@ -28,6 +28,7 @@ export function Select({
           </option>
         ))}
       </select>
+      <kbd className="keybind">s</kbd>
       <span className="blocked">ブロック数:{blockedCount}</span>
     </div>
   );

@@ -15,6 +15,7 @@
 }
 .blocked {
   color: silver;
+  margin-left: 10px;
 }
 .log {
   /* 高さをウインドウサイズに応じて変える */

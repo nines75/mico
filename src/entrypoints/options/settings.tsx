@@ -38,9 +38,11 @@ function Page() {
 
   useEffect(() => {
     browser.storage.onChanged.addListener(settingsChangeHandler);
+    globalThis.addEventListener("keydown", keydownHandler);
 
     return () => {
       browser.storage.onChanged.removeListener(settingsChangeHandler);
+      globalThis.removeEventListener("keydown", keydownHandler);
     };
   }, []);
 
@@ -66,6 +68,7 @@ function Page() {
                 }}
               >
                 {filter.name}
+                <kbd className="keybind">{filter.key}</kbd>
               </button>
             );
           })}
@@ -121,6 +124,81 @@ function settingsChangeHandler(
   }
 }
 
+function keydownHandler(event: KeyboardEvent) {
+  const saveSettings = useSettingsStore.getState().saveSettings;
+  const settings = useSettingsStore.getState().settings;
+
+  const activeElement = document.activeElement;
+  if (!(activeElement instanceof HTMLElement)) return;
+
+  if (
+    (activeElement instanceof HTMLInputElement &&
+      activeElement.type !== "checkbox") || // checkboxのみ除外
+    activeElement.isContentEditable
+  ) {
+    if (event.key === "Escape") {
+      activeElement.blur();
+    }
+
+    return;
+  }
+
+  // タブ
+  for (const { key, tab } of [
+    {
+      key: "g",
+      tab: "general",
+    },
+    {
+      key: "f",
+      tab: "filter",
+    },
+    {
+      key: "c",
+      tab: "commentFilter",
+    },
+    {
+      key: "v",
+      tab: "videoFilter",
+    },
+    {
+      key: "a",
+      tab: "advancedFeatures",
+    },
+    {
+      key: "s",
+      tab: "support",
+    },
+  ] as const) {
+    if (event.key === key) {
+      saveSettings({ selectedSettingsTab: tab });
+    }
+  }
+
+  // フィルター
+  if (event.key === "t" && settings.selectedSettingsTab === "filter") {
+    saveSettings({
+      selectedFilter: settings.selectedFilter === "manual" ? "auto" : "manual",
+    });
+  }
+
+  // 入力要素
+  if (event.key === "/") {
+    // ブラウザの検索欄へのフォーカスや/が入力されるのを防ぐ
+    event.preventDefault();
+
+    const input = document.querySelector("input:not([type='checkbox'])");
+    if (input instanceof HTMLElement) {
+      input.focus();
+    }
+
+    const codeMirror = document.querySelector(".cm-content");
+    if (codeMirror instanceof HTMLElement) {
+      codeMirror.focus();
+    }
+  }
+}
+
 // -------------------------------------------------------------------------------------------
 // config
 // -------------------------------------------------------------------------------------------
@@ -129,28 +207,35 @@ const config = [
   {
     id: "general",
     name: "一般設定",
+    key: "g",
   },
   {
     id: "filter",
     name: "フィルター",
+    key: "f",
   },
   {
     id: "commentFilter",
     name: "コメントフィルター",
+    key: "c",
   },
   {
     id: "videoFilter",
     name: "動画フィルター",
+    key: "v",
   },
   {
     id: "advancedFeatures",
     name: "高度な機能",
+    key: "a",
   },
   {
     id: "support",
     name: "サポート",
+    key: "s",
   },
 ] satisfies {
   id: SettingsTab;
   name: string;
+  key: string;
 }[];

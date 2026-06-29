@@ -22,6 +22,7 @@ export default function Filter() {
           }}
         >
           フィルター切り替え
+          <kbd className="keybind">t</kbd>
         </button>
         <span className="info">
           現在のフィルター:

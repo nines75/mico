@@ -147,6 +147,10 @@ tab
   border: none;
   font-size: 20px;
   padding: 12px;
+
+  /* .keybindを揃える */
+  display: inline-flex;
+  align-items: center;
   &.selected {
     color: lightskyblue;
     border-bottom: 2px solid lightskyblue;

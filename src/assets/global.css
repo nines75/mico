@@ -19,3 +19,20 @@ select {
 .info-value {
   font-weight: bold;
 }
+.keybind {
+  color: var(--dim-white); /* タブの選択時に色を変えない */
+  background: black;
+  margin-left: 5px;
+  border: gray 1px solid;
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: normal;
+
+  /* 正方形を作り中央に配置 */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
