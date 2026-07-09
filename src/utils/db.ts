@@ -101,7 +101,6 @@ export async function mergeVideo(
   };
 }
 
-// 現在はコメントフィルターと動画フィルターでプロパティを共有していないが、将来的には一部共有する予定なのでマージ関数を用意しておく
 export async function mergeCount(count: Count, logId: string): Promise<Count> {
   const log = await getLog(logId);
 
