@@ -9,11 +9,7 @@ import type { FilterId } from "@/entrypoints/options/components/tabs/Filter";
 
 type FilterTab = "commentFilter" | "videoFilter";
 type SettingsTab =
-  | "general"
-  | "filter"
-  | "commentFilter"
-  | "videoFilter"
-  | "support";
+  "general" | "filter" | "commentFilter" | "videoFilter" | "support";
 
 interface SettingsV3 {
   // -------------------------------------------------------------------------------------------

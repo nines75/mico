@@ -34,7 +34,7 @@ jobs:
         run: pnpm zip
 
       - name: リリース作成
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: .output/firefox.xpi
           name: ${{ github.ref_name }}
