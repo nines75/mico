@@ -13,6 +13,9 @@ export const defaultSettings: Settings = {
   notifyOnManualNg: true,
   notifyOnAutoNg: true,
 
+  // その他
+  complementContext: false,
+
   // 高度な機能
   showAdvancedFeatures: false,
   importLocalFilterOnLoad: false,

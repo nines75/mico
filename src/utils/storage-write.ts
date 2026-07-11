@@ -17,12 +17,15 @@ import {
   sendNativeMessage,
   tryWithPermission,
 } from "./browser";
-import type { AutoRule } from "@/entrypoints/background/rule";
+import { type AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional, ValueOf } from "type-fest";
 import { getLogIdViaMessage } from "./messaging";
 import { isString } from "./util";
 import { objectKeys } from "ts-extras";
 import { defaultSettings } from "./config";
+import type { Video } from "@/types/api/video.types";
+import type { PartialComment } from "@/types/storage/log.types";
+import { parseFilter } from "@/entrypoints/background/parse-filter";
 
 const queue = new PQueue({ concurrency: 1 });
 
@@ -199,6 +202,77 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   }
 
   await notify("NG登録に失敗しました");
+}
+
+export async function addContextToAutoRule(data: {
+  comments?: PartialComment[];
+  videos?: Video[];
+}) {
+  const transaction = async (): Promise<Partial<Settings>> => {
+    const settings = await loadSettings();
+    const commentBodyRules = parseFilter(settings).rules.filter(
+      (rule) => rule.target.commentBody,
+    );
+
+    return {
+      autoFilter: settings.autoFilter.map((rule) => {
+        if (rule.context !== undefined) return rule;
+
+        if (rule.target?.commentUserId === true) {
+          const comments = data.comments?.filter(
+            (comment) => comment.userId === rule.pattern,
+          );
+
+          for (const { body } of comments ?? []) {
+            for (const { pattern } of commentBodyRules) {
+              if (
+                isString(pattern)
+                  ? !body.includes(pattern)
+                  : !pattern.test(body)
+              )
+                continue;
+
+              return {
+                ...rule,
+                context: `comment-body: ${body}`,
+                source: "complement",
+              };
+            }
+          }
+        }
+
+        if (rule.target?.videoId === true) {
+          const title = data.videos?.find(
+            (video) => video.id === rule.pattern,
+          )?.title;
+          if (title !== undefined) {
+            return {
+              ...rule,
+              context: `video-title: ${title}`,
+              source: "complement",
+            };
+          }
+        }
+
+        if (rule.target?.videoOwnerId === true) {
+          const ownerName = data.videos?.find(
+            (video) => video.owner.id === rule.pattern,
+          )?.owner.name;
+          if (ownerName !== undefined && ownerName !== null) {
+            return {
+              ...rule,
+              context: `owner-name: ${ownerName}`,
+              source: "complement",
+            };
+          }
+        }
+
+        return rule;
+      }),
+    };
+  };
+
+  await setSettings(transaction);
 }
 
 export async function importLocalFilter(type: "load" | "shortcut") {

@@ -22,6 +22,9 @@ export interface Settings {
   notifyOnManualNg: boolean;
   notifyOnAutoNg: boolean;
 
+  // その他
+  complementContext: boolean;
+
   // 高度な機能
   showAdvancedFeatures: boolean;
   importLocalFilterOnLoad: boolean;

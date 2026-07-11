@@ -3,7 +3,7 @@ import { saveLog } from "../comment-filter/save-log";
 import { loadSettings } from "@/utils/storage";
 import { isWatchPage } from "@/utils/util";
 import { filterResponse } from "./request";
-import { addAutoRule } from "@/utils/storage-write";
+import { addAutoRule, addContextToAutoRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment-api.types";
 import { commentApiSchema } from "@/types/api/comment-api.types";
 import { cleanUpDb, getTab, setTab } from "@/utils/db";
@@ -71,6 +71,10 @@ export default function commentRequest(
           }),
         ),
       );
+    }
+
+    if (settings.complementContext) {
+      tasks.push(addContextToAutoRule({ comments: result.allComments }));
     }
 
     await Promise.all(tasks);

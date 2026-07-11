@@ -7,6 +7,7 @@ import { saveLog } from "../video-filter/save-log";
 import { filterResponse } from "./request";
 import { getTab } from "@/utils/db";
 import { safeParseJson } from "@/utils/util";
+import { addContextToAutoRule } from "@/utils/storage-write";
 
 export function recommendRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
@@ -62,7 +63,10 @@ export function recommendRequest(
     filter.disconnect();
 
     for (const result of results) {
-      await saveLog(result, logId, tabId, false);
+      await Promise.all([
+        saveLog(result, logId, tabId, false),
+        addContextToAutoRule({ videos: result.allVideos }),
+      ]);
     }
 
     return false;

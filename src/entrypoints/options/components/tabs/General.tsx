@@ -144,6 +144,13 @@ const config = [
         id: "showAdvancedFeatures",
         label: "高度な機能を表示する",
       },
+      {
+        type: "checkbox",
+        id: "complementContext",
+        label: "コンテキスト情報を補完する",
+        details: `Autoフィルターのルールにコンテキスト情報が登録されていない場合、ページ読み込み時に補完します。
+補完されたルールのソースは「complement」に変更されます。`,
+      },
     ],
   },
 ] satisfies SectionsItem;

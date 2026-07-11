@@ -7,7 +7,7 @@ import type { SearchApi } from "@/types/api/search-api.types";
 import { searchApiSchema } from "@/types/api/search-api.types";
 import { cleanUpDb } from "@/utils/db";
 import { createLogId } from "@/utils/log";
-import { importLocalFilter } from "@/utils/storage-write";
+import { addContextToAutoRule, importLocalFilter } from "@/utils/storage-write";
 import { mountLogId } from "@/utils/messaging";
 
 export function searchRequest(
@@ -38,11 +38,20 @@ export function searchRequest(
     filter.write(encoder.encode(filteredBuf));
     filter.disconnect();
 
-    await Promise.all([
+    const tasks: Promise<void>[] = [
       saveLog(filteringResult, logId, tabId),
       cleanUpDb(),
-      ...(details.type === "main_frame" ? [mountLogId(logId, tabId)] : []),
-    ]);
+    ];
+
+    if (details.type === "main_frame") {
+      tasks.push(mountLogId(logId, tabId));
+    }
+
+    if (settings.complementContext) {
+      tasks.push(addContextToAutoRule({ videos: filteringResult.allVideos }));
+    }
+
+    await Promise.all(tasks);
 
     return false;
   });
