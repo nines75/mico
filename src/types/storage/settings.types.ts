@@ -23,18 +23,8 @@ export interface Settings {
   notifyOnAutoNg: boolean;
 
   // その他
-  complementContext: boolean;
-
-  // 高度な機能
   showAdvancedFeatures: boolean;
-  importLocalFilterOnLoad: boolean;
-  importOnlyWhenWslRunning: boolean;
-  localFilterPath: string;
-  saveBackupOnStartup: boolean;
-  saveBackupWithoutManualFilter: boolean;
-  saveBackupOnlyAfterInterval: boolean;
-  backupIntervalThreshold: number;
-  backupPath: string;
+  complementContext: boolean;
 
   // -------------------------------------------------------------------------------------------
   // フィルター
@@ -77,6 +67,19 @@ export interface Settings {
   enableShortsFilter: boolean;
   enableViewCountFilter: boolean;
   viewCountFilterThreshold: number;
+
+  // -------------------------------------------------------------------------------------------
+  // 高度な機能
+  // -------------------------------------------------------------------------------------------
+
+  importLocalFilterOnLoad: boolean;
+  importOnlyWhenWslRunning: boolean;
+  localFilterPath: string;
+  saveBackupOnStartup: boolean;
+  saveBackupOnlyAfterInterval: boolean;
+  backupIntervalThreshold: number;
+  saveBackupWithoutManualFilter: boolean;
+  backupPath: string;
 
   // -------------------------------------------------------------------------------------------
   // その他

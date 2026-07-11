@@ -14,18 +14,8 @@ export const defaultSettings: Settings = {
   notifyOnAutoNg: true,
 
   // その他
-  complementContext: false,
-
-  // 高度な機能
   showAdvancedFeatures: false,
-  importLocalFilterOnLoad: false,
-  importOnlyWhenWslRunning: false,
-  localFilterPath: "",
-  saveBackupOnStartup: false,
-  saveBackupWithoutManualFilter: false,
-  saveBackupOnlyAfterInterval: false,
-  backupIntervalThreshold: 24,
-  backupPath: "",
+  complementContext: false,
 
   // -------------------------------------------------------------------------------------------
   // フィルター
@@ -125,6 +115,19 @@ export const defaultSettings: Settings = {
   enableShortsFilter: false,
   enableViewCountFilter: false,
   viewCountFilterThreshold: 1000,
+
+  // -------------------------------------------------------------------------------------------
+  // 高度な機能
+  // -------------------------------------------------------------------------------------------
+
+  importLocalFilterOnLoad: false,
+  importOnlyWhenWslRunning: false,
+  localFilterPath: "",
+  saveBackupOnStartup: false,
+  saveBackupOnlyAfterInterval: false,
+  backupIntervalThreshold: 24,
+  saveBackupWithoutManualFilter: false,
+  backupPath: "",
 
   // -------------------------------------------------------------------------------------------
   // その他
