@@ -5,7 +5,6 @@ import { useRef } from "react";
 import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
-import { defaultSettings } from "@/utils/config";
 
 const ICON_SIZE = 18;
 
@@ -15,8 +14,7 @@ export default function ManualFilter() {
     useShallow((state) => [state.settings.manualFilter, state.saveSettings]),
   );
 
-  const errorCount = parseFilter({ ...defaultSettings, manualFilter })
-    .invalidLines.length;
+  const errorCount = parseFilter(manualFilter).invalidLines.length;
 
   return (
     <>

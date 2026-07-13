@@ -15,7 +15,7 @@ export abstract class RuleFilter extends Filter {
   constructor(settings: Settings, target: keyof Rule["target"]) {
     super(settings);
 
-    const { rules } = parseFilter(settings);
+    const { rules } = parseFilter(settings.manualFilter);
     this.rules = createRules(settings, target, rules);
   }
 

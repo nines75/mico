@@ -10,7 +10,7 @@ class TestFilter extends RuleFilter {
     super(settings, "commentBody");
 
     // targetの指定なしでルールを上書き
-    this.rules = parseFilter(settings).rules;
+    this.rules = parseFilter(settings.manualFilter).rules;
   }
 
   override apply = vi.fn();

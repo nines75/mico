@@ -210,7 +210,7 @@ export async function addContextToAutoRule(data: {
 }) {
   const transaction = async (): Promise<Partial<Settings>> => {
     const settings = await loadSettings();
-    const commentBodyRules = parseFilter(settings).rules.filter(
+    const commentBodyRules = parseFilter(settings.manualFilter).rules.filter(
       (rule) => rule.target.commentBody,
     );
 

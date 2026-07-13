@@ -17,7 +17,7 @@ export abstract class RuleFilter extends Filter {
   ) {
     super(settings);
 
-    const { rules } = parseFilter(settings);
+    const { rules } = parseFilter(settings.manualFilter);
     this.rules = createRules(settings, target, rules);
 
     this.target = logTarget;

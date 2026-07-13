@@ -1,5 +1,4 @@
 import { createDefaultRule, type Rule } from "./rule";
-import type { Settings } from "@/types/storage/settings.types";
 
 export type Directive =
   | {
@@ -56,7 +55,7 @@ export interface InvalidLine {
 }
 
 export function parseFilter(
-  settings: Settings,
+  filter: string,
   includeIndex = false, // テストが複雑になるためindexはデフォルトで含めない
 ): { rules: Rule[]; invalidLines: InvalidLine[] } {
   let strictAlias = false;
@@ -64,7 +63,7 @@ export function parseFilter(
   const rules: Rule[] = [];
   const invalidLines: InvalidLine[] = [];
 
-  const lines = settings.manualFilter
+  const lines = filter
     .split("\n")
     .map((line, index) => ({ line, index }))
     .filter(({ line }) => line !== "" && !line.startsWith("#"));

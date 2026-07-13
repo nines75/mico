@@ -1,6 +1,5 @@
 import { parseFilter } from "@/entrypoints/background/parse-filter";
 import type { Settings } from "@/types/storage/settings.types";
-import { defaultSettings } from "./config";
 import { isString } from "./util";
 import { objectEntries, objectValues } from "ts-extras";
 import type { AutoRule, Rule } from "@/entrypoints/background/rule";
@@ -234,10 +233,7 @@ function migrateNgUserId(
 ) {
   const ngUserId = migrateVAlias(v3.ngUserId ?? "");
   const lines = ngUserId.split("\n");
-  const rules = parseFilter(
-    { ...defaultSettings, manualFilter: ngUserId },
-    true,
-  ).rules;
+  const rules = parseFilter(ngUserId, true).rules;
 
   let autoRuleCount = 0;
   for (const rule of rules) {
@@ -331,10 +327,7 @@ function migrateNgId(
   autoFilter: Except<AutoRule, "source">[],
 ) {
   const lines = (v3.ngId ?? "").split("\n");
-  const rules = parseFilter(
-    { ...defaultSettings, manualFilter: v3.ngId ?? "" },
-    true,
-  ).rules;
+  const rules = parseFilter(v3.ngId ?? "", true).rules;
 
   let autoRuleCount = 0;
   for (const rule of rules) {

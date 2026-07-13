@@ -2,14 +2,8 @@ import { describe, it, expect } from "vitest";
 import type { InvalidLine } from "./parse-filter";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockRules } from "@/utils/test";
-import { defaultSettings } from "@/utils/config";
-import type { Settings } from "@/types/storage/settings.types";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
-
-function createSettings(filter: string): Settings {
-  return { ...defaultSettings, manualFilter: filter };
-}
 
 describe(parseFilter.name, () => {
   // -------------------------------------------------------------------------------------------
@@ -43,7 +37,7 @@ rule
       expected: mockRules({}),
     },
   ])("$name", ({ filter, hasIndex, expected }) => {
-    expect(parseFilter(createSettings(filter), hasIndex ?? false)).toEqual(
+    expect(parseFilter(filter, hasIndex ?? false)).toEqual(
       expected ?? mockRules(),
     );
   });
@@ -66,21 +60,19 @@ rule
         expected: mockRules({ pattern: /rule/iu }),
       },
     ])("フラグの数: $name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
 
     it("パターンにスラッシュを含む", () => {
       const filter = "///";
 
-      expect(parseFilter(createSettings(filter))).toEqual(
-        mockRules({ pattern: /\// }),
-      );
+      expect(parseFilter(filter)).toEqual(mockRules({ pattern: /\// }));
     });
 
     describe("異常系", () => {
       // 別のルールとしてパースされるもの
       it("先頭に空白文字を含む", () => {
-        expect(parseFilter(createSettings(" /rule/"))).toEqual(
+        expect(parseFilter(" /rule/")).toEqual(
           mockRules({ pattern: " /rule/" }),
         );
       });
@@ -112,7 +104,7 @@ rule
         filter: string;
         type: InvalidLine["type"];
       }[])("$name", ({ filter, type }) => {
-        expect(parseFilter(createSettings(filter))).toEqual({
+        expect(parseFilter(filter)).toEqual({
           rules: [],
           invalidLines: [{ index: 0, type }],
         });
@@ -155,7 +147,7 @@ rule
         expected: mockRules({ strict: true }),
       },
     ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
   });
 
@@ -190,7 +182,7 @@ rule
         }),
       },
     ])("ターゲットの数: $name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
   });
 
@@ -205,9 +197,7 @@ rule
 @end
 `;
 
-    expect(parseFilter(createSettings(filter))).toEqual(
-      mockRules({ strict: true }),
-    );
+    expect(parseFilter(filter)).toEqual(mockRules({ strict: true }));
   });
 
   // -------------------------------------------------------------------------------------------
@@ -221,9 +211,7 @@ rule
 @end
 `;
 
-    expect(parseFilter(createSettings(filter))).toEqual(
-      mockRules({ disable: true }),
-    );
+    expect(parseFilter(filter)).toEqual(mockRules({ disable: true }));
   });
 
   // -------------------------------------------------------------------------------------------
@@ -244,7 +232,7 @@ rule
         }),
       },
     ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
 
     describe("異常系", () => {
@@ -290,7 +278,7 @@ rule
           },
         },
       ])("$name", ({ filter, expected }) => {
-        expect(parseFilter(createSettings(filter))).toEqual(expected);
+        expect(parseFilter(filter)).toEqual(expected);
       });
     });
   });
@@ -330,7 +318,7 @@ rule
         expected: mockRules({ strict: true }, {}),
       },
     ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
   });
 
@@ -412,7 +400,7 @@ rule
         ),
       },
     ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(createSettings(filter))).toEqual(expected);
+      expect(parseFilter(filter)).toEqual(expected);
     });
   });
 });

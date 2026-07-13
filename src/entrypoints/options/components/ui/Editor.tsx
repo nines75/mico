@@ -39,7 +39,6 @@ import {
 } from "@/entrypoints/background/parse-filter";
 import type { Diagnostic } from "@codemirror/lint";
 import { linter as createLinter } from "@codemirror/lint";
-import { defaultSettings } from "@/utils/config";
 
 const directiveStyle = "color: lime";
 const highlights = createHighlights([
@@ -106,10 +105,7 @@ const linter = createLinter((view) => {
   const diagnostics: Diagnostic[] = [];
 
   const doc = view.state.doc;
-  const invalidLines = parseFilter({
-    ...defaultSettings,
-    manualFilter: doc.toString(),
-  }).invalidLines;
+  const invalidLines = parseFilter(doc.toString()).invalidLines;
 
   for (const { index, type } of invalidLines) {
     const line = doc.line(index + 1);
