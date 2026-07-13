@@ -90,12 +90,12 @@ rule
         {
           name: "末尾に空白文字を含む",
           filter: "/rule/ ",
-          type: "regex-flag",
+          type: "regex_flag",
         },
         {
           name: "対応していないフラグ",
           filter: "/rule/g",
-          type: "regex-flag",
+          type: "regex_flag",
         },
         {
           name: "併用できないフラグ",
@@ -114,7 +114,7 @@ rule
       }[])("$name", ({ filter, type }) => {
         expect(parseFilter(createSettings(filter))).toEqual({
           rules: [],
-          invalidLines: [{ index: 0, line: filter, type }],
+          invalidLines: [{ index: 0, type }],
         });
       });
     });
@@ -250,6 +250,20 @@ rule
     describe("異常系", () => {
       it.each([
         {
+          // 直後にスペースがある場合のみパースしているので、以前は無効なディレクティブとして扱っていた
+          // しかし引数が必要であることを示す方が望ましいため、invalidLinesのtypeがargsになっていることを確認する
+          name: "ディレクティブのみ",
+          filter: `
+@include-tags
+rule
+@end
+`,
+          expected: {
+            rules: mockRules({}).rules,
+            invalidLines: [{ index: 1, type: "args" }],
+          },
+        },
+        {
           // スペースのみの場合、引数は空の配列としてパースされる
           // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
           name: "ディレクティブの後にスペースのみを含む",
@@ -258,7 +272,10 @@ rule
 rule
 @end
 `,
-          expected: mockRules({}),
+          expected: {
+            rules: mockRules({}).rules,
+            invalidLines: [{ index: 1, type: "args" }],
+          },
         },
         {
           name: "ディレクティブの前方一致",
@@ -269,9 +286,7 @@ rule
 `,
           expected: {
             rules: mockRules({}).rules,
-            invalidLines: [
-              { index: 1, line: "@include-tagss tag0 tag1", type: "directive" },
-            ],
+            invalidLines: [{ index: 1, type: "directive" }],
           },
         },
       ])("$name", ({ filter, expected }) => {
@@ -333,7 +348,7 @@ rule
 `,
         expected: {
           rules: mockRules({}).rules,
-          invalidLines: [{ index: 1, line: "@directive", type: "directive" }],
+          invalidLines: [{ index: 1, type: "directive" }],
         },
       },
       {

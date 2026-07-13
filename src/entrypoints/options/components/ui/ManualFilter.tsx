@@ -1,12 +1,11 @@
-import type { InvalidLine } from "@/entrypoints/background/parse-filter";
-import { parseFilter } from "@/entrypoints/background/parse-filter";
-import { notify } from "@/utils/browser";
 import { useSettingsStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
-import { Download, TriangleAlert } from "lucide-react";
+import { Download } from "lucide-react";
 import { useRef } from "react";
 import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
+import { parseFilter } from "@/entrypoints/background/parse-filter";
+import { defaultSettings } from "@/utils/config";
 
 const ICON_SIZE = 18;
 
@@ -15,6 +14,9 @@ export default function ManualFilter() {
   const [manualFilter, save] = useSettingsStore(
     useShallow((state) => [state.settings.manualFilter, state.saveSettings]),
   );
+
+  const errorCount = parseFilter({ ...defaultSettings, manualFilter })
+    .invalidLines.length;
 
   return (
     <>
@@ -28,30 +30,6 @@ export default function ManualFilter() {
           <Download size={ICON_SIZE} />
           インポート
         </button>
-        <button
-          className="button button-filter"
-          onClick={catchAsync(async () => {
-            const { invalidLines } = parseFilter(
-              useSettingsStore.getState().settings,
-            );
-            if (invalidLines.length === 0) {
-              await notify("エラーはありません");
-              return;
-            }
-
-            alert(
-              invalidLines
-                .map(
-                  ({ index, line, type }) =>
-                    `${index + 1}行目: ${line}\nエラー: ${getErrorMessage(type)}`,
-                )
-                .join("\n\n"),
-            );
-          })}
-        >
-          <TriangleAlert size={ICON_SIZE} />
-          エラーを表示
-        </button>
         <input
           type="file"
           accept=".txt, .mico"
@@ -64,6 +42,12 @@ export default function ManualFilter() {
             save({ manualFilter: text });
           })}
         />
+        {errorCount > 0 && (
+          <span className="info">
+            {"エラー: "}
+            <span className="info-value">{errorCount}</span>
+          </span>
+        )}
       </div>
       <Editor
         value={manualFilter}
@@ -73,18 +57,4 @@ export default function ManualFilter() {
       />
     </>
   );
-}
-
-function getErrorMessage(type: InvalidLine["type"]) {
-  switch (type) {
-    case "directive": {
-      return "無効なディレクティブ";
-    }
-    case "regex": {
-      return "無効な正規表現";
-    }
-    case "regex-flag": {
-      return "無効な正規表現フラグ";
-    }
-  }
 }

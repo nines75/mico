@@ -31,10 +31,15 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 import { useSettingsStore } from "@/utils/store";
+import type { InvalidLine } from "@/entrypoints/background/parse-filter";
 import {
   argsDirectives,
   noArgsDirectives,
+  parseFilter,
 } from "@/entrypoints/background/parse-filter";
+import type { Diagnostic } from "@codemirror/lint";
+import { linter as createLinter } from "@codemirror/lint";
+import { defaultSettings } from "@/utils/config";
 
 const directiveStyle = "color: lime";
 const highlights = createHighlights([
@@ -91,6 +96,35 @@ const theme = EditorView.theme(
   { dark: true },
 );
 
+const errorMessageMap: Record<InvalidLine["type"], string> = {
+  directive: "無効なディレクティブです。",
+  regex: "無効な正規表現です。",
+  regex_flag: "無効な正規表現フラグです。",
+  args: "引数が必要です。",
+} as const;
+const linter = createLinter((view) => {
+  const diagnostics: Diagnostic[] = [];
+
+  const doc = view.state.doc;
+  const invalidLines = parseFilter({
+    ...defaultSettings,
+    manualFilter: doc.toString(),
+  }).invalidLines;
+
+  for (const { index, type } of invalidLines) {
+    const line = doc.line(index + 1);
+
+    diagnostics.push({
+      from: line.from,
+      to: line.to,
+      severity: "error",
+      message: errorMessageMap[type],
+    });
+  }
+
+  return diagnostics;
+});
+
 const extensions = [
   keymap.of([
     ...standardKeymap,
@@ -108,6 +142,7 @@ const extensions = [
   highlightActiveLineGutter(),
   highlights,
   completions,
+  linter,
   theme,
 ];
 

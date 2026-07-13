@@ -52,8 +52,7 @@ export const noArgsDirectives = [
 
 export interface InvalidLine {
   index: number;
-  line: string;
-  type: "directive" | "regex" | "regex-flag";
+  type: "directive" | "regex" | "regex_flag" | "args";
 }
 
 export function parseFilter(
@@ -78,10 +77,21 @@ export function parseFilter(
 
     // 引数あり
     for (const directive of argsDirectives) {
+      if (line === `@${directive}`) {
+        invalidLines.push({ index, type: "args" });
+        continue lineLoop;
+      }
+
       if (new RegExp(String.raw`^@${directive}\s`).test(line)) {
+        const args = parseArgs(line);
+        if (args.length === 0) {
+          invalidLines.push({ index, type: "args" });
+          continue lineLoop;
+        }
+
         directives.push({
           type: directive,
-          args: parseArgs(line),
+          args,
         });
         continue lineLoop;
       }
@@ -105,7 +115,7 @@ export function parseFilter(
 
     // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
     if (line.startsWith("@")) {
-      invalidLines.push({ index, line, type: "directive" });
+      invalidLines.push({ index, type: "directive" });
       continue;
     }
 
@@ -114,42 +124,43 @@ export function parseFilter(
     // -------------------------------------------------------------------------------------------
 
     const rule = createDefaultRule();
+    const { include, exclude } = rule;
 
     for (const directive of directives) {
       switch (directive.type) {
         // 引数あり(include)
         case "include-tags": {
-          pushArgs(rule.include.tags, directive);
+          include.tags.push(directive.args);
           break;
         }
         case "include-video-ids": {
-          pushArgs(rule.include.videoIds, directive);
+          include.videoIds.push(directive.args);
           break;
         }
         case "include-user-ids": {
-          pushArgs(rule.include.userIds, directive);
+          include.userIds.push(directive.args);
           break;
         }
         case "include-series-ids": {
-          pushArgs(rule.include.seriesIds, directive);
+          include.seriesIds.push(directive.args);
           break;
         }
 
         // 引数あり(exclude)
         case "exclude-tags": {
-          pushArgs(rule.exclude.tags, directive);
+          exclude.tags.push(directive.args);
           break;
         }
         case "exclude-video-ids": {
-          pushArgs(rule.exclude.videoIds, directive);
+          exclude.videoIds.push(directive.args);
           break;
         }
         case "exclude-user-ids": {
-          pushArgs(rule.exclude.userIds, directive);
+          exclude.userIds.push(directive.args);
           break;
         }
         case "exclude-series-ids": {
-          pushArgs(rule.exclude.seriesIds, directive);
+          exclude.seriesIds.push(directive.args);
           break;
         }
 
@@ -214,14 +225,14 @@ export function parseFilter(
     if (regexStr !== undefined && flags !== undefined) {
       // 想定外のフラグが含まれている場合はルールとして解釈しない
       if (!/^[isuvm]*$/.test(flags)) {
-        invalidLines.push({ index, line, type: "regex-flag" });
+        invalidLines.push({ index, type: "regex_flag" });
         continue;
       }
 
       try {
         regex = new RegExp(regexStr, flags);
       } catch {
-        invalidLines.push({ index, line, type: "regex" });
+        invalidLines.push({ index, type: "regex" });
         continue;
       }
     }
@@ -242,9 +253,4 @@ export function parseArgs(line: string) {
     .slice(1)
     .filter((arg) => arg !== "")
     .map((arg) => arg.toLowerCase());
-}
-
-function pushArgs(array: string[][], directive: { args: string[] }) {
-  const args = directive.args;
-  if (args.length > 0) array.push(args);
 }
