@@ -40,9 +40,9 @@ import {
 } from "@/entrypoints/background/parse-filter";
 import type { Diagnostic } from "@codemirror/lint";
 import { linter as createLinter } from "@codemirror/lint";
-import decamelize from "decamelize";
 import { objectEntries } from "ts-extras";
 import type { Rule } from "@/entrypoints/background/rule";
+import { decamelize } from "@/utils/util";
 
 // -------------------------------------------------------------------------------------------
 // ハイライト
@@ -205,7 +205,7 @@ class HintWidget extends WidgetType {
     const texts: string[] = [];
 
     for (const [key, value] of Object.entries(rule.target)) {
-      if (value) texts.push(`@${decamelize(key, { separator: "-" })}`);
+      if (value) texts.push(`@${decamelize(key)}`);
     }
 
     if (rule.strict) texts.push("@strict");
@@ -218,7 +218,7 @@ class HintWidget extends WidgetType {
       for (const [key, value] of objectEntries(toggle)) {
         if (value.length === 0) continue;
 
-        const directive = `@${prefix}-${decamelize(key, { separator: "-" })}`;
+        const directive = `@${prefix}-${decamelize(key)}`;
         const params = `(${value.map((array) => `[${array.join(" ")}]`).join(" ")})`;
         texts.push(`${directive}${params}`);
       }

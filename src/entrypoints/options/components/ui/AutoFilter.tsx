@@ -1,11 +1,10 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
 import { useSettingsStore } from "@/utils/store";
-import decamelize from "decamelize";
 import { Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
-import { escapeNewline } from "@/utils/util";
+import { decamelize, escapeNewline } from "@/utils/util";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function AutoFilter() {
@@ -29,7 +28,7 @@ export default function AutoFilter() {
             Object.entries(rule.target).some(([key, value]) => {
               if (!value) return false;
 
-              return decamelize(key, { separator: "-" }).includes(query);
+              return decamelize(key).includes(query);
             }))
         );
       }),
@@ -118,9 +117,7 @@ function Rule({ rule }: RuleProps) {
 
             return (
               <Detail name="ターゲット" key={key}>
-                {decamelize(key, {
-                  separator: "-",
-                })}
+                {decamelize(key)}
               </Detail>
             );
           })}
