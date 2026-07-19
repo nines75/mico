@@ -44,7 +44,39 @@ import decamelize from "decamelize";
 import { objectEntries } from "ts-extras";
 import type { Rule } from "@/entrypoints/background/rule";
 
+// -------------------------------------------------------------------------------------------
+// ハイライト
+// -------------------------------------------------------------------------------------------
+
+function createHighlights(data: { regex: RegExp; style: string }[]) {
+  return data.map(({ regex, style }) => {
+    const decorator = new MatchDecorator({
+      regexp: regex,
+      decoration: Decoration.mark({
+        attributes: { style },
+      }),
+    });
+
+    return ViewPlugin.fromClass(
+      class {
+        decorations: RangeSet<Decoration>;
+
+        constructor(view: EditorView) {
+          this.decorations = decorator.createDeco(view);
+        }
+        update(update: ViewUpdate) {
+          this.decorations = decorator.updateDeco(update, this.decorations);
+        }
+      },
+      {
+        decorations: (v) => v.decorations,
+      },
+    );
+  });
+}
+
 const directiveStyle = "color: lime";
+
 const highlights = createHighlights([
   { regex: /^#.*$/g, style: "color: gray" },
   { regex: /^\/.*\/[isuvm]*$/g, style: "color: orange" },
@@ -58,6 +90,27 @@ const highlights = createHighlights([
     style: directiveStyle,
   },
 ]);
+
+// -------------------------------------------------------------------------------------------
+// 補完
+// -------------------------------------------------------------------------------------------
+
+function createCompletions(options: Completion[]): Extension {
+  return autocompletion({
+    override: [
+      (context: CompletionContext): CompletionResult | null => {
+        const word = context.matchBefore(/@[\w-]*/);
+        if (word === null || (word.from === word.to && !context.explicit))
+          return null;
+
+        return {
+          from: word.from,
+          options,
+        };
+      },
+    ],
+  });
+}
 
 const completions = createCompletions([
   {
@@ -77,6 +130,10 @@ const completions = createCompletions([
     type: "keyword",
   })),
 ]);
+
+// -------------------------------------------------------------------------------------------
+// テーマ
+// -------------------------------------------------------------------------------------------
 
 const theme = EditorView.theme(
   {
@@ -99,12 +156,17 @@ const theme = EditorView.theme(
   { dark: true },
 );
 
-const errorMessageMap: Record<InvalidLine["type"], string> = {
+// -------------------------------------------------------------------------------------------
+// Linter
+// -------------------------------------------------------------------------------------------
+
+const linterMessageMap: Record<InvalidLine["type"], string> = {
   directive: "無効なディレクティブです。",
   regex: "無効な正規表現です。",
   regex_flag: "無効な正規表現フラグです。",
   args: "引数が必要です。",
 } as const;
+
 const linter = createLinter((view) => {
   const diagnostics: Diagnostic[] = [];
 
@@ -118,12 +180,16 @@ const linter = createLinter((view) => {
       from: line.from,
       to: line.to,
       severity: "error",
-      message: errorMessageMap[type],
+      message: linterMessageMap[type],
     });
   }
 
   return diagnostics;
 });
+
+// -------------------------------------------------------------------------------------------
+// ヒント
+// -------------------------------------------------------------------------------------------
 
 class HintWidget extends WidgetType {
   private rule: Rule;
@@ -207,6 +273,11 @@ const hints = ViewPlugin.fromClass(
     decorations: (v) => v.decorations,
   },
 );
+
+// -------------------------------------------------------------------------------------------
+// 拡張機能
+// -------------------------------------------------------------------------------------------
+
 const hintsCompartment = new Compartment();
 
 const extensions = [
@@ -230,6 +301,10 @@ const extensions = [
   theme,
   hintsCompartment.of([]),
 ];
+
+// -------------------------------------------------------------------------------------------
+// 本体
+// -------------------------------------------------------------------------------------------
 
 interface EditorProps {
   value: string;
@@ -315,47 +390,4 @@ export default function Editor({ value, onChange }: EditorProps) {
   }, [showParsingHints]);
 
   return <div ref={parent} className="editor-container" />;
-}
-
-function createHighlights(data: { regex: RegExp; style: string }[]) {
-  return data.map(({ regex, style }) => {
-    const decorator = new MatchDecorator({
-      regexp: regex,
-      decoration: Decoration.mark({
-        attributes: { style },
-      }),
-    });
-    return ViewPlugin.fromClass(
-      class {
-        decorations: RangeSet<Decoration>;
-
-        constructor(view: EditorView) {
-          this.decorations = decorator.createDeco(view);
-        }
-        update(update: ViewUpdate) {
-          this.decorations = decorator.updateDeco(update, this.decorations);
-        }
-      },
-      {
-        decorations: (v) => v.decorations,
-      },
-    );
-  });
-}
-
-function createCompletions(options: Completion[]): Extension {
-  return autocompletion({
-    override: [
-      (context: CompletionContext): CompletionResult | null => {
-        const word = context.matchBefore(/@[\w-]*/);
-        if (word === null || (word.from === word.to && !context.explicit))
-          return null;
-
-        return {
-          from: word.from,
-          options,
-        };
-      },
-    ],
-  });
 }
