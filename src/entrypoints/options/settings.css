@@ -167,8 +167,8 @@ button
 ------------------------------------------------------------------------------------------- */
 
 .button-container {
-  /* 高さを統一 */
   display: flex;
+  align-items: center;
 }
 .button {
   font-weight: bold;
