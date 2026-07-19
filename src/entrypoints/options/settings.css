@@ -166,6 +166,10 @@ tab
 button
 ------------------------------------------------------------------------------------------- */
 
+.button-container {
+  /* 高さを統一 */
+  display: flex;
+}
 .button {
   font-weight: bold;
   padding: 10px 20px;

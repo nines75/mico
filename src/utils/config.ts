@@ -22,6 +22,8 @@ export const defaultSettings: Settings = {
   // -------------------------------------------------------------------------------------------
 
   selectedFilter: "manual",
+
+  // Manual
   manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
 
 #============================================================
@@ -80,6 +82,9 @@ export const defaultSettings: Settings = {
 
 @end
 `,
+  showParsingHints: false,
+
+  // Auto
   autoFilter: [],
 
   // -------------------------------------------------------------------------------------------

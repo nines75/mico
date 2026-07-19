@@ -1,7 +1,7 @@
 import { useEffect, useEffectEvent, useRef } from "react";
-import type { Extension, RangeSet } from "@codemirror/state";
-import { EditorState, Transaction } from "@codemirror/state";
-import type { ViewUpdate } from "@codemirror/view";
+import type { Extension, Range, RangeSet } from "@codemirror/state";
+import { Compartment, EditorState, Transaction } from "@codemirror/state";
+import type { DecorationSet, ViewUpdate } from "@codemirror/view";
 import {
   Decoration,
   dropCursor,
@@ -13,6 +13,7 @@ import {
   lineNumbers,
   MatchDecorator,
   ViewPlugin,
+  WidgetType,
 } from "@codemirror/view";
 import {
   history,
@@ -39,6 +40,9 @@ import {
 } from "@/entrypoints/background/parse-filter";
 import type { Diagnostic } from "@codemirror/lint";
 import { linter as createLinter } from "@codemirror/lint";
+import decamelize from "decamelize";
+import { objectEntries } from "ts-extras";
+import type { Rule } from "@/entrypoints/background/rule";
 
 const directiveStyle = "color: lime";
 const highlights = createHighlights([
@@ -121,6 +125,90 @@ const linter = createLinter((view) => {
   return diagnostics;
 });
 
+class HintWidget extends WidgetType {
+  private rule: Rule;
+
+  constructor(rule: Rule) {
+    super();
+
+    this.rule = rule;
+  }
+
+  override toDOM(): HTMLElement {
+    const rule = this.rule;
+    const texts: string[] = [];
+
+    for (const [key, value] of Object.entries(rule.target)) {
+      if (value) texts.push(`@${decamelize(key, { separator: "-" })}`);
+    }
+
+    if (rule.strict) texts.push("@strict");
+    if (rule.disable) texts.push("@disable");
+
+    for (const { toggle, prefix } of [
+      { toggle: rule.include, prefix: "include" },
+      { toggle: rule.exclude, prefix: "exclude" },
+    ]) {
+      for (const [key, value] of objectEntries(toggle)) {
+        if (value.length === 0) continue;
+
+        const directive = `@${prefix}-${decamelize(key, { separator: "-" })}`;
+        const params = `(${value.map((array) => `[${array.join(" ")}]`).join(" ")})`;
+        texts.push(`${directive}${params}`);
+      }
+    }
+
+    const span = document.createElement("span");
+    span.textContent = ` ${texts.join(", ")}`;
+    span.style.color = "gray";
+
+    return span;
+  }
+}
+
+function createHints(view: EditorView) {
+  const widgets: Range<Decoration>[] = [];
+
+  const doc = view.state.doc;
+  const rules = parseFilter(doc.toString(), true).rules;
+
+  for (const { from, to } of view.visibleRanges) {
+    for (const rule of rules) {
+      const line = doc.line((rule.index as number) + 1);
+
+      // viewport外にはウィジットを挿入しない
+      if (line.to < from || to < line.from) continue;
+
+      const decoration = Decoration.widget({
+        widget: new HintWidget(rule),
+        side: 1, // カーソル移動時などの挙動が不自然になるのを防止
+      });
+      widgets.push(decoration.range(line.to));
+    }
+  }
+
+  return Decoration.set(widgets);
+}
+
+const hints = ViewPlugin.fromClass(
+  class {
+    decorations: DecorationSet;
+
+    constructor(view: EditorView) {
+      this.decorations = createHints(view);
+    }
+
+    update(update: ViewUpdate) {
+      if (update.docChanged || update.viewportChanged)
+        this.decorations = createHints(update.view);
+    }
+  },
+  {
+    decorations: (v) => v.decorations,
+  },
+);
+const hintsCompartment = new Compartment();
+
 const extensions = [
   keymap.of([
     ...standardKeymap,
@@ -140,6 +228,7 @@ const extensions = [
   completions,
   linter,
   theme,
+  hintsCompartment.of([]),
 ];
 
 interface EditorProps {
@@ -150,6 +239,9 @@ interface EditorProps {
 export default function Editor({ value, onChange }: EditorProps) {
   const view = useRef<EditorView | null>(null);
   const parent = useRef<HTMLDivElement | null>(null);
+  const showParsingHints = useSettingsStore(
+    (state) => state.settings.showParsingHints,
+  );
 
   const getExtensions = () => {
     const settings = useSettingsStore.getState().settings;
@@ -212,6 +304,15 @@ export default function Editor({ value, onChange }: EditorProps) {
       },
     });
   }, [value]);
+
+  useEffect(() => {
+    const current = view.current;
+    if (current === null) return;
+
+    current.dispatch({
+      effects: hintsCompartment.reconfigure(showParsingHints ? hints : []),
+    });
+  }, [showParsingHints]);
 
   return <div ref={parent} className="editor-container" />;
 }

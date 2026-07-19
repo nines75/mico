@@ -31,7 +31,12 @@ export interface Settings {
   // -------------------------------------------------------------------------------------------
 
   selectedFilter: FilterId;
+
+  // Manual
   manualFilter: string;
+  showParsingHints: boolean;
+
+  // Auto
   autoFilter: Partial<AutoRule>[];
 
   // -------------------------------------------------------------------------------------------

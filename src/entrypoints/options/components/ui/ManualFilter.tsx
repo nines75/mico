@@ -10,15 +10,19 @@ const ICON_SIZE = 18;
 
 export default function ManualFilter() {
   const input = useRef<HTMLInputElement | null>(null);
-  const [manualFilter, save] = useSettingsStore(
-    useShallow((state) => [state.settings.manualFilter, state.saveSettings]),
+  const [manualFilter, showParsingHints, save] = useSettingsStore(
+    useShallow((state) => [
+      state.settings.manualFilter,
+      state.settings.showParsingHints,
+      state.saveSettings,
+    ]),
   );
 
   const errorCount = parseFilter(manualFilter).invalidLines.length;
 
   return (
     <>
-      <div>
+      <div className="button-container">
         <button
           className="button button-filter"
           onClick={() => {
@@ -40,6 +44,14 @@ export default function ManualFilter() {
             save({ manualFilter: text });
           })}
         />
+        <button
+          className="button button-filter"
+          onClick={() => {
+            save({ showParsingHints: !showParsingHints });
+          }}
+        >
+          ヒント{showParsingHints ? "非" : ""}表示
+        </button>
         {errorCount > 0 && (
           <span className="info">
             {"エラー: "}
