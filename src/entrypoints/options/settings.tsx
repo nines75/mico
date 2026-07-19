@@ -38,11 +38,13 @@ function Page() {
 
   useEffect(() => {
     browser.storage.onChanged.addListener(settingsChangeHandler);
-    globalThis.addEventListener("keydown", keydownHandler);
+
+    // CodeMirrorのキーバインドより先行して処理するためにキャプチャフェーズで発火させる
+    globalThis.addEventListener("keydown", keydownHandler, true);
 
     return () => {
       browser.storage.onChanged.removeListener(settingsChangeHandler);
-      globalThis.removeEventListener("keydown", keydownHandler);
+      globalThis.removeEventListener("keydown", keydownHandler, true);
     };
   }, []);
 
@@ -139,7 +141,10 @@ function keydownHandler(event: KeyboardEvent) {
       activeElement.type !== "checkbox") || // checkboxのみ除外
     activeElement.isContentEditable
   ) {
-    if (event.key === "Escape") {
+    if (
+      event.key === "Escape" &&
+      document.querySelector(".cm-tooltip-autocomplete") === null // キャプチャフェーズでないと取得できない
+    ) {
       activeElement.blur();
     }
 
