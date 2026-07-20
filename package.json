@@ -31,9 +31,9 @@
     "format:ci": "prettier . --check",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:scheduled": "playwright test",
     "check": "concurrently 'pnpm build' 'pnpm compile' 'pnpm lint' 'pnpm format:ci' 'pnpm test:ci'",
-    "pw": "playwright test",
-    "pw:install": "playwright install firefox"
+    "playwright:install": "playwright install firefox"
   },
   "dependencies": {
     "@ag-grid-community/locale": "^36.0.0",

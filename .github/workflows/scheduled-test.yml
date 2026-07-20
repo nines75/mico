@@ -13,7 +13,7 @@ jobs:
       - uses: nines75/composite-action/setup-pnpm@main
 
       - name: ブラウザをインストール
-        run: pnpm pw:install
+        run: pnpm playwright:install
 
       - name: テスト実行
-        run: pnpm pw
+        run: pnpm test:scheduled
