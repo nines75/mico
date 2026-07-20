@@ -96,6 +96,8 @@ export function mockRules(
     rules: rules.map((rule): Rule => {
       return merge({ ...createDefaultRule(), pattern: "rule" }, rule);
     }),
-    invalidLines: [],
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    warnings: expect.any(Array),
+    errors: [],
   };
 }

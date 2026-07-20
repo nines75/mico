@@ -74,6 +74,10 @@ input[type="checkbox"] {
   border: none;
   color: gray;
 }
+.info-container {
+  display: flex;
+  gap: 10px;
+}
 .rule-container {
   border: gray 1px solid;
   border-radius: 10px;

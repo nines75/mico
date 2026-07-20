@@ -18,7 +18,7 @@ export default function ManualFilter() {
     ]),
   );
 
-  const errorCount = parseFilter(manualFilter).invalidLines.length;
+  const { warnings, errors } = parseFilter(manualFilter);
 
   return (
     <>
@@ -52,12 +52,31 @@ export default function ManualFilter() {
         >
           ヒント{showParsingHints ? "非" : ""}表示
         </button>
-        {errorCount > 0 && (
-          <span className="info">
-            {"エラー: "}
-            <span className="info-value">{errorCount}</span>
-          </span>
-        )}
+        {(() => {
+          const config = [
+            {
+              name: "警告",
+              value: warnings.length,
+            },
+            {
+              name: "エラー",
+              value: errors.length,
+            },
+          ].filter(({ value }) => value > 0);
+
+          if (config.length === 0) return null;
+
+          return (
+            <div className="info-container">
+              {config.map(({ name, value }) => (
+                <div className="info" key={name}>
+                  {`${name}: `}
+                  <span className="info-value">{value}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
       </div>
       <Editor
         value={manualFilter}

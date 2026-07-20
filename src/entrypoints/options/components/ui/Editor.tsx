@@ -32,7 +32,10 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 import { useSettingsStore } from "@/utils/store";
-import type { InvalidLine } from "@/entrypoints/background/parse-filter";
+import type {
+  ParseError,
+  ParseWarning,
+} from "@/entrypoints/background/parse-filter";
 import {
   argsDirectives,
   noArgsDirectives,
@@ -160,7 +163,12 @@ const theme = EditorView.theme(
 // Linter
 // -------------------------------------------------------------------------------------------
 
-const linterMessageMap: Record<InvalidLine["type"], string> = {
+const linterMessageMap: Record<
+  ParseWarning["type"] | ParseError["type"],
+  string
+> = {
+  target: "ターゲットを指定する必要があります。",
+  strict_with_disable: "@strictは@disableと併用できません。",
   directive: "無効なディレクティブです。",
   regex: "無効な正規表現です。",
   regex_flag: "無効な正規表現フラグです。",
@@ -171,34 +179,23 @@ const linter = createLinter((view) => {
   const diagnostics: Diagnostic[] = [];
 
   const doc = view.state.doc;
-  const { rules, invalidLines } = parseFilter(doc.toString(), true);
+  const { warnings, errors } = parseFilter(doc.toString());
 
-  for (const rule of rules) {
-    const messages: string[] = [];
+  // warning
+  for (const { index, type } of warnings) {
+    const line = doc.line(index + 1);
 
-    if (Object.values(rule.target).every((target) => !target)) {
-      messages.push("ターゲットを指定する必要があります。");
-    }
-    if (rule.strict && rule.disable) {
-      messages.push("@strictは@disableと併用できません。");
-    }
-
-    if (messages.length > 0) {
-      const line = doc.line((rule.index as number) + 1);
-
-      for (const message of messages) {
-        diagnostics.push({
-          from: line.from,
-          to: line.to,
-          severity: "warning",
-          markClass: "editor-warning",
-          message,
-        });
-      }
-    }
+    diagnostics.push({
+      from: line.from,
+      to: line.to,
+      severity: "warning",
+      markClass: "editor-warning",
+      message: linterMessageMap[type],
+    });
   }
 
-  for (const { index, type } of invalidLines) {
+  // error
+  for (const { index, type } of errors) {
     const line = doc.line(index + 1);
 
     diagnostics.push({

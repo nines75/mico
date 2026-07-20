@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
-import type { InvalidLine } from "./parse-filter";
+import type { ParseError, ParseWarning } from "./parse-filter";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockRules } from "@/utils/test";
+import type { Rule } from "./rule";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
@@ -102,11 +103,12 @@ rule
       ] satisfies {
         name: string;
         filter: string;
-        type: InvalidLine["type"];
+        type: ParseError["type"];
       }[])("$name", ({ filter, type }) => {
         expect(parseFilter(filter)).toEqual({
           rules: [],
-          invalidLines: [{ index: 0, type }],
+          warnings: [],
+          errors: [{ index: 0, type }],
         });
       });
     });
@@ -239,17 +241,14 @@ rule
       it.each([
         {
           // 直後にスペースがある場合のみパースしているので、以前は無効なディレクティブとして扱っていた
-          // しかし引数が必要であることを示す方が望ましいため、invalidLinesのtypeがargsになっていることを確認する
+          // しかし引数が必要であることを示す方が望ましいため、errorsのtypeがargsになっていることを確認する
           name: "ディレクティブのみ",
           filter: `
 @include-tags
 rule
 @end
 `,
-          expected: {
-            rules: mockRules({}).rules,
-            invalidLines: [{ index: 1, type: "args" }],
-          },
+          type: "args",
         },
         {
           // スペースのみの場合、引数は空の配列としてパースされる
@@ -260,10 +259,7 @@ rule
 rule
 @end
 `,
-          expected: {
-            rules: mockRules({}).rules,
-            invalidLines: [{ index: 1, type: "args" }],
-          },
+          type: "args",
         },
         {
           name: "ディレクティブの前方一致",
@@ -272,14 +268,18 @@ rule
 rule
 @end
 `,
-          expected: {
-            rules: mockRules({}).rules,
-            invalidLines: [{ index: 1, type: "directive" }],
-          },
+          type: "directive",
         },
-      ])("$name", ({ filter, expected }) => {
-        expect(parseFilter(filter)).toEqual(expected);
-      });
+      ] satisfies { name: string; filter: string; type: ParseError["type"] }[])(
+        "$name",
+        ({ filter, type }) => {
+          expect(parseFilter(filter)).toEqual({
+            rules: mockRules({}).rules,
+            warnings: [{ index: 2, type: "target" }],
+            errors: [{ index: 1, type }],
+          });
+        },
+      );
     });
   });
 
@@ -336,7 +336,8 @@ rule
 `,
         expected: {
           rules: mockRules({}).rules,
-          invalidLines: [{ index: 1, type: "directive" }],
+          warnings: [{ index: 2, type: "target" }],
+          errors: [{ index: 1, type: "directive" }],
         },
       },
       {
@@ -401,6 +402,48 @@ rule
       },
     ])("$name", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
+    });
+  });
+
+  // -------------------------------------------------------------------------------------------
+  // warning
+  // -------------------------------------------------------------------------------------------
+
+  describe("warning", () => {
+    it.each([
+      {
+        name: "ターゲットを指定していない",
+        filter: "rule",
+        rules: mockRules({}).rules,
+        warnings: [{ index: 0, type: "target" }],
+      },
+      {
+        name: "@strictを@disableと併用している",
+        filter: `
+@comment-body
+
+@strict
+@disable
+rule
+`,
+        rules: mockRules({
+          strict: true,
+          disable: true,
+          target: { commentBody: true },
+        }).rules,
+        warnings: [{ index: 5, type: "strict_with_disable" }],
+      },
+    ] satisfies {
+      name: string;
+      filter: string;
+      rules: Rule[];
+      warnings: ParseWarning[];
+    }[])("$name", ({ filter, rules, warnings }) => {
+      expect(parseFilter(filter)).toEqual({
+        rules,
+        warnings,
+        errors: [],
+      });
     });
   });
 });

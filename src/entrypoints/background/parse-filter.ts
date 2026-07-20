@@ -49,7 +49,12 @@ export const noArgsDirectives = [
   "video-title",
 ] as const satisfies Exclude<Directive, { args: string[] }>["type"][];
 
-export interface InvalidLine {
+export interface ParseWarning {
+  index: number;
+  type: "target" | "strict_with_disable";
+}
+
+export interface ParseError {
   index: number;
   type: "directive" | "regex" | "regex_flag" | "args";
 }
@@ -57,11 +62,12 @@ export interface InvalidLine {
 export function parseFilter(
   filter: string,
   includeIndex = false, // テストが複雑になるためindexはデフォルトで含めない
-): { rules: Rule[]; invalidLines: InvalidLine[] } {
+): { rules: Rule[]; warnings: ParseWarning[]; errors: ParseError[] } {
   let strictAlias = false;
   const directives: Directive[] = [];
   const rules: Rule[] = [];
-  const invalidLines: InvalidLine[] = [];
+  const warnings: ParseWarning[] = [];
+  const errors: ParseError[] = [];
 
   const lines = filter
     .split("\n")
@@ -77,14 +83,14 @@ export function parseFilter(
     // 引数あり
     for (const directive of argsDirectives) {
       if (line === `@${directive}`) {
-        invalidLines.push({ index, type: "args" });
+        errors.push({ index, type: "args" });
         continue lineLoop;
       }
 
       if (new RegExp(String.raw`^@${directive}\s`).test(line)) {
         const args = parseArgs(line);
         if (args.length === 0) {
-          invalidLines.push({ index, type: "args" });
+          errors.push({ index, type: "args" });
           continue lineLoop;
         }
 
@@ -114,7 +120,7 @@ export function parseFilter(
 
     // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
     if (line.startsWith("@")) {
-      invalidLines.push({ index, type: "directive" });
+      errors.push({ index, type: "directive" });
       continue;
     }
 
@@ -224,14 +230,14 @@ export function parseFilter(
     if (regexStr !== undefined && flags !== undefined) {
       // 想定外のフラグが含まれている場合はルールとして解釈しない
       if (!/^[isuvm]*$/.test(flags)) {
-        invalidLines.push({ index, type: "regex_flag" });
+        errors.push({ index, type: "regex_flag" });
         continue;
       }
 
       try {
         regex = new RegExp(regexStr, flags);
       } catch {
-        invalidLines.push({ index, type: "regex" });
+        errors.push({ index, type: "regex" });
         continue;
       }
     }
@@ -241,9 +247,20 @@ export function parseFilter(
       ...rule,
       ...(includeIndex && { index }),
     });
+
+    // -------------------------------------------------------------------------------------------
+    // ルールの検証
+    // -------------------------------------------------------------------------------------------
+
+    if (Object.values(rule.target).every((target) => !target)) {
+      warnings.push({ index, type: "target" });
+    }
+    if (rule.strict && rule.disable) {
+      warnings.push({ index, type: "strict_with_disable" });
+    }
   }
 
-  return { rules, invalidLines };
+  return { rules, warnings, errors };
 }
 
 export function parseArgs(line: string) {
