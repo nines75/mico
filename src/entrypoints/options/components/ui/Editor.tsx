@@ -171,7 +171,31 @@ const linter = createLinter((view) => {
   const diagnostics: Diagnostic[] = [];
 
   const doc = view.state.doc;
-  const invalidLines = parseFilter(doc.toString()).invalidLines;
+  const { rules, invalidLines } = parseFilter(doc.toString(), true);
+
+  for (const rule of rules) {
+    const messages: string[] = [];
+
+    if (Object.values(rule.target).every((target) => !target)) {
+      messages.push("ターゲットを指定する必要があります。");
+    }
+    if (rule.strict && rule.disable) {
+      messages.push("@strictは@disableと併用できません。");
+    }
+
+    if (messages.length > 0) {
+      const line = doc.line((rule.index as number) + 1);
+
+      for (const message of messages) {
+        diagnostics.push({
+          from: line.from,
+          to: line.to,
+          severity: "warning",
+          message,
+        });
+      }
+    }
+  }
 
   for (const { index, type } of invalidLines) {
     const line = doc.line(index + 1);
