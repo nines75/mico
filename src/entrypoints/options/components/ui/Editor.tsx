@@ -191,6 +191,7 @@ const linter = createLinter((view) => {
           from: line.from,
           to: line.to,
           severity: "warning",
+          markClass: "editor-warning",
           message,
         });
       }
@@ -204,6 +205,7 @@ const linter = createLinter((view) => {
       from: line.from,
       to: line.to,
       severity: "error",
+      markClass: "editor-error",
       message: linterMessageMap[type],
     });
   }
