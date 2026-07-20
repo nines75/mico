@@ -45,14 +45,20 @@ export default function AutoFilter() {
 
   return (
     <>
-      <input
-        className="search"
-        placeholder="ルールを検索"
-        value={query}
-        onChange={(event) => {
-          setQuery(event.target.value);
-        }}
-      />
+      <div>
+        <input
+          className="search"
+          placeholder="ルールを検索"
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value);
+          }}
+        />
+        <span className="info">
+          {"ルール数: "}
+          <span className="info-value">{rules.length}</span>
+        </span>
+      </div>
       <VList className="rule-container" ref={ref}>
         {rules.map((rule) => {
           if (rule.id === undefined) return null;
