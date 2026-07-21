@@ -5,14 +5,12 @@
   --dim-white: #e8eaed;
   --font: Consolas, monospace;
 }
-
-/* colorを継承させる */
 input,
 button,
 select {
+  /* colorを継承させる */
   color: inherit;
 }
-
 .info {
   color: silver;
 }

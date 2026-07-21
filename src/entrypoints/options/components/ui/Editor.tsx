@@ -259,7 +259,7 @@ function createHints(view: EditorView) {
   const widgets: Range<Decoration>[] = [];
 
   const doc = view.state.doc;
-  const rules = parseFilter(doc.toString()).rules;
+  const { rules } = parseFilter(doc.toString());
 
   for (const { from, to } of view.visibleRanges) {
     for (const rule of rules) {
@@ -313,15 +313,15 @@ const extensions = [
       run: redo,
     },
   ]),
-  lineNumbers(),
-  history(),
-  dropCursor(),
   closeBrackets(),
+  dropCursor(),
+  history(),
   highlightActiveLine(),
   highlightActiveLineGutter(),
   highlightTrailingWhitespace(),
-  highlights,
+  lineNumbers(),
   completions,
+  highlights,
   linter,
   theme,
   hintsCompartment.of([]),
@@ -337,7 +337,7 @@ interface EditorProps {
 }
 
 export default function Editor({ value, onChange }: EditorProps) {
-  const view = useRef<EditorView | null>(null);
+  const viewRef = useRef<EditorView | null>(null);
   const parent = useRef<HTMLDivElement | null>(null);
   const showParsingHints = useSettingsStore(
     (state) => state.settings.showParsingHints,
@@ -368,27 +368,27 @@ export default function Editor({ value, onChange }: EditorProps) {
   useEffect(() => {
     if (parent.current === null) return;
 
-    view.current = new EditorView({
+    viewRef.current = new EditorView({
       state: createEditorState(),
       parent: parent.current,
     });
 
     // クリーンアップ処理
     return () => {
-      view.current?.destroy();
+      viewRef.current?.destroy();
     };
   }, [parent]);
 
   // 外部での変更を反映
   useEffect(() => {
-    const current = view.current;
-    if (current === null) return;
+    const view = viewRef.current;
+    if (view === null) return;
 
     // ユーザー入力による発火を弾く
-    const currentValue = current.state.doc.toString();
+    const currentValue = view.state.doc.toString();
     if (currentValue === value) return;
 
-    current.dispatch({
+    view.dispatch({
       changes: {
         from: 0,
         to: currentValue.length,
@@ -398,10 +398,10 @@ export default function Editor({ value, onChange }: EditorProps) {
   }, [value]);
 
   useEffect(() => {
-    const current = view.current;
-    if (current === null) return;
+    const view = viewRef.current;
+    if (view === null) return;
 
-    current.dispatch({
+    view.dispatch({
       effects: hintsCompartment.reconfigure(showParsingHints ? hints : []),
     });
   }, [showParsingHints]);

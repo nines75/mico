@@ -22,7 +22,7 @@ export default function ManualFilter() {
 
   return (
     <>
-      <div className="button-container">
+      <div className="manual-filter-panel">
         <button
           className="button button-filter"
           onClick={() => {

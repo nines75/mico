@@ -231,7 +231,7 @@ function migrateNgUserId(
 ) {
   const ngUserId = migrateVAlias(v3.ngUserId ?? "");
   const lines = ngUserId.split("\n");
-  const rules = parseFilter(ngUserId).rules;
+  const { rules } = parseFilter(ngUserId);
 
   let autoRuleCount = 0;
   for (const rule of rules) {
@@ -325,7 +325,7 @@ function migrateNgId(
   autoFilter: Except<AutoRule, "source">[],
 ) {
   const lines = (v3.ngId ?? "").split("\n");
-  const rules = parseFilter(v3.ngId ?? "").rules;
+  const { rules } = parseFilter(v3.ngId ?? "");
 
   let autoRuleCount = 0;
   for (const rule of rules) {
