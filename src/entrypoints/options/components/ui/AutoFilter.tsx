@@ -1,6 +1,6 @@
 import type { AutoRule } from "@/entrypoints/background/rule";
 import { useSettingsStore } from "@/utils/store";
-import { Pencil, X } from "lucide-react";
+import { BrushCleaning, Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
@@ -99,24 +99,45 @@ function Rule({ rule }: RuleProps) {
         {pattern}
       </div>
       <div className="rule-details">
-        <button
-          className="rule-memo-edit-button"
-          title="メモを編集"
-          onClick={() => {
-            const memo = prompt("メモを入力してください", rule.memo ?? "");
-            if (memo === null) return;
+        <div>
+          <button
+            className="rule-button"
+            title="メモを編集"
+            onClick={() => {
+              const memo = prompt("メモを入力してください", rule.memo ?? "");
+              if (memo === null) return;
 
-            save({
-              autoFilter: autoFilter.map((target) => {
-                if (target.id !== rule.id) return target;
+              save({
+                autoFilter: autoFilter.map((target) => {
+                  if (target.id !== rule.id) return target;
 
-                return { ...target, memo };
-              }),
-            });
-          }}
-        >
-          <Pencil size={20} />
-        </button>
+                  return { ...target, memo };
+                }),
+              });
+            }}
+          >
+            <Pencil size={20} />
+          </button>
+          <button
+            className="rule-button"
+            title="コンテキスト情報を削除"
+            onClick={() => {
+              if (!confirm("ソースとコンテキストを削除します。")) return;
+
+              save({
+                autoFilter: autoFilter.map((target) => {
+                  if (target.id !== rule.id) return target;
+
+                  const { source, context, ...rest } = target;
+
+                  return rest;
+                }),
+              });
+            }}
+          >
+            <BrushCleaning size={20} />
+          </button>
+        </div>
         {rule.target !== undefined &&
           Object.entries(rule.target).map(([key, value]) => {
             if (!value) return null;

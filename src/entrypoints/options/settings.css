@@ -138,7 +138,7 @@ Autoフィルター
   /* アイコンを揃える */
   display: flex;
 }
-.rule-memo-edit-button {
+.rule-button {
   border: none;
 }
 .search {
