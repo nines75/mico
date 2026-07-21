@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import type { ParseError, ParseWarning } from "./parse-filter";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockRules } from "@/utils/test";
-import type { Rule } from "./rule";
 
 const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
 
@@ -412,13 +411,35 @@ rule
   describe("warning", () => {
     it.each([
       {
-        name: "ターゲットを指定していない",
+        name: "ターゲットを指定している場合、警告が出ない",
+        filter: `
+@comment-body
+rule        
+`,
+        warnings: [],
+      },
+      {
+        name: "ターゲットを指定していない場合、警告が出る",
         filter: "rule",
-        rules: mockRules({}).rules,
         warnings: [{ index: 0, type: "target" }],
       },
       {
-        name: "@strictを@disableと併用している",
+        name: "@strictを@disableと併用していない場合、警告が出ない",
+        filter: `
+@comment-body
+
+@strict
+rule
+@end
+
+@disable
+rule
+@end
+`,
+        warnings: [],
+      },
+      {
+        name: "@strictを@disableと併用している場合、警告が出る",
         filter: `
 @comment-body
 
@@ -426,24 +447,14 @@ rule
 @disable
 rule
 `,
-        rules: mockRules({
-          strict: true,
-          disable: true,
-          target: { commentBody: true },
-        }).rules,
         warnings: [{ index: 5, type: "strict_with_disable" }],
       },
     ] satisfies {
       name: string;
       filter: string;
-      rules: Rule[];
       warnings: ParseWarning[];
-    }[])("$name", ({ filter, rules, warnings }) => {
-      expect(parseFilter(filter)).toEqual({
-        rules,
-        warnings,
-        errors: [],
-      });
+    }[])("$name", ({ filter, warnings }) => {
+      expect(parseFilter(filter).warnings).toEqual(warnings);
     });
   });
 });
