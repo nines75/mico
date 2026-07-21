@@ -316,8 +316,10 @@ const extensions = [
   lineNumbers(),
   history(),
   dropCursor(),
+  closeBrackets(),
   highlightActiveLine(),
   highlightActiveLineGutter(),
+  highlightTrailingWhitespace(),
   highlights,
   completions,
   linter,
@@ -342,7 +344,6 @@ export default function Editor({ value, onChange }: EditorProps) {
   );
 
   const getExtensions = () => {
-    const settings = useSettingsStore.getState().settings;
     const onUpdate = EditorView.updateListener.of((update) => {
       if (
         update.docChanged &&
@@ -355,14 +356,7 @@ export default function Editor({ value, onChange }: EditorProps) {
         onChange(update.state.doc.toString());
     });
 
-    return [
-      ...(settings.enableCloseBrackets ? [closeBrackets()] : []),
-      ...(settings.enableHighlightTrailingWhitespace
-        ? [highlightTrailingWhitespace()]
-        : []),
-      ...extensions,
-      onUpdate,
-    ];
+    return [...extensions, onUpdate];
   };
   const createEditorState = useEffectEvent(() => {
     return EditorState.create({

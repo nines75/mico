@@ -120,8 +120,6 @@ interface SettingsV3 {
 }
 
 const keyMap = [
-  ["isCloseBrackets", "enableCloseBrackets"],
-  ["isHighlightTrailingWhitespace", "enableHighlightTrailingWhitespace"],
   ["isAdvancedFeaturesVisible", "showAdvancedFeatures"],
   ["shouldImportLocalFilterOnLoad", "importLocalFilterOnLoad"],
   ["shouldImportOnlyWhenWslRunning", "importOnlyWhenWslRunning"],

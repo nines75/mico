@@ -107,21 +107,6 @@ async function exportBackup() {
 
 const config = [
   {
-    heading: "エディター",
-    items: [
-      {
-        type: "checkbox",
-        id: "enableCloseBrackets",
-        label: "括弧を自動で閉じる",
-      },
-      {
-        type: "checkbox",
-        id: "enableHighlightTrailingWhitespace",
-        label: "行末の空白文字をハイライトする",
-      },
-    ],
-  },
-  {
     heading: "通知",
     items: [
       {

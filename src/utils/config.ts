@@ -5,10 +5,6 @@ export const defaultSettings: Settings = {
   // 一般設定
   // -------------------------------------------------------------------------------------------
 
-  // エディター
-  enableCloseBrackets: true,
-  enableHighlightTrailingWhitespace: true,
-
   // 通知
   notifyOnManualNg: true,
   notifyOnAutoNg: true,

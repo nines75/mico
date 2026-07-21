@@ -14,10 +14,6 @@ export interface Settings {
   // 一般設定
   // -------------------------------------------------------------------------------------------
 
-  // エディター
-  enableCloseBrackets: boolean;
-  enableHighlightTrailingWhitespace: boolean;
-
   // 通知
   notifyOnManualNg: boolean;
   notifyOnAutoNg: boolean;
