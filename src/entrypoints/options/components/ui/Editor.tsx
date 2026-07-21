@@ -259,11 +259,11 @@ function createHints(view: EditorView) {
   const widgets: Range<Decoration>[] = [];
 
   const doc = view.state.doc;
-  const rules = parseFilter(doc.toString(), true).rules;
+  const rules = parseFilter(doc.toString()).rules;
 
   for (const { from, to } of view.visibleRanges) {
     for (const rule of rules) {
-      const line = doc.line((rule.index as number) + 1);
+      const line = doc.line(rule.index + 1);
 
       // viewport外にはウィジットを挿入しない
       if (line.to < from || to < line.from) continue;

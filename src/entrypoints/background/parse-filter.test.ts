@@ -21,7 +21,6 @@ describe(parseFilter.name, () => {
     },
     {
       name: "index",
-      hasIndex: true,
       filter: `
 rule
 # comment
@@ -36,10 +35,8 @@ rule
       filter: "rule",
       expected: mockRules({}),
     },
-  ])("$name", ({ filter, hasIndex, expected }) => {
-    expect(parseFilter(filter, hasIndex ?? false)).toEqual(
-      expected ?? mockRules(),
-    );
+  ])("$name", ({ filter, expected }) => {
+    expect(parseFilter(filter)).toEqual(expected ?? mockRules());
   });
 
   describe("正規表現ルール", () => {

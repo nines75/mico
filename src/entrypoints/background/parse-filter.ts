@@ -1,4 +1,5 @@
-import { createDefaultRule, type Rule } from "./rule";
+import type { ManualRule } from "./rule";
+import { createDefaultRule } from "./rule";
 
 export type Directive =
   | {
@@ -59,13 +60,14 @@ export interface ParseError {
   type: "directive" | "regex" | "regex_flag" | "args";
 }
 
-export function parseFilter(
-  filter: string,
-  includeIndex = false, // テストが複雑になるためindexはデフォルトで含めない
-): { rules: Rule[]; warnings: ParseWarning[]; errors: ParseError[] } {
+export function parseFilter(filter: string): {
+  rules: ManualRule[];
+  warnings: ParseWarning[];
+  errors: ParseError[];
+} {
   let strictAlias = false;
   const directives: Directive[] = [];
-  const rules: Rule[] = [];
+  const rules: ManualRule[] = [];
   const warnings: ParseWarning[] = [];
   const errors: ParseError[] = [];
 
@@ -243,9 +245,9 @@ export function parseFilter(
     }
 
     rules.push({
+      index,
       pattern: regex ?? line,
       ...rule,
-      ...(includeIndex && { index }),
     });
 
     // -------------------------------------------------------------------------------------------

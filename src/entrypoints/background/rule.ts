@@ -3,8 +3,6 @@ import { merge } from "@/utils/util";
 import type { Merge, PartialDeep, SetOptional } from "type-fest";
 
 export interface Rule {
-  /** 元のフィルターを改行区切りで配列にしたときのインデックス */
-  index?: number;
   id?: string;
   pattern: string | RegExp;
   strict: boolean;
@@ -21,6 +19,13 @@ export interface Rule {
     videoTitle: boolean;
   };
 }
+
+interface ManualRuleOnly {
+  /** 元のフィルターを改行区切りで配列にしたときのインデックス */
+  index: number;
+}
+
+export type ManualRule = Rule & ManualRuleOnly;
 
 interface AutoRuleOnly {
   id: string;

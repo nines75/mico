@@ -1,6 +1,7 @@
 import type { Filter } from "@/entrypoints/background/comment-filter/filter";
 import type { parseFilter } from "@/entrypoints/background/parse-filter";
-import { createDefaultRule, type Rule } from "@/entrypoints/background/rule";
+import type { ManualRule } from "@/entrypoints/background/rule";
+import { createDefaultRule } from "@/entrypoints/background/rule";
 import type { Thread } from "@/types/api/comment-api.types";
 import type { NvComment } from "@/types/api/comment.types";
 import type { Tab } from "@/types/storage/tab.types";
@@ -90,11 +91,19 @@ export class CommentAssertor {
 }
 
 export function mockRules(
-  ...rules: PartialDeep<Rule>[]
+  ...rules: PartialDeep<ManualRule>[]
 ): ReturnType<typeof parseFilter> {
   return {
-    rules: rules.map((rule): Rule => {
-      return merge({ ...createDefaultRule(), pattern: "rule" }, rule);
+    rules: rules.map((rule): ManualRule => {
+      return merge(
+        {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          index: expect.any(Number),
+          pattern: "rule",
+          ...createDefaultRule(),
+        },
+        rule,
+      );
     }),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     warnings: expect.any(Array),

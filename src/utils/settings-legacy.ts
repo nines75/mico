@@ -231,7 +231,7 @@ function migrateNgUserId(
 ) {
   const ngUserId = migrateVAlias(v3.ngUserId ?? "");
   const lines = ngUserId.split("\n");
-  const rules = parseFilter(ngUserId, true).rules;
+  const rules = parseFilter(ngUserId).rules;
 
   let autoRuleCount = 0;
   for (const rule of rules) {
@@ -285,7 +285,7 @@ function migrateNgUserId(
       return true;
     };
 
-    const index = rule.index as number;
+    const index = rule.index;
 
     const before1 = lines[index - 1];
     const before2 = lines[index - 2];
@@ -325,7 +325,7 @@ function migrateNgId(
   autoFilter: Except<AutoRule, "source">[],
 ) {
   const lines = (v3.ngId ?? "").split("\n");
-  const rules = parseFilter(v3.ngId ?? "", true).rules;
+  const rules = parseFilter(v3.ngId ?? "").rules;
 
   let autoRuleCount = 0;
   for (const rule of rules) {
@@ -342,7 +342,7 @@ function migrateNgId(
     }
 
     let context: string | undefined;
-    const index = rule.index as number;
+    const index = rule.index;
     const before = lines[index - 1];
     if (before?.startsWith("#") === true) context = before.replace(/^# ?/, "");
 
