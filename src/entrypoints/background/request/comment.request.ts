@@ -74,7 +74,13 @@ export default function commentRequest(
     }
 
     if (settings.complementContext) {
-      tasks.push(addContextToAutoRule({ comments: result.allComments, tab }));
+      tasks.push(
+        addContextToAutoRule({
+          type: "comment",
+          comments: result.allComments,
+          tab,
+        }),
+      );
     }
 
     await Promise.all(tasks);

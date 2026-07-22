@@ -206,11 +206,18 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   await notify("NG登録に失敗しました");
 }
 
-export async function addContextToAutoRule(data: {
-  comments?: PartialComment[];
-  videos?: Video[];
-  tab?: Tab;
-}) {
+export async function addContextToAutoRule(
+  data:
+    | {
+        type: "comment";
+        comments: PartialComment[];
+        tab: Tab;
+      }
+    | {
+        type: "video";
+        videos: Video[];
+      },
+) {
   const transaction = async (): Promise<Partial<Settings>> => {
     const settings = await loadSettings();
     const source = "complement";
@@ -219,14 +226,14 @@ export async function addContextToAutoRule(data: {
       autoFilter: settings.autoFilter.map((rule) => {
         if (rule.context !== undefined) return rule;
 
-        if (rule.target?.commentUserId === true && data.tab !== undefined) {
+        if (rule.target?.commentUserId === true && data.type === "comment") {
           // strictルールによるフィルタリング時に除外されないようにAutoFilterを空にする
           const bodyFilter = new BodyFilter({ ...settings, autoFilter: [] });
           bodyFilter.filterRules(data.tab);
 
-          const comments = (data.comments?.filter(
+          const comments = data.comments.filter(
             (comment) => comment.userId === rule.pattern,
-          ) ?? []) as NvComment[];
+          ) as NvComment[];
           const commentCount = comments.length;
 
           // strictルールによるフィルタリングを優先
@@ -254,8 +261,8 @@ export async function addContextToAutoRule(data: {
           }
         }
 
-        if (rule.target?.videoId === true) {
-          const title = data.videos?.find(
+        if (rule.target?.videoId === true && data.type === "video") {
+          const title = data.videos.find(
             (video) => video.id === rule.pattern,
           )?.title;
           if (title !== undefined) {
@@ -267,8 +274,8 @@ export async function addContextToAutoRule(data: {
           }
         }
 
-        if (rule.target?.videoOwnerId === true) {
-          const ownerName = data.videos?.find(
+        if (rule.target?.videoOwnerId === true && data.type === "video") {
+          const ownerName = data.videos.find(
             (video) => video.owner.id === rule.pattern,
           )?.owner.name;
           if (ownerName !== undefined && ownerName !== null) {

@@ -48,7 +48,12 @@ export function searchRequest(
     }
 
     if (settings.complementContext) {
-      tasks.push(addContextToAutoRule({ videos: filteringResult.allVideos }));
+      tasks.push(
+        addContextToAutoRule({
+          type: "video",
+          videos: filteringResult.allVideos,
+        }),
+      );
     }
 
     await Promise.all(tasks);
