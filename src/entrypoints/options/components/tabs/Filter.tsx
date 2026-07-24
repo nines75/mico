@@ -25,7 +25,7 @@ export default function Filter() {
           <kbd className="keybind">t</kbd>
         </button>
         <span className="info">
-          現在のフィルター:
+          {"現在のフィルター: "}
           <span className="info-value">
             {selectedFilter === "manual" ? "Manual" : "Auto"}
           </span>
