@@ -96,7 +96,14 @@ function Rule({ rule }: RuleProps) {
         >
           <X size={30} />
         </button>
-        {pattern}
+        {pattern.startsWith("nvc:") ? (
+          <>
+            <span className="prefix-nvc">nvc:</span>
+            {pattern.slice(4)}
+          </>
+        ) : (
+          pattern
+        )}
       </div>
       <div className="rule-details">
         <div>
