@@ -111,6 +111,12 @@ function Rule({ rule }: RuleProps) {
                 autoFilter: autoFilter.map((target) => {
                   if (target.id !== rule.id) return target;
 
+                  if (memo === "") {
+                    const { memo: _, ...rest } = target;
+
+                    return rest;
+                  }
+
                   return { ...target, memo };
                 }),
               });
