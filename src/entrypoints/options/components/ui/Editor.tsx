@@ -343,7 +343,7 @@ export default function Editor({ value, onChange }: EditorProps) {
     (state) => state.settings.showParsingHints,
   );
 
-  const getExtensions = () => {
+  const createEditorState = useEffectEvent(() => {
     const onUpdate = EditorView.updateListener.of((update) => {
       if (
         update.docChanged &&
@@ -356,12 +356,9 @@ export default function Editor({ value, onChange }: EditorProps) {
         onChange(update.state.doc.toString());
     });
 
-    return [...extensions, onUpdate];
-  };
-  const createEditorState = useEffectEvent(() => {
     return EditorState.create({
       doc: value,
-      extensions: getExtensions(),
+      extensions: [...extensions, onUpdate],
     });
   });
 
