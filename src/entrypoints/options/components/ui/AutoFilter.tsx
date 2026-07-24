@@ -120,10 +120,8 @@ function Rule({ rule }: RuleProps) {
           </button>
           <button
             className="rule-button"
-            title="コンテキスト情報を削除"
+            title="ソースとコンテキストを削除"
             onClick={() => {
-              if (!confirm("ソースとコンテキストを削除します。")) return;
-
               save({
                 autoFilter: autoFilter.map((target) => {
                   if (target.id !== rule.id) return target;
