@@ -1,3 +1,4 @@
+import { objectValues } from "ts-extras";
 import type { ManualRule } from "./rule";
 import { createDefaultRule } from "./rule";
 
@@ -52,7 +53,7 @@ export const noArgsDirectives = [
 
 export interface ParseWarning {
   index: number;
-  type: "target" | "strict" | "strict_with_disable";
+  type: "target" | "strict" | "strict_with_disable" | "toggle";
 }
 
 export interface ParseError {
@@ -263,6 +264,15 @@ export function parseFilter(filter: string): {
       !rule.target.commentBody
     ) {
       warnings.push({ index, type: "strict" });
+    }
+    if (
+      (objectValues(rule.include).some((array) => array.length > 0) ||
+        objectValues(rule.exclude).some((array) => array.length > 0)) &&
+      !rule.target.commentUserId &&
+      !rule.target.commentCommands &&
+      !rule.target.commentBody
+    ) {
+      warnings.push({ index, type: "toggle" });
     }
     if (rule.strict && rule.disable) {
       warnings.push({ index, type: "strict_with_disable" });

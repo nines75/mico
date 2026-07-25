@@ -466,6 +466,26 @@ rule
 `,
         warnings: [{ index: 5, type: "strict_with_disable" }],
       },
+      {
+        name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
+        filter: `
+@comment-body
+
+@include-tags tag
+rule
+`,
+        warnings: [],
+      },
+      {
+        name: "@include-tagsを@video-idのみと併用している場合、警告が出る",
+        filter: `
+@video-id
+
+@include-tags tag
+rule
+`,
+        warnings: [{ index: 4, type: "toggle" }],
+      },
     ] satisfies {
       name: string;
       filter: string;

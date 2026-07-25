@@ -172,6 +172,8 @@ const linterMessageMap: Record<
   strict:
     "@strictは@comment-commandsまたは@comment-bodyと併用する必要があります。",
   strict_with_disable: "@strictは@disableと併用できません。",
+  toggle:
+    "@includeまたは@excludeで始まるディレクティブはコメントフィルターでのみ使用できます。",
 
   // error
   directive: "無効なディレクティブです。",
