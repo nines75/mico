@@ -9,30 +9,33 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function AutoFilter() {
   const ref = useRef<VListHandle>(null);
-  const [query, setQuery] = useState("");
   const autoFilter = useSettingsStore((state) => state.settings.autoFilter);
+
+  const [queryString, setQuery] = useState("");
+  const queries = queryString.split(/\s+/).filter((value) => value !== "");
 
   const rules = useMemo(
     () =>
       autoFilter.filter((rule) => {
-        if (query === "") return true;
+        if (queries.length === 0) return true;
 
-        return (
-          rule.pattern?.includes(query) === true ||
-          rule.source?.includes(query) === true ||
-          rule.context?.includes(query) === true ||
-          rule.memo?.includes(query) === true ||
-          rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
-            true ||
-          (rule.target !== undefined &&
-            Object.entries(rule.target).some(([key, value]) => {
-              if (!value) return false;
+        return queries.every(
+          (query) =>
+            rule.pattern?.includes(query) === true ||
+            rule.source?.includes(query) === true ||
+            rule.context?.includes(query) === true ||
+            rule.memo?.includes(query) === true ||
+            rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
+              true ||
+            (rule.target !== undefined &&
+              Object.entries(rule.target).some(([key, value]) => {
+                if (!value) return false;
 
-              return decamelize(key).includes(query);
-            }))
+                return decamelize(key).includes(query);
+              })),
         );
       }),
-    [autoFilter, query],
+    [autoFilter, queries],
   );
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function AutoFilter() {
         <input
           className="search"
           placeholder="ルールを検索"
-          value={query}
+          value={queryString}
           onChange={(event) => {
             setQuery(event.target.value);
           }}
