@@ -242,7 +242,6 @@ rule
           filter: `
 @include-tags
 rule
-@end
 `,
           type: "args",
         },
@@ -253,7 +252,6 @@ rule
           filter: `
 @include-tags 
 rule
-@end
 `,
           type: "args",
         },
@@ -262,7 +260,6 @@ rule
           filter: `
 @include-tagss tag0 tag1
 rule
-@end
 `,
           type: "directive",
         },
@@ -407,6 +404,7 @@ rule
 
   describe("warning", () => {
     it.each([
+      // type: target
       {
         name: "ターゲットを指定している場合、警告が出ない",
         filter: `
@@ -420,6 +418,7 @@ rule
         filter: "rule",
         warnings: [{ index: 0, type: "target" }],
       },
+      // type: strict
       {
         name: "@strictを@comment-bodyと併用している場合、警告が出ない",
         filter: `
@@ -440,6 +439,7 @@ rule
 `,
         warnings: [{ index: 4, type: "strict" }],
       },
+      // type: strict_with_disable
       {
         name: "@strictを@disableと併用していない場合、警告が出ない",
         filter: `
@@ -466,6 +466,7 @@ rule
 `,
         warnings: [{ index: 5, type: "strict_with_disable" }],
       },
+      // type: toggle
       {
         name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
         filter: `
@@ -486,6 +487,7 @@ rule
 `,
         warnings: [{ index: 4, type: "toggle" }],
       },
+      // type: disable
       {
         name: "@diableを@comment-commandsと併用している場合、警告が出ない",
         filter: `
@@ -505,6 +507,26 @@ rule
 rule
 `,
         warnings: [{ index: 4, type: "disable" }],
+      },
+      // type: end
+      {
+        name: "余分な@endがない場合、警告が出ない",
+        filter: `
+@comment-body
+rule
+@end
+`,
+        warnings: [],
+      },
+      {
+        name: "余分な@endがある場合、警告が出る",
+        filter: `
+@comment-body
+rule
+@end
+@end
+`,
+        warnings: [{ index: 4, type: "end" }],
       },
     ] satisfies {
       name: string;

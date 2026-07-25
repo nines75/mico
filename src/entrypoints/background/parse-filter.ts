@@ -53,7 +53,8 @@ export const noArgsDirectives = [
 
 export interface ParseWarning {
   index: number;
-  type: "target" | "strict" | "strict_with_disable" | "toggle" | "disable";
+  type:
+    "target" | "strict" | "strict_with_disable" | "toggle" | "disable" | "end";
 }
 
 export interface ParseError {
@@ -113,7 +114,11 @@ export function parseFilter(filter: string): {
       }
     }
     if (trimmedLine === "@end") {
-      directives.pop();
+      const directive = directives.pop();
+      if (directive === undefined) {
+        warnings.push({ index, type: "end" });
+      }
+
       continue;
     }
     if (trimmedLine === "@s") {

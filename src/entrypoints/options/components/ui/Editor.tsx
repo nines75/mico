@@ -175,6 +175,7 @@ const linterMessageMap: Record<
   toggle:
     "@includeまたは@excludeで始まるディレクティブはコメントフィルターでのみ使用できます。",
   disable: "@disableは@comment-commandsと併用する必要があります。",
+  end: "不要な@endです。",
 
   // error
   directive: "無効なディレクティブです。",
