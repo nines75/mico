@@ -5,6 +5,7 @@ export const videoSchema = z.looseObject({
   title: z.string(),
   latestCommentSummary: z.string(),
   isPaymentRequired: z.boolean(),
+  isMuted: z.boolean(),
   count: z.looseObject({
     view: z.number().int(),
     comment: z.number().int(),
