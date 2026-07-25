@@ -54,7 +54,13 @@ export const noArgsDirectives = [
 export interface ParseWarning {
   index: number;
   type:
-    "target" | "strict" | "strict_with_disable" | "toggle" | "disable" | "end";
+    | "target"
+    | "strict"
+    | "strict_with_disable"
+    | "strict_alias"
+    | "toggle"
+    | "disable"
+    | "end";
 }
 
 export interface ParseError {
@@ -122,6 +128,10 @@ export function parseFilter(filter: string): {
       continue;
     }
     if (trimmedLine === "@s") {
+      if (strictAlias) {
+        warnings.push({ index, type: "strict_alias" });
+      }
+
       strictAlias = true;
       continue;
     }
