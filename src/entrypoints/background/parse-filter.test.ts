@@ -421,6 +421,26 @@ rule
         warnings: [{ index: 0, type: "target" }],
       },
       {
+        name: "@strictを@comment-bodyと併用している場合、警告が出ない",
+        filter: `
+@comment-body
+
+@strict
+rule
+`,
+        warnings: [],
+      },
+      {
+        name: "@strictを@comment-bodyと併用していない場合、警告が出る",
+        filter: `
+@video-id
+
+@strict
+rule
+`,
+        warnings: [{ index: 4, type: "strict" }],
+      },
+      {
         name: "@strictを@disableと併用していない場合、警告が出ない",
         filter: `
 @comment-body

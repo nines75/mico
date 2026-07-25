@@ -167,8 +167,13 @@ const linterMessageMap: Record<
   ParseWarning["type"] | ParseError["type"],
   string
 > = {
+  // warning
   target: "ターゲットを指定する必要があります。",
+  strict:
+    "@strictは@comment-commandsまたは@comment-bodyと併用する必要があります。",
   strict_with_disable: "@strictは@disableと併用できません。",
+
+  // error
   directive: "無効なディレクティブです。",
   regex: "無効な正規表現です。",
   regex_flag: "無効な正規表現フラグです。",
