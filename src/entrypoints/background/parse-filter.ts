@@ -53,7 +53,7 @@ export const noArgsDirectives = [
 
 export interface ParseWarning {
   index: number;
-  type: "target" | "strict" | "strict_with_disable" | "toggle";
+  type: "target" | "strict" | "strict_with_disable" | "toggle" | "disable";
 }
 
 export interface ParseError {
@@ -276,6 +276,9 @@ export function parseFilter(filter: string): {
     }
     if (rule.strict && rule.disable) {
       warnings.push({ index, type: "strict_with_disable" });
+    }
+    if (rule.disable && !rule.target.commentCommands) {
+      warnings.push({ index, type: "disable" });
     }
   }
 

@@ -443,7 +443,7 @@ rule
       {
         name: "@strictを@disableと併用していない場合、警告が出ない",
         filter: `
-@comment-body
+@comment-commands
 
 @strict
 rule
@@ -458,7 +458,7 @@ rule
       {
         name: "@strictを@disableと併用している場合、警告が出る",
         filter: `
-@comment-body
+@comment-commands
 
 @strict
 @disable
@@ -485,6 +485,26 @@ rule
 rule
 `,
         warnings: [{ index: 4, type: "toggle" }],
+      },
+      {
+        name: "@diableを@comment-commandsと併用している場合、警告が出ない",
+        filter: `
+@comment-commands
+
+@disable
+rule
+`,
+        warnings: [],
+      },
+      {
+        name: "@diableを@comment-commandsと併用していない場合、警告が出る",
+        filter: `
+@comment-body
+
+@disable
+rule
+`,
+        warnings: [{ index: 4, type: "disable" }],
       },
     ] satisfies {
       name: string;
