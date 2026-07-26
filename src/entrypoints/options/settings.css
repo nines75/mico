@@ -110,6 +110,10 @@ Autoフィルター
   border-radius: 10px;
   overflow-x: auto; /* 横スクロール可能にする */
   text-wrap-mode: nowrap; /* テキストを折り返さない */
+
+  &.selected {
+    border-color: lightskyblue;
+  }
 }
 .rule-pattern {
   /* アイコンを揃える */

@@ -6,6 +6,7 @@ import type { VListHandle } from "virtua";
 import { VList } from "virtua";
 import { decamelize, escapeNewline } from "@/utils/util";
 import { useEffect, useMemo, useRef, useState } from "react";
+import clsx from "clsx";
 
 export default function AutoFilter() {
   const ref = useRef<VListHandle>(null);
@@ -13,6 +14,8 @@ export default function AutoFilter() {
 
   const [queryString, setQuery] = useState("");
   const queries = queryString.split(/\s+/).filter((value) => value !== "");
+
+  const [position, setPosition] = useState(-1);
 
   const rules = useMemo(
     () =>
@@ -38,6 +41,10 @@ export default function AutoFilter() {
     [autoFilter, queries],
   );
 
+  const scroll = (index: number) => {
+    ref.current?.scrollToIndex(index, { smooth: true, align: "nearest" });
+  };
+
   useEffect(() => {
     const handle = ref.current;
     if (handle === null) return;
@@ -45,6 +52,41 @@ export default function AutoFilter() {
     // ブラウザによって復元されたスクロール位置をリセット
     handle.scrollTo(0);
   }, []);
+
+  useEffect(() => {
+    const keydownHandler = (event: KeyboardEvent) => {
+      if (rules.length === 0 || event.ctrlKey || event.metaKey || event.altKey)
+        return;
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+        setPosition((previous) => {
+          const next = Math.max(previous - 1, 0);
+          scroll(next);
+
+          return next;
+        });
+      }
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        setPosition((previous) => {
+          const next = Math.min(previous + 1, rules.length - 1);
+          scroll(next);
+
+          return next;
+        });
+      }
+    };
+
+    globalThis.addEventListener("keydown", keydownHandler);
+
+    return () => {
+      globalThis.removeEventListener("keydown", keydownHandler);
+    };
+  }, [rules.length]);
 
   return (
     <>
@@ -55,6 +97,10 @@ export default function AutoFilter() {
           value={queryString}
           onChange={(event) => {
             setQuery(event.target.value);
+
+            // クエリが更新されるたびにスクロール位置をリセット
+            scroll(0);
+            setPosition(-1);
           }}
         />
         <span className="info">
@@ -63,10 +109,12 @@ export default function AutoFilter() {
         </span>
       </div>
       <VList className="rule-container" ref={ref}>
-        {rules.map((rule) => {
+        {rules.map((rule, index) => {
           if (rule.id === undefined) return null;
 
-          return <Rule rule={rule} key={rule.id} />;
+          return (
+            <Rule key={rule.id} rule={rule} isSelected={index === position} />
+          );
         })}
       </VList>
     </>
@@ -75,9 +123,10 @@ export default function AutoFilter() {
 
 interface RuleProps {
   rule: Partial<AutoRule>;
+  isSelected: boolean;
 }
 
-function Rule({ rule }: RuleProps) {
+function Rule({ rule, isSelected }: RuleProps) {
   const [autoFilter, save] = useSettingsStore(
     useShallow((state) => [state.settings.autoFilter, state.saveSettings]),
   );
@@ -86,7 +135,7 @@ function Rule({ rule }: RuleProps) {
   if (pattern === undefined) return null;
 
   return (
-    <div className="rule">
+    <div className={clsx("rule", isSelected && "selected")}>
       <div className="rule-pattern">
         <button
           className="rule-remove-button"
