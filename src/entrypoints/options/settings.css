@@ -108,6 +108,8 @@ Autoフィルター
   margin: 10px;
   border: gray 3px solid;
   border-radius: 10px;
+  overflow-x: auto; /* 横スクロール可能にする */
+  text-wrap-mode: nowrap; /* テキストを折り返さない */
 }
 .rule-pattern {
   /* アイコンを揃える */
@@ -129,7 +131,7 @@ Autoフィルター
   border: gray 1px solid;
   border-radius: 5px;
   padding-inline: 4px;
-  white-space: pre-wrap; /* 連続する空白文字を折り畳まない */
+  white-space-collapse: preserve; /* 連続する空白文字を折り畳まない(テキストをそのまま表示する) */
 }
 .rule-remove-button {
   border: none;
