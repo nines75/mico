@@ -1,5 +1,9 @@
 import { useMemo, useState } from "#imports";
-import type { ColDef, ICellRendererParams } from "ag-grid-community";
+import type {
+  ColDef,
+  ICellRendererParams,
+  SpanRowsParams,
+} from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
 import { useLogStore } from "@/utils/store";
 import type { FilteredVideo } from "@/types/storage/log.types";
@@ -44,10 +48,13 @@ export function VideoViewer() {
         field: "pattern",
         headerName: "ルール",
         width: 150,
-        spanRows: true, // 値が同じセルを結合
         sort: "asc",
         sortable: false,
         cellRenderer: RuleCell,
+        // レコメンドAPIはログを複数回保存するためパターンの値が同じでも参照が異なることがあり、
+        // そのとき結合が行われないため文字列に変換してから比較する
+        spanRows: ({ valueA, valueB }: SpanRowsParams<Row, string | RegExp>) =>
+          valueA?.toString() === valueB?.toString(),
       },
       {
         field: "video.id",
