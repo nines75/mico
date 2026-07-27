@@ -42,7 +42,7 @@ export default function AutoFilter() {
   );
 
   const scroll = (index: number) => {
-    ref.current?.scrollToIndex(index, { smooth: true, align: "nearest" });
+    ref.current?.scrollToIndex(index, { smooth: true, align: "center" });
   };
 
   useEffect(() => {
