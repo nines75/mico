@@ -5,7 +5,7 @@ import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
 import { decamelize, escapeNewline } from "@/utils/util";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Settings } from "@/types/storage/settings.types";
 
@@ -57,51 +57,42 @@ export default function AutoFilter() {
     }
   };
 
-  useEffect(() => {
-    const handle = ref.current;
-    if (handle === null) return;
+  // rules.lengthとpositionは常に最新の値を参照したいが、
+  // useEffect内で宣言するとクロージャによって過去の値を参照してしまう。
+  // この2つを依存に含めることで最新の値を参照できるが、無駄なイベントリスナーの追加・削除が発生する。
+  // そのためuseEffectEventを使う
+  const keydownHandler = useEffectEvent((event: KeyboardEvent) => {
+    if (rules.length === 0 || event.ctrlKey || event.metaKey || event.altKey)
+      return;
 
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+
+      const next = position === undefined ? 0 : Math.max(position - 1, 0);
+      setPosition(next);
+      scroll(next);
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+
+      const next =
+        position === undefined ? 0 : Math.min(position + 1, rules.length - 1);
+      setPosition(next);
+      scroll(next);
+    }
+  });
+
+  useEffect(() => {
     // ブラウザによって復元されたスクロール位置をリセット
-    handle.scrollTo(0);
-  }, []);
-
-  useEffect(() => {
-    const keydownHandler = (event: KeyboardEvent) => {
-      if (rules.length === 0 || event.ctrlKey || event.metaKey || event.altKey)
-        return;
-
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-
-        setPosition((previous) => {
-          const next = previous === undefined ? 0 : Math.max(previous - 1, 0);
-          scroll(next);
-
-          return next;
-        });
-      }
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-
-        setPosition((previous) => {
-          const next =
-            previous === undefined
-              ? 0
-              : Math.min(previous + 1, rules.length - 1);
-          scroll(next);
-
-          return next;
-        });
-      }
-    };
+    ref.current?.scrollTo(0);
 
     globalThis.addEventListener("keydown", keydownHandler);
 
     return () => {
       globalThis.removeEventListener("keydown", keydownHandler);
     };
-  }, [rules.length]);
+  }, []);
 
   return (
     <>
@@ -114,8 +105,8 @@ export default function AutoFilter() {
             setQuery(event.target.value);
 
             // クエリが更新されるたびにスクロール位置をリセット
-            scroll(0);
             setPosition(undefined);
+            scroll(0);
           }}
         />
         <span className="info">
