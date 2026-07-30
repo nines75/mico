@@ -10,7 +10,7 @@ import clsx from "clsx";
 import type { Settings } from "@/types/storage/settings.types";
 
 export default function AutoFilter() {
-  const ref = useRef<VListHandle>(null);
+  const vlistRef = useRef<VListHandle>(null);
   const autoFilter = useSettingsStore((state) => state.settings.autoFilter);
 
   const [queryString, setQuery] = useState("");
@@ -24,7 +24,7 @@ export default function AutoFilter() {
   );
 
   const scroll = (index: number) => {
-    ref.current?.scrollToIndex(index, { smooth: true, align: "center" });
+    vlistRef.current?.scrollToIndex(index, { smooth: true, align: "center" });
   };
 
   // 編集後に編集前と同じルールを選択させるための関数
@@ -85,7 +85,7 @@ export default function AutoFilter() {
 
   useEffect(() => {
     // ブラウザによって復元されたスクロール位置をリセット
-    ref.current?.scrollTo(0);
+    vlistRef.current?.scrollTo(0);
 
     globalThis.addEventListener("keydown", keydownHandler);
 
@@ -114,7 +114,7 @@ export default function AutoFilter() {
           <span className="info-value">{rules.length}</span>
         </span>
       </div>
-      <VList className="rule-container" ref={ref}>
+      <VList className="rule-container" ref={vlistRef}>
         {rules.map((rule, index) => {
           if (rule.id === undefined) return null;
 
