@@ -1,7 +1,7 @@
 {
   "name": "mico",
   "description": "ニコニコ動画用のコンテンツブロッカー",
-  "version": "7.13.1",
+  "version": "7.13.2",
   "type": "module",
   "engines": {
     "node": ">=24",
