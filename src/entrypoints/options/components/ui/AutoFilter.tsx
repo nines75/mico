@@ -7,6 +7,7 @@ import { VList } from "virtua";
 import { decamelize, escapeNewline } from "@/utils/util";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
+import type { Settings } from "@/types/storage/settings.types";
 
 export default function AutoFilter() {
   const ref = useRef<VListHandle>(null);
@@ -15,34 +16,45 @@ export default function AutoFilter() {
   const [queryString, setQuery] = useState("");
   const queries = queryString.split(/\s+/).filter((value) => value !== "");
 
-  const [position, setPosition] = useState(-1);
+  const [position, setPosition] = useState<number | undefined>();
 
   const rules = useMemo(
-    () =>
-      autoFilter.filter((rule) => {
-        if (queries.length === 0) return true;
-
-        return queries.every(
-          (query) =>
-            rule.pattern?.includes(query) === true ||
-            rule.source?.includes(query) === true ||
-            rule.context?.includes(query) === true ||
-            rule.memo?.includes(query) === true ||
-            rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
-              true ||
-            (rule.target !== undefined &&
-              Object.entries(rule.target).some(([key, value]) => {
-                if (!value) return false;
-
-                return decamelize(key).includes(query);
-              })),
-        );
-      }),
+    () => filterRules(autoFilter, queries),
     [autoFilter, queries],
   );
 
   const scroll = (index: number) => {
     ref.current?.scrollToIndex(index, { smooth: true, align: "center" });
+  };
+
+  // 編集後に編集前と同じルールを選択させるための関数
+  const edit = (action: () => void) => {
+    // 選択を復元するかに関わらず必ず編集自体は実行
+    action();
+
+    if (position === undefined) return;
+
+    // rulesの値はこの関数生成時点で固定されているため再計算
+    const newRules = filterRules(
+      useSettingsStore.getState().settings.autoFilter,
+      queries,
+    );
+    if (newRules.length === 0) return;
+
+    // 編集前に選択していたルールID
+    const id = rules[position]?.id;
+    if (id === undefined) return;
+
+    // 編集後のルールに同じIDのルールが存在するか確認
+    const index = newRules.findIndex((rule) => rule.id === id);
+    if (index === -1) {
+      // 見つからなかった場合、現在の位置を維持する
+      // ただし末尾を選択していた場合にはみ出ることがあるため調整
+      setPosition((previous) => Math.min(previous ?? 0, newRules.length - 1));
+    } else {
+      // 見つかった場合、その位置に移動
+      setPosition(index);
+    }
   };
 
   useEffect(() => {
@@ -62,7 +74,7 @@ export default function AutoFilter() {
         event.preventDefault();
 
         setPosition((previous) => {
-          const next = Math.max(previous - 1, 0);
+          const next = previous === undefined ? 0 : Math.max(previous - 1, 0);
           scroll(next);
 
           return next;
@@ -73,7 +85,10 @@ export default function AutoFilter() {
         event.preventDefault();
 
         setPosition((previous) => {
-          const next = Math.min(previous + 1, rules.length - 1);
+          const next =
+            previous === undefined
+              ? 0
+              : Math.min(previous + 1, rules.length - 1);
           scroll(next);
 
           return next;
@@ -100,7 +115,7 @@ export default function AutoFilter() {
 
             // クエリが更新されるたびにスクロール位置をリセット
             scroll(0);
-            setPosition(-1);
+            setPosition(undefined);
           }}
         />
         <span className="info">
@@ -113,7 +128,11 @@ export default function AutoFilter() {
           if (rule.id === undefined) return null;
 
           return (
-            <Rule key={rule.id} rule={rule} isSelected={index === position} />
+            <Rule
+              key={rule.id}
+              isSelected={index === position}
+              {...{ rule, edit }}
+            />
           );
         })}
       </VList>
@@ -121,12 +140,35 @@ export default function AutoFilter() {
   );
 }
 
+function filterRules(autoFilter: Settings["autoFilter"], queries: string[]) {
+  return autoFilter.filter((rule) => {
+    if (queries.length === 0) return true;
+
+    return queries.every(
+      (query) =>
+        rule.pattern?.includes(query) === true ||
+        rule.source?.includes(query) === true ||
+        rule.context?.includes(query) === true ||
+        rule.memo?.includes(query) === true ||
+        rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
+          true ||
+        (rule.target !== undefined &&
+          Object.entries(rule.target).some(([key, value]) => {
+            if (!value) return false;
+
+            return decamelize(key).includes(query);
+          })),
+    );
+  });
+}
+
 interface RuleProps {
   rule: Partial<AutoRule>;
   isSelected: boolean;
+  edit: (action: () => void) => void;
 }
 
-function Rule({ rule, isSelected }: RuleProps) {
+function Rule({ rule, isSelected, edit }: RuleProps) {
   const [autoFilter, save] = useSettingsStore(
     useShallow((state) => [state.settings.autoFilter, state.saveSettings]),
   );
@@ -141,8 +183,10 @@ function Rule({ rule, isSelected }: RuleProps) {
           className="rule-remove-button"
           title="ルールを削除"
           onClick={() => {
-            save({
-              autoFilter: autoFilter.filter(({ id }) => id !== rule.id),
+            edit(() => {
+              save({
+                autoFilter: autoFilter.filter(({ id }) => id !== rule.id),
+              });
             });
           }}
         >
@@ -166,18 +210,20 @@ function Rule({ rule, isSelected }: RuleProps) {
               const memo = prompt("メモを入力してください", rule.memo ?? "");
               if (memo === null) return;
 
-              save({
-                autoFilter: autoFilter.map((target) => {
-                  if (target.id !== rule.id) return target;
+              edit(() => {
+                save({
+                  autoFilter: autoFilter.map((target) => {
+                    if (target.id !== rule.id) return target;
 
-                  if (memo === "") {
-                    const { memo: _, ...rest } = target;
+                    if (memo === "") {
+                      const { memo: _, ...rest } = target;
 
-                    return rest;
-                  }
+                      return rest;
+                    }
 
-                  return { ...target, memo };
-                }),
+                    return { ...target, memo };
+                  }),
+                });
               });
             }}
           >
@@ -187,14 +233,16 @@ function Rule({ rule, isSelected }: RuleProps) {
             className="rule-button"
             title="ソースとコンテキストを削除"
             onClick={() => {
-              save({
-                autoFilter: autoFilter.map((target) => {
-                  if (target.id !== rule.id) return target;
+              edit(() => {
+                save({
+                  autoFilter: autoFilter.map((target) => {
+                    if (target.id !== rule.id) return target;
 
-                  const { source, context, ...rest } = target;
+                    const { source, context, ...rest } = target;
 
-                  return rest;
-                }),
+                    return rest;
+                  }),
+                });
               });
             }}
           >
