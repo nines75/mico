@@ -48,6 +48,7 @@ function Page() {
         {isWatchPage && (
           <>
             <button
+              type="button"
               className="tool"
               title="この動画をNG登録"
               onClick={catchAsync(onClickNgVideo)}
@@ -55,6 +56,7 @@ function Page() {
               <ScreenShareOff size={TOOL_SIZE} />
             </button>
             <button
+              type="button"
               className="tool"
               title="この動画の投稿者をNG登録"
               onClick={catchAsync(onClickNgOwner)}
@@ -62,6 +64,7 @@ function Page() {
               <UserX size={TOOL_SIZE} />
             </button>
             <button
+              type="button"
               className="tool"
               title="リロードして現在の再生時間を復元"
               onClick={catchAsync(reloadViaMessage)}
@@ -71,6 +74,7 @@ function Page() {
           </>
         )}
         <button
+          type="button"
           className="tool"
           title="ログを開く"
           onClick={catchAsync(() => openLog())}

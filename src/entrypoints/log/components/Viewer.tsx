@@ -36,28 +36,26 @@ export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
   }, []);
 
   return (
-    <>
-      <div className="log">
-        <AgGridReact<T>
-          rowData={rows}
-          columnDefs={cols}
-          defaultColDef={defaultColDef}
-          theme={theme}
-          localeText={localeText}
-          // テキストの選択を有効化
-          enableCellTextSelection={true}
-          // セルの値が同じ場合に結合する
-          enableCellSpan={true}
-          // 常にマルチソートを有効にする
-          alwaysMultiSort={true}
-          // 文字列がセル幅を超えたときツールチップを表示
-          tooltipShowMode="whenTruncated"
-          tooltipShowDelay={500}
-          // ツールチップを選択可能にする
-          tooltipInteraction={true}
-        />
-      </div>
-    </>
+    <div className="log">
+      <AgGridReact<T>
+        rowData={rows}
+        columnDefs={cols}
+        defaultColDef={defaultColDef}
+        theme={theme}
+        localeText={localeText}
+        // テキストの選択を有効化
+        enableCellTextSelection={true}
+        // セルの値が同じ場合に結合する
+        enableCellSpan={true}
+        // 常にマルチソートを有効にする
+        alwaysMultiSort={true}
+        // 文字列がセル幅を超えたときツールチップを表示
+        tooltipShowMode="whenTruncated"
+        tooltipShowDelay={500}
+        // ツールチップを選択可能にする
+        tooltipInteraction={true}
+      />
+    </div>
   );
 }
 
@@ -73,6 +71,7 @@ export function RuleCell(
   return (
     <div className="rule">
       <button
+        type="button"
         className="rule-remove-button"
         onClick={catchAsync(async () => {
           if (!confirm(`以下のルールを削除しますか？\n\n${value}`)) return;

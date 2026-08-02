@@ -4,8 +4,9 @@ import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
 import { useSettingsStore } from "@/utils/store";
 
+export type CheckboxItem = CheckboxProps & { type: "checkbox" };
+
 export interface CheckboxProps {
-  type: "checkbox";
   id: keyof ConditionalPick<Settings, boolean>;
   label: string;
   details?: string;
@@ -15,7 +16,7 @@ export interface CheckboxProps {
     min?: number;
     max?: number;
   };
-  childrenProps?: CheckboxProps[];
+  childrenProps?: CheckboxItem[];
 }
 
 export default function Checkbox({

@@ -14,6 +14,7 @@ export default function Filter() {
     <>
       <div>
         <button
+          type="button"
           className="button button-filter"
           onClick={() => {
             save({

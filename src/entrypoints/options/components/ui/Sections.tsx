@@ -1,7 +1,7 @@
-import type { CheckboxProps } from "./Checkbox";
+import type { CheckboxItem } from "./Checkbox";
 import Checkbox from "./Checkbox";
 import H2 from "./H2";
-import type { InputProps } from "./Input";
+import type { InputItem } from "./Input";
 import Input from "./Input";
 
 export type SectionsItem = SectionsProps["sections"];
@@ -9,7 +9,7 @@ export type SectionsItem = SectionsProps["sections"];
 export interface SectionsProps {
   sections: {
     heading?: string;
-    items: (CheckboxProps | InputProps)[];
+    items: (CheckboxItem | InputItem)[];
   }[];
 }
 

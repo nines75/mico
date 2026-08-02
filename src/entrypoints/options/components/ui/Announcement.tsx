@@ -16,6 +16,7 @@ export function Announcement() {
   return (
     <div className="announcement">
       <button
+        type="button"
         className="announcement-dismiss-button"
         onClick={() => {
           save({ showAnnouncement: false });

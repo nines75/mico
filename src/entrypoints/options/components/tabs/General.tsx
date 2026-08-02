@@ -13,17 +13,25 @@ import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
 const ICON_SIZE = 18;
 
 export default function General() {
-  const input = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className="tab-content">
       <Sections sections={config} />
       <H2 name="バックアップ">
-        <button className="button" onClick={() => input.current?.click()}>
+        <button
+          type="button"
+          className="button"
+          onClick={() => inputRef.current?.click()}
+        >
           <Download size={ICON_SIZE} />
           インポート
         </button>
-        <button className="button" onClick={catchAsync(exportBackup)}>
+        <button
+          type="button"
+          className="button"
+          onClick={catchAsync(exportBackup)}
+        >
           <Upload size={ICON_SIZE} />
           エクスポート
         </button>
@@ -31,12 +39,13 @@ export default function General() {
           type="file"
           accept=".json"
           style={{ display: "none" }}
-          ref={input}
+          ref={inputRef}
           onChange={catchAsync(importBackup)}
         />
       </H2>
       <H2 name="ストレージ">
         <button
+          type="button"
           className="button"
           onClick={catchAsync(async () => {
             if (!confirm("不要な設定やログを削除します。")) return;
@@ -48,6 +57,7 @@ export default function General() {
           クリーンアップ
         </button>
         <button
+          type="button"
           className="button"
           onClick={catchAsync(async () => {
             if (!confirm("全ての設定とログを削除します。")) return;

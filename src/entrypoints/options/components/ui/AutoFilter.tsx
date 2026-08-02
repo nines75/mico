@@ -13,7 +13,7 @@ export default function AutoFilter() {
   const vlistRef = useRef<VListHandle>(null);
   const autoFilter = useSettingsStore((state) => state.settings.autoFilter);
 
-  const [queryString, setQuery] = useState("");
+  const [queryString, setQueryString] = useState("");
   const queries = queryString.split(/\s+/).filter((value) => value !== "");
 
   const [position, setPosition] = useState<number | undefined>();
@@ -102,7 +102,7 @@ export default function AutoFilter() {
           placeholder="ルールを検索"
           value={queryString}
           onChange={(event) => {
-            setQuery(event.target.value);
+            setQueryString(event.target.value);
 
             // クエリが更新されるたびにスクロール位置をリセット
             setPosition(undefined);
@@ -171,6 +171,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
     <div className={clsx("rule", isSelected && "selected")}>
       <div className="rule-pattern">
         <button
+          type="button"
           className="rule-remove-button"
           title="ルールを削除"
           onClick={() => {
@@ -195,6 +196,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
       <div className="rule-details">
         <div>
           <button
+            type="button"
             className="rule-button"
             title="メモを編集"
             onClick={() => {
@@ -221,6 +223,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
             <Pencil size={20} />
           </button>
           <button
+            type="button"
             className="rule-button"
             title="ソースとコンテキストを削除"
             onClick={() => {

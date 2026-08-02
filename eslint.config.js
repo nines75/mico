@@ -2,11 +2,10 @@ import js from "@eslint/js";
 import ts from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
-import reactHooks from "eslint-plugin-react-hooks";
-import react from "eslint-plugin-react";
 import { importX } from "eslint-plugin-import-x";
 import unicorn from "eslint-plugin-unicorn";
 import regex from "eslint-plugin-regexp";
+import react from "@eslint-react/eslint-plugin";
 
 const isCi = process.env.CI === "true";
 const pathsExceptBackground = [
@@ -24,12 +23,8 @@ export default defineConfig(
   ts.configs.strictTypeChecked,
   ts.configs.stylisticTypeChecked,
 
-  // https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
-  reactHooks.configs.flat.recommended,
-
-  // https://github.com/jsx-eslint/eslint-plugin-react
-  // react.configs.flat.recommended,
-  // react.configs.flat["jsx-runtime"], // React17以降で必要
+  // https://github.com/Rel1cx/eslint-react
+  react.configs["strict-type-checked"],
 
   // https://github.com/un-ts/eslint-plugin-import-x
   importX.flatConfigs.typescript,
@@ -46,12 +41,6 @@ export default defineConfig(
     languageOptions: {
       parserOptions: {
         projectService: true, // tsconfig.jsonを自動で検索
-      },
-    },
-    settings: {
-      // eslint-config-react
-      react: {
-        version: "detect",
       },
     },
     rules: {
@@ -102,7 +91,6 @@ export default defineConfig(
       // -------------------------------------------------------------------------------------------
 
       "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
-      "react/prop-types": "off", // TypeScriptでは不要
       "unicorn/prevent-abbreviations": "off", // 略語を禁止しない
       "unicorn/no-null": "off",
 

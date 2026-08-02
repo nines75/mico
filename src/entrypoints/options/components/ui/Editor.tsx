@@ -348,7 +348,7 @@ interface EditorProps {
 
 export default function Editor({ value, onChange }: EditorProps) {
   const viewRef = useRef<EditorView | null>(null);
-  const parent = useRef<HTMLDivElement | null>(null);
+  const parentRef = useRef<HTMLDivElement | null>(null);
   const showParsingHints = useSettingsStore(
     (state) => state.settings.showParsingHints,
   );
@@ -373,18 +373,18 @@ export default function Editor({ value, onChange }: EditorProps) {
   });
 
   useEffect(() => {
-    if (parent.current === null) return;
+    if (parentRef.current === null) return;
 
     viewRef.current = new EditorView({
       state: createEditorState(),
-      parent: parent.current,
+      parent: parentRef.current,
     });
 
     // クリーンアップ処理
     return () => {
       viewRef.current?.destroy();
     };
-  }, [parent]);
+  }, [parentRef]);
 
   // 外部での変更を反映
   useEffect(() => {
@@ -413,5 +413,5 @@ export default function Editor({ value, onChange }: EditorProps) {
     });
   }, [showParsingHints]);
 
-  return <div ref={parent} className="editor-container" />;
+  return <div ref={parentRef} className="editor-container" />;
 }

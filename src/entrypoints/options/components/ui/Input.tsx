@@ -3,8 +3,9 @@ import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
 import { useSettingsStore } from "@/utils/store";
 
+export type InputItem = InputProps & { type: "input" };
+
 export interface InputProps {
-  type: "input";
   id: keyof ConditionalPick<Settings, string>;
   label: string;
 }

@@ -9,7 +9,7 @@ import { parseFilter } from "@/entrypoints/background/parse-filter";
 const ICON_SIZE = 18;
 
 export default function ManualFilter() {
-  const input = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [manualFilter, showParsingHints, save] = useSettingsStore(
     useShallow((state) => [
       state.settings.manualFilter,
@@ -24,9 +24,10 @@ export default function ManualFilter() {
     <>
       <div className="manual-filter-panel">
         <button
+          type="button"
           className="button button-filter"
           onClick={() => {
-            if (input.current !== null) input.current.click();
+            if (inputRef.current !== null) inputRef.current.click();
           }}
         >
           <Download size={ICON_SIZE} />
@@ -36,7 +37,7 @@ export default function ManualFilter() {
           type="file"
           accept=".txt, .mico"
           style={{ display: "none" }}
-          ref={input}
+          ref={inputRef}
           onChange={catchAsync(async (event) => {
             const text = await event.target.files?.[0]?.text();
             if (text === undefined) return;
@@ -45,6 +46,7 @@ export default function ManualFilter() {
           })}
         />
         <button
+          type="button"
           className="button button-filter"
           onClick={() => {
             save({ showParsingHints: !showParsingHints });

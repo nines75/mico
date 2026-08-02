@@ -60,6 +60,7 @@ function Page() {
 
             return (
               <button
+                type="button"
                 key={filter.id}
                 className={clsx(
                   "tab-button",
