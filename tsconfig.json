@@ -5,8 +5,6 @@
     "jsx": "react-jsx",
     "incremental": true,
     "outDir": "./.output",
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true
   }
 }
