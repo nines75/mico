@@ -28,8 +28,8 @@ export default defineConfig(
   reactHooks.configs.flat.recommended,
 
   // https://github.com/jsx-eslint/eslint-plugin-react
-  react.configs.flat.recommended,
-  react.configs.flat["jsx-runtime"], // React17以降で必要
+  // react.configs.flat.recommended,
+  // react.configs.flat["jsx-runtime"], // React17以降で必要
 
   // https://github.com/un-ts/eslint-plugin-import-x
   importX.flatConfigs.typescript,
