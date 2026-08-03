@@ -112,59 +112,31 @@ export default defineConfig({
       commands: {
         "open-settings": {
           description: "設定を開く",
-          suggested_key: isDevelopment
-            ? {
-                default: "Alt+O",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Alt+O" } : {},
         },
         "open-log": {
           description: "ログを開く",
-          suggested_key: isDevelopment
-            ? {
-                default: "Alt+L",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Alt+L" } : {},
         },
         "add-rule-from-clipboard": {
           description: "クリップボードからNG登録",
-          suggested_key: isDevelopment
-            ? {
-                default: "Alt+N",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Alt+N" } : {},
         },
         "import-local-filter": {
           description: "ローカルフィルターをインポート (native)",
-          suggested_key: isDevelopment
-            ? {
-                default: "Ctrl+Alt+N",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Ctrl+Alt+N" } : {},
         },
         "save-backup": {
           description: "バックアップを保存 (native)",
-          suggested_key: isDevelopment
-            ? {
-                default: "Ctrl+Alt+B",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Ctrl+Alt+B" } : {},
         },
         reload: {
           description: "リロードして現在の再生時間を復元",
-          suggested_key: isDevelopment
-            ? {
-                default: "Alt+R",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Alt+R" } : {},
         },
         _execute_browser_action: {
           description: "ポップアップを開く",
-          suggested_key: isDevelopment
-            ? {
-                default: "Alt+K",
-              }
-            : {},
+          suggested_key: isDevelopment ? { default: "Alt+K" } : {},
         },
       },
       browser_specific_settings: {
