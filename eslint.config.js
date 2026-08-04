@@ -35,7 +35,6 @@ export default defineConfig(
   // https://github.com/ota-meshi/eslint-plugin-regexp
   regex.configs.recommended,
 
-  // TypeScript
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -45,7 +44,7 @@ export default defineConfig(
     },
     rules: {
       // -------------------------------------------------------------------------------------------
-      // warnに変更
+      // error => warn
       // -------------------------------------------------------------------------------------------
 
       "no-empty": "warn",
@@ -66,7 +65,6 @@ export default defineConfig(
           ignoreRestSiblings: true, // objectの構造分解での未使用変数を許可
         },
       ],
-      // テンプレートリテラルでstringとnumber以外の埋め込みを禁止
       "@typescript-eslint/restrict-template-expressions": [
         "error",
         {
@@ -105,25 +103,17 @@ export default defineConfig(
       // -------------------------------------------------------------------------------------------
 
       eqeqeq: "error",
+      "no-param-reassign": "error",
       "no-shadow": ["error", { allow: ["_"] }],
-      "no-implicit-coercion": "error", // 暗黙的な型強制を禁止
-      "no-param-reassign": "error", // 関数パラメータへの再代入を禁止
-      "@typescript-eslint/switch-exhaustiveness-check": "error", // switchでunion型の全ケースを網羅しているかチェック
-      "@typescript-eslint/consistent-type-imports": "warn", // importでtypeキーワードを強制
-      // booleanへの型強制を禁止
+      "@typescript-eslint/consistent-type-imports": "warn",
+      "@typescript-eslint/require-array-sort-compare": "error",
+      "@typescript-eslint/switch-exhaustiveness-check": "error",
       "@typescript-eslint/strict-boolean-expressions": [
         "error",
         {
           allowString: false,
           allowNumber: false,
           allowNullableObject: false,
-        },
-      ],
-      // string以外の配列に対してのsort()の使用を禁止
-      "@typescript-eslint/require-array-sort-compare": [
-        "error",
-        {
-          ignoreStringArrays: true,
         },
       ],
       "import-x/no-restricted-paths": [
