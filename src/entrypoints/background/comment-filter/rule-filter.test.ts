@@ -6,14 +6,14 @@ import type { Settings } from "@/types/storage/settings.types";
 import { parseFilter } from "../parse-filter";
 
 class TestFilter extends RuleFilter {
+  override apply = vi.fn();
+
   constructor(settings: Settings) {
     super(settings, "commentBody");
 
     // targetの指定なしでルールを上書き
     this.rules = parseFilter(settings.manualFilter).rules;
   }
-
-  override apply = vi.fn();
 
   getRule() {
     return this.rules;

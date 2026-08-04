@@ -40,11 +40,13 @@ function Page() {
     browser.storage.onChanged.addListener(settingsChangeHandler);
 
     // CodeMirrorのキーバインドより先行して処理するためにキャプチャフェーズで発火させる
-    globalThis.addEventListener("keydown", keydownHandler, true);
+    globalThis.addEventListener("keydown", keydownHandler, { capture: true });
 
     return () => {
       browser.storage.onChanged.removeListener(settingsChangeHandler);
-      globalThis.removeEventListener("keydown", keydownHandler, true);
+      globalThis.removeEventListener("keydown", keydownHandler, {
+        capture: true,
+      });
     };
   }, []);
 
@@ -55,7 +57,7 @@ function Page() {
       <div className="tab-container">
         <div className="tab">
           {config.map((filter) => {
-            if (filter.id === "advancedFeatures" && !showAdvancedFeatures)
+            if (!showAdvancedFeatures && filter.id === "advancedFeatures")
               return null;
 
             return (

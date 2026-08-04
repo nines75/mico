@@ -27,6 +27,7 @@ const db = new Dexie("main") as Dexie & {
   tab: EntityTable<TabDb, "tabId">;
 };
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 db.version(1).stores({
   // 主キーやwhereで使うキー以外はインデックスを作成しない
   log: "id, tabId",

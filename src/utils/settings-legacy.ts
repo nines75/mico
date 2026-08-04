@@ -251,7 +251,6 @@ function migrateNgUserId(
     let source: string | undefined;
     let context: string | undefined;
 
-    // eslint-disable-next-line unicorn/consistent-function-scoping
     const extractContext = (line: string | undefined): boolean => {
       if (line === undefined) return false;
 
@@ -304,11 +303,11 @@ function migrateNgUserId(
       target: {
         commentUserId: true,
       },
-      ...(source === undefined ? {} : { source }),
-      ...(context === undefined ? {} : { context }),
-      ...(rule.include.videoIds.length > 0
-        ? { include: { videoIds: rule.include.videoIds } }
-        : {}),
+      ...(source !== undefined && { source }),
+      ...(context !== undefined && { context }),
+      ...(rule.include.videoIds.length > 0 && {
+        include: { videoIds: rule.include.videoIds },
+      }),
     });
     lines[index] = "";
     autoRuleCount++;
@@ -352,7 +351,7 @@ function migrateNgId(
       target: {
         [target]: true,
       },
-      ...(context === undefined ? {} : { context }),
+      ...(context !== undefined && { context }),
     });
     lines[index] = "";
     autoRuleCount++;
@@ -390,6 +389,7 @@ function migrateVAlias(filter: string) {
 
         // 空行/コメント/ディレクティブでない行をルールとみなす
         if (rule !== "" && !rule.startsWith("#") && !rule.startsWith("@")) {
+          // eslint-disable-next-line unicorn/no-loop-iterable-mutation
           lines.splice(j + 1, 0, "@end");
           break;
         }

@@ -55,12 +55,11 @@ export async function cleanUp() {
 
       // defaultSettingsに存在するキーのみを抽出
       for (const key of objectKeys(settings)) {
-        if (keys.includes(key)) {
-          const value = settings[key];
+        if (!keys.includes(key)) continue;
 
-          if (value !== undefined) {
-            newSettings[key] = value;
-          }
+        const value = settings[key];
+        if (value !== undefined) {
+          newSettings[key] = value;
         }
       }
 

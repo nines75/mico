@@ -8,7 +8,7 @@ export async function saveLog(
   result: FilteringResult,
   logId: string,
   tabId: number,
-  setBadge = true,
+  shouldSetBadge = true,
 ) {
   const video = createVideoLog(result);
   const count = createCountLog(result);
@@ -25,7 +25,9 @@ export async function saveLog(
       logId,
       tabId,
     ),
-    ...(setBadge ? [setBadgeState(count.blockedVideo, tabId, "video")] : []),
+    ...(shouldSetBadge
+      ? [setBadgeState(count.blockedVideo, tabId, "video")]
+      : []),
   ]);
 }
 

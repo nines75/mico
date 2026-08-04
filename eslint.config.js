@@ -91,8 +91,14 @@ export default defineConfig(
       // -------------------------------------------------------------------------------------------
 
       "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
-      "unicorn/prevent-abbreviations": "off", // 略語を禁止しない
+      "unicorn/name-replacements": "off",
       "unicorn/no-null": "off",
+      "unicorn/no-break-in-nested-loop": "off",
+      "unicorn/require-array-sort-compare": "off", // @typescript-eslint/require-array-sort-compareの下位互換
+      "unicorn/max-nested-calls": "off",
+      "unicorn/prefer-else-if": "off",
+      "unicorn/isolated-functions": "off",
+      "unicorn/consistent-boolean-name": "off",
 
       // -------------------------------------------------------------------------------------------
       // 有効化

@@ -53,16 +53,15 @@ async function onBodyChange(records: MutationRecord[]) {
       // ドロップダウン
       if (isWatchPage(location.href) && node.className === "z_dropdown") {
         await mountToDropdown();
-
-        continue;
       }
     }
   }
 }
-
 // -------------------------------------------------------------------------------------------
 // メッセージリスナー登録
 // -------------------------------------------------------------------------------------------
+
+/* eslint-disable unicorn/no-top-level-side-effects */
 
 onMessage("reload", reload);
 onMessage("getLogId", getLogId);
@@ -97,3 +96,5 @@ onMessage("setPlaybackTime", ({ data: time }) => {
 onMessage("prompt", ({ data: message }) => {
   return prompt(message);
 });
+
+/* eslint-enable unicorn/no-top-level-side-effects */

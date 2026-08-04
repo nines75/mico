@@ -53,10 +53,7 @@ export abstract class RuleFilter extends Filter {
         return true;
       }
 
-      if (objectKeys(include).every((key) => include[key].length === 0))
-        return true;
-
-      return false;
+      return objectKeys(include).every((key) => include[key].length === 0);
     });
   }
 }
