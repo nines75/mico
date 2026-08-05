@@ -1,6 +1,6 @@
 import type { Settings } from "@/types/storage/settings.types";
 import { merge } from "@/utils/util";
-import type { Merge, PartialDeep, SetOptional } from "type-fest";
+import type { KebabCase, Merge, PartialDeep, SetOptional } from "type-fest";
 
 export interface Rule {
   id?: string;
@@ -19,6 +19,16 @@ export interface Rule {
     videoTitle: boolean;
   };
 }
+
+export const targetKeyMap = {
+  commentUserId: "comment-user-id",
+  commentCommands: "comment-commands",
+  commentBody: "comment-body",
+  videoId: "video-id",
+  videoOwnerId: "video-owner-id",
+  videoOwnerName: "video-owner-name",
+  videoTitle: "video-title",
+} as const satisfies { [K in keyof Rule["target"]]: KebabCase<K> };
 
 interface ManualRuleOnly {
   /** 元のフィルターを改行区切りで配列にしたときのインデックス */
@@ -43,6 +53,13 @@ export interface Toggle {
   userIds: string[][];
   seriesIds: string[][];
 }
+
+export const toggleKeyMap = {
+  tags: "tags",
+  videoIds: "video-ids",
+  userIds: "user-ids",
+  seriesIds: "series-ids",
+} as const satisfies { [K in keyof Toggle]: KebabCase<K> };
 
 export function createDefaultRule(): SetOptional<Rule, "pattern"> {
   return {

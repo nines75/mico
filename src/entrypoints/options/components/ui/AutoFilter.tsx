@@ -1,13 +1,14 @@
-import type { AutoRule } from "@/entrypoints/background/rule";
+import { targetKeyMap, type AutoRule } from "@/entrypoints/background/rule";
 import { useSettingsStore } from "@/utils/store";
 import { BrushCleaning, Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
-import { decamelize, escapeNewline } from "@/utils/util";
+import { escapeNewline } from "@/utils/util";
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Settings } from "@/types/storage/settings.types";
+import { objectEntries } from "ts-extras";
 
 export default function AutoFilter() {
   const vlistRef = useRef<VListHandle>(null);
@@ -144,10 +145,10 @@ function filterRules(autoFilter: Settings["autoFilter"], queries: string[]) {
         rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
           true ||
         (rule.target !== undefined &&
-          Object.entries(rule.target).some(([key, value]) => {
+          objectEntries(rule.target).some(([key, value]) => {
             if (!value) return false;
 
-            return decamelize(key).includes(query);
+            return targetKeyMap[key].includes(query);
           })),
     );
   });
@@ -244,12 +245,12 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
           </button>
         </div>
         {rule.target !== undefined &&
-          Object.entries(rule.target).map(([key, value]) => {
+          objectEntries(rule.target).map(([key, value]) => {
             if (!value) return null;
 
             return (
               <Detail name="ターゲット" key={key}>
-                {decamelize(key)}
+                {targetKeyMap[key]}
               </Detail>
             );
           })}

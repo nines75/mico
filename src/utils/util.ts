@@ -6,7 +6,6 @@
 import type { DeepMergeLeafURI, DeepMergeNoFilteringURI } from "deepmerge-ts";
 import { deepmergeCustom } from "deepmerge-ts";
 import type { z } from "./zod";
-import baseDecamelize from "decamelize";
 
 export function isNiconicoPage(url: string | undefined) {
   if (url === undefined) return false;
@@ -93,8 +92,4 @@ export function safeParseJson<T>(
   } catch {
     return;
   }
-}
-
-export function decamelize(text: string) {
-  return baseDecamelize(text, { separator: "-" });
 }
