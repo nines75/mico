@@ -9,7 +9,7 @@ import {
 import { proxy } from "@/utils/proxy";
 import { getLogId } from "@/utils/log";
 import { onMessage } from "@/utils/messaging";
-import { reload } from "@/utils/dom";
+import { reload } from "./dom";
 
 export default defineContentScript({
   matches: ["https://www.nicovideo.jp/*"],

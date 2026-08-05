@@ -1,7 +1,7 @@
 import { proxy } from "@/utils/proxy";
 import { loadSettings } from "@/utils/storage";
 import { catchAsync } from "@/utils/util";
-import { reload } from "@/utils/dom";
+import { reload } from "./dom";
 
 export async function mountToDropdown() {
   appendButton();

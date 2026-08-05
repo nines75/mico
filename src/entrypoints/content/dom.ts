@@ -1,4 +1,4 @@
-import { proxy } from "./proxy";
+import { proxy } from "@/utils/proxy";
 
 export async function reload() {
   const video = document.querySelector("video");
