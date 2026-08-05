@@ -116,7 +116,10 @@ export default defineConfig(
         {
           zones: [
             {
-              target: "./src/entrypoints/content/**/*",
+              target: [
+                "./src/utils/!(proxy-service.ts|store.ts|*.test.ts)",
+                "./src/entrypoints/content/**/*",
+              ],
               from: "./src/utils/storage-write.ts",
             },
             {
@@ -127,7 +130,7 @@ export default defineConfig(
               from: "./src/utils/db.ts",
             },
             {
-              target: "src/**/!(*.test).ts?(x)",
+              target: "src/**/!(*.test.ts)",
               from: "./src/utils/test.ts",
             },
           ],
