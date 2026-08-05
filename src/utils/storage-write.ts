@@ -7,9 +7,7 @@
 
 import type { Settings } from "@/types/storage/settings.types";
 import { getSettings, loadSettings, settingsStorage } from "./storage";
-import { cleanUpDb, clearDb, getLog } from "./db";
 import {
-  getActiveTab,
   hasPermission,
   notify,
   sendNativeMessage,
@@ -17,8 +15,6 @@ import {
 } from "./browser";
 import { type AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional, ValueOf } from "type-fest";
-import { getLogIdViaMessage } from "./messaging";
-import { isString } from "./util";
 import { objectKeys } from "ts-extras";
 import { defaultSettings } from "./config";
 import type { Video } from "@/types/api/video.types";
@@ -31,42 +27,36 @@ async function lock(callback: () => Promise<void>) {
   await navigator.locks.request("storage", callback);
 }
 
-export async function reset() {
-  await Promise.all([
-    lock(async () => {
-      // clear()を使用するとバージョン情報まで消えるため個別で削除
-      // -----------------------------------------------------------
-      // removeItem()を使うと次のアクセス時にイニシャライザが実行されるため、
-      // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない。
-      // そのためsetItem()を使用し削除ではなく上書きを行う
-      await settingsStorage.setValue({});
-    }),
-    clearDb(),
-  ]);
+export async function clearStorage() {
+  await lock(async () => {
+    // WxtStorage.clear()を使用するとバージョン情報まで消えるため個別で削除する
+    // -------------------------------------------------------------------
+    // removeValue()を使うと次のアクセス時にイニシャライザが実行されるため、
+    // 設定のリセット後すぐに設定を変更したときUIに正しく反映されない。
+    // そのためsetValue()を使用し削除ではなく上書きを行う。
+    await settingsStorage.setValue({});
+  });
 }
 
-export async function cleanUp() {
-  await Promise.all([
-    lock(async () => {
-      const settings = await getSettings();
+export async function cleanUpStorage() {
+  await lock(async () => {
+    const settings = await getSettings();
 
-      const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
-      const keys = Object.keys(defaultSettings);
+    const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
+    const keys = Object.keys(defaultSettings);
 
-      // defaultSettingsに存在するキーのみを抽出
-      for (const key of objectKeys(settings)) {
-        if (!keys.includes(key)) continue;
+    // defaultSettingsに存在するキーのみを抽出
+    for (const key of objectKeys(settings)) {
+      if (!keys.includes(key)) continue;
 
-        const value = settings[key];
-        if (value !== undefined) {
-          newSettings[key] = value;
-        }
+      const value = settings[key];
+      if (value !== undefined) {
+        newSettings[key] = value;
       }
+    }
 
-      await settingsStorage.setValue({ ...newSettings, storeId: "" });
-    }),
-    cleanUpDb(),
-  ]);
+    await settingsStorage.setValue({ ...newSettings, storeId: "" });
+  });
 }
 
 export async function setSettings(
@@ -137,72 +127,6 @@ export async function removeAutoRule(ids: string[]) {
   };
 
   await setSettings(transaction);
-}
-
-export async function addRuleFromUrl(url: string | undefined, memo?: string) {
-  const settings = await loadSettings();
-
-  const tab = await getActiveTab();
-  const logId = await getLogIdViaMessage(tab?.id);
-  const log = logId === undefined ? undefined : await getLog(logId);
-
-  const videoId = url?.match(
-    /^https:\/\/www\.nicovideo\.jp\/(?:watch|shorts)\/([^?]+)/,
-  )?.[1];
-  if (videoId !== undefined) {
-    const videoTitle = log?.video?.allVideos.find(
-      (video) => video.id === videoId,
-    )?.title;
-
-    await addAutoRule([
-      {
-        pattern: videoId,
-        source: "contextMenu",
-        target: { videoId: true },
-        ...(videoTitle !== undefined && {
-          context: `video-title: ${videoTitle}`,
-        }),
-        ...(memo !== undefined && memo !== "" && { memo }),
-      },
-    ]);
-
-    if (settings.notifyOnManualNg) {
-      const context = videoTitle === undefined ? "" : ` (${videoTitle})`;
-
-      await notify(`以下の動画IDをNG登録しました\n\n${videoId}${context}`);
-    }
-
-    return;
-  }
-
-  const ownerId = url?.match(
-    /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
-  )?.[1];
-  if (ownerId !== undefined) {
-    const ownerName = log?.video?.allVideos.find(
-      (video) => video.owner.id === ownerId,
-    )?.owner.name;
-
-    await addAutoRule([
-      {
-        pattern: ownerId,
-        source: "contextMenu",
-        target: { videoOwnerId: true },
-        ...(isString(ownerName) && { context: `owner-name: ${ownerName}` }),
-        ...(memo !== undefined && memo !== "" && { memo }),
-      },
-    ]);
-
-    if (settings.notifyOnManualNg) {
-      const context = isString(ownerName) ? ` (${ownerName})` : "";
-
-      await notify(`以下のユーザーIDをNG登録しました\n\n${ownerId}${context}`);
-    }
-
-    return;
-  }
-
-  await notify("NG登録に失敗しました");
 }
 
 export async function addContextToAutoRule(

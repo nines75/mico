@@ -9,11 +9,12 @@ import Sections from "../ui/Sections";
 import { catchAsync } from "@/utils/util";
 import { BrushCleaning, Download, RotateCcw, Upload } from "lucide-react";
 import {
-  cleanUp,
-  reset,
+  cleanUpStorage,
+  clearStorage,
   setSettingsMeta,
   migrateSettings,
 } from "@/utils/storage-write";
+import { proxy } from "@/utils/proxy";
 
 const ICON_SIZE = 18;
 
@@ -55,7 +56,7 @@ export default function General() {
           onClick={catchAsync(async () => {
             if (!confirm("不要な設定やログを削除します。")) return;
 
-            await cleanUp();
+            await Promise.all([cleanUpStorage(), proxy.cleanUpDb()]);
           })}
         >
           <BrushCleaning size={ICON_SIZE} />
@@ -67,7 +68,7 @@ export default function General() {
           onClick={catchAsync(async () => {
             if (!confirm("全ての設定とログを削除します。")) return;
 
-            await reset();
+            await Promise.all([clearStorage(), proxy.clearDb()]);
           })}
         >
           <RotateCcw size={ICON_SIZE} />

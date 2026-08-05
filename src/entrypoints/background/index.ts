@@ -4,11 +4,7 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import {
-  addRuleFromUrl,
-  importLocalFilter,
-  setSettings,
-} from "@/utils/storage-write";
+import { importLocalFilter, setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
@@ -18,6 +14,7 @@ import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
 import { proxyService } from "@/utils/proxy-service";
 import { reloadViaMessage, sendMessage } from "@/utils/messaging";
+import { addRuleFromUrl } from "./context-menu";
 
 export default defineBackground(() => {
   // 視聴ページのメインリクエストを監視

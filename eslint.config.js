@@ -121,7 +121,7 @@ export default defineConfig(
             },
             {
               target: [
-                "./src/utils/{browser,dom,log,messaging,store,util}.ts",
+                "./src/utils/!(proxy-service.ts)",
                 "./src/entrypoints/!(background)/**/*",
               ],
               from: "./src/utils/db.ts",

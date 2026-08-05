@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------
 
 import { getDropdownComment } from "@/entrypoints/background/scripting";
-import { getLog, setTab } from "./db";
+import { cleanUpDb, clearDb, getLog, setTab } from "./db";
 import { getActiveTab, notify, setBadgeState } from "./browser";
 import { addAutoRule } from "./storage-write";
 import { openLog } from "./log";
@@ -20,4 +20,6 @@ export const proxyService = {
   // db
   getLog,
   setTab,
+  clearDb,
+  cleanUpDb,
 };
