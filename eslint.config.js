@@ -88,7 +88,6 @@ export default defineConfig(
       // 無効化
       // -------------------------------------------------------------------------------------------
 
-      "@typescript-eslint/non-nullable-type-assertion-style": "off", // @typescript-eslint/no-non-null-assertionと競合
       "unicorn/name-replacements": "off",
       "unicorn/no-null": "off",
       "unicorn/no-break-in-nested-loop": "off",
