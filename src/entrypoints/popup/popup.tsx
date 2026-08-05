@@ -11,9 +11,9 @@ import {
 import { catchAsync } from "@/utils/util";
 import { notify } from "@/utils/browser";
 import { openLog } from "@/utils/log";
-import { proxy } from "@/utils/proxy";
 import { reloadViaMessage } from "@/utils/messaging";
 import { useShallow } from "zustand/shallow";
+import { addAutoRule } from "@/utils/storage-write";
 
 const TOOL_SIZE = 30;
 
@@ -103,7 +103,7 @@ async function onClickNgVideo() {
     return;
   }
 
-  await proxy.addAutoRule([
+  await addAutoRule([
     {
       pattern: videoId,
       context: `video-title: ${title}`,
@@ -124,7 +124,7 @@ async function onClickNgOwner() {
     return;
   }
 
-  await proxy.addAutoRule([
+  await addAutoRule([
     {
       pattern: ownerId,
       context: `owner-name: ${ownerName}`,

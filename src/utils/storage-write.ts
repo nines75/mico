@@ -1,13 +1,11 @@
 // -------------------------------------------------------------------------------------------
-// ブラウザ拡張ストレージにはIndexedDBと異なりトランザクションの仕組みが存在しない。
-// そのためロストアップデートを避けるために全ての書き込みは単一のqueueを通して行うようにしたいが、
-// options_uiなど別のコンテキストからこのファイルをインポートすると複数のqueueが生成されてしまうため、
-// このファイルはbackground以外からはインポートしない
+// ブラウザ拡張ストレージにはIndexedDBと異なりトランザクションの仕組みが存在しないためWeb Locks APIを使用する
+// しかし、このAPIのスコープはオリジンのためcontentから呼び出すと正しく排他制御できない
+// そのためこのファイルはcontentからはインポートしない
 // https://github.com/nines75/mico/issues/33
 // -------------------------------------------------------------------------------------------
 
 import type { Settings } from "@/types/storage/settings.types";
-import PQueue from "p-queue";
 import { getSettings, loadSettings, settingsStorage } from "./storage";
 import { cleanUpDb, clearDb, getLog } from "./db";
 import {
@@ -29,11 +27,13 @@ import type { Tab } from "@/types/storage/tab.types";
 import { BodyFilter } from "@/entrypoints/background/comment-filter/filter/body-filter";
 import type { NvComment } from "@/types/api/comment.types";
 
-const queue = new PQueue({ concurrency: 1 });
+async function lock(callback: () => Promise<void>) {
+  await navigator.locks.request("storage", callback);
+}
 
 export async function reset() {
   await Promise.all([
-    queue.add(async () => {
+    lock(async () => {
       // clear()を使用するとバージョン情報まで消えるため個別で削除
       // -----------------------------------------------------------
       // removeItem()を使うと次のアクセス時にイニシャライザが実行されるため、
@@ -47,7 +47,7 @@ export async function reset() {
 
 export async function cleanUp() {
   await Promise.all([
-    queue.add(async () => {
+    lock(async () => {
       const settings = await getSettings();
 
       const newSettings: Record<string, ValueOf<typeof defaultSettings>> = {};
@@ -72,7 +72,7 @@ export async function cleanUp() {
 export async function setSettings(
   value: Partial<Settings> | (() => Promise<Partial<Settings>>),
 ) {
-  await queue.add(async () => {
+  await lock(async () => {
     const settings = await getSettings();
     const newSettings = typeof value === "function" ? await value() : value;
 
@@ -85,13 +85,13 @@ export async function setSettings(
 }
 
 export async function setSettingsMeta(value: Record<string, unknown>) {
-  await queue.add(async () => {
+  await lock(async () => {
     await settingsStorage.setMeta(value);
   });
 }
 
 export async function migrateSettings() {
-  await queue.add(async () => {
+  await lock(async () => {
     // migrationはsetSettingsを経由せずに書き込みを行うため、
     // 結果が画面に反映されるようにここでstoreIdを上書きする
     const settings = await getSettings();

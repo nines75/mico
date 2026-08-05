@@ -12,7 +12,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Trash } from "lucide-react";
 import type { Row as CommentRow } from "./CommentViewer";
 import type { Row as VideoRow } from "./VideoViewer";
-import { proxy } from "@/utils/proxy";
+import { removeAutoRule } from "@/utils/storage-write";
 
 interface ViewerProps<T> {
   rows: T[];
@@ -76,7 +76,7 @@ export function RuleCell(
         onClick={catchAsync(async () => {
           if (!confirm(`以下のルールを削除しますか？\n\n${value}`)) return;
 
-          await proxy.removeAutoRule([ruleId]);
+          await removeAutoRule([ruleId]);
         })}
       >
         <Trash size={16} />

@@ -8,6 +8,7 @@ import { catchAsync, isWatchPage } from "./util";
 import { getActiveTab } from "./browser";
 import { proxy } from "./proxy";
 import { getLogIdViaMessage } from "./messaging";
+import { setSettings } from "./storage-write";
 
 // -------------------------------------------------------------------------------------------
 // settings
@@ -46,7 +47,7 @@ export const useSettingsStore = create<SettingsState>()(
 
       // 書き込む
       try {
-        await proxy.setSettings({ ...settings, storeId });
+        await setSettings({ ...settings, storeId });
         await onSuccess?.();
       } catch {
         // ロールバック

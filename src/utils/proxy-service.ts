@@ -6,15 +6,7 @@
 import { getDropdownComment } from "@/entrypoints/background/scripting";
 import { getLog, setTab } from "./db";
 import { getActiveTab, notify, setBadgeState } from "./browser";
-import {
-  addAutoRule,
-  reset,
-  removeAutoRule,
-  setSettings,
-  setSettingsMeta,
-  migrateSettings,
-  cleanUp,
-} from "./storage-write";
+import { addAutoRule } from "./storage-write";
 import { openLog } from "./log";
 
 export const proxyService = {
@@ -24,13 +16,7 @@ export const proxyService = {
   getDropdownComment,
   openLog,
   // storage
-  reset,
-  cleanUp,
-  setSettings,
-  setSettingsMeta,
-  migrateSettings,
   addAutoRule,
-  removeAutoRule,
   // db
   getLog,
   setTab,

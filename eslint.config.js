@@ -8,10 +8,6 @@ import regex from "eslint-plugin-regexp";
 import react from "@eslint-react/eslint-plugin";
 
 const isCi = process.env.CI === "true";
-const pathsExceptBackground = [
-  "./src/utils/{browser,dom,log,messaging,store,util}.ts",
-  "./src/entrypoints/!(background)/**/*",
-];
 
 export default defineConfig(
   // 下に行くほど優先される
@@ -120,11 +116,14 @@ export default defineConfig(
         {
           zones: [
             {
-              target: pathsExceptBackground,
+              target: "./src/entrypoints/content/**/*",
               from: "./src/utils/storage-write.ts",
             },
             {
-              target: pathsExceptBackground,
+              target: [
+                "./src/utils/{browser,dom,log,messaging,store,util}.ts",
+                "./src/entrypoints/!(background)/**/*",
+              ],
               from: "./src/utils/db.ts",
             },
             {
