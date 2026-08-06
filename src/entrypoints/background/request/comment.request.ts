@@ -44,7 +44,16 @@ export default function commentRequest(
     filter.write(encoder.encode(JSON.stringify(commentApi)));
     filter.disconnect();
 
-    const tasks: Promise<void>[] = [saveLog(result, logId, tabId), cleanUpDb()];
+    const tasks: Promise<void>[] = [
+      saveLog(result, logId, tabId),
+      cleanUpDb(),
+      addContextToAutoRule({
+        type: "comment",
+        comments: result.allComments,
+        tab,
+        settings,
+      }),
+    ];
 
     const strictData = result.strictData;
     if (strictData.length > 0) {
@@ -70,16 +79,6 @@ export default function commentRequest(
             };
           }),
         ),
-      );
-    }
-
-    if (settings.complementContext) {
-      tasks.push(
-        addContextToAutoRule({
-          type: "comment",
-          comments: result.allComments,
-          tab,
-        }),
       );
     }
 

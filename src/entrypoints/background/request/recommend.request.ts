@@ -65,7 +65,11 @@ export function recommendRequest(
     for (const result of results) {
       await Promise.all([
         saveLog(result, logId, tabId, false),
-        addContextToAutoRule({ type: "video", videos: result.allVideos }),
+        addContextToAutoRule({
+          type: "video",
+          videos: result.allVideos,
+          settings,
+        }),
       ]);
     }
 

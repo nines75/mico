@@ -41,19 +41,15 @@ export function rankingRequest(
     const tasks: Promise<void>[] = [
       saveLog(filteringResult, logId, tabId),
       cleanUpDb(),
+      addContextToAutoRule({
+        type: "video",
+        videos: filteringResult.allVideos,
+        settings,
+      }),
     ];
 
     if (details.type === "main_frame") {
       tasks.push(mountLogId(logId, tabId));
-    }
-
-    if (settings.complementContext) {
-      tasks.push(
-        addContextToAutoRule({
-          type: "video",
-          videos: filteringResult.allVideos,
-        }),
-      );
     }
 
     await Promise.all(tasks);

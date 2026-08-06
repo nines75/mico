@@ -135,12 +135,16 @@ export async function addContextToAutoRule(
         type: "comment";
         comments: PartialComment[];
         tab: Tab;
+        settings: Settings;
       }
     | {
         type: "video";
         videos: Video[];
+        settings: Settings;
       },
 ) {
+  if (!data.settings.complementContext) return;
+
   const transaction = async (): Promise<Partial<Settings>> => {
     const settings = await loadSettings();
     const source = "complement";

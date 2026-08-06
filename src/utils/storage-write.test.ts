@@ -11,6 +11,7 @@ import { testTab } from "./test";
 import type { Settings } from "@/types/storage/settings.types";
 import type { PartialComment } from "@/types/storage/log.types";
 import type { Video } from "@/types/api/video.types";
+import type { Except } from "type-fest";
 
 const expectString = expect.any(String) as string;
 
@@ -218,14 +219,29 @@ bar
         },
       ],
     },
+    {
+      name: "設定が無効になっている場合、コンテキスト情報が補完されない",
+      settings: {
+        complementContext: false,
+        autoFilter: [{ pattern: "0", target: { videoOwnerId: true } }],
+      },
+      data: {
+        type: "video",
+        videos: [{ owner: { id: "0", name: "foo" } }] as Video[],
+      },
+      expected: [{ pattern: "0", target: { videoOwnerId: true } }],
+    },
   ] satisfies {
     name: string;
     settings: Partial<Settings>;
-    data: Parameters<typeof addContextToAutoRule>[0];
+    data: Except<Parameters<typeof addContextToAutoRule>[0], "settings">;
     expected: Partial<AutoRule>[];
   }[])("$name", async ({ settings, data, expected }) => {
     await setSettings(settings);
-    await addContextToAutoRule(data);
+    await addContextToAutoRule({
+      ...data,
+      settings: { complementContext: true, ...settings } as Settings,
+    });
 
     const newSettings = await loadSettings();
     expect(newSettings.autoFilter).toEqual(expected);
