@@ -62,16 +62,20 @@ export function recommendRequest(
     filter.write(encoder.encode(JSON.stringify(recommendApi)));
     filter.disconnect();
 
+    const tasks: Promise<void>[] = [];
+
     for (const result of results) {
-      await Promise.all([
+      tasks.push(
         saveLog(result, logId, tabId, false),
         addContextToAutoRule({
           type: "video",
           videos: result.allVideos,
           settings,
         }),
-      ]);
+      );
     }
+
+    await Promise.all(tasks);
 
     return false;
   });
