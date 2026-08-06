@@ -140,3 +140,19 @@ export async function saveBackup(type: "startup" | "shortcut") {
     }
   });
 }
+
+// ログIDを内部で取得すると循環参照が発生するため、引数として受け取る
+export async function openLog(logId: string | undefined, params = "") {
+  if (logId === undefined) {
+    await notify("ログが存在しません");
+    return;
+  }
+
+  await browser.windows.create({
+    url: [`log.html?id=${logId}${params}`],
+    type: "popup",
+    titlePreface: "ログ",
+    height: 800,
+    width: 1300,
+  });
+}

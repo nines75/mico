@@ -63,6 +63,7 @@ export const useSettingsStore = create<SettingsState>()(
 
 interface PopupState {
   log?: Log | undefined;
+  logId?: string | undefined;
   isWatchPage: boolean;
   isLoading: boolean;
   load: () => void;
@@ -73,13 +74,14 @@ export const usePopupStore = create<PopupState>()(
     isWatchPage: false,
     isLoading: true,
     load: catchAsync(async () => {
-      const tab = await getActiveTab();
-      const logId = await getLogIdViaMessage(tab?.id);
-
+      const logId = await getLogIdViaMessage();
       const log = logId === undefined ? undefined : await proxy.getLog(logId);
+
+      const tab = await getActiveTab();
 
       set({
         log,
+        logId,
         isWatchPage: isWatchPage(tab?.url),
         isLoading: false,
       });

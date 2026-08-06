@@ -9,8 +9,7 @@ import {
   UserX,
 } from "lucide-react";
 import { catchAsync } from "@/utils/util";
-import { notify } from "@/utils/browser";
-import { openLog } from "@/utils/log";
+import { notify, openLog } from "@/utils/browser";
 import { reloadViaMessage } from "@/utils/messaging";
 import { useShallow } from "zustand/shallow";
 import { addAutoRule } from "@/utils/storage-write";
@@ -34,7 +33,9 @@ export function Init() {
 function Page() {
   const name = browser.runtime.getManifest().name;
   const version = `v${browser.runtime.getManifest().version}`;
-  const isWatchPage = usePopupStore((state) => state.isWatchPage);
+  const [isWatchPage, logId] = usePopupStore(
+    useShallow((state) => [state.isWatchPage, state.logId]),
+  );
 
   return (
     <>
@@ -77,7 +78,7 @@ function Page() {
           type="button"
           className="tool"
           title="ログを開く"
-          onClick={catchAsync(() => openLog())}
+          onClick={catchAsync(() => openLog(logId))}
         >
           <History size={TOOL_SIZE} />
         </button>

@@ -12,3 +12,10 @@ export async function reload() {
 
   location.reload();
 }
+
+export function getLogId() {
+  const id = `${browser.runtime.getManifest().name}-log-id`;
+  const element = document.querySelector(`#${id}`);
+
+  return element?.textContent;
+}

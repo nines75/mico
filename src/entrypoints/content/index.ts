@@ -7,9 +7,8 @@ import {
   isWatchPage,
 } from "@/utils/util";
 import { proxy } from "@/utils/proxy";
-import { getLogId } from "@/utils/log";
 import { onMessage } from "@/utils/messaging";
-import { reload } from "./dom";
+import { getLogId, reload } from "./dom";
 
 export default defineContentScript({
   matches: ["https://www.nicovideo.jp/*"],

@@ -1,7 +1,7 @@
 import { proxy } from "@/utils/proxy";
 import { loadSettings } from "@/utils/storage";
 import { catchAsync } from "@/utils/util";
-import { reload } from "./dom";
+import { getLogId, reload } from "./dom";
 
 export async function mountToDropdown() {
   appendButton();
@@ -32,7 +32,8 @@ function appendButton() {
           return;
         }
 
-        await proxy.openLog(`&userId=${userId}`);
+        const logId = getLogId();
+        await proxy.openLog(logId, `&userId=${userId}`);
       },
     },
   ];

@@ -8,12 +8,15 @@ import { importLocalFilter, setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
-import { saveBackup, tryWithPermission } from "@/utils/browser";
-import { openLog } from "@/utils/log";
+import { openLog, saveBackup, tryWithPermission } from "@/utils/browser";
 import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
 import { proxyService } from "@/utils/proxy-service";
-import { reloadViaMessage, sendMessage } from "@/utils/messaging";
+import {
+  getLogIdViaMessage,
+  reloadViaMessage,
+  sendMessage,
+} from "@/utils/messaging";
 import { addRuleFromUrl } from "./context-menu";
 
 export default defineBackground(() => {
@@ -96,7 +99,8 @@ export default defineBackground(() => {
       }
 
       if (command === "open-log") {
-        await openLog();
+        const logId = await getLogIdViaMessage();
+        await openLog(logId);
       }
 
       if (command === "add-rule-from-clipboard") {

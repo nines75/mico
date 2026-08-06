@@ -1,5 +1,5 @@
 import type { Log } from "@/types/storage/log.types";
-import { getActiveTab, notify } from "@/utils/browser";
+import { notify } from "@/utils/browser";
 import { getLog } from "@/utils/db";
 import { getLogIdViaMessage } from "@/utils/messaging";
 import { loadSettings } from "@/utils/storage";
@@ -13,8 +13,7 @@ import { isString } from "@/utils/util";
 export async function addRuleFromUrl(url: string | undefined, memo?: string) {
   const settings = await loadSettings();
 
-  const tab = await getActiveTab();
-  const logId = await getLogIdViaMessage(tab?.id);
+  const logId = await getLogIdViaMessage();
   const log = logId === undefined ? undefined : await getLog(logId);
 
   for (const getRule of [getVideoIdRule, getOwnerIdRule]) {

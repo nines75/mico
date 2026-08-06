@@ -5,9 +5,8 @@
 
 import { getDropdownComment } from "@/entrypoints/background/scripting";
 import { cleanUpDb, clearDb, getLog, setTab } from "./db";
-import { getActiveTab, notify, setBadgeState } from "./browser";
+import { getActiveTab, notify, openLog, setBadgeState } from "./browser";
 import { addAutoRule } from "./storage-write";
-import { openLog } from "./log";
 
 // 使用箇所にジャンプするIDEの機能が使えなくなるため、プロパティ名の省略記法は使わない
 export const proxyService = {

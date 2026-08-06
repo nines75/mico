@@ -28,9 +28,9 @@ export async function reloadViaMessage() {
   await sendMessage("reload", undefined, tabId);
 }
 
-export async function getLogIdViaMessage(
-  tabId: number | undefined,
-): Promise<string | undefined> {
+export async function getLogIdViaMessage(): Promise<string | undefined> {
+  const tab = await getActiveTab();
+  const tabId = tab?.id;
   if (tabId === undefined) return;
 
   // host権限がないタブではエラーが発生する

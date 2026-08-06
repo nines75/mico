@@ -6,7 +6,6 @@ import { filterResponse, spaFilter } from "./request";
 import type { SearchApi } from "@/types/api/search-api.types";
 import { searchApiSchema } from "@/types/api/search-api.types";
 import { cleanUpDb } from "@/utils/db";
-import { createLogId } from "@/utils/log";
 import { addContextToAutoRule, importLocalFilter } from "@/utils/storage-write";
 import { mountLogId } from "@/utils/messaging";
 
@@ -15,7 +14,7 @@ export function searchRequest(
 ) {
   filterResponse(details, "GET", async (filter, encoder, buf) => {
     const tabId = details.tabId;
-    const logId = createLogId();
+    const logId = crypto.randomUUID();
     if (details.type === "xmlhttprequest") {
       await mountLogId(logId, tabId);
     }

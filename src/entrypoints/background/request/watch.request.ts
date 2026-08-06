@@ -6,7 +6,6 @@ import type { WatchApi } from "@/types/api/watch-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
 import { setLog, setTab } from "@/utils/db";
 import type { Tab } from "@/types/storage/tab.types";
-import { createLogId } from "@/utils/log";
 import { importLocalFilter } from "@/utils/storage-write";
 import { mountLogId } from "@/utils/messaging";
 
@@ -18,7 +17,7 @@ export function watchRequest(
 
     // xhrでは以前のログIDが残っている可能性があるため、
     // フィルタリングするかに関わらず必ずマウントし上書きする
-    const logId = createLogId();
+    const logId = crypto.randomUUID();
     if (details.type === "xmlhttprequest") {
       await mountLogId(logId, tabId);
     }
