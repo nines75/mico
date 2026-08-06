@@ -9,17 +9,18 @@ import { getActiveTab, notify, setBadgeState } from "./browser";
 import { addAutoRule } from "./storage-write";
 import { openLog } from "./log";
 
+// 使用箇所にジャンプするIDEの機能が使えなくなるため、プロパティ名の省略記法は使わない
 export const proxyService = {
-  notify,
-  setBadgeState,
-  getActiveTab,
-  getDropdownComment,
-  openLog,
+  notify: notify,
+  setBadgeState: setBadgeState,
+  getActiveTab: getActiveTab,
+  getDropdownComment: getDropdownComment,
+  openLog: openLog,
   // storage
-  addAutoRule,
+  addAutoRule: addAutoRule,
   // db
-  getLog,
-  setTab,
-  clearDb,
-  cleanUpDb,
+  getLog: getLog,
+  setTab: setTab,
+  clearDb: clearDb,
+  cleanUpDb: cleanUpDb,
 };
