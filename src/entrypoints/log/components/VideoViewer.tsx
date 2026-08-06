@@ -5,11 +5,11 @@ import type {
   SpanRowsParams,
 } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
-import { useLogStore } from "@/utils/store";
 import type { FilteredVideo } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import type { Video } from "@/types/api/video.types";
 import { Select } from "./Select";
+import { useLogStore } from "../store";
 
 export type Row = Merge<FilteredVideo, { video: OmitIndexSignature<Video> }>;
 

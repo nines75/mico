@@ -31,7 +31,6 @@ import {
   closeBrackets,
   completionKeymap,
 } from "@codemirror/autocomplete";
-import { useSettingsStore } from "@/utils/store";
 import type {
   ParseError,
   ParseWarning,
@@ -49,6 +48,7 @@ import {
   toggleKeyMap,
   type Rule,
 } from "@/entrypoints/background/rule";
+import { useSettingsStore } from "../../store";
 
 // -------------------------------------------------------------------------------------------
 // ハイライト

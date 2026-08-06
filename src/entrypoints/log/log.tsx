@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useLogStore } from "@/utils/store";
 import type { LogTab } from "@/types/storage/log.types";
 import clsx from "clsx";
 import { CommentViewer } from "./components/CommentViewer";
 import { VideoViewer } from "./components/VideoViewer";
 import { PartialCommentViewer } from "./components/PartialCommentViewer";
 import { useShallow } from "zustand/shallow";
+import { useLogStore } from "./store";
 
 export function Init() {
   const [isLoading, userId, load] = useLogStore(

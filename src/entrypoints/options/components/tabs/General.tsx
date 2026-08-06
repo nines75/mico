@@ -1,5 +1,4 @@
 import H2 from "../ui/H2";
-import { useSettingsStore } from "@/utils/store";
 import type { Backup } from "@/types/storage/backup.types";
 import { getSettings, getSettingsMeta } from "@/utils/storage";
 import type { ChangeEvent } from "react";
@@ -15,6 +14,7 @@ import {
   migrateSettings,
 } from "@/utils/storage-write";
 import { proxy } from "@/utils/proxy";
+import { useSettingsStore } from "../../store";
 
 const ICON_SIZE = 18;
 

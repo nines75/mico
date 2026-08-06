@@ -1,5 +1,4 @@
 import { targetKeyMap, type AutoRule } from "@/entrypoints/background/rule";
-import { useSettingsStore } from "@/utils/store";
 import { BrushCleaning, Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
@@ -9,6 +8,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Settings } from "@/types/storage/settings.types";
 import { objectEntries } from "ts-extras";
+import { useSettingsStore } from "../../store";
 
 export default function AutoFilter() {
   const vlistRef = useRef<VListHandle>(null);

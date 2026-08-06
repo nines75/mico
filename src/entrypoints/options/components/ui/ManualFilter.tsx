@@ -1,10 +1,10 @@
-import { useSettingsStore } from "@/utils/store";
 import { catchAsync } from "@/utils/util";
 import { Download } from "lucide-react";
 import { useRef } from "react";
 import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
 import { parseFilter } from "@/entrypoints/background/parse-filter";
+import { useSettingsStore } from "../../store";
 
 const ICON_SIZE = 18;
 

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Count from "./components/Count";
-import { usePopupStore } from "@/utils/store";
 import {
   History,
   RotateCw,
@@ -13,6 +12,7 @@ import { notify, openLog } from "@/utils/browser";
 import { reloadViaMessage } from "@/utils/messaging";
 import { useShallow } from "zustand/shallow";
 import { addAutoRule } from "@/utils/storage-write";
+import { usePopupStore } from "./store";
 
 const TOOL_SIZE = 30;
 

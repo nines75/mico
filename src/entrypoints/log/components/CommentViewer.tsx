@@ -6,12 +6,12 @@ import type {
   ValueFormatterParams,
 } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
-import { useLogStore } from "@/utils/store";
 import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
 import type { Merge, OmitIndexSignature } from "type-fest";
 import { Select } from "./Select";
 import { useShallow } from "zustand/shallow";
+import { useLogStore } from "../store";
 
 export type Row = Merge<
   FilteredComment,

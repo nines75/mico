@@ -1,6 +1,6 @@
-import { useSettingsStore } from "@/utils/store";
 import { X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
+import { useSettingsStore } from "../../store";
 
 export function Announcement() {
   const [showAnnouncement, save] = useSettingsStore(

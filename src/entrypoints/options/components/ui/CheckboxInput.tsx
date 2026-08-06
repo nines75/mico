@@ -1,7 +1,7 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { useSettingsStore } from "@/utils/store";
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
+import { useSettingsStore } from "../../store";
 
 interface CheckboxInputProps {
   id: keyof ConditionalPick<Settings, number>;

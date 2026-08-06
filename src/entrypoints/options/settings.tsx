@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useSettingsStore } from "@/utils/store";
 import { useShallow } from "zustand/shallow";
 import CommentFilter from "./components/tabs/CommentFilter";
 import General from "./components/tabs/General";
@@ -12,6 +11,7 @@ import { storageArea } from "@/utils/storage";
 import Filter from "./components/tabs/Filter";
 import AdvancedFeatures from "./components/tabs/AdvancedFeatures";
 import { Announcement } from "./components/ui/Announcement";
+import { useSettingsStore } from "./store";
 
 export function Init() {
   const [isLoading, load] = useSettingsStore(

@@ -1,4 +1,4 @@
-import { usePopupStore } from "@/utils/store";
+import { usePopupStore } from "../store";
 
 export default function Count() {
   const count = usePopupStore((state) => state.log?.count);

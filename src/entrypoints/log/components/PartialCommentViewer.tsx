@@ -6,9 +6,9 @@ import type {
   ValueFormatterParams,
 } from "ag-grid-community";
 import { Viewer } from "./Viewer";
-import { useLogStore } from "@/utils/store";
 import type { PartialComment } from "@/types/storage/log.types";
 import { useShallow } from "zustand/shallow";
+import { useLogStore } from "../store";
 
 type Row = PartialComment;
 

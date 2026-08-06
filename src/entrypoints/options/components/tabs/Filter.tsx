@@ -1,7 +1,7 @@
 import { useShallow } from "zustand/shallow";
-import { useSettingsStore } from "@/utils/store";
 import ManualFilter from "../ui/ManualFilter";
 import AutoFilter from "../ui/AutoFilter";
+import { useSettingsStore } from "../../store";
 
 export type FilterId = "manual" | "auto";
 

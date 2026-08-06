@@ -1,7 +1,7 @@
 import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
-import { useSettingsStore } from "@/utils/store";
+import { useSettingsStore } from "../../store";
 
 export type InputItem = InputProps & { type: "input" };
 
