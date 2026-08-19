@@ -12,11 +12,7 @@ import { openLog, saveBackup } from "@/utils/browser";
 import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
 import { proxyService } from "@/utils/proxy-service";
-import {
-  getLogIdViaMessage,
-  reloadViaMessage,
-  sendMessage,
-} from "@/utils/messaging";
+import { getLogIdViaMessage, reloadViaMessage } from "@/utils/messaging";
 import { addRuleFromUrl } from "./context-menu";
 
 export default defineBackground(() => {
@@ -137,44 +133,23 @@ export default defineBackground(() => {
     }),
   );
 
-  for (const data of [
-    {
-      id: "add-rule",
-      title: "NG登録",
-    },
-    {
-      id: "add-rule-with-memo",
-      title: "NG登録(メモ付き)",
-    },
-  ]) {
-    browser.contextMenus.create({
-      ...data,
-      contexts: ["link"],
-      documentUrlPatterns: ["https://www.nicovideo.jp/*"],
-      targetUrlPatterns: [
-        "https://www.nicovideo.jp/watch/*",
-        "https://www.nicovideo.jp/shorts/*",
-        "https://www.nicovideo.jp/user/*",
-        "https://ch.nicovideo.jp/channel/*",
-      ],
-    });
-  }
+  browser.contextMenus.create({
+    id: "add-rule",
+    title: "NG登録",
+    contexts: ["link"],
+    documentUrlPatterns: ["https://www.nicovideo.jp/*"],
+    targetUrlPatterns: [
+      "https://www.nicovideo.jp/watch/*",
+      "https://www.nicovideo.jp/shorts/*",
+      "https://www.nicovideo.jp/user/*",
+      "https://ch.nicovideo.jp/channel/*",
+    ],
+  });
 
   browser.contextMenus.onClicked.addListener(
-    catchAsync(async (data, tab) => {
+    catchAsync(async (data) => {
       if (data.menuItemId === "add-rule") {
         await addRuleFromUrl(data.linkUrl);
-      }
-
-      if (data.menuItemId === "add-rule-with-memo") {
-        const memo = await sendMessage(
-          "prompt",
-          "メモを入力してください",
-          tab?.id,
-        );
-        if (memo === null) return;
-
-        await addRuleFromUrl(data.linkUrl, memo);
       }
     }),
   );

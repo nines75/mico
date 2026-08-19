@@ -10,7 +10,7 @@ import { isString } from "@/utils/util";
 // 本来はno-restricted-pathsを適用させるためにstorage-write.tsに置くべきだが、
 // より強いパスの制限が必要となるDBへアクセスしているため、
 // storage-write.tsを例外に入れるのではなくここで定義する
-export async function addRuleFromUrl(url: string | undefined, memo?: string) {
+export async function addRuleFromUrl(url: string | undefined) {
   const settings = await loadSettings();
 
   const logId = await getLogIdViaMessage();
@@ -20,13 +20,7 @@ export async function addRuleFromUrl(url: string | undefined, memo?: string) {
     const result = getRule(url, log);
     if (result === undefined) continue;
 
-    await addAutoRule([
-      {
-        source: "contextMenu",
-        ...result.rule,
-        ...(memo !== undefined && memo !== "" && { memo }),
-      },
-    ]);
+    await addAutoRule([{ source: "contextMenu", ...result.rule }]);
 
     if (settings.notifyOnManualNg) {
       await notify(result.message);

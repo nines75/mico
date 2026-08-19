@@ -92,8 +92,4 @@ onMessage("setPlaybackTime", ({ data: time }) => {
   }, 10);
 });
 
-onMessage("prompt", ({ data: message }) => {
-  return prompt(message);
-});
-
 /* eslint-enable unicorn/no-top-level-side-effects */
