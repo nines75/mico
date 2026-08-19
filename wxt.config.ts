@@ -109,7 +109,7 @@ export default defineConfig({
         "https://nvapi.nicovideo.jp/",
         "https://public.nvcomment.nicovideo.jp/",
       ],
-      optional_permissions: ["clipboardRead", "nativeMessaging"],
+      optional_permissions: ["nativeMessaging"],
       commands: {
         "open-settings": {
           description: "設定を開く",
@@ -118,10 +118,6 @@ export default defineConfig({
         "open-log": {
           description: "ログを開く",
           suggested_key: isDevelopment ? { default: "Alt+L" } : {},
-        },
-        "add-rule-from-clipboard": {
-          description: "クリップボードからNG登録",
-          suggested_key: isDevelopment ? { default: "Alt+N" } : {},
         },
         "import-local-filter": {
           description: "ローカルフィルターをインポート (native)",

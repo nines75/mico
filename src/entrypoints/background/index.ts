@@ -8,7 +8,7 @@ import { importLocalFilter, setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
-import { openLog, saveBackup, tryWithPermission } from "@/utils/browser";
+import { openLog, saveBackup } from "@/utils/browser";
 import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
 import { proxyService } from "@/utils/proxy-service";
@@ -101,13 +101,6 @@ export default defineBackground(() => {
       if (command === "open-log") {
         const logId = await getLogIdViaMessage();
         await openLog(logId);
-      }
-
-      if (command === "add-rule-from-clipboard") {
-        await tryWithPermission("clipboardRead", async () => {
-          const text = await navigator.clipboard.readText();
-          await addRuleFromUrl(text);
-        });
       }
 
       if (command === "import-local-filter") {
