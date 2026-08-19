@@ -17,6 +17,7 @@ const licenseMap: Record<string, LicenseType> = {
 
   // wxt
   "@wxt-dev/browser": "wxt",
+  "@wxt-dev/storage": "wxt",
   wxt: "wxt",
 } as const;
 

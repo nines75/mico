@@ -31,7 +31,9 @@ export const targetKeyMap = {
 } as const satisfies { [K in keyof Rule["target"]]: KebabCase<K> };
 
 interface ManualRuleOnly {
-  /** 元のフィルターを改行区切りで配列にしたときのインデックス */
+  /**
+   * 元のフィルターを改行区切りで配列にしたときのインデックス
+   */
   index: number;
 }
 
