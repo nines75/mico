@@ -15,6 +15,7 @@ import {
 } from "@/utils/storage-write";
 import { proxy } from "@/utils/proxy";
 import { useSettingsStore } from "../../store";
+import Button from "../ui/Button";
 
 const ICON_SIZE = 18;
 
@@ -25,22 +26,12 @@ export default function General() {
     <div className="tab-content">
       <Sections sections={config} />
       <H2 name="バックアップ">
-        <button
-          type="button"
-          className="button"
-          onClick={() => inputRef.current?.click()}
-        >
+        <Button label="インポート" onClick={() => inputRef.current?.click()}>
           <Download size={ICON_SIZE} />
-          インポート
-        </button>
-        <button
-          type="button"
-          className="button"
-          onClick={catchAsync(exportBackup)}
-        >
+        </Button>
+        <Button label="エクスポート" onClick={catchAsync(exportBackup)}>
           <Upload size={ICON_SIZE} />
-          エクスポート
-        </button>
+        </Button>
         <input
           type="file"
           accept=".json"
@@ -50,9 +41,8 @@ export default function General() {
         />
       </H2>
       <H2 name="ストレージ">
-        <button
-          type="button"
-          className="button"
+        <Button
+          label="クリーンアップ"
           onClick={catchAsync(async () => {
             if (!confirm("不要な設定やログを削除します。")) return;
 
@@ -60,11 +50,9 @@ export default function General() {
           })}
         >
           <BrushCleaning size={ICON_SIZE} />
-          クリーンアップ
-        </button>
-        <button
-          type="button"
-          className="button"
+        </Button>
+        <Button
+          label="リセット"
           onClick={catchAsync(async () => {
             if (!confirm("全ての設定とログを削除します。")) return;
 
@@ -72,8 +60,7 @@ export default function General() {
           })}
         >
           <RotateCcw size={ICON_SIZE} />
-          リセット
-        </button>
+        </Button>
       </H2>
     </div>
   );
