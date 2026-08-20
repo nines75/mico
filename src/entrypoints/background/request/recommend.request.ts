@@ -7,7 +7,7 @@ import { saveLog } from "../video-filter/save-log";
 import { filterResponse } from "./request";
 import { getTab } from "@/utils/db";
 import { safeParseJson } from "@/utils/util";
-import { addContextToAutoRule } from "@/utils/storage-write";
+import { addContextToVideoRule } from "@/utils/storage-write";
 
 export function recommendRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
@@ -67,11 +67,7 @@ export function recommendRequest(
     for (const result of results) {
       tasks.push(
         saveLog(result, logId, tabId, false),
-        addContextToAutoRule({
-          type: "video",
-          videos: result.allVideos,
-          settings,
-        }),
+        addContextToVideoRule(result.allVideos, settings),
       );
     }
 

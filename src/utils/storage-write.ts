@@ -22,6 +22,7 @@ import type { PartialComment } from "@/types/storage/log.types";
 import type { Tab } from "@/types/storage/tab.types";
 import { BodyFilter } from "@/entrypoints/background/comment-filter/filter/body-filter";
 import type { NvComment } from "@/types/api/comment.types";
+import type { Thread } from "@/types/api/comment-api.types";
 
 async function lock(callback: () => Promise<void>) {
   await navigator.locks.request("storage", callback);
@@ -129,67 +130,86 @@ export async function removeAutoRule(ids: string[]) {
   await setSettings(transaction);
 }
 
-export async function addContextToAutoRule(
-  data:
-    | {
-        type: "comment";
-        comments: PartialComment[];
-        tab: Tab;
-        settings: Settings;
-      }
-    | {
-        type: "video";
-        videos: Video[];
-        settings: Settings;
-      },
+export async function addContextToCommentRule(
+  comments: PartialComment[],
+  tab: Tab,
+  settings: Settings,
 ) {
-  if (!data.settings.complementContext) return;
+  if (!settings.complementContext) return;
 
   const transaction = async (): Promise<Partial<Settings>> => {
-    const settings = await loadSettings();
+    const currentSettings = await loadSettings();
+    const source = "complement";
+
+    const editRule = (
+      rule: Partial<AutoRule>,
+    ): Partial<AutoRule> | undefined => {
+      // strictルールによるフィルタリング時に除外されないようにAutoFilterを空にする
+      const bodyFilter = new BodyFilter({ ...currentSettings, autoFilter: [] });
+      bodyFilter.filterRules(tab);
+
+      const targetComments = comments.filter(
+        (comment) => comment.userId === rule.pattern,
+      );
+      const threads: Thread[] = [
+        {
+          fork: "main",
+          commentCount: targetComments.length,
+          comments: targetComments as NvComment[],
+        },
+      ];
+
+      // strictルールによるフィルタリングを優先
+      bodyFilter.apply(threads, true);
+      const strictData = bodyFilter.getStrictData()[0];
+      if (strictData !== undefined) {
+        return { ...rule, source, context: strictData.context };
+      }
+
+      // strictルールによってフィルタリングされなかった場合は通常のルールを適用
+      bodyFilter.apply(threads);
+      const filteredComment = bodyFilter.getFilteredComments()[0];
+      if (filteredComment !== undefined) {
+        return {
+          ...rule,
+          source,
+          context: `comment-body: ${filteredComment.comment.body}`,
+        };
+      }
+    };
+
+    return {
+      autoFilter: currentSettings.autoFilter.map((rule) => {
+        if (rule.context !== undefined) return rule;
+
+        if (rule.target?.commentUserId === true) {
+          const newRule = editRule(rule);
+          if (newRule !== undefined) return newRule;
+        }
+
+        return rule;
+      }),
+    };
+  };
+
+  await setSettings(transaction);
+}
+export async function addContextToVideoRule(
+  videos: Video[],
+  settings: Settings,
+) {
+  if (!settings.complementContext) return;
+
+  const transaction = async (): Promise<Partial<Settings>> => {
+    const currentSettings = await loadSettings();
     const source = "complement";
 
     return {
-      autoFilter: settings.autoFilter.map((rule) => {
+      autoFilter: currentSettings.autoFilter.map((rule) => {
         if (rule.context !== undefined) return rule;
 
-        if (rule.target?.commentUserId === true && data.type === "comment") {
-          // strictルールによるフィルタリング時に除外されないようにAutoFilterを空にする
-          const bodyFilter = new BodyFilter({ ...settings, autoFilter: [] });
-          bodyFilter.filterRules(data.tab);
-
-          const comments = data.comments.filter(
-            (comment) => comment.userId === rule.pattern,
-          ) as NvComment[];
-          const commentCount = comments.length;
-
-          // strictルールによるフィルタリングを優先
-          bodyFilter.apply([{ fork: "main", commentCount, comments }], true);
-
-          const strictData = bodyFilter.getStrictData()[0];
-          if (strictData === undefined) {
-            // strictルールによってフィルタリングされなかった場合は通常のルールを適用
-            bodyFilter.apply([{ fork: "main", commentCount, comments }]);
-
-            const filteredComment = bodyFilter.getFilteredComments()[0];
-            if (filteredComment !== undefined) {
-              return {
-                ...rule,
-                source,
-                context: `comment-body: ${filteredComment.comment.body}`,
-              };
-            }
-          } else {
-            return {
-              ...rule,
-              source,
-              context: strictData.context,
-            };
-          }
-        }
-
-        if (rule.target?.videoId === true && data.type === "video") {
-          const title = data.videos.find(
+        if (rule.target?.videoId === true) {
+          const title = videos.find(
             (video) => video.id === rule.pattern,
           )?.title;
           if (title !== undefined) {
@@ -201,8 +221,8 @@ export async function addContextToAutoRule(
           }
         }
 
-        if (rule.target?.videoOwnerId === true && data.type === "video") {
-          const ownerName = data.videos.find(
+        if (rule.target?.videoOwnerId === true) {
+          const ownerName = videos.find(
             (video) => video.owner.id === rule.pattern,
           )?.owner.name;
           if (ownerName !== undefined && ownerName !== null) {

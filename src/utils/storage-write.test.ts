@@ -2,7 +2,8 @@ import { loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
 import {
   addAutoRule,
-  addContextToAutoRule,
+  addContextToCommentRule,
+  addContextToVideoRule,
   removeAutoRule,
   setSettings,
 } from "./storage-write";
@@ -11,7 +12,6 @@ import { testTab } from "./test";
 import type { Settings } from "@/types/storage/settings.types";
 import type { PartialComment } from "@/types/storage/log.types";
 import type { Video } from "@/types/api/video.types";
-import type { Except } from "type-fest";
 
 const expectString = expect.any(String) as string;
 
@@ -104,7 +104,7 @@ describe(removeAutoRule.name, () => {
   );
 });
 
-describe(addContextToAutoRule.name, () => {
+describe(addContextToCommentRule.name, () => {
   it.each([
     {
       name: "ターゲットが@comment-user-idの場合、コンテキスト情報が補完される",
@@ -115,11 +115,7 @@ foo
 `,
         autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
       },
-      data: {
-        type: "comment",
-        comments: [{ body: "foo-bar", userId: "user-id" }] as PartialComment[],
-        tab: testTab,
-      },
+      comments: [{ body: "foo-bar", userId: "user-id" }],
       expected: [
         {
           pattern: "user-id",
@@ -142,15 +138,11 @@ bar
 `,
         autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
       },
-      data: {
-        type: "comment",
-        comments: [
-          // どちらのルールが優先されたか確認するために、両方のルールにマッチするコメントを用意する
-          { body: "foo", userId: "user-id" },
-          { body: "bar", userId: "user-id" },
-        ] as PartialComment[],
-        tab: testTab,
-      },
+      comments: [
+        // どちらのルールが優先されたか確認するために、両方のルールにマッチするコメントを用意する
+        { body: "foo", userId: "user-id" },
+        { body: "bar", userId: "user-id" },
+      ],
       expected: [
         {
           pattern: "user-id",
@@ -161,14 +153,67 @@ bar
       ],
     },
     {
+      name: "コンテキスト情報が登録済みの場合、コンテキスト情報が補完されない",
+      settings: {
+        manualFilter: `
+@comment-body
+foo
+`,
+        autoFilter: [
+          {
+            pattern: "user-id",
+            target: { commentUserId: true },
+            context: "baz",
+          },
+        ],
+      },
+      comments: [{ body: "foo-bar", userId: "user-id" }],
+      expected: [
+        {
+          pattern: "user-id",
+          target: { commentUserId: true },
+          context: "baz", // foo-barに更新されていないことを確認
+        },
+      ],
+    },
+    {
+      name: "設定が無効になっている場合、コンテキスト情報が補完されない",
+      settings: {
+        complementContext: false,
+        manualFilter: `
+@comment-body
+foo
+`,
+        autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
+      },
+      comments: [{ body: "foo-bar", userId: "user-id" }],
+      expected: [{ pattern: "user-id", target: { commentUserId: true } }],
+    },
+  ] satisfies {
+    name: string;
+    settings: Partial<Settings>;
+    comments: Partial<PartialComment>[];
+    expected: Partial<AutoRule>[];
+  }[])("$name", async ({ settings, comments, expected }) => {
+    await setSettings(settings);
+    await addContextToCommentRule(comments as PartialComment[], testTab, {
+      complementContext: true,
+      ...settings,
+    } as Settings);
+
+    const newSettings = await loadSettings();
+    expect(newSettings.autoFilter).toEqual(expected);
+  });
+});
+
+describe(addContextToVideoRule.name, () => {
+  it.each([
+    {
       name: "ターゲットが@video-idの場合、コンテキスト情報が補完される",
       settings: {
         autoFilter: [{ pattern: "sm0", target: { videoId: true } }],
       },
-      data: {
-        type: "video",
-        videos: [{ id: "sm0", title: "foo" }] as Video[],
-      },
+      videos: [{ id: "sm0", title: "foo" }],
       expected: [
         {
           pattern: "sm0",
@@ -183,10 +228,7 @@ bar
       settings: {
         autoFilter: [{ pattern: "0", target: { videoOwnerId: true } }],
       },
-      data: {
-        type: "video",
-        videos: [{ owner: { id: "0", name: "foo" } }] as Video[],
-      },
+      videos: [{ owner: { id: "0", name: "foo" } }],
       expected: [
         {
           pattern: "0",
@@ -207,10 +249,7 @@ bar
           },
         ],
       },
-      data: {
-        type: "video",
-        videos: [{ owner: { id: "0", name: "foo" } }] as Video[],
-      },
+      videos: [{ owner: { id: "0", name: "foo" } }],
       expected: [
         {
           pattern: "0",
@@ -225,23 +264,20 @@ bar
         complementContext: false,
         autoFilter: [{ pattern: "0", target: { videoOwnerId: true } }],
       },
-      data: {
-        type: "video",
-        videos: [{ owner: { id: "0", name: "foo" } }] as Video[],
-      },
+      videos: [{ owner: { id: "0", name: "foo" } }],
       expected: [{ pattern: "0", target: { videoOwnerId: true } }],
     },
   ] satisfies {
     name: string;
     settings: Partial<Settings>;
-    data: Except<Parameters<typeof addContextToAutoRule>[0], "settings">;
+    videos: Partial<Video>[];
     expected: Partial<AutoRule>[];
-  }[])("$name", async ({ settings, data, expected }) => {
+  }[])("$name", async ({ settings, videos, expected }) => {
     await setSettings(settings);
-    await addContextToAutoRule({
-      ...data,
-      settings: { complementContext: true, ...settings } as Settings,
-    });
+    await addContextToVideoRule(
+      videos as Video[],
+      { complementContext: true, ...settings } as Settings,
+    );
 
     const newSettings = await loadSettings();
     expect(newSettings.autoFilter).toEqual(expected);

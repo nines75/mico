@@ -6,7 +6,10 @@ import { filterResponse, spaFilter } from "./request";
 import type { RankingApi } from "@/types/api/ranking-api.types";
 import { rankingApiSchema } from "@/types/api/ranking-api.types";
 import { cleanUpDb } from "@/utils/db";
-import { addContextToAutoRule, importLocalFilter } from "@/utils/storage-write";
+import {
+  addContextToVideoRule,
+  importLocalFilter,
+} from "@/utils/storage-write";
 import { mountLogId } from "@/utils/messaging";
 
 export function rankingRequest(
@@ -40,11 +43,7 @@ export function rankingRequest(
     const tasks: Promise<void>[] = [
       saveLog(filteringResult, logId, tabId),
       cleanUpDb(),
-      addContextToAutoRule({
-        type: "video",
-        videos: filteringResult.allVideos,
-        settings,
-      }),
+      addContextToVideoRule(filteringResult.allVideos, settings),
     ];
 
     if (details.type === "main_frame") {

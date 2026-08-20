@@ -3,7 +3,7 @@ import { saveLog } from "../comment-filter/save-log";
 import { loadSettings } from "@/utils/storage";
 import { isWatchPage } from "@/utils/util";
 import { filterResponse } from "./request";
-import { addAutoRule, addContextToAutoRule } from "@/utils/storage-write";
+import { addAutoRule, addContextToCommentRule } from "@/utils/storage-write";
 import type { CommentApi } from "@/types/api/comment-api.types";
 import { commentApiSchema } from "@/types/api/comment-api.types";
 import { cleanUpDb, getTab, setTab } from "@/utils/db";
@@ -47,12 +47,7 @@ export default function commentRequest(
     const tasks: Promise<void>[] = [
       saveLog(result, logId, tabId),
       cleanUpDb(),
-      addContextToAutoRule({
-        type: "comment",
-        comments: result.allComments,
-        tab,
-        settings,
-      }),
+      addContextToCommentRule(result.allComments, tab, settings),
     ];
 
     const strictData = result.strictData;
