@@ -466,32 +466,6 @@ rule
 `,
         warnings: [{ index: 5, type: "strict_with_disable" }],
       },
-      // type: strict_alias
-      {
-        name: "余分な@sがない場合、警告が出ない",
-        filter: `
-@comment-body
-
-@s
-rule
-
-@end
-`,
-        warnings: [],
-      },
-      {
-        name: "余分な@sがある場合、警告が出る",
-        filter: `
-@comment-body
-
-@s
-@s
-rule
-
-@end
-`,
-        warnings: [{ index: 4, type: "strict_alias" }],
-      },
       // type: toggle
       {
         name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
@@ -534,7 +508,32 @@ rule
 `,
         warnings: [{ index: 4, type: "disable" }],
       },
-      // type: end
+      // type: unnecessary_directive
+      {
+        name: "余分な@sがない場合、警告が出ない",
+        filter: `
+@comment-body
+
+@s
+rule
+
+@end
+`,
+        warnings: [],
+      },
+      {
+        name: "余分な@sがある場合、警告が出る",
+        filter: `
+@comment-body
+
+@s
+@s
+rule
+
+@end
+`,
+        warnings: [{ index: 4, type: "unnecessary_directive" }],
+      },
       {
         name: "余分な@endがない場合、警告が出ない",
         filter: `
@@ -552,7 +551,7 @@ rule
 @end
 @end
 `,
-        warnings: [{ index: 4, type: "end" }],
+        warnings: [{ index: 4, type: "unnecessary_directive" }],
       },
     ] satisfies {
       name: string;

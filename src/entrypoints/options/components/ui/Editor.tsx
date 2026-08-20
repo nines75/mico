@@ -175,16 +175,15 @@ const linterMessageMap: Record<
   strict:
     "@strictは@comment-commandsまたは@comment-bodyと併用する必要があります。",
   strict_with_disable: "@strictは@disableと併用できません。",
-  strict_alias: "不要な@sです。",
   toggle:
     "@includeまたは@excludeで始まるディレクティブはコメントフィルターでのみ使用できます。",
   disable: "@disableは@comment-commandsと併用する必要があります。",
-  end: "不要な@endです。",
+  unnecessary_directive: "不要なディレクティブです。",
 
   // error
   directive: "無効なディレクティブです。",
   regex: "無効な正規表現です。",
-  regex_flag: "無効な正規表現フラグです。",
+  regex_flag: "サポートされていない正規表現フラグです。",
   args: "引数が必要です。",
 } as const;
 

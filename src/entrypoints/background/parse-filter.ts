@@ -57,10 +57,9 @@ export interface ParseWarning {
     | "target"
     | "strict"
     | "strict_with_disable"
-    | "strict_alias"
     | "toggle"
     | "disable"
-    | "end";
+    | "unnecessary_directive";
 }
 
 export interface ParseError {
@@ -122,14 +121,14 @@ export function parseFilter(filter: string): {
     if (trimmedLine === "@end") {
       const directive = directives.pop();
       if (directive === undefined) {
-        warnings.push({ index, type: "end" });
+        warnings.push({ index, type: "unnecessary_directive" });
       }
 
       continue;
     }
     if (trimmedLine === "@s") {
       if (strictAlias) {
-        warnings.push({ index, type: "strict_alias" });
+        warnings.push({ index, type: "unnecessary_directive" });
       }
 
       strictAlias = true;
