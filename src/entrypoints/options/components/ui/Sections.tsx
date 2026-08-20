@@ -1,3 +1,5 @@
+import type { ButtonItem } from "./Button";
+import Button from "./Button";
 import type { CheckboxItem } from "./Checkbox";
 import Checkbox from "./Checkbox";
 import H2 from "./H2";
@@ -9,7 +11,7 @@ export type SectionsItem = SectionsProps["sections"];
 export interface SectionsProps {
   sections: {
     heading?: string;
-    items: (CheckboxItem | InputItem)[];
+    items: (CheckboxItem | InputItem | ButtonItem)[];
   }[];
 }
 
@@ -23,6 +25,9 @@ export default function Sections({ sections }: SectionsProps) {
           }
           case "input": {
             return <Input key={item.id} {...item} />;
+          }
+          case "button": {
+            return <Button key={item.id} {...item} />;
           }
         }
       })}

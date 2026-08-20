@@ -103,7 +103,7 @@ export async function sendNativeMessage(message: unknown) {
   }
 }
 
-export async function saveBackup(type: "startup" | "shortcut") {
+export async function saveBackup(type: "startup" | "button") {
   const settings = await loadSettings();
   if (type === "startup" && !settings.saveBackupOnStartup) return;
 
@@ -135,7 +135,7 @@ export async function saveBackup(type: "startup" | "shortcut") {
       backup,
     });
 
-    if (type === "shortcut" && response?.status === "completed") {
+    if (type === "button" && response?.status === "completed") {
       await notify("バックアップを保存しました");
     }
   });

@@ -4,7 +4,7 @@ import { recommendRequest } from "./request/recommend.request";
 import { catchAsync } from "@/utils/util";
 import { rankingRequest } from "./request/ranking.request";
 import { searchRequest } from "./request/search.request";
-import { importLocalFilter, setSettings } from "@/utils/storage-write";
+import { setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
@@ -97,14 +97,6 @@ export default defineBackground(() => {
       if (command === "open-log") {
         const logId = await getLogIdViaMessage();
         await openLog(logId);
-      }
-
-      if (command === "import-local-filter") {
-        await importLocalFilter("shortcut");
-      }
-
-      if (command === "save-backup") {
-        await saveBackup("shortcut");
       }
     }),
   );

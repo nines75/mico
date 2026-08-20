@@ -222,15 +222,15 @@ export async function addContextToAutoRule(
   await setSettings(transaction);
 }
 
-export async function importLocalFilter(type: "load" | "shortcut") {
+export async function importLocalFilter(type: "load" | "button") {
   // 不要な設定のロードを避けるため最初に権限を確認
   if (!(await hasPermission("nativeMessaging"))) {
     // 本来はSettings.importLocalFilterOnLoadを有効にしているユーザーが
     // 権限を持っていない場合のみ通知したいがロード回避との両立はできない。
     // この設定に関わらず通知を送信すると邪魔になるため送信しない
 
-    // ショートカット経由なら設定に関わらず常に通知する
-    if (type === "shortcut")
+    // ボタン経由なら設定に関わらず常に通知する
+    if (type === "button")
       await notify("以下の権限が必要です\n\nnativeMessaging");
 
     return;
@@ -259,7 +259,7 @@ export async function importLocalFilter(type: "load" | "shortcut") {
     if (response?.status === "completed") {
       await setSettings(response.data as Partial<Settings>);
 
-      if (type === "shortcut") {
+      if (type === "button") {
         await notify("ローカルフィルターをインポートしました");
       }
     }

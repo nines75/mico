@@ -119,14 +119,6 @@ export default defineConfig({
           description: "ログを開く",
           suggested_key: isDevelopment ? { default: "Alt+L" } : {},
         },
-        "import-local-filter": {
-          description: "ローカルフィルターをインポート (native)",
-          suggested_key: isDevelopment ? { default: "Ctrl+Alt+N" } : {},
-        },
-        "save-backup": {
-          description: "バックアップを保存 (native)",
-          suggested_key: isDevelopment ? { default: "Ctrl+Alt+B" } : {},
-        },
         reload: {
           description: "リロードして現在の再生時間を復元",
           suggested_key: isDevelopment ? { default: "Alt+R" } : {},

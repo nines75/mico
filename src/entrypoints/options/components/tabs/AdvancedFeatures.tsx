@@ -1,5 +1,8 @@
+import { catchAsync } from "@/utils/util";
 import type { SectionsItem } from "../ui/Sections";
 import Sections from "../ui/Sections";
+import { importLocalFilter } from "@/utils/storage-write";
+import { saveBackup } from "@/utils/browser";
 
 export default function AdvancedFeatures() {
   return (
@@ -34,6 +37,14 @@ const config = [
         id: "localFilterPath",
         label: "インポートするローカルフィルターのパス",
       },
+      {
+        type: "button",
+        id: "importLocalFilterButton",
+        label: "ローカルフィルターをインポート",
+        onClick: catchAsync(async () => {
+          await importLocalFilter("button");
+        }),
+      },
     ],
   },
   {
@@ -65,6 +76,14 @@ const config = [
         type: "input",
         id: "backupPath",
         label: "バックアップを保存するディレクトリのパス",
+      },
+      {
+        type: "button",
+        id: "saveBackupButton",
+        label: "バックアップを保存",
+        onClick: catchAsync(async () => {
+          await saveBackup("button");
+        }),
       },
     ],
   },
