@@ -29,6 +29,10 @@
 .rule-remove-button {
   border: none;
 }
+.rule-value {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 .tab {
   border-bottom: 2px solid gray;
 }

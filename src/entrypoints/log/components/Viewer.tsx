@@ -81,7 +81,10 @@ export function RuleCell(
       >
         <Trash size={16} />
       </button>
-      {value}
+      {/* ルール列はツールチップを使用できないので、常にtitle属性を設定する */}
+      <span className="rule-value" title={value}>
+        {value}
+      </span>
     </div>
   );
 }
