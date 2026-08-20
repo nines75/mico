@@ -19,7 +19,9 @@ const modules = [
   TooltipModule,
   TextFilterModule,
   NumberFilterModule,
-  ...(process.env.NODE_ENV === "production" ? [] : [ValidationModule]),
+  ...(process.env.NODE_ENV === "production"
+    ? []
+    : [ValidationModule.with({ showOverlayOn: ["deprecation", "error"] })]),
 ];
 
 const dom = document.querySelector("#root");
