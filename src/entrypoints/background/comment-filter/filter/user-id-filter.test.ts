@@ -35,33 +35,59 @@ describe(UserIdFilter.name, () => {
   // -------------------------------------------------------------------------------------------
 
   describe("文字列ルール", () => {
-    it("完全一致", () => {
-      const filter = "user-id";
-
-      assertor.assert(["1"], runFilter(filter));
-    });
-
-    it("部分一致", () => {
-      const filter = "user";
-
-      assertor.assert([], runFilter(filter));
+    it.each([
+      {
+        name: "ユーザーIDがルールと完全に一致する場合、そのコメントをフィルタリングする",
+        filter: "user-id", // 完全一致
+        filteredIds: ["1"],
+      },
+      {
+        name: "ユーザーIDにルールが部分的に含まれる場合、そのコメントをフィルタリングしない",
+        filter: "user", // 部分一致
+        filteredIds: [],
+      },
+      {
+        name: "ユーザーIDにルールが部分的に含まれない場合、そのコメントをフィルタリングしない",
+        filter: "foo",
+        filteredIds: [],
+      },
+      {
+        name: "ユーザーIDが大小文字を変えたルールと完全に一致する場合、そのコメントをフィルタリングしない",
+        filter: "USER-ID",
+        filteredIds: [],
+      },
+    ])("$name", ({ filter, filteredIds }) => {
+      assertor.assert(filteredIds, runFilter(filter));
     });
   });
 
-  it("正規表現ルール", () => {
-    const filter = "/user-id/";
-
-    assertor.assert(["1"], runFilter(filter));
+  describe("正規表現ルール", () => {
+    it.each([
+      {
+        name: "ユーザーIDが正規表現とマッチする場合、そのコメントをフィルタリングする",
+        filter: "/user-id/",
+        filteredIds: ["1"],
+      },
+      {
+        name: "ユーザーIDが正規表現とマッチしない場合、そのコメントをフィルタリングしない",
+        filter: "/foo/",
+        filteredIds: [],
+      },
+    ])("$name", ({ filter, filteredIds }) => {
+      assertor.assert(filteredIds, runFilter(filter));
+    });
   });
 
-  it(UserIdFilter.prototype.updateFilter.name, () => {
-    const userIdFilter = runFilter("");
+  describe(UserIdFilter.prototype.updateFilter.name, () => {
+    it("ユーザーIDを渡した場合、ルールが追加される", () => {
+      const userIdFilter = runFilter("");
 
-    assertor.assert([], userIdFilter);
+      assertor.assert([], userIdFilter);
 
-    userIdFilter.updateFilter(["user-id"]);
-    userIdFilter.apply(threads);
+      userIdFilter.updateFilter(["user-id"]);
+      userIdFilter.apply(threads);
 
-    assertor.assert(["1"], userIdFilter);
+      assertor.assert(["1"], userIdFilter);
+    });
   });
 });

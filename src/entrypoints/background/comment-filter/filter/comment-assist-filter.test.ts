@@ -1,8 +1,7 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { CommentAssertor } from "@/utils/test";
+import { CommentAssertor, createSettingsName } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import type { Settings } from "@/types/storage/settings.types";
 import { CommentAssistFilter } from "./comment-assist-filter";
 import { mockThread } from "@/utils/test";
 
@@ -55,18 +54,13 @@ describe(CommentAssistFilter.name, () => {
 
   // -------------------------------------------------------------------------------------------
 
-  describe(`Settings.${"enableCommentAssistFilter" satisfies keyof Settings}`, () => {
-    it.each([
-      {
-        isEnabled: true,
-        ids: ["3", "4"],
-      },
-      {
-        isEnabled: false,
-        ids: [],
-      },
-    ])("$isEnabled", ({ isEnabled, ids }) => {
-      assertor.assert(ids, runFilter(isEnabled));
+  describe(createSettingsName("enableCommentAssistFilter"), () => {
+    it("falseの場合、コメントアシストによって投稿されたコメントをフィルタリングしない", () => {
+      assertor.assert([], runFilter(false));
+    });
+
+    it("trueの場合、コメントアシストによって投稿されたコメントをフィルタリングする", () => {
+      assertor.assert(["3", "4"], runFilter(true));
     });
   });
 });

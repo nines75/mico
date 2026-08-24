@@ -1,113 +1,108 @@
-import { loadSettings } from "@/utils/storage";
+import { getSettings, loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
 import {
   addAutoRule,
   addContextToCommentRule,
   addContextToVideoRule,
+  cleanUpStorage,
+  clearStorage,
   removeAutoRule,
   setSettings,
 } from "./storage-write";
 import { type AutoRule } from "@/entrypoints/background/rule";
-import { testTab } from "./test";
+import { expectString, testTab } from "./test";
 import type { Settings } from "@/types/storage/settings.types";
 import type { PartialComment } from "@/types/storage/log.types";
 import type { Video } from "@/types/api/video.types";
 
-const expectString = expect.any(String) as string;
+describe(clearStorage.name, () => {
+  it("設定に空のオブジェクトが保存される", async () => {
+    await setSettings({ enableCommentFilter: true });
+    await clearStorage();
+
+    expect(await getSettings()).toEqual({});
+  });
+});
+
+describe(cleanUpStorage.name, () => {
+  it("設定に存在しないキーがある場合、削除される", async () => {
+    await setSettings({ foo: true } as Partial<Settings>);
+    await cleanUpStorage();
+
+    expect(await getSettings()).toEqual({ storeId: "" });
+  });
+
+  it("設定に存在しないキーがない場合、設定は変化しない", async () => {
+    await setSettings({ enableCommentFilter: true });
+    await cleanUpStorage();
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: true,
+      storeId: "",
+    });
+  });
+});
+
+describe(setSettings.name, () => {
+  it("設定を渡した場合、保存される", async () => {
+    await setSettings({ enableCommentFilter: true });
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: true,
+      storeId: "",
+    });
+  });
+
+  it("設定を返す関数を渡した場合、その関数の戻り値が保存される", async () => {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    await setSettings(async () => {
+      return { enableCommentFilter: true };
+    });
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: true,
+      storeId: "",
+    });
+  });
+});
 
 describe(addAutoRule.name, () => {
-  it.each([
-    {
-      name: "0",
-      rules: [],
-    },
-    {
-      name: "1",
-      rules: [
-        {
-          pattern: "rule",
-          source: "dropdown",
-        },
-      ],
-    },
-    {
-      name: "複数",
-      rules: [
-        {
-          pattern: "rule",
-          source: "dropdown",
-        },
-        {
-          pattern: "rule",
-          source: "contextMenu",
-          target: { commentBody: true },
-        },
-      ],
-    },
-  ] satisfies { name: string; rules: Parameters<typeof addAutoRule>[0] }[])(
-    "ルール数: $name",
-    async ({ rules }) => {
-      await addAutoRule(rules);
+  it("Autoルールを渡した場合、保存される", async () => {
+    await addAutoRule([{ pattern: "rule", source: "dropdown" }]);
 
-      const settings = await loadSettings();
-      expect(settings.autoFilter).toEqual(
-        rules.map((rule) => ({
-          id: expectString,
-          ...rule,
-        })),
-      );
-    },
-  );
+    const settings = await loadSettings();
+    expect(settings.autoFilter).toEqual([
+      { id: expectString, pattern: "rule", source: "dropdown" },
+    ]);
+  });
 });
 
 describe(removeAutoRule.name, () => {
-  it.each([
-    {
-      name: "0",
-      rules: [],
-    },
-    {
-      name: "1",
-      rules: [
-        {
-          id: "id",
-          pattern: "rule",
-          source: "dropdown",
-        },
-      ],
-    },
-    {
-      name: "複数",
-      rules: [
-        {
-          id: "id",
-          pattern: "rule",
-          source: "dropdown",
-        },
-        {
-          id: "id2",
-          pattern: "rule",
-          source: "contextMenu",
-          target: { commentBody: true },
-        },
-      ],
-    },
-  ] satisfies { name: string; rules: AutoRule[] }[])(
-    "ルール数: $name",
-    async ({ rules }) => {
-      await setSettings({ autoFilter: rules });
-      await removeAutoRule(rules.map(({ id }) => id));
+  it("保存されているルールID渡した場合、そのルールが削除される", async () => {
+    await setSettings({
+      autoFilter: [{ id: "id", pattern: "rule", source: "dropdown" }],
+    });
+    await removeAutoRule(["id"]);
 
-      const settings = await loadSettings();
-      expect(settings.autoFilter).toEqual([]);
-    },
-  );
+    const settings = await loadSettings();
+    expect(settings.autoFilter).toEqual([]);
+  });
+
+  it("保存されていないルールID渡した場合、設定は変化しない", async () => {
+    const rules = [{ id: "id", pattern: "rule", source: "dropdown" as const }];
+
+    await setSettings({ autoFilter: rules });
+    await removeAutoRule(["id2"]);
+
+    const settings = await loadSettings();
+    expect(settings.autoFilter).toEqual(rules);
+  });
 });
 
 describe(addContextToCommentRule.name, () => {
   it.each([
     {
-      name: "ターゲットが@comment-user-idの場合、コンテキスト情報が補完される",
+      name: "対象のコメントにマッチするManualルールがある場合、コンテキスト情報が補完される",
       settings: {
         manualFilter: `
 @comment-body
@@ -115,7 +110,7 @@ foo
 `,
         autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
       },
-      comments: [{ body: "foo-bar", userId: "user-id" }],
+      comments: [{ body: "foo-bar", userId: "user-id" }], // bodyをfooにするとルールと区別がつかないためfoo-barにする
       expected: [
         {
           pattern: "user-id",
@@ -126,7 +121,7 @@ foo
       ],
     },
     {
-      name: "ターゲットが@comment-user-idの場合、strictルールを考慮してコンテキスト情報が補完される",
+      name: "strictルールが存在する場合、優先してコンテキスト情報の補完に使用される",
       settings: {
         manualFilter: `
 @comment-body
@@ -209,7 +204,7 @@ foo
 describe(addContextToVideoRule.name, () => {
   it.each([
     {
-      name: "ターゲットが@video-idの場合、コンテキスト情報が補完される",
+      name: "ターゲットが@video-idのAutoルールにマッチする動画がある場合、コンテキスト情報が補完される",
       settings: {
         autoFilter: [{ pattern: "sm0", target: { videoId: true } }],
       },
@@ -224,7 +219,7 @@ describe(addContextToVideoRule.name, () => {
       ],
     },
     {
-      name: "ターゲットが@video-owner-idの場合、コンテキスト情報が補完される",
+      name: "ターゲットが@video-owner-idのAutoルールにマッチする動画がある場合、コンテキスト情報が補完される",
       settings: {
         autoFilter: [{ pattern: "0", target: { videoOwnerId: true } }],
       },

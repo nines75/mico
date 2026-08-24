@@ -10,81 +10,108 @@ import {
 } from "./util";
 
 describe(isNiconicoPage.name, () => {
-  it.each([
-    { url: "https://www.nicovideo.jp/" },
-    { url: "https://www.nicovideo.jp/ranking/genre" },
-    { url: "https://live.nicovideo.jp/", expected: false },
-    { expected: false },
-  ])(`$url`, ({ url, expected }) => {
-    expect(isNiconicoPage(url)).toBe(expected ?? true);
+  describe("trueを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/",
+      "https://www.nicovideo.jp/ranking/genre",
+    ])("%s", (url) => {
+      expect(isNiconicoPage(url)).toBe(true);
+    });
+  });
+
+  describe("falseを返す場合", () => {
+    it.each(["https://live.nicovideo.jp/", undefined])("%s", (url) => {
+      expect(isNiconicoPage(url)).toBe(false);
+    });
   });
 });
 
 describe(isWatchPage.name, () => {
-  it.each([
-    { url: "https://www.nicovideo.jp/watch/sm0" },
-    { url: "https://www.nicovideo.jp/watch/0" }, // https://github.com/nines75/mico/issues/13
-    { url: "https://www.nicovideo.jp/", expected: false },
-    { expected: false },
-  ])(`$url`, ({ url, expected }) => {
-    expect(isWatchPage(url)).toBe(expected ?? true);
+  describe("trueを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/watch/sm0",
+      "https://www.nicovideo.jp/watch/0", // https://github.com/nines75/mico/issues/13
+    ])("%s", (url) => {
+      expect(isWatchPage(url)).toBe(true);
+    });
+  });
+
+  describe("falseを返す場合", () => {
+    it.each(["https://www.nicovideo.jp/", undefined])("%s", (url) => {
+      expect(isWatchPage(url)).toBe(false);
+    });
   });
 });
 
 describe(isRankingPage.name, () => {
-  it.each([
-    { url: "https://www.nicovideo.jp/ranking" }, // https://github.com/nines75/mico/issues/39
-    { url: "https://www.nicovideo.jp/ranking/genre" },
-    { url: "https://www.nicovideo.jp/ranking/genre/e9uj2uks" },
-    { url: "https://www.nicovideo.jp/ranking/custom", expected: false },
-    { url: "https://www.nicovideo.jp/", expected: false },
-    { expected: false },
-  ])(`$url`, ({ url, expected }) => {
-    expect(isRankingPage(url)).toBe(expected ?? true);
+  describe("trueを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/ranking", // https://github.com/nines75/mico/issues/39
+      "https://www.nicovideo.jp/ranking/genre",
+      "https://www.nicovideo.jp/ranking/genre/e9uj2uks",
+    ])("%s", (url) => {
+      expect(isRankingPage(url)).toBe(true);
+    });
+  });
+
+  describe("falseを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/ranking/custom",
+      "https://www.nicovideo.jp/",
+      undefined,
+    ])("%s", (url) => {
+      expect(isRankingPage(url)).toBe(false);
+    });
   });
 });
 
 describe(isSearchPage.name, () => {
-  it.each([
-    { url: "https://www.nicovideo.jp/search/test" },
-    { url: "https://www.nicovideo.jp/search_shorts/test" },
-    { url: "https://www.nicovideo.jp/tag/test" },
-    { url: "https://www.nicovideo.jp/tag_shorts/test" },
-    { url: "https://www.nicovideo.jp/series_search/test", expected: false },
-    { url: "https://www.nicovideo.jp/mylist_search/test", expected: false },
-    { url: "https://www.nicovideo.jp/user_search/test", expected: false },
-    { url: "https://www.nicovideo.jp/", expected: false },
-    { expected: false },
-  ])(`$url`, ({ url, expected }) => {
-    expect(isSearchPage(url)).toBe(expected ?? true);
+  describe("trueを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/search/foo",
+      "https://www.nicovideo.jp/search_shorts/foo",
+      "https://www.nicovideo.jp/tag/foo",
+      "https://www.nicovideo.jp/tag_shorts/foo",
+    ])("%s", (url) => {
+      expect(isSearchPage(url)).toBe(true);
+    });
+  });
+
+  describe("falseを返す場合", () => {
+    it.each([
+      "https://www.nicovideo.jp/series_search/foo",
+      "https://www.nicovideo.jp/mylist_search/foo",
+      "https://www.nicovideo.jp/user_search/foo",
+      "https://www.nicovideo.jp/",
+      undefined,
+    ])("%s", (url) => {
+      expect(isSearchPage(url)).toBe(false);
+    });
   });
 });
 
-it(escapeNewline.name, () => {
-  expect(escapeNewline("hello\nworld\n\n!")).toBe(
-    String.raw`hello\nworld\n\n!`,
-  );
+describe(escapeNewline.name, () => {
+  it("改行コードを含む文字列を渡した場合、改行コードをエスケープする", () => {
+    expect(escapeNewline("foo\nbar")).toBe(String.raw`foo\nbar`);
+  });
 });
 
 describe(sum.name, () => {
   it.each([
     {
-      name: "0",
       numbers: [],
       expected: 0,
     },
     {
-      name: "1",
       numbers: [1],
       expected: 1,
     },
     {
-      name: "複数",
       numbers: [1, 2, 3],
       expected: 6,
     },
-  ] satisfies { name: string; numbers: number[]; expected: number }[])(
-    `要素数: $name`,
+  ] satisfies { numbers: number[]; expected: number }[])(
+    `$numbersを渡した場合、$expectedを返す`,
     ({ numbers, expected }) => {
       expect(sum(numbers)).toEqual(expected);
     },

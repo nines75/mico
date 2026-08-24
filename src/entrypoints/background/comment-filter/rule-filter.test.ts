@@ -39,52 +39,76 @@ describe(RuleFilter.prototype.filterRules.name, () => {
   // -------------------------------------------------------------------------------------------
 
   describe("@include-tags", () => {
-    it.each([
-      {
-        name: "0",
-        tags: [],
-        expected: [],
-      },
-      {
-        name: "1",
-        tags: ["tag"],
-        expected: mockRules(
-          { include: { tags: [["tag"]] } },
-          { include: { tags: [["tag", "tag2"]] } },
-        ).rules,
-      },
-      {
-        name: "複数",
-        tags: ["tag", "tag2"],
-        expected: mockRules(
-          { include: { tags: [["tag"]] } },
-          { include: { tags: [["tag2"]] } },
-          { include: { tags: [["tag", "tag2"]] } },
-          { include: { tags: [["tag"], ["tag2"]] } },
-        ).rules,
-      },
-    ])("動画タグの数: $name", ({ tags, expected }) => {
-      const filter = `
-@include-tags tag
+    describe("引数が一個設定されている場合", () => {
+      it.each([
+        {
+          name: "動画タグが設定されていない場合、ルールが有効化されない",
+          tags: [],
+          expected: [],
+        },
+        {
+          name: "引数にマッチする動画タグが設定されている場合、ルールが有効化される",
+          tags: ["foo"],
+          expected: mockRules({ include: { tags: [["foo"]] } }).rules,
+        },
+        {
+          name: "引数にマッチしない動画タグが設定されている場合、ルールが有効化されない",
+          tags: ["bar"],
+          expected: [],
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@include-tags foo
 rule
-@end
-
-@include-tags tag2
-rule
-@end
-
-@include-tags tag tag2
-rule
-@end
-
-@include-tags tag
-@include-tags tag2
-rule
-@end
-@end
 `;
 
-      expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
+    });
+
+    describe("引数が二個設定されている場合", () => {
+      it.each([
+        {
+          name: "片方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
+          tags: ["foo"],
+          expected: mockRules({ include: { tags: [["foo", "bar"]] } }).rules,
+        },
+        {
+          name: "両方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
+          tags: ["foo", "bar"],
+          expected: mockRules({ include: { tags: [["foo", "bar"]] } }).rules,
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@include-tags foo bar
+rule
+`;
+
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
+    });
+
+    describe("ネストしている場合", () => {
+      it.each([
+        {
+          name: "片方の引数にマッチする動画タグが設定されている場合、ルールが有効化されない",
+          tags: ["foo"],
+          expected: [],
+        },
+        {
+          name: "両方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
+          tags: ["foo", "bar"],
+          expected: mockRules({ include: { tags: [["foo"], ["bar"]] } }).rules,
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@include-tags foo
+@include-tags bar
+rule
+`;
+
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
     });
   });
 
@@ -93,51 +117,76 @@ rule
   // -------------------------------------------------------------------------------------------
 
   describe("@exclude-tags", () => {
-    it.each([
-      {
-        name: "0",
-        tags: [],
-        expected: mockRules(
-          { exclude: { tags: [["tag"]] } },
-          { exclude: { tags: [["tag2"]] } },
-          { exclude: { tags: [["tag", "tag2"]] } },
-          { exclude: { tags: [["tag"], ["tag2"]] } },
-        ).rules,
-      },
-      {
-        name: "1",
-        tags: ["tag"],
-        expected: mockRules(
-          { exclude: { tags: [["tag2"]] } },
-          { exclude: { tags: [["tag"], ["tag2"]] } },
-        ).rules,
-      },
-      {
-        name: "複数",
-        tags: ["tag", "tag2"],
-        expected: [],
-      },
-    ])("動画タグの数: $name", ({ tags, expected }) => {
-      const filter = `
-@exclude-tags tag
+    describe("引数が一個設定されている場合", () => {
+      it.each([
+        {
+          name: "動画タグが設定されていない場合、ルールが無効化されない",
+          tags: [],
+          expected: mockRules({ exclude: { tags: [["foo"]] } }).rules,
+        },
+        {
+          name: "引数にマッチする動画タグが設定されている場合、ルールが無効化される",
+          tags: ["foo"],
+          expected: [],
+        },
+        {
+          name: "引数にマッチしない動画タグが設定されている場合、ルールが無効化されない",
+          tags: ["bar"],
+          expected: mockRules({ exclude: { tags: [["foo"]] } }).rules,
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@exclude-tags foo
 rule
-@end
-
-@exclude-tags tag2
-rule
-@end
-
-@exclude-tags tag tag2
-rule
-@end
-
-@exclude-tags tag
-@exclude-tags tag2
-rule
-@end
-@end
 `;
-      expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
+    });
+
+    describe("引数が二個設定されている場合", () => {
+      it.each([
+        {
+          name: "片方の引数にマッチする動画タグが設定されている場合、ルールが無効化される",
+          tags: ["foo"],
+          expected: [],
+        },
+        {
+          name: "両方の引数にマッチする動画タグが設定されている場合、ルールが無効化される",
+          tags: ["foo", "bar"],
+          expected: [],
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@exclude-tags foo bar
+rule
+`;
+
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
+    });
+
+    describe("ネストしている場合", () => {
+      it.each([
+        {
+          name: "片方の引数にマッチする動画タグが設定されている場合、ルールが無効化されない",
+          tags: ["foo"],
+          expected: mockRules({ exclude: { tags: [["foo"], ["bar"]] } }).rules,
+        },
+        {
+          name: "両方の引数にマッチする動画タグが設定されている場合、ルールが無効化される",
+          tags: ["foo", "bar"],
+          expected: [],
+        },
+      ])("$name", ({ tags, expected }) => {
+        const filter = `
+@exclude-tags foo
+@exclude-tags bar
+rule
+`;
+
+        expect(runFilter({ filter, tags }).getRule()).toEqual(expected);
+      });
     });
   });
 
@@ -148,32 +197,32 @@ rule
   describe("@include-tags + @exclude-tags", () => {
     it.each([
       {
-        name: "@include-tagsのみマッチ",
-        tags: ["tag"],
+        name: "動画タグが設定されていない場合、ルールが有効化されない",
+        tags: [],
+        expected: [],
+      },
+      {
+        name: "@include-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが有効化される",
+        tags: ["foo"],
         expected: mockRules({
-          include: { tags: [["tag"]] },
-          exclude: { tags: [["tag2"]] },
+          include: { tags: [["foo"]] },
+          exclude: { tags: [["bar"]] },
         }).rules,
       },
       {
-        name: "@exclude-tagsのみマッチ",
-        tags: ["tag2"],
+        name: "@exclude-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが無効化される",
+        tags: ["bar"],
         expected: [],
       },
       {
-        name: "両方マッチ",
-        tags: ["tag", "tag2"],
-        expected: [],
-      },
-      {
-        name: "動画タグなし",
-        tags: [],
+        name: "両方の引数にマッチする動画タグが設定されている場合、ルールが無効化される",
+        tags: ["foo", "bar"],
         expected: [],
       },
     ])("$name", ({ tags, expected }) => {
       const filter = `
-@include-tags tag
-@exclude-tags tag2
+@include-tags foo
+@exclude-tags bar
 rule
 `;
 
@@ -184,85 +233,52 @@ rule
   // -------------------------------------------------------------------------------------------
   // @include-video-ids
   // @exclude-video-ids
-  // -------------------------------------------------------------------------------------------
-
-  it.each([
-    {
-      name: "@include-video-ids",
-      expected: mockRules(
-        { include: { videoIds: [["sm1"]] } },
-        { include: { videoIds: [["sm1", "sm2"]] } },
-      ).rules,
-    },
-    {
-      name: "@exclude-video-ids",
-      expected: mockRules({
-        exclude: { videoIds: [["sm2"]] },
-      }).rules,
-    },
-  ])("$name", ({ name, expected }) => {
-    const filter = `
-${name} sm1
-rule
-@end
-
-${name} sm2
-rule
-@end
-
-${name} sm1 sm2
-rule
-@end
-`;
-
-    expect(runFilter({ filter }).getRule()).toEqual(expected);
-  });
-
-  // -------------------------------------------------------------------------------------------
   // @include-user-ids
   // @exclude-user-ids
   // @include-series-ids
   // @exclude-series-ids
   // -------------------------------------------------------------------------------------------
 
+  // 基本的には@include-tags/@exclude-tagsと同じなので、簡易的にテストする
+
   it.each([
     {
-      name: "@include-user-ids",
-      expected: mockRules(
-        { include: { userIds: [["1"]] } },
-        { include: { userIds: [["1", "2"]] } },
-      ).rules,
+      name: "動画IDが@include-video-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@include-video-ids",
+      expected: mockRules({ include: { videoIds: [["1"]] } }).rules,
     },
     {
-      name: "@exclude-user-ids",
-      expected: mockRules({
-        exclude: { userIds: [["2"]] },
-      }).rules,
+      name: "動画IDが@exclude-video-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@exclude-video-ids",
+      expected: mockRules({ exclude: { videoIds: [["2"]] } }).rules,
     },
     {
-      name: "@include-series-ids",
-      expected: mockRules(
-        { include: { seriesIds: [["1"]] } },
-        { include: { seriesIds: [["1", "2"]] } },
-      ).rules,
+      name: "ユーザーIDが@include-user-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@include-user-ids",
+      expected: mockRules({ include: { userIds: [["1"]] } }).rules,
     },
     {
-      name: "@exclude-series-ids",
-      expected: mockRules({
-        exclude: { seriesIds: [["2"]] },
-      }).rules,
+      name: "ユーザーIDが@exclude-user-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@exclude-user-ids",
+      expected: mockRules({ exclude: { userIds: [["2"]] } }).rules,
     },
-  ])("$name", ({ name, expected }) => {
+    {
+      name: "シリーズIDが@include-series-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@include-series-ids",
+      expected: mockRules({ include: { seriesIds: [["1"]] } }).rules,
+    },
+    {
+      name: "シリーズIDが@exclude-series-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@exclude-series-ids",
+      expected: mockRules({ exclude: { seriesIds: [["2"]] } }).rules,
+    },
+  ])("$name", ({ directive, expected }) => {
     const filter = `
-${name} 1
+${directive} 1
 rule
 @end
 
-${name} 2
-rule
-@end
-
-${name} 1 2
+${directive} 2
 rule
 @end
 `;

@@ -8,6 +8,9 @@ import type { Tab } from "@/types/storage/tab.types";
 import type { PartialDeep } from "type-fest";
 import { expect } from "vitest";
 import { merge } from "./util";
+import type { Settings } from "@/types/storage/settings.types";
+
+export const expectString = expect.any(String) as string;
 
 export function mockThread(
   fork: Thread["fork"],
@@ -39,7 +42,7 @@ export function mockThread(
 export const testTab = {
   seriesNext: undefined,
   duration: 1,
-  videoId: "sm1",
+  videoId: "1",
   seriesId: "1",
   title: "foo",
   ownerId: "1",
@@ -109,4 +112,8 @@ export function mockRules(
     warnings: expect.any(Array),
     errors: [],
   };
+}
+
+export function createSettingsName(key: keyof Settings) {
+  return `Settings.${key}`;
 }

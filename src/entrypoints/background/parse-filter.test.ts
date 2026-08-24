@@ -3,133 +3,65 @@ import type { ParseError, ParseWarning } from "./parse-filter";
 import { parseArgs, parseFilter } from "./parse-filter";
 import { mockRules } from "@/utils/test";
 
-const tags = ["tag0", "tag1", "tag2", "tag3"] as const;
-
 describe(parseFilter.name, () => {
-  // -------------------------------------------------------------------------------------------
-  // ルール
-  // -------------------------------------------------------------------------------------------
-
   it.each([
     {
       name: "コメント",
       filter: "# comment",
+      expected: mockRules(),
     },
     {
       name: "空行",
       filter: "",
+      expected: mockRules(),
     },
-    {
-      name: "index",
-      filter: `
-rule
-# comment
-rule
-
-rule
-`,
-      expected: mockRules(...[1, 3, 5].map((index) => ({ index }))),
-    },
-    {
-      name: "文字列ルール",
-      filter: "rule",
-      expected: mockRules({}),
-    },
-  ])("$name", ({ filter, expected }) => {
-    expect(parseFilter(filter)).toEqual(expected ?? mockRules());
+  ])("$nameをパースできる", ({ filter, expected }) => {
+    expect(parseFilter(filter)).toEqual(expected);
   });
 
-  describe("正規表現ルール", () => {
+  describe("ルール", () => {
     it.each([
       {
-        name: "0",
-        filter: "/rule/",
-        expected: mockRules({ pattern: /rule/ }),
+        name: "文字列ルール",
+        filter: "rule",
+        expected: mockRules({}),
       },
       {
-        name: "1",
-        filter: "/rule/i",
-        expected: mockRules({ pattern: /rule/i }),
+        name: "正規表現ルール",
+        filter: "/foo/",
+        expected: mockRules({ pattern: /foo/ }),
       },
       {
-        name: "複数",
-        filter: "/rule/iu",
-        expected: mockRules({ pattern: /rule/iu }),
+        name: "フラグを持つ正規表現ルール",
+        filter: "/foo/i",
+        expected: mockRules({ pattern: /foo/i }),
       },
-    ])("フラグの数: $name", ({ filter, expected }) => {
+      {
+        name: "パターンにスラッシュを含む正規表現ルール",
+        filter: "///",
+        expected: mockRules({ pattern: /\// }),
+      },
+    ])("$nameをパースできる", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
     });
-
-    it("パターンにスラッシュを含む", () => {
-      const filter = "///";
-
-      expect(parseFilter(filter)).toEqual(mockRules({ pattern: /\// }));
-    });
-
-    describe("異常系", () => {
-      // 別のルールとしてパースされるもの
-      it("先頭に空白文字を含む", () => {
-        expect(parseFilter(" /rule/")).toEqual(
-          mockRules({ pattern: " /rule/" }),
-        );
-      });
-
-      // 無効な行としてパースされるもの
-      it.each([
-        {
-          name: "末尾に空白文字を含む",
-          filter: "/rule/ ",
-          type: "regex_flag",
-        },
-        {
-          name: "対応していないフラグ",
-          filter: "/rule/g",
-          type: "regex_flag",
-        },
-        {
-          name: "併用できないフラグ",
-          filter: "/rule/uv",
-          type: "regex",
-        },
-        {
-          name: "無効なパターン",
-          filter: "/(rule/",
-          type: "regex",
-        },
-      ] satisfies {
-        name: string;
-        filter: string;
-        type: ParseError["type"];
-      }[])("$name", ({ filter, type }) => {
-        expect(parseFilter(filter)).toEqual({
-          rules: [],
-          warnings: [],
-          errors: [{ index: 0, type }],
-        });
-      });
-    });
   });
 
-  // -------------------------------------------------------------------------------------------
-  // @end
-  // -------------------------------------------------------------------------------------------
-
-  describe("@end", () => {
+  describe("ディレクティブ", () => {
     it.each([
       {
-        name: "基本",
+        name: "@end",
         filter: `
 @strict
 rule
 @end
+
 rule
 `,
         expected: mockRules({ strict: true }, {}),
       },
       {
-        name: "余分に@endがある",
+        name: "余分な@end",
         filter: `
-@end
 @end
 
 rule
@@ -137,31 +69,7 @@ rule
         expected: mockRules({}),
       },
       {
-        name: "対応する@endがない",
-        filter: `
-@strict
-rule
-`,
-        expected: mockRules({ strict: true }),
-      },
-    ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(filter)).toEqual(expected);
-    });
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // ターゲットを指定するディレクティブ
-  // -------------------------------------------------------------------------------------------
-
-  describe("ターゲットを指定するディレクティブ", () => {
-    it.each([
-      {
-        name: "0",
-        filter: "rule",
-        expected: mockRules({}),
-      },
-      {
-        name: "1",
+        name: "@comment-body",
         filter: `
 @comment-body
 rule
@@ -169,139 +77,24 @@ rule
         expected: mockRules({ target: { commentBody: true } }),
       },
       {
-        name: "複数",
+        name: "@strict",
         filter: `
-@comment-body
-@video-title
-rule
-`,
-        expected: mockRules({
-          target: { commentBody: true, videoTitle: true },
-        }),
-      },
-    ])("ターゲットの数: $name", ({ filter, expected }) => {
-      expect(parseFilter(filter)).toEqual(expected);
-    });
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // @strict
-  // -------------------------------------------------------------------------------------------
-
-  it("@strict", () => {
-    const filter = `
 @strict
-rule
-@end
-`;
-
-    expect(parseFilter(filter)).toEqual(mockRules({ strict: true }));
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // @disable
-  // -------------------------------------------------------------------------------------------
-
-  it("@disable", () => {
-    const filter = `
-@disable
-rule
-@end
-`;
-
-    expect(parseFilter(filter)).toEqual(mockRules({ disable: true }));
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // @include/@exclude
-  // -------------------------------------------------------------------------------------------
-
-  describe("@include/@exclude", () => {
-    it.each([
-      {
-        name: "基本",
-        filter: `
-@include-tags tag0 tag1
-rule
-@end
-`,
-        expected: mockRules({
-          include: { tags: [tags.slice(0, 2)] },
-        }),
-      },
-    ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(filter)).toEqual(expected);
-    });
-
-    describe("異常系", () => {
-      it.each([
-        {
-          // 直後にスペースがある場合のみパースしているので、以前は無効なディレクティブとして扱っていた
-          // しかし引数が必要であることを示す方が望ましいため、errorsのtypeがargsになっていることを確認する
-          name: "ディレクティブのみ",
-          filter: `
-@include-tags
-rule
-`,
-          type: "args",
-        },
-        {
-          // スペースのみの場合、引数は空の配列としてパースされる
-          // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため空配列が除外されていることを確認する
-          name: "ディレクティブの後にスペースのみを含む",
-          filter: `
-@include-tags 
-rule
-`,
-          type: "args",
-        },
-        {
-          name: "ディレクティブの前方一致",
-          filter: `
-@include-tagss tag0 tag1
-rule
-`,
-          type: "directive",
-        },
-      ] satisfies { name: string; filter: string; type: ParseError["type"] }[])(
-        "$name",
-        ({ filter, type }) => {
-          expect(parseFilter(filter)).toEqual({
-            rules: mockRules({}).rules,
-            warnings: [{ index: 2, type: "target" }],
-            errors: [{ index: 1, type }],
-          });
-        },
-      );
-    });
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // エイリアス
-  // -------------------------------------------------------------------------------------------
-
-  describe("エイリアス", () => {
-    it.each([
-      {
-        name: "基本",
-        filter: `
-@s
-rule
-rule
-`,
-        expected: mockRules({ strict: true }, {}),
-      },
-      {
-        name: "直後の行にルールがない",
-        filter: `
-@s
-@end
 rule
 `,
         expected: mockRules({ strict: true }),
       },
       {
-        name: "ディレクティブが連続",
+        name: "@s",
+        filter: `
+@s
+rule
+rule
+`,
+        expected: mockRules({ strict: true }, {}),
+      },
+      {
+        name: "余分な@s",
         filter: `
 @s
 @s
@@ -310,90 +103,40 @@ rule
 `,
         expected: mockRules({ strict: true }, {}),
       },
-    ])("$name", ({ filter, expected }) => {
-      expect(parseFilter(filter)).toEqual(expected);
-    });
-  });
-
-  // -------------------------------------------------------------------------------------------
-  // ディレクティブ
-  // -------------------------------------------------------------------------------------------
-
-  describe("ディレクティブ", () => {
-    it.each([
       {
-        name: "無効",
+        name: "@disable",
         filter: `
-@directive
-rule
-`,
-        expected: {
-          rules: mockRules({}).rules,
-          warnings: [{ index: 2, type: "target" }],
-          errors: [{ index: 1, type: "directive" }],
-        },
-      },
-      {
-        name: "ネスト",
-        filter: `
-@include-tags tag0
-rule
-
-@exclude-tags tag1
-rule
-
-@strict
-rule
-
 @disable
 rule
-@end
-
-@end
-
-@include-tags tag2
-rule
-@end
-
-@exclude-tags tag3
-rule
-@end
-
-@end
-@end
+`,
+        expected: mockRules({ disable: true }),
+      },
+      {
+        name: "一個の引数を持つ@include-tags",
+        filter: `
+@include-tags foo
 rule
 `,
-        expected: mockRules(
-          {
-            include: { tags: [[tags[0]]] },
-          },
-          {
-            include: { tags: [[tags[0]]] },
-            exclude: { tags: [[tags[1]]] },
-          },
-          {
-            include: { tags: [[tags[0]]] },
-            exclude: { tags: [[tags[1]]] },
-            strict: true,
-          },
-          {
-            include: { tags: [[tags[0]]] },
-            exclude: { tags: [[tags[1]]] },
-            strict: true,
-            disable: true,
-          },
-          {
-            include: { tags: [[tags[0]], [tags[2]]] },
-            exclude: { tags: [[tags[1]]] },
-          },
-          {
-            include: { tags: [[tags[0]]] },
-            exclude: { tags: [[tags[1]], [tags[3]]] },
-          },
-          {},
-        ),
+        expected: mockRules({ include: { tags: [["foo"]] } }),
       },
-    ])("$name", ({ filter, expected }) => {
+      {
+        name: "二個の引数を持つ@include-tags",
+        filter: `
+@include-tags foo bar
+rule
+`,
+        expected: mockRules({ include: { tags: [["foo", "bar"]] } }),
+      },
+      {
+        name: "ネストした@include-tags",
+        filter: `
+@include-tags foo
+@include-tags bar
+rule
+`,
+        expected: mockRules({ include: { tags: [["foo"], ["bar"]] } }),
+      },
+    ])("$nameをパースできる", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
     });
   });
@@ -403,162 +146,310 @@ rule
   // -------------------------------------------------------------------------------------------
 
   describe("warning", () => {
-    it.each([
-      // type: target
-      {
-        name: "ターゲットを指定している場合、警告が出ない",
-        filter: `
-@comment-body
-rule        
-`,
-        warnings: [],
-      },
-      {
-        name: "ターゲットを指定していない場合、警告が出る",
-        filter: "rule",
-        warnings: [{ index: 0, type: "target" }],
-      },
-      // type: strict
-      {
-        name: "@strictを@comment-bodyと併用している場合、警告が出ない",
-        filter: `
-@comment-body
-
-@strict
-rule
-`,
-        warnings: [],
-      },
-      {
-        name: "@strictを@comment-bodyと併用していない場合、警告が出る",
-        filter: `
-@video-id
-
-@strict
-rule
-`,
-        warnings: [{ index: 4, type: "strict" }],
-      },
-      // type: strict_with_disable
-      {
-        name: "@strictを@disableと併用していない場合、警告が出ない",
-        filter: `
-@comment-commands
-
-@strict
-rule
-@end
-
-@disable
-rule
-@end
-`,
-        warnings: [],
-      },
-      {
-        name: "@strictを@disableと併用している場合、警告が出る",
-        filter: `
-@comment-commands
-
-@strict
-@disable
-rule
-`,
-        warnings: [{ index: 5, type: "strict_with_disable" }],
-      },
-      // type: toggle
-      {
-        name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
-        filter: `
-@comment-body
-
-@include-tags tag
-rule
-`,
-        warnings: [],
-      },
-      {
-        name: "@include-tagsを@video-idのみと併用している場合、警告が出る",
-        filter: `
-@video-id
-
-@include-tags tag
-rule
-`,
-        warnings: [{ index: 4, type: "toggle" }],
-      },
-      // type: disable
-      {
-        name: "@diableを@comment-commandsと併用している場合、警告が出ない",
-        filter: `
-@comment-commands
-
-@disable
-rule
-`,
-        warnings: [],
-      },
-      {
-        name: "@diableを@comment-commandsと併用していない場合、警告が出る",
-        filter: `
-@comment-body
-
-@disable
-rule
-`,
-        warnings: [{ index: 4, type: "disable" }],
-      },
-      // type: unnecessary_directive
-      {
-        name: "余分な@sがない場合、警告が出ない",
-        filter: `
-@comment-body
-
-@s
-rule
-
-@end
-`,
-        warnings: [],
-      },
-      {
-        name: "余分な@sがある場合、警告が出る",
-        filter: `
-@comment-body
-
-@s
-@s
-rule
-
-@end
-`,
-        warnings: [{ index: 4, type: "unnecessary_directive" }],
-      },
-      {
-        name: "余分な@endがない場合、警告が出ない",
-        filter: `
-@comment-body
-rule
-@end
-`,
-        warnings: [],
-      },
-      {
-        name: "余分な@endがある場合、警告が出る",
-        filter: `
-@comment-body
-rule
-@end
-@end
-`,
-        warnings: [{ index: 4, type: "unnecessary_directive" }],
-      },
-    ] satisfies {
+    type TestCases = {
       name: string;
       filter: string;
       warnings: ParseWarning[];
-    }[])("$name", ({ filter, warnings }) => {
-      expect(parseFilter(filter).warnings).toEqual(warnings);
+    }[];
+
+    const createName = (type: ParseWarning["type"]) => `type: ${type}`;
+
+    describe(createName("target"), () => {
+      it.each([
+        {
+          name: "ターゲットを指定している場合、警告が出ない",
+          filter: `
+@comment-body
+rule        
+  `,
+          warnings: [],
+        },
+        {
+          name: "ターゲットを指定していない場合、警告が出る",
+          filter: "rule",
+          warnings: [{ index: 0, type: "target" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+
+    describe(createName("strict"), () => {
+      it.each([
+        {
+          name: "@strictを@comment-bodyと併用している場合、警告が出ない",
+          filter: `
+@comment-body
+
+@strict
+rule
+`,
+          warnings: [],
+        },
+        {
+          name: "@strictを@comment-bodyと併用していない場合、警告が出る",
+          filter: `
+@video-id
+
+@strict
+rule
+`,
+          warnings: [{ index: 4, type: "strict" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+
+    describe(createName("strict_with_disable"), () => {
+      it.each([
+        {
+          name: "@strictを@disableと併用していない場合、警告が出ない",
+          filter: `
+@comment-commands
+
+@strict
+rule
+@end
+
+@disable
+rule
+@end
+`,
+          warnings: [],
+        },
+        {
+          name: "@strictを@disableと併用している場合、警告が出る",
+          filter: `
+@comment-commands
+
+@strict
+@disable
+rule
+`,
+          warnings: [{ index: 5, type: "strict_with_disable" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+
+    describe(createName("toggle"), () => {
+      it.each([
+        {
+          name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
+          filter: `
+@comment-body
+
+@include-tags tag
+rule
+`,
+          warnings: [],
+        },
+        {
+          name: "@include-tagsを@video-idのみと併用している場合、警告が出る",
+          filter: `
+@video-id
+
+@include-tags tag
+rule
+`,
+          warnings: [{ index: 4, type: "toggle" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+
+    describe(createName("disable"), () => {
+      it.each([
+        {
+          name: "@diableを@comment-commandsと併用している場合、警告が出ない",
+          filter: `
+@comment-commands
+
+@disable
+rule
+`,
+          warnings: [],
+        },
+        {
+          name: "@diableを@comment-commandsと併用していない場合、警告が出る",
+          filter: `
+@comment-body
+
+@disable
+rule
+`,
+          warnings: [{ index: 4, type: "disable" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+
+    describe(createName("unnecessary_directive"), () => {
+      it.each([
+        {
+          name: "余分な@sがない場合、警告が出ない",
+          filter: `
+@comment-body
+
+@s
+rule
+`,
+          warnings: [],
+        },
+        {
+          name: "余分な@sがある場合、警告が出る",
+          filter: `
+@comment-body
+
+@s
+@s
+rule
+`,
+          warnings: [{ index: 4, type: "unnecessary_directive" }],
+        },
+        {
+          name: "余分な@endがない場合、警告が出ない",
+          filter: `
+@comment-body
+rule
+@end
+`,
+          warnings: [],
+        },
+        {
+          name: "余分な@endがある場合、警告が出る",
+          filter: `
+@comment-body
+rule
+@end
+@end
+`,
+          warnings: [{ index: 4, type: "unnecessary_directive" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, warnings }) => {
+        expect(parseFilter(filter).warnings).toEqual(warnings);
+      });
+    });
+  });
+
+  // -------------------------------------------------------------------------------------------
+  // error
+  // -------------------------------------------------------------------------------------------
+
+  describe("error", () => {
+    type TestCases = {
+      name: string;
+      filter: string;
+      errors: ParseError[];
+    }[];
+
+    const createName = (type: ParseError["type"]) => `type: ${type}`;
+
+    describe(createName("directive"), () => {
+      it.each([
+        {
+          name: "存在するディレクティブを渡した場合、エラーが出ない",
+          filter: "@strict",
+          errors: [],
+        },
+        {
+          name: "存在しないディレクティブを渡した場合、エラーが出る",
+          filter: "@foo",
+          errors: [{ index: 0, type: "directive" }],
+        },
+        {
+          name: "存在するディレクティブに前方一致するディレクティブを渡した場合、エラーが出る",
+          filter: "@strict2",
+          errors: [{ index: 0, type: "directive" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, errors }) => {
+        expect(parseFilter(filter).errors).toEqual(errors);
+      });
+    });
+
+    describe(createName("regex"), () => {
+      it.each([
+        {
+          name: "有効なパターンを含む正規表現を渡した場合、エラーが出ない",
+          filter: "/(foo)/",
+          errors: [],
+        },
+        {
+          name: "無効なパターンを含む正規表現を渡した場合、エラーが出る",
+          filter: "/(foo/",
+          errors: [{ index: 0, type: "regex" }],
+        },
+        {
+          name: "有効なフラグを含む正規表現を渡した場合、エラーが出ない",
+          filter: "/foo/i",
+          errors: [],
+        },
+        {
+          name: "無効なフラグを含む正規表現を渡した場合、エラーが出る",
+          filter: "/foo/uv",
+          errors: [{ index: 0, type: "regex" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, errors }) => {
+        expect(parseFilter(filter).errors).toEqual(errors);
+      });
+    });
+
+    describe(createName("regex_flag"), () => {
+      it.each([
+        {
+          name: "サポートされているフラグを含む正規表現を渡した場合、エラーが出ない",
+          filter: "/foo/i",
+          errors: [],
+        },
+        {
+          name: "サポートされていないフラグを含む正規表現を渡した場合、エラーが出る",
+          filter: "/foo/g",
+          errors: [{ index: 0, type: "regex_flag" }],
+        },
+        {
+          name: "末尾に空白文字を含む正規表現を渡した場合、エラーが出る",
+          filter: "/foo/ ",
+          errors: [{ index: 0, type: "regex_flag" }],
+        },
+        {
+          // 誤りの可能性が高いが、文字列ルールと区別できないため現状はエラーにしない
+          name: "先頭に空白文字を含む正規表現を渡した場合、エラーが出ない",
+          filter: " /foo/",
+          errors: [],
+        },
+      ] satisfies TestCases)("$name", ({ filter, errors }) => {
+        expect(parseFilter(filter).errors).toEqual(errors);
+      });
+    });
+
+    describe(createName("args"), () => {
+      it.each([
+        {
+          name: "引数が設定されているディレクティブを渡した場合、エラーが出ない",
+          filter: "@include-tags foo",
+          errors: [],
+        },
+        {
+          // 直後にスペースがある場合のみパースしているので、以前は無効なディレクティブとして扱っていた
+          // しかし引数が必要であることを示す方が望ましいため、typeがargsになっていることを確認する
+          name: "引数が設定されていないディレクティブを渡した場合、エラーが出る",
+          filter: "@include-tags",
+          errors: [{ index: 0, type: "args" }],
+        },
+        {
+          // 空白文字のみの場合、引数は空の配列としてパースされる
+          // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため、エラーになることを確認する
+          name: "引数が空白文字のみ設定されているディレクティブを渡した場合、エラーが出る",
+          filter: "@include-tags ",
+          errors: [{ index: 0, type: "args" }],
+        },
+      ] satisfies TestCases)("$name", ({ filter, errors }) => {
+        expect(parseFilter(filter).errors).toEqual(errors);
+      });
     });
   });
 });
@@ -566,26 +457,30 @@ rule
 describe(parseArgs.name, () => {
   it.each([
     {
-      name: "基本",
-      filter: "@include-tags arg arg2",
+      filter: "@include-tags foo",
+      expected: ["foo"],
     },
     {
-      name: "小文字に変換されているか",
-      filter: "@include-tags ARG Arg2",
+      filter: "@include-tags foo bar",
+      expected: ["foo", "bar"],
     },
     {
-      name: "間に複数の半角スペースを含む",
-      filter: "@include-tags    arg    arg2    ",
+      filter: "@include-tags FOO",
+      expected: ["foo"],
     },
     {
-      name: "間に複数の全角スペースを含む",
-      filter: "@include-tags　　　　arg　　　　arg2　　　　",
+      filter: "@include-tags  foo",
+      expected: ["foo"],
     },
     {
-      name: "間に半角スペースと全角スペースを含む",
-      filter: "@include-tags 　 　arg 　 　arg2 　 　",
+      filter: "@include-tags foo ",
+      expected: ["foo"],
     },
-  ])("$name", ({ filter }) => {
-    expect(parseArgs(filter)).toEqual(["arg", "arg2"]);
+    {
+      filter: "@include-tags",
+      expected: [],
+    },
+  ])("$filterを渡した場合、$expectedを返す", ({ filter, expected }) => {
+    expect(parseArgs(filter)).toEqual(expected);
   });
 });

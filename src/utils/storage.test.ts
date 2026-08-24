@@ -1,33 +1,34 @@
 import { defaultSettings } from "@/utils/config";
 import { getSettings, loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
-import type { Settings } from "@/types/storage/settings.types";
 import { setSettings } from "./storage-write";
 
 describe(loadSettings.name, () => {
-  it.each([
-    {
-      name: "設定なし",
-      expected: defaultSettings,
-    },
-    {
-      name: "設定あり",
-      settings: { enableCommentFilter: false },
-      expected: { ...defaultSettings, enableCommentFilter: false },
-    },
-  ] satisfies {
-    name: string;
-    settings?: Partial<Settings>;
-    expected: Settings;
-  }[])(`$name`, async ({ settings, expected }) => {
-    if (settings !== undefined) await setSettings(settings);
+  it("設定が保存されていない場合、デフォルト設定を返す", async () => {
+    expect(await loadSettings()).toEqual(defaultSettings);
+  });
 
-    expect(await loadSettings()).toEqual(expected);
+  it("設定が保存されている場合、保存された設定をデフォルト設定とマージして返す", async () => {
+    await setSettings({ enableCommentFilter: false });
+
+    expect(await loadSettings()).toEqual({
+      ...defaultSettings,
+      enableCommentFilter: false,
+    });
   });
 });
 
-it(getSettings.name, async () => {
-  await setSettings(defaultSettings);
+describe(getSettings.name, () => {
+  it("設定が保存されていない場合、空のオブジェクトを返す", async () => {
+    expect(await getSettings()).toEqual({});
+  });
 
-  expect(await getSettings()).toEqual(defaultSettings);
+  it("設定が保存されている場合、そのまま返す", async () => {
+    await setSettings({ enableCommentFilter: false });
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: false,
+      storeId: "",
+    });
+  });
 });

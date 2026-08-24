@@ -1,6 +1,12 @@
 import type { Thread } from "@/types/api/comment-api.types";
 import type { Settings } from "@/types/storage/settings.types";
-import { CommentAssertor, mockThread, testTab } from "@/utils/test";
+import {
+  CommentAssertor,
+  createSettingsName,
+  expectString,
+  mockThread,
+  testTab,
+} from "@/utils/test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { filterComment } from "./filter-comment";
 import { defaultSettings } from "@/utils/config";
@@ -10,15 +16,8 @@ const baseThreads = [
     {
       id: "1",
       commands: ["184", "big"],
-      userId: "user-id-1",
+      userId: "user-id",
       body: "foo",
-      nicoruCount: 29,
-    },
-    {
-      id: "2",
-      commands: ["184"],
-      userId: "user-id-2",
-      body: "bar",
       nicoruCount: 30,
     },
   ]),
@@ -39,12 +38,8 @@ describe(filterComment.name, () => {
       {
         ...defaultSettings,
         manualFilter: `
-@comment-commands
-big
-@end
-
 @comment-body
-bar
+foo
 `,
         ...settings,
       },
@@ -52,43 +47,31 @@ bar
     );
   };
 
-  it("基本", () => {
+  it("フィルタリングが行われる", () => {
     runFilter();
 
-    assertor.assert(["1", "2"]);
+    assertor.assert(["1"]);
   });
 
-  it("strictルールの先行適用", () => {
+  it("ルールの順番に関わらずstrictルールが先行して適用される", () => {
     const result = runFilter({
       manualFilter: `
-@comment-commands
-
-big
-
-@s
-big
-
-@end
-
-#============================================================
-
 @comment-body
 
-bar
+foo
 
 @s
-bar
+foo
 `,
     });
 
-    assertor.assert(["1", "2"], result?.filters.userIdFilter);
-    expect(result?.strictData.map(({ userId }) => userId)).toEqual([
-      "user-id-1",
-      "user-id-2",
+    assertor.assert(["1"], result?.filters.userIdFilter);
+    expect(result?.strictData).toEqual([
+      { ruleId: expectString, userId: "user-id", context: "comment-body: foo" },
     ]);
   });
 
-  it("strictルールによるフィルタリングの重複", () => {
+  it("同じコメントが複数のstrictルールにマッチする場合、重複は削除される", () => {
     const result = runFilter({
       manualFilter: `
 @comment-commands
@@ -108,30 +91,60 @@ foo
     });
 
     assertor.assert(["1"], result?.filters.userIdFilter);
-    expect(result?.strictData.map(({ userId }) => userId)).toEqual([
-      // 重複がないことを確認
-      "user-id-1",
+    expect(result?.strictData).toEqual([
+      {
+        ruleId: expectString,
+        userId: "user-id",
+        context: "comment-commands: big",
+      },
     ]);
   });
 
-  it(`Settings.${"enableCommentFilter" satisfies keyof Settings}`, () => {
-    runFilter({ enableCommentFilter: false });
+  describe(createSettingsName("enableCommentFilter"), () => {
+    it("falseの場合、フィルタリングが行われない", () => {
+      runFilter({ enableCommentFilter: false });
 
-    assertor.assert([]);
+      assertor.assert([]);
+    });
+
+    it("trueの場合、フィルタリングが行われる", () => {
+      runFilter({ enableCommentFilter: true });
+
+      assertor.assert(["1"]);
+    });
   });
 
-  it(`Settings.${"ignoreMyComments" satisfies keyof Settings}`, () => {
-    for (const thread of threads) {
-      for (const comment of thread.comments) comment.isMyPost = true;
-    }
-    runFilter({ ignoreMyComments: true });
+  describe(createSettingsName("ignoreMyComments"), () => {
+    beforeEach(() => {
+      for (const thread of threads) {
+        for (const comment of thread.comments) comment.isMyPost = true;
+      }
+    });
 
-    assertor.assert([]);
+    it("falseの場合、自分が投稿したコメントをフィルタリングする", () => {
+      runFilter({ ignoreMyComments: false });
+
+      assertor.assert(["1"]);
+    });
+
+    it("trueの場合、自分が投稿したコメントをフィルタリングしない", () => {
+      runFilter({ ignoreMyComments: true });
+
+      assertor.assert([]);
+    });
   });
 
-  it(`Settings.${"ignoreByNicoru" satisfies keyof Settings}`, () => {
-    runFilter({ ignoreByNicoru: true });
+  describe(createSettingsName("ignoreByNicoru"), () => {
+    it("falseの場合、ニコるの数に応じてフィルタリングの対象外にしない", () => {
+      runFilter({ ignoreByNicoru: false });
 
-    assertor.assert(["1"]);
+      assertor.assert(["1"]);
+    });
+
+    it("trueの場合、ニコるの数に応じてフィルタリングの対象外にする", () => {
+      runFilter({ ignoreByNicoru: true });
+
+      assertor.assert([]);
+    });
   });
 });

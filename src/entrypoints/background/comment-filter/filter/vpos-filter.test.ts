@@ -1,8 +1,7 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { CommentAssertor } from "@/utils/test";
+import { CommentAssertor, createSettingsName } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import type { Settings } from "@/types/storage/settings.types";
 import { mockThread } from "@/utils/test";
 import { VposFilter } from "./vpos-filter";
 
@@ -49,18 +48,13 @@ describe(VposFilter.name, () => {
 
   // -------------------------------------------------------------------------------------------
 
-  describe(`Settings.${"enableVposFilter" satisfies keyof Settings}`, () => {
-    it.each([
-      {
-        isEnabled: true,
-        ids: ["3", "4"],
-      },
-      {
-        isEnabled: false,
-        ids: [],
-      },
-    ])("$isEnabled", ({ isEnabled, ids }) => {
-      assertor.assert(ids, runFilter(isEnabled));
+  describe(createSettingsName("enableVposFilter"), () => {
+    it("falseの場合、動画の長さを超える位置に投稿されたコメントをフィルタリングしない", () => {
+      assertor.assert([], runFilter(false));
+    });
+
+    it("trueの場合、動画の長さを超える位置に投稿されたコメントをフィルタリングする", () => {
+      assertor.assert(["3", "4"], runFilter(true));
     });
   });
 });

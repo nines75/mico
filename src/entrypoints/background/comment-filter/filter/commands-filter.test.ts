@@ -32,7 +32,7 @@ describe(CommandsFilter.name, () => {
   const runFilter = (options: {
     filter: string;
     strictOnly?: boolean;
-    settings?: Partial<Settings>;
+    settings?: Partial<Settings> | undefined;
   }) => {
     const commandsFilter = new CommandsFilter({
       ...defaultSettings,
@@ -53,90 +53,131 @@ describe(CommandsFilter.name, () => {
   // -------------------------------------------------------------------------------------------
 
   describe("文字列ルール", () => {
-    it("完全一致", () => {
-      const filter = "big";
-
-      assertor.assert(["1"], runFilter({ filter }));
-    });
-
-    it("部分一致", () => {
-      const filter = "bi";
-
-      assertor.assert([], runFilter({ filter }));
-    });
-
-    it("大小文字が異なる", () => {
-      const filter = "BIG";
-
-      assertor.assert(["1"], runFilter({ filter }));
+    it.each([
+      {
+        name: "コマンドがルールと完全に一致する場合、そのコメントをフィルタリングする",
+        filter: "big", // 完全一致
+        filteredIds: ["1"],
+      },
+      {
+        name: "コマンドにルールが部分的に含まれる場合、そのコメントをフィルタリングしない",
+        filter: "bi", // 部分一致
+        filteredIds: [],
+      },
+      {
+        name: "コマンドにルールが部分的に含まれない場合、そのコメントをフィルタリングしない",
+        filter: "small",
+        filteredIds: [],
+      },
+      {
+        name: "コマンドが大小文字を変えたルールと完全に一致する場合、そのコメントをフィルタリングする",
+        filter: "BIG",
+        filteredIds: ["1"],
+      },
+    ])("$name", ({ filter, filteredIds }) => {
+      assertor.assert(filteredIds, runFilter({ filter }));
     });
   });
 
-  it("正規表現ルール", () => {
-    const filter = "/big/";
-
-    assertor.assert(["1"], runFilter({ filter }));
+  describe("正規表現ルール", () => {
+    it.each([
+      {
+        name: "コマンドが正規表現とマッチする場合、そのコメントをフィルタリングする",
+        filter: "/big/",
+        filteredIds: ["1"],
+      },
+      {
+        name: "コマンドが正規表現とマッチしない場合、そのコメントをフィルタリングしない",
+        filter: "/small/",
+        filteredIds: [],
+      },
+    ])("$name", ({ filter, filteredIds }) => {
+      assertor.assert(filteredIds, runFilter({ filter }));
+    });
   });
 
-  it("@strict", () => {
-    const filter = `
-@strict
+  describe(`${CommandsFilter.prototype.apply.name}のstrictOnly引数`, () => {
+    it.each([
+      {
+        name: "falseの場合、strictルール以外を使用してフィルタリングが行われる",
+        strictOnly: false,
+        filteredIds: ["2"],
+        strictData: [],
+      },
+      {
+        name: "trueの場合、strictルールのみを使用してフィルタリングが行われる",
+        strictOnly: true,
+        filteredIds: [],
+        strictData: [{ userId: "user-id-1", context: "comment-commands: big" }],
+      },
+      {
+        name: "trueの場合、ユーザーIDが既存のAutoルールとマッチするコメントに対してはフィルタリングが行われない",
+        strictOnly: true,
+        filteredIds: [],
+        strictData: [],
+        settings: {
+          autoFilter: [
+            { pattern: "user-id-1", target: { commentUserId: true } },
+          ],
+        },
+      },
+    ])("$name", ({ strictOnly, filteredIds, strictData, settings }) => {
+      const filter = `
+@s
 big
+
 red
 `;
-    const commandsFilter = runFilter({
-      filter,
-      strictOnly: true,
-      settings: {
-        autoFilter: [{ pattern: "user-id-2", target: { commentUserId: true } }],
-      },
+      const commandsFilter = runFilter({ filter, strictOnly, settings });
+
+      assertor.assert(filteredIds, commandsFilter);
+      expect(commandsFilter.getStrictData()).toEqual(strictData);
     });
 
-    assertor.assert([], commandsFilter);
-    expect(commandsFilter.getStrictData()).toEqual([
-      { userId: "user-id-1", context: "comment-commands: big" },
-    ]);
+    // https://github.com/nines75/mico/issues/61
+    it("trueの場合、コマンドの無効化は行われない", () => {
+      const filter = `
+@disable
+big
+`;
+      const commandsFilter = runFilter({ filter, strictOnly: true });
+
+      assertor.assert([], commandsFilter);
+      expect(hasCommand("big")).toBe(true);
+    });
   });
 
   describe("@disable", () => {
-    it.each([
-      {
-        name: "文字列ルール",
-        filter: `
+    it("@disableを使用している場合、マッチするコマンドを無効化する", () => {
+      const filter = `
 @disable
 big
-`,
-      },
-      {
-        name: "正規表現ルール",
-        filter: `
-@disable
-/big/
-`,
-      },
-    ])("$name", ({ filter }) => {
+`;
+
       assertor.assert([], runFilter({ filter }));
       expect(hasCommand("big")).toBe(false);
     });
-  });
 
-  it("@strictと@disableの競合", () => {
-    const filter = `
+    it("@strictと併用した場合、@strictは無視される", () => {
+      const filter = `
 @strict
 @disable
 big
 `;
-    const commandsFilter = runFilter({ filter });
-    const strictCommandsFilter = runFilter({ filter, strictOnly: true });
 
-    assertor.assert([], commandsFilter);
-    expect(strictCommandsFilter.getStrictData()).toEqual([]);
-    expect(hasCommand("big")).toBe(false);
-  });
+      const strictCommandsFilter = runFilter({ filter, strictOnly: true });
+      assertor.assert([], strictCommandsFilter);
+      expect(hasCommand("big")).toBe(true);
+      expect(strictCommandsFilter.getStrictData()).toEqual([]);
 
-  // https://github.com/nines75/mico/issues/31
-  it("無効化ルールを後から適用", () => {
-    const filter = `
+      const commandsFilter = runFilter({ filter });
+      assertor.assert([], commandsFilter);
+      expect(hasCommand("big")).toBe(false);
+    });
+
+    // https://github.com/nines75/mico/issues/31
+    it("ルールの順番に関わらず@disableを使用したルールは後から適用される", () => {
+      const filter = `
 @disable
 big
 @end
@@ -144,24 +185,7 @@ big
 big
 `;
 
-    assertor.assert(["1"], runFilter({ filter }));
-  });
-
-  // https://github.com/nines75/mico/issues/61
-  it("strictルール適用時の副作用", () => {
-    const filter = `
-@s
-big
-
-@disable
-184
-
-red
-`;
-    const commandsFilter = runFilter({ filter, strictOnly: true });
-
-    assertor.assert([], commandsFilter);
-    expect(commandsFilter.getDisableCount()).toEqual(0);
-    expect(hasCommand("184")).toBe(true);
+      assertor.assert(["1"], runFilter({ filter }));
+    });
   });
 });

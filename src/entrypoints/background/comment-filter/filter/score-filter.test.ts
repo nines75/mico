@@ -1,9 +1,8 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { CommentAssertor, mockThread } from "@/utils/test";
+import { CommentAssertor, createSettingsName, mockThread } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { ScoreFilter } from "./score-filter";
 import { defaultSettings } from "@/utils/config";
-import type { Settings } from "@/types/storage/settings.types";
 
 const baseThreads = [
   mockThread("main", [
@@ -45,19 +44,28 @@ describe(ScoreFilter.name, () => {
 
   // -------------------------------------------------------------------------------------------
 
-  it(`Settings.${"enableScoreFilter" satisfies keyof Settings}`, () => {
-    assertor.assert([], runFilter(false, 0));
+  describe(createSettingsName("enableScoreFilter"), () => {
+    it("falseの場合、スコアによるフィルタリングを行わない", () => {
+      assertor.assert([], runFilter(false, 0));
+    });
+
+    it("trueの場合、スコアによるフィルタリングを行う", () => {
+      assertor.assert(["1", "2", "3"], runFilter(true, 0));
+    });
   });
 
-  describe(`Settings.${"scoreFilterThreshold" satisfies keyof Settings}`, () => {
+  describe(createSettingsName("scoreFilterThreshold"), () => {
     it.each([
       { threshold: 0, ids: ["1", "2", "3"] },
       { threshold: -999, ids: ["2", "3"] },
       { threshold: -1000, ids: ["2", "3"] },
       { threshold: -1001, ids: ["3"] },
       { threshold: -10_000, ids: [] },
-    ])("閾値: $threshold", ({ threshold, ids }) => {
-      assertor.assert(ids, runFilter(true, threshold));
-    });
+    ])(
+      "閾値が$thresholdのとき、スコアがそれ以下のコメントをフィルタリングする",
+      ({ threshold, ids }) => {
+        assertor.assert(ids, runFilter(true, threshold));
+      },
+    );
   });
 });

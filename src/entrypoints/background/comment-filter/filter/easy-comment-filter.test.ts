@@ -1,7 +1,6 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import type { Settings } from "@/types/storage/settings.types";
 import { defaultSettings } from "@/utils/config";
-import { CommentAssertor } from "@/utils/test";
+import { CommentAssertor, createSettingsName } from "@/utils/test";
 import { mockThread } from "@/utils/test";
 import { describe, beforeEach, it } from "vitest";
 import { EasyCommentFilter } from "./easy-comment-filter";
@@ -44,18 +43,13 @@ describe(EasyCommentFilter.name, () => {
 
   // -------------------------------------------------------------------------------------------
 
-  describe(`Settings.${"enableEasyCommentFilter" satisfies keyof Settings}`, () => {
-    it.each([
-      {
-        isEnabled: true,
-        ids: ["2", "3"],
-      },
-      {
-        isEnabled: false,
-        ids: [],
-      },
-    ])("$isEnabled", ({ isEnabled, ids }) => {
-      assertor.assert(ids, runFilter(isEnabled));
+  describe(createSettingsName("enableEasyCommentFilter"), () => {
+    it("falseの場合、かんたんコメントをフィルタリングしない", () => {
+      assertor.assert([], runFilter(false));
+    });
+
+    it("trueの場合、かんたんコメントをフィルタリングする", () => {
+      assertor.assert(["2", "3"], runFilter(true));
     });
   });
 });
