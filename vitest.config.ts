@@ -6,5 +6,8 @@ export default defineConfig({
   test: {
     dir: "./src",
     setupFiles: "./src/utils/vitest.setup.ts",
+    chaiConfig: {
+      truncateThreshold: 100, // テスト名などを省略する閾値
+    },
   },
 });
