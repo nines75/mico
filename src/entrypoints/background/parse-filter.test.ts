@@ -341,11 +341,7 @@ rule
   // -------------------------------------------------------------------------------------------
 
   describe("error", () => {
-    type TestCases = {
-      name: string;
-      filter: string;
-      errors: ParseError[];
-    }[];
+    type TestCases = { name: string; filter: string; errors: ParseError[] }[];
 
     const createName = (type: ParseError["type"]) => `type: ${type}`;
 
@@ -456,30 +452,12 @@ rule
 
 describe(parseArgs.name, () => {
   it.each([
-    {
-      filter: "@include-tags foo",
-      expected: ["foo"],
-    },
-    {
-      filter: "@include-tags foo bar",
-      expected: ["foo", "bar"],
-    },
-    {
-      filter: "@include-tags FOO",
-      expected: ["foo"],
-    },
-    {
-      filter: "@include-tags  foo",
-      expected: ["foo"],
-    },
-    {
-      filter: "@include-tags foo ",
-      expected: ["foo"],
-    },
-    {
-      filter: "@include-tags",
-      expected: [],
-    },
+    { filter: "@include-tags foo", expected: ["foo"] },
+    { filter: "@include-tags foo bar", expected: ["foo", "bar"] },
+    { filter: "@include-tags FOO", expected: ["foo"] },
+    { filter: "@include-tags  foo", expected: ["foo"] },
+    { filter: "@include-tags foo ", expected: ["foo"] },
+    { filter: "@include-tags", expected: [] },
   ])("$filterを渡した場合、$expectedを返す", ({ filter, expected }) => {
     expect(parseArgs(filter)).toEqual(expected);
   });

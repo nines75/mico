@@ -98,14 +98,7 @@ export function VideoViewer() {
 
   return (
     <>
-      <Select
-        {...{
-          filter,
-          filters,
-          setFilter,
-          blockedCount: rows.length,
-        }}
-      />
+      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
       <Viewer<Row> {...{ rows, cols }} />
     </>
   );

@@ -18,10 +18,7 @@ export class VposFilter extends Filter {
       const { vposMs } = comment;
 
       if (Math.floor(vposMs / 1000) > this.duration) {
-        this.filteredComments.push({
-          comment,
-          target: "vpos",
-        });
+        this.filteredComments.push({ comment, target: "vpos" });
 
         return false;
       }

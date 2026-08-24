@@ -117,14 +117,6 @@ function createKeydownHandler(setTab: (tab: LogTab) => void) {
 // -------------------------------------------------------------------------------------------
 
 const config = [
-  {
-    id: "commentFilter",
-    name: "コメントフィルター",
-    key: "c",
-  },
-  {
-    id: "videoFilter",
-    name: "動画フィルター",
-    key: "v",
-  },
+  { id: "commentFilter", name: "コメントフィルター", key: "c" },
+  { id: "videoFilter", name: "動画フィルター", key: "v" },
 ] as const;

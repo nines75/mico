@@ -44,9 +44,7 @@ export async function notify(message: string) {
 export async function hasPermission(
   permission: Browser.runtime.ManifestPermission,
 ) {
-  return await browser.permissions.contains({
-    permissions: [permission],
-  });
+  return await browser.permissions.contains({ permissions: [permission] });
 }
 
 export async function tryWithPermission(
@@ -59,10 +57,7 @@ export async function tryWithPermission(
 }
 
 export async function getActiveTab() {
-  const tabs = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
 
   return tabs[0];
 }
@@ -75,17 +70,9 @@ export async function sendNativeMessage(message: unknown) {
       "mico.native",
       message,
     )) as
-      | {
-          status: "completed";
-          data?: unknown;
-        }
-      | {
-          status: "failed";
-          error: string;
-        }
-      | {
-          status: "skipped";
-        };
+      | { status: "completed"; data?: unknown }
+      | { status: "failed"; error: string }
+      | { status: "skipped" };
 
     if (response.status === "failed") {
       const error = response.error;

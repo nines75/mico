@@ -9,10 +9,7 @@ export class ScoreFilter extends Filter {
       const { score } = comment;
 
       if (score <= this.settings.scoreFilterThreshold) {
-        this.filteredComments.push({
-          comment,
-          target: "score",
-        });
+        this.filteredComments.push({ comment, target: "score" });
 
         return false;
       }

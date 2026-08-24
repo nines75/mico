@@ -33,9 +33,7 @@ export const useSettingsStore = create<SettingsState>()(
       // 書き込まれる予定の値を生成してstoreに反映
       // browser.storage.onChangedの発火時にstoreに反映させると非同期処理を挟むことになるためinput要素のカーソルが保持されない
       // そのためここで先にstoreに反映させ、書き込みが失敗した場合はロールバックする
-      set({
-        settings: { ...currentSettings, ...settings },
-      });
+      set({ settings: { ...currentSettings, ...settings } });
 
       // 書き込む
       try {

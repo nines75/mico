@@ -37,9 +37,7 @@ export default function Checkbox({
           type="checkbox"
           checked={value}
           onChange={(event) => {
-            save({
-              [id]: event.target.checked,
-            });
+            save({ [id]: event.target.checked });
           }}
         />
         {label}

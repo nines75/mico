@@ -58,9 +58,7 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
   return data.map(({ regex, style }) => {
     const decorator = new MatchDecorator({
       regexp: regex,
-      decoration: Decoration.mark({
-        attributes: { style },
-      }),
+      decoration: Decoration.mark({ attributes: { style } }),
     });
 
     return ViewPlugin.fromClass(
@@ -74,9 +72,7 @@ function createHighlights(data: { regex: RegExp; style: string }[]) {
           this.decorations = decorator.updateDeco(update, this.decorations);
         }
       },
-      {
-        decorations: (v) => v.decorations,
-      },
+      { decorations: (v) => v.decorations },
     );
   });
 }
@@ -109,24 +105,15 @@ function createCompletions(options: Completion[]): Extension {
         if (word === null || (word.from === word.to && !context.explicit))
           return null;
 
-        return {
-          from: word.from,
-          options,
-        };
+        return { from: word.from, options };
       },
     ],
   });
 }
 
 const completions = createCompletions([
-  {
-    label: "@end",
-    type: "keyword",
-  },
-  {
-    label: "@s",
-    type: "keyword",
-  },
+  { label: "@end", type: "keyword" },
+  { label: "@s", type: "keyword" },
   ...argsDirectives.map((directive) => ({
     label: `@${directive} `,
     type: "keyword",
@@ -143,21 +130,13 @@ const completions = createCompletions([
 
 const theme = EditorView.theme(
   {
-    "&": {
-      color: "lightgray",
-      backgroundColor: "black",
-    },
+    "&": { color: "lightgray", backgroundColor: "black" },
     ".cm-cursor, .cm-dropCursor": { borderLeftColor: "white" },
     "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection":
       { backgroundColor: "#223a5a" },
     ".cm-activeLine": { backgroundColor: "rgba(128, 128, 128, 0.3)" }, // gray 透明度30%
-    ".cm-gutters": {
-      color: "gray",
-    },
-    ".cm-activeLineGutter": {
-      color: "white",
-      backgroundColor: "transparent",
-    },
+    ".cm-gutters": { color: "gray" },
+    ".cm-activeLineGutter": { color: "white", backgroundColor: "transparent" },
   },
   { dark: true },
 );
@@ -304,9 +283,7 @@ const hints = ViewPlugin.fromClass(
         this.decorations = createHints(update.view);
     }
   },
-  {
-    decorations: (v) => v.decorations,
-  },
+  { decorations: (v) => v.decorations },
 );
 
 // -------------------------------------------------------------------------------------------
@@ -320,10 +297,7 @@ const extensions = [
     ...standardKeymap,
     ...historyKeymap,
     ...completionKeymap,
-    {
-      key: "Ctrl-Shift-z",
-      run: redo,
-    },
+    { key: "Ctrl-Shift-z", run: redo },
   ]),
   closeBrackets(),
   dropCursor(),
@@ -398,11 +372,7 @@ export default function Editor({ value, onChange }: EditorProps) {
     if (currentValue === value) return;
 
     view.dispatch({
-      changes: {
-        from: 0,
-        to: currentValue.length,
-        insert: value,
-      },
+      changes: { from: 0, to: currentValue.length, insert: value },
     });
   }, [value]);
 

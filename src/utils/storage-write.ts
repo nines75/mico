@@ -213,11 +213,7 @@ export async function addContextToVideoRule(
             (video) => video.id === rule.pattern,
           )?.title;
           if (title !== undefined) {
-            return {
-              ...rule,
-              source,
-              context: `video-title: ${title}`,
-            };
+            return { ...rule, source, context: `video-title: ${title}` };
           }
         }
 
@@ -226,11 +222,7 @@ export async function addContextToVideoRule(
             (video) => video.owner.id === rule.pattern,
           )?.owner.name;
           if (ownerName !== undefined && ownerName !== null) {
-            return {
-              ...rule,
-              source,
-              context: `owner-name: ${ownerName}`,
-            };
+            return { ...rule, source, context: `owner-name: ${ownerName}` };
           }
         }
 

@@ -156,26 +156,11 @@ function keydownHandler(event: KeyboardEvent) {
 
   // タブ
   for (const { key, tab } of [
-    {
-      key: "g",
-      tab: "general",
-    },
-    {
-      key: "f",
-      tab: "filter",
-    },
-    {
-      key: "c",
-      tab: "commentFilter",
-    },
-    {
-      key: "v",
-      tab: "videoFilter",
-    },
-    {
-      key: "s",
-      tab: "support",
-    },
+    { key: "g", tab: "general" },
+    { key: "f", tab: "filter" },
+    { key: "c", tab: "commentFilter" },
+    { key: "v", tab: "videoFilter" },
+    { key: "s", tab: "support" },
   ] as const) {
     if (event.key === key) {
       saveSettings({ selectedSettingsTab: tab });
@@ -214,38 +199,10 @@ function keydownHandler(event: KeyboardEvent) {
 // -------------------------------------------------------------------------------------------
 
 const config = [
-  {
-    id: "general",
-    name: "一般設定",
-    key: "g",
-  },
-  {
-    id: "filter",
-    name: "フィルター",
-    key: "f",
-  },
-  {
-    id: "commentFilter",
-    name: "コメントフィルター",
-    key: "c",
-  },
-  {
-    id: "videoFilter",
-    name: "動画フィルター",
-    key: "v",
-  },
-  {
-    id: "advancedFeatures",
-    name: "高度な機能",
-    key: "a",
-  },
-  {
-    id: "support",
-    name: "サポート",
-    key: "s",
-  },
-] satisfies {
-  id: SettingsTab;
-  name: string;
-  key: string;
-}[];
+  { id: "general", name: "一般設定", key: "g" },
+  { id: "filter", name: "フィルター", key: "f" },
+  { id: "commentFilter", name: "コメントフィルター", key: "c" },
+  { id: "videoFilter", name: "動画フィルター", key: "v" },
+  { id: "advancedFeatures", name: "高度な機能", key: "a" },
+  { id: "support", name: "サポート", key: "s" },
+] satisfies { id: SettingsTab; name: string; key: string }[];

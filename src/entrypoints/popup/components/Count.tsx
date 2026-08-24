@@ -27,18 +27,9 @@ export default function Count() {
       </div>
       {(() => {
         const config = [
-          {
-            name: "有効化されたルールの数:",
-            value: count?.include,
-          },
-          {
-            name: "無効化されたルールの数:",
-            value: count?.exclude,
-          },
-          {
-            name: "無効化されたコマンドの数:",
-            value: count?.disable,
-          },
+          { name: "有効化されたルールの数:", value: count?.include },
+          { name: "無効化されたルールの数:", value: count?.exclude },
+          { name: "無効化されたコマンドの数:", value: count?.disable },
         ].filter(({ value }) => value !== undefined && value > 0);
 
         // 不必要にcontainerをレンダリングしないようにする

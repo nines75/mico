@@ -7,10 +7,7 @@ export class PaidFilter extends Filter {
 
     this.traverseVideos(params, (video) => {
       if (video.isPaymentRequired) {
-        this.filteredVideos.push({
-          video,
-          target: "paid",
-        });
+        this.filteredVideos.push({ video, target: "paid" });
 
         return false;
       }

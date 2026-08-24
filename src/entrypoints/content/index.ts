@@ -15,10 +15,7 @@ export default defineContentScript({
 
   main() {
     const observer = new MutationObserver(catchAsync(onBodyChange));
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(document.body, { childList: true, subtree: true });
 
     // ブラウザの進む/戻るで消えたバッジを復元
     if (isRankingPage(location.href) || isSearchPage(location.href)) {

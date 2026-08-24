@@ -91,9 +91,5 @@ const config = [
   },
 ] satisfies {
   heading: string;
-  items: {
-    name: string;
-    url: string;
-    icon: React.ReactNode;
-  }[];
+  items: { name: string; url: string; icon: React.ReactNode }[];
 }[];

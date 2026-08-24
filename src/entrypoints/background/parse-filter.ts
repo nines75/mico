@@ -103,10 +103,7 @@ export function parseFilter(filter: string): {
           continue lineLoop;
         }
 
-        directives.push({
-          type: directive,
-          args,
-        });
+        directives.push({ type: directive, args });
         continue lineLoop;
       }
     }

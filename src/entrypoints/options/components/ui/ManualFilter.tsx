@@ -56,14 +56,8 @@ export default function ManualFilter() {
         </button>
         {(() => {
           const config = [
-            {
-              name: "警告",
-              value: warnings.length,
-            },
-            {
-              name: "エラー",
-              value: errors.length,
-            },
+            { name: "警告", value: warnings.length },
+            { name: "エラー", value: errors.length },
           ].filter(({ value }) => value > 0);
 
           if (config.length === 0) return null;

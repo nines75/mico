@@ -44,11 +44,7 @@ export class UserIdFilter extends RuleFilter {
         const ruleId = crypto.randomUUID();
         ruleIds.push(ruleId);
 
-        return {
-          ...createDefaultRule(),
-          id: ruleId,
-          pattern: userId,
-        };
+        return { ...createDefaultRule(), id: ruleId, pattern: userId };
       }),
       ...this.rules,
     ];

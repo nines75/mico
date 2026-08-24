@@ -23,20 +23,13 @@ export class BodyFilter extends StrictFilter {
 
         if (strictOnly) {
           if (!this.userIds.has(userId)) {
-            this.strictData.push({
-              userId,
-              context: `comment-body: ${body}`,
-            });
+            this.strictData.push({ userId, context: `comment-body: ${body}` });
           }
 
           return true;
         }
 
-        this.filteredComments.push({
-          comment,
-          pattern,
-          target: "body",
-        });
+        this.filteredComments.push({ comment, pattern, target: "body" });
 
         return false;
       }

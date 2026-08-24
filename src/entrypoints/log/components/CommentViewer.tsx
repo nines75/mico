@@ -17,9 +17,7 @@ export type Row = Merge<
   FilteredComment,
   // column用のプロパティを指定する際に正しく型チェックされるようにインデックスシグネチャを除外
   { comment: OmitIndexSignature<NvComment> }
-> & {
-  strict: boolean;
-};
+> & { strict: boolean };
 
 const rawFilters = [
   "user-id",
@@ -115,14 +113,7 @@ export function CommentViewer() {
 
   return (
     <>
-      <Select
-        {...{
-          filter,
-          filters,
-          setFilter,
-          blockedCount: rows.length,
-        }}
-      />
+      <Select {...{ filter, filters, setFilter, blockedCount: rows.length }} />
       <Viewer<Row> {...{ rows, cols }} />
     </>
   );

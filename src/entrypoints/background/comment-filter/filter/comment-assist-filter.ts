@@ -22,10 +22,7 @@ export class CommentAssistFilter extends Filter {
       if (Number.isNaN(date.getTime())) return true; // 有効なDateであるか確認
 
       if (commands.length === 0 && date >= RELEASE_DATE) {
-        this.filteredComments.push({
-          comment,
-          target: "comment-assist",
-        });
+        this.filteredComments.push({ comment, target: "comment-assist" });
 
         return false;
       }

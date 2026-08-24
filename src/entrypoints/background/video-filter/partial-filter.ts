@@ -18,11 +18,7 @@ export abstract class PartialFilter extends RuleFilter {
         if (
           isString(pattern) ? target.includes(pattern) : pattern.test(target)
         ) {
-          this.filteredVideos.push({
-            video,
-            pattern,
-            target: this.target,
-          });
+          this.filteredVideos.push({ video, pattern, target: this.target });
 
           return false;
         }

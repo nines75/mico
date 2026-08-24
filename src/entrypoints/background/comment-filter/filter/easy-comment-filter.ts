@@ -7,10 +7,7 @@ export class EasyCommentFilter extends Filter {
 
     this.traverseThreads(threads, (comment, thread) => {
       if (thread.fork === "easy") {
-        this.filteredComments.push({
-          comment,
-          target: "easy-comment",
-        });
+        this.filteredComments.push({ comment, target: "easy-comment" });
 
         return false;
       }

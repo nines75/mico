@@ -87,11 +87,7 @@ for (const { title, url, schema } of [
     url: TAG_SEARCH_SHORTS_URL,
     schema: searchApiSchema,
   },
-] satisfies {
-  title: string;
-  url: string;
-  schema: z.ZodType;
-}[]) {
+] satisfies { title: string; url: string; schema: z.ZodType }[]) {
   test(title, async ({ page }) => {
     const response = await page.goto(url);
     const text = await response?.text();

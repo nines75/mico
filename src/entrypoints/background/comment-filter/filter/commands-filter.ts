@@ -71,11 +71,7 @@ export class CommandsFilter extends StrictFilter {
             continue;
           }
 
-          this.filteredComments.push({
-            comment,
-            pattern,
-            target: "commands",
-          });
+          this.filteredComments.push({ comment, pattern, target: "commands" });
 
           return false;
         }

@@ -87,10 +87,7 @@ async function exportBackup() {
     getSettingsMeta(),
   ]);
 
-  const backup: Required<Backup> = {
-    settings,
-    settingsMeta,
-  };
+  const backup: Required<Backup> = { settings, settingsMeta };
   const backupStr = JSON.stringify(backup);
 
   const blob = new Blob([backupStr], { type: "application/json" });

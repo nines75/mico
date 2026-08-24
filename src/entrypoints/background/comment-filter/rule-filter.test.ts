@@ -25,10 +25,7 @@ function runFilter(options: { filter: string; tags?: string[] }) {
     ...defaultSettings,
     manualFilter: options.filter,
   });
-  testFilter.filterRules({
-    ...testTab,
-    tags: options.tags ?? [],
-  });
+  testFilter.filterRules({ ...testTab, tags: options.tags ?? [] });
 
   return testFilter;
 }

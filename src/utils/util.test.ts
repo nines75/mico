@@ -98,18 +98,9 @@ describe(escapeNewline.name, () => {
 
 describe(sum.name, () => {
   it.each([
-    {
-      numbers: [],
-      expected: 0,
-    },
-    {
-      numbers: [1],
-      expected: 1,
-    },
-    {
-      numbers: [1, 2, 3],
-      expected: 6,
-    },
+    { numbers: [], expected: 0 },
+    { numbers: [1], expected: 1 },
+    { numbers: [1, 2, 3], expected: 6 },
   ] satisfies { numbers: number[]; expected: number }[])(
     `$numbersを渡した場合、$expectedを返す`,
     ({ numbers, expected }) => {
@@ -120,9 +111,7 @@ describe(sum.name, () => {
 
 it("merge", () => {
   const oldObject = {
-    nest: {
-      a: true,
-    },
+    nest: { a: true },
     array: [1],
     map: new Map([["a", 1]]),
     set: new Set([1]),
@@ -130,9 +119,7 @@ it("merge", () => {
     null: true,
   };
   const newObject = {
-    nest: {
-      b: false,
-    },
+    nest: { b: false },
     array: [2],
     map: new Map([["b", 2]]),
     set: new Set([2]),
@@ -141,10 +128,7 @@ it("merge", () => {
   };
 
   expect(merge(oldObject, newObject)).toStrictEqual({
-    nest: {
-      a: true,
-      b: false,
-    },
+    nest: { a: true, b: false },
     array: [2],
     map: new Map([["b", 2]]),
     set: new Set([2]),
