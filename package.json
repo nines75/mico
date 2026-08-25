@@ -4,7 +4,6 @@
   "version": "7.14.0",
   "type": "module",
   "engines": {
-    "node": ">=24",
     "pnpm": ">=11"
   },
   "devEngines": {

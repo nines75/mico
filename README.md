@@ -40,7 +40,6 @@
 
 ### Requirements
 
-- Node.js
 - pnpm
 
 ### Build
