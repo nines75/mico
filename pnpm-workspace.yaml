@@ -1,4 +1,4 @@
-# https://pnpm.io/supply-chain-security 
+# https://pnpm.io/supply-chain-security
 
 allowBuilds:
   esbuild: true
