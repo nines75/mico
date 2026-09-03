@@ -12,7 +12,7 @@ const isCi = process.env.CI === "true";
 export default defineConfig(
   // 下に行くほど優先される
 
-  globalIgnores([".output/", ".wxt/", "eslint.config.js"]),
+  globalIgnores([".output/", ".wxt/"]),
 
   // https://typescript-eslint.io/getting-started
   js.configs.recommended,
