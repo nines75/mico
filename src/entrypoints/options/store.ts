@@ -39,9 +39,10 @@ export const useSettingsStore = create<SettingsState>()(
       try {
         await setSettings({ ...settings, storeId });
         await onSuccess?.();
-      } catch {
+      } catch (error) {
         // ロールバック
         set({ settings: currentSettings });
+        console.error(error);
       }
     }),
   })),
