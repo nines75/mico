@@ -61,11 +61,16 @@ export async function cleanUpStorage() {
 }
 
 export async function setSettings(
-  value: Partial<Settings> | (() => Promise<Partial<Settings>>),
+  value:
+    | Partial<Settings>
+    | ((
+        settings: Partial<Settings>,
+      ) => Partial<Settings> | Promise<Partial<Settings>>),
 ) {
   await lock(async () => {
     const settings = await getSettings();
-    const newSettings = typeof value === "function" ? await value() : value;
+    const newSettings =
+      typeof value === "function" ? await value(settings) : value;
 
     await settingsStorage.setValue({
       ...settings,
@@ -95,9 +100,7 @@ export async function migrateSettings() {
 export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
   if (rules.length === 0) return;
 
-  const transaction = async (): Promise<Partial<Settings>> => {
-    const settings = await loadSettings();
-
+  const transaction = (settings: Partial<Settings>): Partial<Settings> => {
     return {
       autoFilter: [
         ...rules.map((rule) => {
@@ -106,7 +109,7 @@ export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
             id: rule.id ?? crypto.randomUUID(),
           } satisfies AutoRule;
         }),
-        ...settings.autoFilter,
+        ...(settings.autoFilter ?? []),
       ],
     };
   };
@@ -117,11 +120,9 @@ export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
 export async function removeAutoRule(ids: string[]) {
   if (ids.length === 0) return;
 
-  const transaction = async (): Promise<Partial<Settings>> => {
-    const settings = await loadSettings();
-
+  const transaction = (settings: Partial<Settings>): Partial<Settings> => {
     return {
-      autoFilter: settings.autoFilter.filter(
+      autoFilter: (settings.autoFilter ?? []).filter(
         ({ id }) => id !== undefined && !ids.includes(id),
       ),
     };
@@ -200,12 +201,13 @@ export async function addContextToVideoRule(
 ) {
   if (!settings.complementContext) return;
 
-  const transaction = async (): Promise<Partial<Settings>> => {
-    const currentSettings = await loadSettings();
+  const transaction = (
+    currentSettings: Partial<Settings>,
+  ): Partial<Settings> => {
     const source = "complement";
 
     return {
-      autoFilter: currentSettings.autoFilter.map((rule) => {
+      autoFilter: (currentSettings.autoFilter ?? []).map((rule) => {
         if (rule.context !== undefined) return rule;
 
         if (rule.target?.videoId === true) {
