@@ -100,7 +100,7 @@ export async function migrateSettings() {
 export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
   if (rules.length === 0) return;
 
-  const transaction = (settings: Partial<Settings>): Partial<Settings> => {
+  await setSettings((settings) => {
     return {
       autoFilter: [
         ...rules.map((rule) => {
@@ -112,23 +112,19 @@ export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
         ...(settings.autoFilter ?? []),
       ],
     };
-  };
-
-  await setSettings(transaction);
+  });
 }
 
 export async function removeAutoRule(ids: string[]) {
   if (ids.length === 0) return;
 
-  const transaction = (settings: Partial<Settings>): Partial<Settings> => {
+  await setSettings((settings) => {
     return {
       autoFilter: (settings.autoFilter ?? []).filter(
         ({ id }) => id !== undefined && !ids.includes(id),
       ),
     };
-  };
-
-  await setSettings(transaction);
+  });
 }
 
 export async function addContextToCommentRule(
@@ -138,7 +134,7 @@ export async function addContextToCommentRule(
 ) {
   if (!settings.complementContext) return;
 
-  const transaction = async (): Promise<Partial<Settings>> => {
+  await setSettings(async () => {
     const currentSettings = await loadSettings();
     const source = "complement";
 
@@ -191,9 +187,7 @@ export async function addContextToCommentRule(
         return rule;
       }),
     };
-  };
-
-  await setSettings(transaction);
+  });
 }
 export async function addContextToVideoRule(
   videos: Video[],
@@ -201,9 +195,7 @@ export async function addContextToVideoRule(
 ) {
   if (!settings.complementContext) return;
 
-  const transaction = (
-    currentSettings: Partial<Settings>,
-  ): Partial<Settings> => {
+  await setSettings((currentSettings) => {
     const source = "complement";
 
     return {
@@ -231,9 +223,7 @@ export async function addContextToVideoRule(
         return rule;
       }),
     };
-  };
-
-  await setSettings(transaction);
+  });
 }
 
 export async function importLocalFilter(type: "load" | "button") {
