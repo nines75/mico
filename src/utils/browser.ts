@@ -10,7 +10,7 @@ export async function setBadgeState(
   const text = (() => {
     if (value === 0) return "";
     if (value >= 1000) {
-      return Math.floor(value / 1000).toString() + "k";
+      return `${Math.floor(value / 1000).toString()}k`;
     }
 
     return value.toString();

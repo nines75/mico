@@ -98,6 +98,7 @@ export default defineConfig(
       // -------------------------------------------------------------------------------------------
 
       eqeqeq: "error",
+      "prefer-template": "error",
       "no-param-reassign": "error",
       "no-shadow": ["error", { allow: ["_"] }],
       "@typescript-eslint/consistent-type-imports": "warn",
