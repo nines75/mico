@@ -9,7 +9,7 @@ import {
   removeAutoRule,
   setSettings,
 } from "./storage-write";
-import { type AutoRule } from "@/entrypoints/background/rule";
+import type { AutoRule } from "@/entrypoints/background/rule";
 import { expectString, testTab } from "./test";
 import type { Settings } from "@/types/storage/settings.types";
 import type { PartialComment } from "@/types/storage/log.types";

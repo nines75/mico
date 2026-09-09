@@ -104,6 +104,7 @@ export default defineConfig(
       "@typescript-eslint/consistent-type-imports": "warn",
       "@typescript-eslint/require-array-sort-compare": "error",
       "@typescript-eslint/switch-exhaustiveness-check": "error",
+      "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/strict-boolean-expressions": [
         "error",
         {

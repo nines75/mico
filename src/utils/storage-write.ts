@@ -13,7 +13,7 @@ import {
   sendNativeMessage,
   tryWithPermission,
 } from "./browser";
-import { type AutoRule } from "@/entrypoints/background/rule";
+import type { AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional, ValueOf } from "type-fest";
 import { objectKeys } from "ts-extras";
 import { defaultSettings } from "./config";
