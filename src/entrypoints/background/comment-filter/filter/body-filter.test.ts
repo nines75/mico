@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import { CommentAssertor } from "@/utils/test";
-import { mockThread } from "@/utils/test";
+import { CommentAssertor, mockThread } from "@/utils/test";
 import type { Thread } from "@/types/api/comment-api.types";
 import { BodyFilter } from "./body-filter";
 import type { Settings } from "@/types/storage/settings.types";

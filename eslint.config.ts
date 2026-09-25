@@ -50,7 +50,7 @@ export default defineConfig(
       "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
 
       // -------------------------------------------------------------------------------------------
-      // オプション設定
+      // オプション変更
       // -------------------------------------------------------------------------------------------
 
       "@typescript-eslint/no-unused-vars": [
@@ -101,6 +101,8 @@ export default defineConfig(
       "prefer-template": "error",
       "no-param-reassign": "error",
       "no-shadow": ["error", { allow: ["_"] }],
+
+      // typescript-eslint
       "@typescript-eslint/consistent-type-imports": "warn",
       "@typescript-eslint/require-array-sort-compare": "error",
       "@typescript-eslint/switch-exhaustiveness-check": "error",
@@ -113,6 +115,10 @@ export default defineConfig(
           allowNullableObject: false,
         },
       ],
+
+      // import-x
+      "import-x/no-duplicates": "warn",
+      "import-x/no-cycle": ["error", { maxDepth: isCi ? Infinity : 1 }],
       "import-x/no-restricted-paths": [
         "error",
         {
@@ -138,7 +144,6 @@ export default defineConfig(
           ],
         },
       ],
-      "import-x/no-cycle": ["error", { maxDepth: isCi ? Infinity : 1 }],
     },
   },
 

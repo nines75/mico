@@ -1,7 +1,6 @@
 import type { Thread } from "@/types/api/comment-api.types";
 import { defaultSettings } from "@/utils/config";
-import { CommentAssertor, createSettingsName } from "@/utils/test";
-import { mockThread } from "@/utils/test";
+import { CommentAssertor, createSettingsName, mockThread } from "@/utils/test";
 import { describe, beforeEach, it } from "vitest";
 import { EasyCommentFilter } from "./easy-comment-filter";
 

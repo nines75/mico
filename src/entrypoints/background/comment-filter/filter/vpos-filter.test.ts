@@ -1,8 +1,7 @@
 import type { Thread } from "@/types/api/comment-api.types";
-import { CommentAssertor, createSettingsName } from "@/utils/test";
+import { CommentAssertor, createSettingsName, mockThread } from "@/utils/test";
 import { beforeEach, describe, it } from "vitest";
 import { defaultSettings } from "@/utils/config";
-import { mockThread } from "@/utils/test";
 import { VposFilter } from "./vpos-filter";
 
 const baseThreads = [
