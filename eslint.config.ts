@@ -14,23 +14,6 @@ export default defineConfig(
 
   globalIgnores([".output/", ".wxt/"]),
 
-  // https://typescript-eslint.io/getting-started
-  js.configs.recommended,
-  ts.configs.strictTypeChecked,
-  ts.configs.stylisticTypeChecked,
-
-  // https://github.com/Rel1cx/eslint-react
-  react.configs["strict-type-checked"],
-
-  // https://github.com/un-ts/eslint-plugin-import-x
-  importX.flatConfigs.typescript,
-
-  // https://github.com/sindresorhus/eslint-plugin-unicorn
-  unicorn.configs.recommended,
-
-  // https://github.com/ota-meshi/eslint-plugin-regexp
-  regex.configs.recommended,
-
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -38,6 +21,24 @@ export default defineConfig(
         projectService: true, // tsconfig.jsonを自動で検索
       },
     },
+    extends: [
+      // https://typescript-eslint.io/getting-started
+      js.configs.recommended,
+      ts.configs.strictTypeChecked,
+      ts.configs.stylisticTypeChecked,
+
+      // https://github.com/Rel1cx/eslint-react
+      react.configs["strict-type-checked"],
+
+      // https://github.com/un-ts/eslint-plugin-import-x
+      importX.flatConfigs.typescript,
+
+      // https://github.com/sindresorhus/eslint-plugin-unicorn
+      unicorn.configs.recommended,
+
+      // https://github.com/ota-meshi/eslint-plugin-regexp
+      regex.configs.recommended,
+    ],
     rules: {
       // -------------------------------------------------------------------------------------------
       // error => warn
