@@ -6,7 +6,7 @@ export interface Rule {
   id?: string;
   pattern: string | RegExp;
   strict: boolean;
-  disable: boolean;
+  remove: boolean;
   include: Toggle;
   exclude: Toggle;
   target: {
@@ -66,7 +66,7 @@ export const toggleKeyMap = {
 export function createDefaultRule(): SetOptional<Rule, "pattern"> {
   return {
     strict: false,
-    disable: false,
+    remove: false,
     include: createDefaultToggle(),
     exclude: createDefaultToggle(),
     target: {

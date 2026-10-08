@@ -153,10 +153,10 @@ const linterMessageMap: Record<
   target: "ターゲットを指定する必要があります。",
   strict:
     "@strictは@comment-commandsまたは@comment-bodyと併用する必要があります。",
-  strict_with_disable: "@strictは@disableと併用できません。",
+  strict_with_remove: "@strictは@removeと併用できません。",
   toggle:
     "@includeまたは@excludeで始まるディレクティブはコメントフィルターでのみ使用できます。",
-  disable: "@disableは@comment-commandsと併用する必要があります。",
+  remove: "@removeは@comment-commandsと併用する必要があります。",
   unnecessary_directive: "不要なディレクティブです。",
 
   // error
@@ -223,7 +223,7 @@ class HintWidget extends WidgetType {
     }
 
     if (rule.strict) texts.push("@strict");
-    if (rule.disable) texts.push("@disable");
+    if (rule.remove) texts.push("@remove");
 
     for (const { toggle, prefix } of [
       { toggle: rule.include, prefix: "include" },

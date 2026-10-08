@@ -104,12 +104,12 @@ rule
         expected: mockRules({ strict: true }, {}),
       },
       {
-        name: "@disable",
+        name: "@remove",
         filter: `
-@disable
+@remove
 rule
 `,
-        expected: mockRules({ disable: true }),
+        expected: mockRules({ remove: true }),
       },
       {
         name: "一個の引数を持つ@include-tags",
@@ -201,10 +201,10 @@ rule
       });
     });
 
-    describe(createName("strict_with_disable"), () => {
+    describe(createName("strict_with_remove"), () => {
       it.each([
         {
-          name: "@strictを@disableと併用していない場合、警告が出ない",
+          name: "@strictを@removeと併用していない場合、警告が出ない",
           filter: `
 @comment-commands
 
@@ -212,22 +212,22 @@ rule
 rule
 @end
 
-@disable
+@remove
 rule
 @end
 `,
           warnings: [],
         },
         {
-          name: "@strictを@disableと併用している場合、警告が出る",
+          name: "@strictを@removeと併用している場合、警告が出る",
           filter: `
 @comment-commands
 
 @strict
-@disable
+@remove
 rule
 `,
-          warnings: [{ index: 5, type: "strict_with_disable" }],
+          warnings: [{ index: 5, type: "strict_with_remove" }],
         },
       ] satisfies TestCases)("$name", ({ filter, warnings }) => {
         expect(parseFilter(filter).warnings).toEqual(warnings);
@@ -261,14 +261,14 @@ rule
       });
     });
 
-    describe(createName("disable"), () => {
+    describe(createName("remove"), () => {
       it.each([
         {
           name: "@diableを@comment-commandsと併用している場合、警告が出ない",
           filter: `
 @comment-commands
 
-@disable
+@remove
 rule
 `,
           warnings: [],
@@ -278,10 +278,10 @@ rule
           filter: `
 @comment-body
 
-@disable
+@remove
 rule
 `,
-          warnings: [{ index: 4, type: "disable" }],
+          warnings: [{ index: 4, type: "remove" }],
         },
       ] satisfies TestCases)("$name", ({ filter, warnings }) => {
         expect(parseFilter(filter).warnings).toEqual(warnings);

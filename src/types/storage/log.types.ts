@@ -60,5 +60,5 @@ export interface Count {
   loadedVideo?: number;
   include?: number;
   exclude?: number;
-  disable?: number;
+  removed?: number;
 }

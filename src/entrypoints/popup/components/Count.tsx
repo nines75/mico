@@ -29,7 +29,7 @@ export default function Count() {
         const config = [
           { name: "有効化されたルールの数:", value: count?.include },
           { name: "無効化されたルールの数:", value: count?.exclude },
-          { name: "無効化されたコマンドの数:", value: count?.disable },
+          { name: "除去された値の数:", value: count?.removed },
         ].filter(({ value }) => value !== undefined && value > 0);
 
         // 不必要にcontainerをレンダリングしないようにする

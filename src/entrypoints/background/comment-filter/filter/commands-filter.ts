@@ -4,7 +4,7 @@ import { isString } from "@/utils/util";
 import { StrictFilter } from "../strict-filter";
 
 export class CommandsFilter extends StrictFilter {
-  private disableCount = 0;
+  private removedCount = 0;
 
   constructor(settings: Settings) {
     super(settings, "commentCommands");
@@ -19,23 +19,23 @@ export class CommandsFilter extends StrictFilter {
     });
   }
 
-  getDisableCount(): number {
-    return this.disableCount;
+  getRemovedCount(): number {
+    return this.removedCount;
   }
 
   override apply(threads: Thread[], strictOnly = false): void {
     const rules = this.rules
       .filter((rule) => {
-        // strictルールと無効化ルールが併用されている場合、strictルールを無視する
-        const isStrict = rule.strict && !rule.disable;
+        // strictルールとremoveルールが併用されている場合、strictルールを無視する
+        const isStrict = rule.strict && !rule.remove;
 
         return strictOnly ? isStrict : !isStrict;
       })
-      // 無効化ルールを後から適用するためにソート
+      // removeルールを後から適用するためにソート
       .toSorted((a, b) => {
-        if (a.disable === b.disable) return 0;
+        if (a.remove === b.remove) return 0;
 
-        return a.disable ? 1 : -1;
+        return a.remove ? 1 : -1;
       });
     if (rules.length === 0) return;
 
@@ -47,9 +47,9 @@ export class CommandsFilter extends StrictFilter {
 
       // 前の参照を持たないようコマンドを置き換えた後に定義する
       const { commands, userId } = comment;
-      const commandsToDisable = new Set<string>();
+      const commandsToRemove = new Set<string>();
 
-      for (const { pattern, disable } of rules) {
+      for (const { pattern, remove } of rules) {
         for (const command of commands) {
           if (isString(pattern) ? pattern !== command : !pattern.test(command))
             continue;
@@ -65,8 +65,8 @@ export class CommandsFilter extends StrictFilter {
             return true;
           }
 
-          if (disable) {
-            commandsToDisable.add(command);
+          if (remove) {
+            commandsToRemove.add(command);
 
             continue;
           }
@@ -79,11 +79,11 @@ export class CommandsFilter extends StrictFilter {
 
       if (strictOnly) return true;
 
-      // forループ内で配列を変更するのは危険なので後から無効化する
-      if (commandsToDisable.size > 0) {
+      // forループ内で配列を変更するのは危険なので後から除去する
+      if (commandsToRemove.size > 0) {
         comment.commands = commands.filter((command) => {
-          const isMatch = commandsToDisable.has(command);
-          if (isMatch) this.disableCount++;
+          const isMatch = commandsToRemove.has(command);
+          if (isMatch) this.removedCount++;
 
           return !isMatch;
         });

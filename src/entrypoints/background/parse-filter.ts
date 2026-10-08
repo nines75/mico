@@ -18,7 +18,7 @@ export type Directive =
   | {
       type:
         | "strict"
-        | "disable"
+        | "remove"
         | "comment-user-id"
         | "comment-commands"
         | "comment-body"
@@ -41,7 +41,7 @@ export const argsDirectives = [
 
 export const noArgsDirectives = [
   "strict",
-  "disable",
+  "remove",
   "comment-user-id",
   "comment-commands",
   "comment-body",
@@ -56,9 +56,9 @@ export interface ParseWarning {
   type:
     | "target"
     | "strict"
-    | "strict_with_disable"
+    | "strict_with_remove"
     | "toggle"
-    | "disable"
+    | "remove"
     | "unnecessary_directive";
 }
 
@@ -188,8 +188,8 @@ export function parseFilter(filter: string): {
           rule.strict = true;
           break;
         }
-        case "disable": {
-          rule.disable = true;
+        case "remove": {
+          rule.remove = true;
           break;
         }
 
@@ -285,11 +285,11 @@ export function parseFilter(filter: string): {
     ) {
       warnings.push({ index, type: "toggle" });
     }
-    if (rule.strict && rule.disable) {
-      warnings.push({ index, type: "strict_with_disable" });
+    if (rule.strict && rule.remove) {
+      warnings.push({ index, type: "strict_with_remove" });
     }
-    if (rule.disable && !rule.target.commentCommands) {
-      warnings.push({ index, type: "disable" });
+    if (rule.remove && !rule.target.commentCommands) {
+      warnings.push({ index, type: "remove" });
     }
   }
 

@@ -135,9 +135,9 @@ red
     });
 
     // https://github.com/nines75/mico/issues/61
-    it("trueの場合、コマンドの無効化は行われない", () => {
+    it("trueの場合、コマンドの除去は行われない", () => {
       const filter = `
-@disable
+@remove
 big
 `;
       const commandsFilter = runFilter({ filter, strictOnly: true });
@@ -147,10 +147,10 @@ big
     });
   });
 
-  describe("@disable", () => {
-    it("@disableを使用している場合、マッチするコマンドを無効化する", () => {
+  describe("@remove", () => {
+    it("@removeを使用している場合、マッチするコマンドを除去する", () => {
       const filter = `
-@disable
+@remove
 big
 `;
 
@@ -161,7 +161,7 @@ big
     it("@strictと併用した場合、@strictは無視される", () => {
       const filter = `
 @strict
-@disable
+@remove
 big
 `;
 
@@ -176,9 +176,9 @@ big
     });
 
     // https://github.com/nines75/mico/issues/31
-    it("ルールの順番に関わらず@disableを使用したルールは後から適用される", () => {
+    it("ルールの順番に関わらず@removeを使用したルールは後から適用される", () => {
       const filter = `
-@disable
+@remove
 big
 @end
 
