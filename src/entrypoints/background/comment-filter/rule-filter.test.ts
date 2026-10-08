@@ -32,10 +32,10 @@ function runFilter(options: { filter: string; tags?: string[] }) {
 
 describe(RuleFilter.prototype.filterRules.name, () => {
   // -------------------------------------------------------------------------------------------
-  // @include-tags
+  // @enable-if-tags
   // -------------------------------------------------------------------------------------------
 
-  describe("@include-tags", () => {
+  describe("@enable-if-tags", () => {
     describe("引数が一個設定されている場合", () => {
       it.each([
         {
@@ -46,7 +46,7 @@ describe(RuleFilter.prototype.filterRules.name, () => {
         {
           name: "引数にマッチする動画タグが設定されている場合、ルールが有効化される",
           tags: ["foo"],
-          expected: mockRules({ include: { tags: [["foo"]] } }).rules,
+          expected: mockRules({ enable: { tags: [["foo"]] } }).rules,
         },
         {
           name: "引数にマッチしない動画タグが設定されている場合、ルールが有効化されない",
@@ -55,7 +55,7 @@ describe(RuleFilter.prototype.filterRules.name, () => {
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@include-tags foo
+@enable-if-tags foo
 rule
 `;
 
@@ -68,16 +68,16 @@ rule
         {
           name: "片方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
           tags: ["foo"],
-          expected: mockRules({ include: { tags: [["foo", "bar"]] } }).rules,
+          expected: mockRules({ enable: { tags: [["foo", "bar"]] } }).rules,
         },
         {
           name: "両方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
           tags: ["foo", "bar"],
-          expected: mockRules({ include: { tags: [["foo", "bar"]] } }).rules,
+          expected: mockRules({ enable: { tags: [["foo", "bar"]] } }).rules,
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@include-tags foo bar
+@enable-if-tags foo bar
 rule
 `;
 
@@ -95,12 +95,12 @@ rule
         {
           name: "両方の引数にマッチする動画タグが設定されている場合、ルールが有効化される",
           tags: ["foo", "bar"],
-          expected: mockRules({ include: { tags: [["foo"], ["bar"]] } }).rules,
+          expected: mockRules({ enable: { tags: [["foo"], ["bar"]] } }).rules,
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@include-tags foo
-@include-tags bar
+@enable-if-tags foo
+@enable-if-tags bar
 rule
 `;
 
@@ -110,16 +110,16 @@ rule
   });
 
   // -------------------------------------------------------------------------------------------
-  // @exclude-tags
+  // @disable-if-tags
   // -------------------------------------------------------------------------------------------
 
-  describe("@exclude-tags", () => {
+  describe("@disable-if-tags", () => {
     describe("引数が一個設定されている場合", () => {
       it.each([
         {
           name: "動画タグが設定されていない場合、ルールが無効化されない",
           tags: [],
-          expected: mockRules({ exclude: { tags: [["foo"]] } }).rules,
+          expected: mockRules({ disable: { tags: [["foo"]] } }).rules,
         },
         {
           name: "引数にマッチする動画タグが設定されている場合、ルールが無効化される",
@@ -129,11 +129,11 @@ rule
         {
           name: "引数にマッチしない動画タグが設定されている場合、ルールが無効化されない",
           tags: ["bar"],
-          expected: mockRules({ exclude: { tags: [["foo"]] } }).rules,
+          expected: mockRules({ disable: { tags: [["foo"]] } }).rules,
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@exclude-tags foo
+@disable-if-tags foo
 rule
 `;
 
@@ -155,7 +155,7 @@ rule
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@exclude-tags foo bar
+@disable-if-tags foo bar
 rule
 `;
 
@@ -168,7 +168,7 @@ rule
         {
           name: "片方の引数にマッチする動画タグが設定されている場合、ルールが無効化されない",
           tags: ["foo"],
-          expected: mockRules({ exclude: { tags: [["foo"], ["bar"]] } }).rules,
+          expected: mockRules({ disable: { tags: [["foo"], ["bar"]] } }).rules,
         },
         {
           name: "両方の引数にマッチする動画タグが設定されている場合、ルールが無効化される",
@@ -177,8 +177,8 @@ rule
         },
       ])("$name", ({ tags, expected }) => {
         const filter = `
-@exclude-tags foo
-@exclude-tags bar
+@disable-if-tags foo
+@disable-if-tags bar
 rule
 `;
 
@@ -188,10 +188,10 @@ rule
   });
 
   // -------------------------------------------------------------------------------------------
-  // @include-tags + @exclude-tags
+  // @enable-if-tags + @disable-if-tags
   // -------------------------------------------------------------------------------------------
 
-  describe("@include-tags + @exclude-tags", () => {
+  describe("@enable-if-tags + @disable-if-tags", () => {
     it.each([
       {
         name: "動画タグが設定されていない場合、ルールが有効化されない",
@@ -199,15 +199,15 @@ rule
         expected: [],
       },
       {
-        name: "@include-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが有効化される",
+        name: "@enable-if-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが有効化される",
         tags: ["foo"],
         expected: mockRules({
-          include: { tags: [["foo"]] },
-          exclude: { tags: [["bar"]] },
+          enable: { tags: [["foo"]] },
+          disable: { tags: [["bar"]] },
         }).rules,
       },
       {
-        name: "@exclude-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが無効化される",
+        name: "@disable-if-tagsの引数のみにマッチする動画タグが設定されている場合、ルールが無効化される",
         tags: ["bar"],
         expected: [],
       },
@@ -218,8 +218,8 @@ rule
       },
     ])("$name", ({ tags, expected }) => {
       const filter = `
-@include-tags foo
-@exclude-tags bar
+@enable-if-tags foo
+@disable-if-tags bar
 rule
 `;
 
@@ -228,46 +228,46 @@ rule
   });
 
   // -------------------------------------------------------------------------------------------
-  // @include-video-ids
-  // @exclude-video-ids
-  // @include-user-ids
-  // @exclude-user-ids
-  // @include-series-ids
-  // @exclude-series-ids
+  // @enable-if-video-ids
+  // @disable-if-video-ids
+  // @enable-if-user-ids
+  // @disable-if-user-ids
+  // @enable-if-series-ids
+  // @disable-if-series-ids
   // -------------------------------------------------------------------------------------------
 
-  // 基本的には@include-tags/@exclude-tagsと同じなので、簡易的にテストする
+  // 基本的には@enable-if-tags/@disable-if-tagsと同じなので、簡易的にテストする
 
   it.each([
     {
-      name: "動画IDが@include-video-idsの引数にマッチする場合、ルールが有効化される",
-      directive: "@include-video-ids",
-      expected: mockRules({ include: { videoIds: [["1"]] } }).rules,
+      name: "動画IDが@enable-if-video-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@enable-if-video-ids",
+      expected: mockRules({ enable: { videoIds: [["1"]] } }).rules,
     },
     {
-      name: "動画IDが@exclude-video-idsの引数にマッチする場合、ルールが無効化される",
-      directive: "@exclude-video-ids",
-      expected: mockRules({ exclude: { videoIds: [["2"]] } }).rules,
+      name: "動画IDが@disable-if-video-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@disable-if-video-ids",
+      expected: mockRules({ disable: { videoIds: [["2"]] } }).rules,
     },
     {
-      name: "ユーザーIDが@include-user-idsの引数にマッチする場合、ルールが有効化される",
-      directive: "@include-user-ids",
-      expected: mockRules({ include: { userIds: [["1"]] } }).rules,
+      name: "ユーザーIDが@enable-if-user-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@enable-if-user-ids",
+      expected: mockRules({ enable: { userIds: [["1"]] } }).rules,
     },
     {
-      name: "ユーザーIDが@exclude-user-idsの引数にマッチする場合、ルールが無効化される",
-      directive: "@exclude-user-ids",
-      expected: mockRules({ exclude: { userIds: [["2"]] } }).rules,
+      name: "ユーザーIDが@disable-if-user-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@disable-if-user-ids",
+      expected: mockRules({ disable: { userIds: [["2"]] } }).rules,
     },
     {
-      name: "シリーズIDが@include-series-idsの引数にマッチする場合、ルールが有効化される",
-      directive: "@include-series-ids",
-      expected: mockRules({ include: { seriesIds: [["1"]] } }).rules,
+      name: "シリーズIDが@enable-if-series-idsの引数にマッチする場合、ルールが有効化される",
+      directive: "@enable-if-series-ids",
+      expected: mockRules({ enable: { seriesIds: [["1"]] } }).rules,
     },
     {
-      name: "シリーズIDが@exclude-series-idsの引数にマッチする場合、ルールが無効化される",
-      directive: "@exclude-series-ids",
-      expected: mockRules({ exclude: { seriesIds: [["2"]] } }).rules,
+      name: "シリーズIDが@disable-if-series-idsの引数にマッチする場合、ルールが無効化される",
+      directive: "@disable-if-series-ids",
+      expected: mockRules({ disable: { seriesIds: [["2"]] } }).rules,
     },
   ])("$name", ({ directive, expected }) => {
     const filter = `

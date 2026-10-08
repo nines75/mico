@@ -58,7 +58,7 @@ export interface Count {
   loadedComment?: number;
   blockedVideo?: number;
   loadedVideo?: number;
-  include?: number;
-  exclude?: number;
+  enabled?: number;
+  disabled?: number;
   removed?: number;
 }

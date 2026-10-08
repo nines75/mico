@@ -142,7 +142,7 @@ function filterRules(autoFilter: Settings["autoFilter"], queries: string[]) {
         rule.source?.includes(query) === true ||
         rule.context?.includes(query) === true ||
         rule.memo?.includes(query) === true ||
-        rule.include?.videoIds?.flat().some((id) => id.includes(query)) ===
+        rule.enable?.videoIds?.flat().some((id) => id.includes(query)) ===
           true ||
         (rule.target !== undefined &&
           objectEntries(rule.target).some(([key, value]) => {
@@ -254,8 +254,8 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
               </Detail>
             );
           })}
-        {rule.include?.videoIds !== undefined && (
-          <Detail name="include-video-ids">{rule.include.videoIds}</Detail>
+        {rule.enable?.videoIds !== undefined && (
+          <Detail name="enable-if-video-ids">{rule.enable.videoIds}</Detail>
         )}
         {rule.source !== undefined && (
           <Detail name="ソース">{rule.source}</Detail>

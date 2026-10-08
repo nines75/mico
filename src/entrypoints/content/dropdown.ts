@@ -80,7 +80,7 @@ function onClickNgUser(videoOnly = false) {
         context: `comment-body: ${comment.body}`,
         source: "dropdown",
         target: { commentUserId: true },
-        ...(videoOnly && { include: { videoIds: [[comment.$videoId]] } }),
+        ...(videoOnly && { enable: { videoIds: [[comment.$videoId]] } }),
       },
     ]);
 

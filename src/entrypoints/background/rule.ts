@@ -7,8 +7,8 @@ export interface Rule {
   pattern: string | RegExp;
   strict: boolean;
   remove: boolean;
-  include: Toggle;
-  exclude: Toggle;
+  enable: Toggle;
+  disable: Toggle;
   target: {
     commentUserId: boolean;
     commentCommands: boolean;
@@ -67,8 +67,8 @@ export function createDefaultRule(): SetOptional<Rule, "pattern"> {
   return {
     strict: false,
     remove: false,
-    include: createDefaultToggle(),
-    exclude: createDefaultToggle(),
+    enable: createDefaultToggle(),
+    disable: createDefaultToggle(),
     target: {
       commentUserId: false,
       commentCommands: false,

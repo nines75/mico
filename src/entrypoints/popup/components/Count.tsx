@@ -27,8 +27,8 @@ export default function Count() {
       </div>
       {(() => {
         const config = [
-          { name: "有効化されたルールの数:", value: count?.include },
-          { name: "無効化されたルールの数:", value: count?.exclude },
+          { name: "有効化されたルールの数:", value: count?.enabled },
+          { name: "無効化されたルールの数:", value: count?.disabled },
           { name: "除去された値の数:", value: count?.removed },
         ].filter(({ value }) => value !== undefined && value > 0);
 

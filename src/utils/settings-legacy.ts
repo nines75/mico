@@ -239,12 +239,12 @@ function migrateNgUserId(
     if (
       !isString(rule.pattern) ||
       // include.videoIdsは空でなくてもいい
-      objectEntries(rule.include).some(([key, value]) => {
+      objectEntries(rule.enable).some(([key, value]) => {
         if (key === "videoIds") return false;
         return value.length > 0;
       }) ||
       // excludeはすべて空である必要がある
-      objectValues(rule.exclude).some((value) => value.length > 0)
+      objectValues(rule.disable).some((value) => value.length > 0)
     )
       continue;
 
@@ -305,8 +305,8 @@ function migrateNgUserId(
       },
       ...(source !== undefined && { source }),
       ...(context !== undefined && { context }),
-      ...(rule.include.videoIds.length > 0 && {
-        include: { videoIds: rule.include.videoIds },
+      ...(rule.enable.videoIds.length > 0 && {
+        enable: { videoIds: rule.enable.videoIds },
       }),
     });
     lines[index] = "";

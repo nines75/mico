@@ -8,8 +8,8 @@ import { objectKeys } from "ts-extras";
 import { createRules, type Rule } from "../rule";
 
 export abstract class RuleFilter extends Filter {
-  private includeCount = 0;
-  private excludeCount = 0;
+  private enabledCount = 0;
+  private disabledCount = 0;
   protected rules: Rule[];
 
   constructor(settings: Settings, target: keyof Rule["target"]) {
@@ -19,41 +19,41 @@ export abstract class RuleFilter extends Filter {
     this.rules = createRules(settings, target, rules);
   }
 
-  getIncludeCount(): number {
-    return this.includeCount;
+  getEnabledCount(): number {
+    return this.enabledCount;
   }
-  getExcludeCount(): number {
-    return this.excludeCount;
+  getDisabledCount(): number {
+    return this.disabledCount;
   }
 
   filterRules(tab: Tab) {
     const { videoId, ownerId, seriesId } = tab;
     const tags = new Set(tab.tags.map((tag) => tag.toLowerCase()));
 
-    this.rules = this.rules.filter(({ include, exclude }) => {
+    this.rules = this.rules.filter(({ enable, disable }) => {
       // ルールを無効化するか判定
       if (
-        matches(exclude.tags, (arg) => tags.has(arg)) ||
-        matches(exclude.videoIds, (arg) => arg === videoId) ||
-        matches(exclude.userIds, (arg) => arg === ownerId) ||
-        matches(exclude.seriesIds, (arg) => arg === seriesId)
+        matches(disable.tags, (arg) => tags.has(arg)) ||
+        matches(disable.videoIds, (arg) => arg === videoId) ||
+        matches(disable.userIds, (arg) => arg === ownerId) ||
+        matches(disable.seriesIds, (arg) => arg === seriesId)
       ) {
-        this.excludeCount++;
+        this.disabledCount++;
         return false;
       }
 
       // ルールを有効化するか判定
       if (
-        matches(include.tags, (arg) => tags.has(arg)) ||
-        matches(include.videoIds, (arg) => arg === videoId) ||
-        matches(include.userIds, (arg) => arg === ownerId) ||
-        matches(include.seriesIds, (arg) => arg === seriesId)
+        matches(enable.tags, (arg) => tags.has(arg)) ||
+        matches(enable.videoIds, (arg) => arg === videoId) ||
+        matches(enable.userIds, (arg) => arg === ownerId) ||
+        matches(enable.seriesIds, (arg) => arg === seriesId)
       ) {
-        this.includeCount++;
+        this.enabledCount++;
         return true;
       }
 
-      return objectKeys(include).every((key) => include[key].length === 0);
+      return objectKeys(enable).every((key) => enable[key].length === 0);
     });
   }
 }

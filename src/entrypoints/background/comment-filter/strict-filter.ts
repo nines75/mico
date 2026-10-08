@@ -24,8 +24,8 @@ export abstract class StrictFilter extends RuleFilter {
         .filter(
           (rule) =>
             rule.target?.commentUserId === true &&
-            rule.include === undefined &&
-            rule.exclude === undefined,
+            rule.enable === undefined &&
+            rule.disable === undefined,
         )
         .map(({ pattern }) => pattern)
         .filter((pattern) => isString(pattern)),

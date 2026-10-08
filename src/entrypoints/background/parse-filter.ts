@@ -5,14 +5,14 @@ import { createDefaultRule } from "./rule";
 export type Directive =
   | {
       type:
-        | "include-tags"
-        | "include-video-ids"
-        | "include-user-ids"
-        | "include-series-ids"
-        | "exclude-tags"
-        | "exclude-video-ids"
-        | "exclude-user-ids"
-        | "exclude-series-ids";
+        | "enable-if-tags"
+        | "enable-if-video-ids"
+        | "enable-if-user-ids"
+        | "enable-if-series-ids"
+        | "disable-if-tags"
+        | "disable-if-video-ids"
+        | "disable-if-user-ids"
+        | "disable-if-series-ids";
       args: string[];
     }
   | {
@@ -29,14 +29,14 @@ export type Directive =
     };
 
 export const argsDirectives = [
-  "include-tags",
-  "include-video-ids",
-  "include-user-ids",
-  "include-series-ids",
-  "exclude-tags",
-  "exclude-video-ids",
-  "exclude-user-ids",
-  "exclude-series-ids",
+  "enable-if-tags",
+  "enable-if-video-ids",
+  "enable-if-user-ids",
+  "enable-if-series-ids",
+  "disable-if-tags",
+  "disable-if-video-ids",
+  "disable-if-user-ids",
+  "disable-if-series-ids",
 ] as const satisfies Extract<Directive, { args: string[] }>["type"][];
 
 export const noArgsDirectives = [
@@ -143,43 +143,43 @@ export function parseFilter(filter: string): {
     // -------------------------------------------------------------------------------------------
 
     const rule = createDefaultRule();
-    const { include, exclude } = rule;
+    const { enable, disable } = rule;
 
     for (const directive of directives) {
       switch (directive.type) {
-        // 引数あり(include)
-        case "include-tags": {
-          include.tags.push(directive.args);
+        // 引数あり(enable)
+        case "enable-if-tags": {
+          enable.tags.push(directive.args);
           break;
         }
-        case "include-video-ids": {
-          include.videoIds.push(directive.args);
+        case "enable-if-video-ids": {
+          enable.videoIds.push(directive.args);
           break;
         }
-        case "include-user-ids": {
-          include.userIds.push(directive.args);
+        case "enable-if-user-ids": {
+          enable.userIds.push(directive.args);
           break;
         }
-        case "include-series-ids": {
-          include.seriesIds.push(directive.args);
+        case "enable-if-series-ids": {
+          enable.seriesIds.push(directive.args);
           break;
         }
 
-        // 引数あり(exclude)
-        case "exclude-tags": {
-          exclude.tags.push(directive.args);
+        // 引数あり(disable)
+        case "disable-if-tags": {
+          disable.tags.push(directive.args);
           break;
         }
-        case "exclude-video-ids": {
-          exclude.videoIds.push(directive.args);
+        case "disable-if-video-ids": {
+          disable.videoIds.push(directive.args);
           break;
         }
-        case "exclude-user-ids": {
-          exclude.userIds.push(directive.args);
+        case "disable-if-user-ids": {
+          disable.userIds.push(directive.args);
           break;
         }
-        case "exclude-series-ids": {
-          exclude.seriesIds.push(directive.args);
+        case "disable-if-series-ids": {
+          disable.seriesIds.push(directive.args);
           break;
         }
 
@@ -277,8 +277,8 @@ export function parseFilter(filter: string): {
       warnings.push({ index, type: "strict" });
     }
     if (
-      (objectValues(rule.include).some((array) => array.length > 0) ||
-        objectValues(rule.exclude).some((array) => array.length > 0)) &&
+      (objectValues(rule.enable).some((array) => array.length > 0) ||
+        objectValues(rule.disable).some((array) => array.length > 0)) &&
       !rule.target.commentUserId &&
       !rule.target.commentCommands &&
       !rule.target.commentBody

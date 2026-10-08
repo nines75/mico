@@ -112,29 +112,29 @@ rule
         expected: mockRules({ remove: true }),
       },
       {
-        name: "一個の引数を持つ@include-tags",
+        name: "一個の引数を持つ@enable-if-tags",
         filter: `
-@include-tags foo
+@enable-if-tags foo
 rule
 `,
-        expected: mockRules({ include: { tags: [["foo"]] } }),
+        expected: mockRules({ enable: { tags: [["foo"]] } }),
       },
       {
-        name: "二個の引数を持つ@include-tags",
+        name: "二個の引数を持つ@enable-if-tags",
         filter: `
-@include-tags foo bar
+@enable-if-tags foo bar
 rule
 `,
-        expected: mockRules({ include: { tags: [["foo", "bar"]] } }),
+        expected: mockRules({ enable: { tags: [["foo", "bar"]] } }),
       },
       {
-        name: "ネストした@include-tags",
+        name: "ネストした@enable-if-tags",
         filter: `
-@include-tags foo
-@include-tags bar
+@enable-if-tags foo
+@enable-if-tags bar
 rule
 `,
-        expected: mockRules({ include: { tags: [["foo"], ["bar"]] } }),
+        expected: mockRules({ enable: { tags: [["foo"], ["bar"]] } }),
       },
     ])("$nameをパースできる", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
@@ -237,21 +237,21 @@ rule
     describe(createName("toggle"), () => {
       it.each([
         {
-          name: "@include-tagsを@comment-bodyと併用している場合、警告が出ない",
+          name: "@enable-if-tagsを@comment-bodyと併用している場合、警告が出ない",
           filter: `
 @comment-body
 
-@include-tags tag
+@enable-if-tags tag
 rule
 `,
           warnings: [],
         },
         {
-          name: "@include-tagsを@video-idのみと併用している場合、警告が出る",
+          name: "@enable-if-tagsを@video-idのみと併用している場合、警告が出る",
           filter: `
 @video-id
 
-@include-tags tag
+@enable-if-tags tag
 rule
 `,
           warnings: [{ index: 4, type: "toggle" }],
@@ -426,21 +426,21 @@ rule
       it.each([
         {
           name: "引数が設定されているディレクティブを渡した場合、エラーが出ない",
-          filter: "@include-tags foo",
+          filter: "@enable-if-tags foo",
           errors: [],
         },
         {
           // 直後にスペースがある場合のみパースしているので、以前は無効なディレクティブとして扱っていた
           // しかし引数が必要であることを示す方が望ましいため、typeがargsになっていることを確認する
           name: "引数が設定されていないディレクティブを渡した場合、エラーが出る",
-          filter: "@include-tags",
+          filter: "@enable-if-tags",
           errors: [{ index: 0, type: "args" }],
         },
         {
           // 空白文字のみの場合、引数は空の配列としてパースされる
           // これが有効なディレクティブとしてカウントされるとfilterRules()が正しく動作しないため、エラーになることを確認する
           name: "引数が空白文字のみ設定されているディレクティブを渡した場合、エラーが出る",
-          filter: "@include-tags ",
+          filter: "@enable-if-tags ",
           errors: [{ index: 0, type: "args" }],
         },
       ] satisfies TestCases)("$name", ({ filter, errors }) => {
@@ -452,12 +452,12 @@ rule
 
 describe(parseArgs.name, () => {
   it.each([
-    { filter: "@include-tags foo", expected: ["foo"] },
-    { filter: "@include-tags foo bar", expected: ["foo", "bar"] },
-    { filter: "@include-tags FOO", expected: ["foo"] },
-    { filter: "@include-tags  foo", expected: ["foo"] },
-    { filter: "@include-tags foo ", expected: ["foo"] },
-    { filter: "@include-tags", expected: [] },
+    { filter: "@enable-if-tags foo", expected: ["foo"] },
+    { filter: "@enable-if-tags foo bar", expected: ["foo", "bar"] },
+    { filter: "@enable-if-tags FOO", expected: ["foo"] },
+    { filter: "@enable-if-tags  foo", expected: ["foo"] },
+    { filter: "@enable-if-tags foo ", expected: ["foo"] },
+    { filter: "@enable-if-tags", expected: [] },
   ])("$filterを渡した場合、$expectedを返す", ({ filter, expected }) => {
     expect(parseArgs(filter)).toEqual(expected);
   });

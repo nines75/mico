@@ -64,8 +64,8 @@ export function createCountLog(result: FilteringResult) {
       ),
     ),
     loadedComment: result.loadedCommentCount,
-    include: calc("getIncludeCount"),
-    exclude: calc("getExcludeCount"),
+    enabled: calc("getEnabledCount"),
+    disabled: calc("getDisabledCount"),
     removed: filters.commandsFilter.getRemovedCount(),
   } satisfies Count;
 }
