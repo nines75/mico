@@ -1,7 +1,7 @@
 import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { storage } from "#imports";
-import { migrateSettingsToV4 } from "./settings-legacy";
+import { migrateSettingsToV5 } from "./settings-legacy";
 
 export const storageArea = "local";
 
@@ -14,10 +14,9 @@ export async function loadSettings(): Promise<Settings> {
 export const settingsStorage = storage.defineItem<Partial<Settings>>(
   `${storageArea}:settings`,
   {
-    version: 4,
-    // TODO: しばらくしたら消す
+    version: 5,
     migrations: {
-      4: migrateSettingsToV4,
+      5: migrateSettingsToV5,
     },
     // インストール直後など値がない状態で設定を開いたとき、
     // migrationは値が保存されてから初めて再読み込みした際に実行されるため
