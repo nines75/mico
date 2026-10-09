@@ -6,8 +6,7 @@ type Fiber = Record<
   {
     child?: {
       memoizedProps?: {
-        // browser.scripting.ScriptInjection.funcの戻り値の型定義がvoid|undefinedなのでunknownは使えない
-        comment?: never;
+        comment?: unknown;
       };
     };
   }
