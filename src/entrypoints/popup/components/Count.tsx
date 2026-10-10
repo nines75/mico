@@ -8,28 +8,28 @@ export default function Count() {
       <div className="info-container">
         {[
           {
-            name: "コメントのブロック数:",
+            name: "ブロックしたコメント",
             value: createPercentage(
               count?.blockedComment,
               count?.loadedComment,
             ),
           },
           {
-            name: "動画のブロック数:",
+            name: "ブロックした動画",
             value: createPercentage(count?.blockedVideo, count?.loadedVideo),
           },
         ].map(({ name, value }) => (
           <div className="info" key={name}>
-            {name}
+            {`${name}: `}
             <span className="info-value">{value}</span>
           </div>
         ))}
       </div>
       {(() => {
         const config = [
-          { name: "有効化されたルールの数:", value: count?.enabled },
-          { name: "無効化されたルールの数:", value: count?.disabled },
-          { name: "除去された値の数:", value: count?.removed },
+          { name: "有効化したルール", value: count?.enabled },
+          { name: "無効化したルール", value: count?.disabled },
+          { name: "除去した値", value: count?.removed },
         ].filter(({ value }) => value !== undefined && value > 0);
 
         // 不必要にcontainerをレンダリングしないようにする
@@ -39,7 +39,7 @@ export default function Count() {
           <div className="info-container">
             {config.map(({ name, value }) => (
               <div className="info" key={name}>
-                {name}
+                {`${name}: `}
                 <span className="info-value">{value}</span>
               </div>
             ))}
