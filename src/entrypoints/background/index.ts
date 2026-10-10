@@ -16,70 +16,60 @@ import { getLogIdViaMessage, reloadViaMessage } from "@/utils/messaging";
 import { addRuleFromUrl } from "./context-menu";
 
 export default defineBackground(() => {
-  // 視聴ページのメインリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    watchRequest,
+  // リクエスト監視(メインフレーム,xhr)
+  for (const { urls, callback } of [
     {
+      // 視聴ページ
       urls: ["https://www.nicovideo.jp/watch/*"],
-      types: ["main_frame", "xmlhttprequest"],
+      callback: watchRequest,
     },
-    ["blocking"],
-  );
-
-  // コメントのリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    commentRequest,
     {
-      urls: ["https://public.nvcomment.nicovideo.jp/v1/threads*"],
-      types: ["xmlhttprequest"],
-    },
-    ["blocking"],
-  );
-
-  // レコメンドのリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    recommendRequest,
-    {
-      urls: ["https://nvapi.nicovideo.jp/v1/recommend/items"],
-      types: ["xmlhttprequest"],
-    },
-    ["blocking"],
-  );
-
-  // ランキングのリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    rankingRequest,
-    {
+      // ランキング
       urls: ["https://www.nicovideo.jp/ranking*"],
-      types: ["main_frame", "xmlhttprequest"],
+      callback: rankingRequest,
     },
-    ["blocking"],
-  );
-
-  // 検索のリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    searchRequest,
     {
+      // 検索
       urls: [
         "https://www.nicovideo.jp/search/*",
         "https://www.nicovideo.jp/search_shorts/*",
         "https://www.nicovideo.jp/tag/*",
         "https://www.nicovideo.jp/tag_shorts/*",
       ],
-      types: ["main_frame", "xmlhttprequest"],
+      callback: searchRequest,
     },
-    ["blocking"],
-  );
+  ]) {
+    browser.webRequest.onBeforeRequest.addListener(
+      callback,
+      { urls, types: ["main_frame", "xmlhttprequest"] },
+      ["blocking"],
+    );
+  }
 
-  // 検索から視聴ページに遷移した際に表示されるプレイリストのリクエストを監視
-  browser.webRequest.onBeforeRequest.addListener(
-    searchPlaylistRequest,
+  // リクエスト監視(xhr)
+  for (const { urls, callback } of [
     {
-      urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
-      types: ["xmlhttprequest"],
+      // コメント
+      urls: ["https://public.nvcomment.nicovideo.jp/v1/threads*"],
+      callback: commentRequest,
     },
-    ["blocking"],
-  );
+    {
+      // 視聴ページのレコメンド
+      urls: ["https://nvapi.nicovideo.jp/v1/recommend/items"],
+      callback: recommendRequest,
+    },
+    {
+      // 検索から視聴ページに遷移した際に表示されるプレイリスト
+      urls: ["https://nvapi.nicovideo.jp/v1/playlist/search*"],
+      callback: searchPlaylistRequest,
+    },
+  ]) {
+    browser.webRequest.onBeforeRequest.addListener(
+      callback,
+      { urls, types: ["xmlhttprequest"] },
+      ["blocking"],
+    );
+  }
 
   // ショートカットキーが押された際の処理
   browser.commands.onCommand.addListener(
