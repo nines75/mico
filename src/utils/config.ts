@@ -123,6 +123,7 @@ export const defaultSettings: Settings = {
 
   importLocalFilterOnLoad: false,
   importOnlyWhenWslRunning: false,
+  updateLocalFilterOnMigration: false,
   localFilterPath: "",
   saveBackupOnStartup: false,
   saveBackupOnlyAfterInterval: false,

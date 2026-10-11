@@ -33,9 +33,14 @@ const config = [
         ],
       },
       {
+        type: "checkbox",
+        id: "updateLocalFilterOnMigration",
+        label: "マイグレーション後にローカルフィルターを更新する",
+      },
+      {
         type: "input",
         id: "localFilterPath",
-        label: "インポートするローカルフィルターのパス",
+        label: "ローカルフィルターのパス",
       },
       {
         type: "button",

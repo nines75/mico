@@ -75,6 +75,7 @@ export interface Settings {
 
   importLocalFilterOnLoad: boolean;
   importOnlyWhenWslRunning: boolean;
+  updateLocalFilterOnMigration: boolean;
   localFilterPath: string;
   saveBackupOnStartup: boolean;
   saveBackupOnlyAfterInterval: boolean;

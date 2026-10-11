@@ -2,6 +2,8 @@ import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { storage } from "#imports";
 import { migrateSettingsToV5 } from "./settings-legacy";
+import { catchAsync } from "./util";
+import { updateLocalFilter } from "./update-local-filter";
 
 export const storageArea = "local";
 
@@ -18,6 +20,10 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
     migrations: {
       5: migrateSettingsToV5,
     },
+    onMigrationComplete: catchAsync(async () => {
+      const settings = await loadSettings();
+      await updateLocalFilter(settings);
+    }),
     // インストール直後など値がない状態で設定を開いたとき、
     // migrationは値が保存されてから初めて再読み込みした際に実行されるため
     // インポート含めそこで書き込んだ値が次の読み込み時にmigrationによって消えることがある
