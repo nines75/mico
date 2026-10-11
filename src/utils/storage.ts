@@ -3,7 +3,8 @@ import { defaultSettings } from "./config";
 import { storage } from "#imports";
 import { migrateSettingsToV5 } from "./settings-legacy";
 import { catchAsync } from "./util";
-import { updateLocalFilter } from "./update-local-filter";
+import { tryWithPermission, notify, sendNativeMessage } from "./browser";
+import type { Backup } from "@/types/storage/backup.types";
 
 export const storageArea = "local";
 
@@ -22,7 +23,24 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
     },
     onMigrationComplete: catchAsync(async () => {
       const settings = await loadSettings();
-      await updateLocalFilter(settings);
+      if (!settings.updateLocalFilterOnMigration) return;
+
+      await tryWithPermission("nativeMessaging", async () => {
+        if (settings.localFilterPath === "") {
+          await notify("パスが設定されていません");
+          return;
+        }
+
+        const response = await sendNativeMessage({
+          type: "updateLocalFilter",
+          path: settings.localFilterPath,
+          filter: settings.manualFilter,
+        });
+
+        if (response?.status === "completed") {
+          await notify("ローカルフィルターを更新しました");
+        }
+      });
     }),
     // インストール直後など値がない状態で設定を開いたとき、
     // migrationは値が保存されてから初めて再読み込みした際に実行されるため
@@ -41,4 +59,42 @@ export async function getSettings() {
 
 export async function getSettingsMeta() {
   return await settingsStorage.getMeta();
+}
+
+export async function saveBackup(type: "startup" | "button") {
+  const settings = await loadSettings();
+  if (type === "startup" && !settings.saveBackupOnStartup) return;
+
+  const [rawSettings, meta] = await Promise.all([
+    getSettings(),
+    getSettingsMeta(),
+  ]);
+  const { manualFilter, ...rawSettingsWithoutManualFilter } = rawSettings;
+
+  await tryWithPermission("nativeMessaging", async () => {
+    if (settings.backupPath === "") {
+      await notify("パスが設定されていません");
+      return;
+    }
+
+    const backup: Required<Backup> = {
+      settings: settings.saveBackupWithoutManualFilter
+        ? rawSettingsWithoutManualFilter
+        : rawSettings,
+      settingsMeta: meta,
+    };
+
+    const response = await sendNativeMessage({
+      type: "saveBackup",
+      path: settings.backupPath,
+      shouldCheckInterval:
+        type === "startup" && settings.saveBackupOnlyAfterInterval,
+      intervalThreshold: settings.backupIntervalThreshold,
+      backup,
+    });
+
+    if (type === "button" && response?.status === "completed") {
+      await notify("バックアップを保存しました");
+    }
+  });
 }

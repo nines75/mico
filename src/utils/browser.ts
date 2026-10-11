@@ -1,6 +1,4 @@
 import type { Browser } from "#imports";
-import { getSettings, getSettingsMeta, loadSettings } from "./storage";
-import type { Backup } from "@/types/storage/backup.types";
 
 export async function setBadgeState(
   value: number,
@@ -88,44 +86,6 @@ export async function sendNativeMessage(message: unknown) {
     await notify(`${errorMessage}${String(error)}`);
     console.error(error);
   }
-}
-
-export async function saveBackup(type: "startup" | "button") {
-  const settings = await loadSettings();
-  if (type === "startup" && !settings.saveBackupOnStartup) return;
-
-  const [rawSettings, meta] = await Promise.all([
-    getSettings(),
-    getSettingsMeta(),
-  ]);
-  const { manualFilter, ...rawSettingsWithoutManualFilter } = rawSettings;
-
-  await tryWithPermission("nativeMessaging", async () => {
-    if (settings.backupPath === "") {
-      await notify("パスが設定されていません");
-      return;
-    }
-
-    const backup: Required<Backup> = {
-      settings: settings.saveBackupWithoutManualFilter
-        ? rawSettingsWithoutManualFilter
-        : rawSettings,
-      settingsMeta: meta,
-    };
-
-    const response = await sendNativeMessage({
-      type: "saveBackup",
-      path: settings.backupPath,
-      shouldCheckInterval:
-        type === "startup" && settings.saveBackupOnlyAfterInterval,
-      intervalThreshold: settings.backupIntervalThreshold,
-      backup,
-    });
-
-    if (type === "button" && response?.status === "completed") {
-      await notify("バックアップを保存しました");
-    }
-  });
 }
 
 // ログIDを内部で取得すると循環参照が発生するため、引数として受け取る

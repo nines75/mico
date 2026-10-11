@@ -8,12 +8,13 @@ import { setSettings } from "@/utils/storage-write";
 import { watchRequest } from "./request/watch.request";
 import { searchPlaylistRequest } from "./request/search-playlist.request";
 import { clearDb } from "@/utils/db";
-import { openLog, saveBackup } from "@/utils/browser";
+import { openLog } from "@/utils/browser";
 import { registerService } from "@webext-core/proxy-service";
 import { PROXY_SERVICE_KEY } from "@/utils/proxy";
 import { proxyService } from "@/utils/proxy-service";
 import { getLogIdViaMessage, reloadViaMessage } from "@/utils/messaging";
 import { addRuleFromUrl } from "./context-menu";
+import { saveBackup } from "@/utils/storage";
 
 export default defineBackground(() => {
   // リクエスト監視(メインフレーム,xhr)

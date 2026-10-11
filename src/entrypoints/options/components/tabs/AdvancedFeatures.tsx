@@ -2,7 +2,7 @@ import { catchAsync } from "@/utils/util";
 import type { SectionsItem } from "../ui/Sections";
 import Sections from "../ui/Sections";
 import { importLocalFilter } from "@/utils/storage-write";
-import { saveBackup } from "@/utils/browser";
+import { saveBackup } from "@/utils/storage";
 
 export default function AdvancedFeatures() {
   return (
