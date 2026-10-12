@@ -15,6 +15,29 @@ import type { Settings } from "@/types/storage/settings.types";
 import type { PartialComment } from "@/types/storage/log.types";
 import type { Video } from "@/types/api/video.types";
 
+describe(setSettings.name, () => {
+  it("設定を渡した場合、保存される", async () => {
+    await setSettings({ enableCommentFilter: true });
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: true,
+      storeId: "",
+    });
+  });
+
+  it("設定を返す関数を渡した場合、その関数の戻り値が保存される", async () => {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    await setSettings(async () => {
+      return { enableCommentFilter: true };
+    });
+
+    expect(await getSettings()).toEqual({
+      enableCommentFilter: true,
+      storeId: "",
+    });
+  });
+});
+
 describe(clearStorage.name, () => {
   it("設定に空のオブジェクトが保存される", async () => {
     await setSettings({ enableCommentFilter: true });
@@ -35,29 +58,6 @@ describe(cleanUpStorage.name, () => {
   it("設定に存在しないキーがない場合、設定は変化しない", async () => {
     await setSettings({ enableCommentFilter: true });
     await cleanUpStorage();
-
-    expect(await getSettings()).toEqual({
-      enableCommentFilter: true,
-      storeId: "",
-    });
-  });
-});
-
-describe(setSettings.name, () => {
-  it("設定を渡した場合、保存される", async () => {
-    await setSettings({ enableCommentFilter: true });
-
-    expect(await getSettings()).toEqual({
-      enableCommentFilter: true,
-      storeId: "",
-    });
-  });
-
-  it("設定を返す関数を渡した場合、その関数の戻り値が保存される", async () => {
-    // eslint-disable-next-line @typescript-eslint/require-await
-    await setSettings(async () => {
-      return { enableCommentFilter: true };
-    });
 
     expect(await getSettings()).toEqual({
       enableCommentFilter: true,

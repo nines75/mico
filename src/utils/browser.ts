@@ -45,7 +45,7 @@ export async function hasPermission(
   return await browser.permissions.contains({ permissions: [permission] });
 }
 
-export async function tryWithPermission(
+export async function withPermission(
   permission: Browser.runtime.ManifestPermission,
   onGranted: () => void | Promise<void>,
 ) {

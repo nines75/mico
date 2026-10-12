@@ -3,16 +3,14 @@ import { defaultSettings } from "./config";
 import { storage } from "#imports";
 import { migrateSettingsToV5 } from "./settings-legacy";
 import { catchAsync } from "./util";
-import { tryWithPermission, notify, sendNativeMessage } from "./browser";
+import { withPermission, notify, sendNativeMessage } from "./browser";
 import type { Backup } from "@/types/storage/backup.types";
 
+// -------------------------------------------------------------------------------------------
+// ストレージ定義
+// -------------------------------------------------------------------------------------------
+
 export const storageArea = "local";
-
-export async function loadSettings(): Promise<Settings> {
-  const settings = await getSettings();
-
-  return { ...defaultSettings, ...settings };
-}
 
 export const settingsStorage = storage.defineItem<Partial<Settings>>(
   `${storageArea}:settings`,
@@ -25,7 +23,7 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
       const settings = await loadSettings();
       if (!settings.updateLocalFilterOnMigration) return;
 
-      await tryWithPermission("nativeMessaging", async () => {
+      await withPermission("nativeMessaging", async () => {
         const response = await sendNativeMessage({
           type: "updateLocalFilter",
           path: settings.localFilterPath,
@@ -48,6 +46,10 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
   },
 );
 
+// -------------------------------------------------------------------------------------------
+// 読み取りを行う汎用的な関数
+// -------------------------------------------------------------------------------------------
+
 export async function getSettings() {
   return await settingsStorage.getValue();
 }
@@ -56,22 +58,33 @@ export async function getSettingsMeta() {
   return await settingsStorage.getMeta();
 }
 
+export async function loadSettings(): Promise<Settings> {
+  const settings = await getSettings();
+
+  return { ...defaultSettings, ...settings };
+}
+
+// -------------------------------------------------------------------------------------------
+// その他
+// -------------------------------------------------------------------------------------------
+
+// browser.tsに置くと循環参照が発生する
 export async function saveBackup(type: "startup" | "button") {
   const settings = await loadSettings();
   if (type === "startup" && !settings.saveBackupOnStartup) return;
 
-  const [rawSettings, meta] = await Promise.all([
+  const [rawSettings, settingsMeta] = await Promise.all([
     getSettings(),
     getSettingsMeta(),
   ]);
   const { manualFilter, ...rawSettingsWithoutManualFilter } = rawSettings;
 
-  await tryWithPermission("nativeMessaging", async () => {
+  await withPermission("nativeMessaging", async () => {
     const backup: Required<Backup> = {
       settings: settings.saveBackupWithoutManualFilter
         ? rawSettingsWithoutManualFilter
         : rawSettings,
-      settingsMeta: meta,
+      settingsMeta,
     };
 
     const response = await sendNativeMessage({

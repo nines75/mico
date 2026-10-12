@@ -1,7 +1,6 @@
 // -------------------------------------------------------------------------------------------
 // ブラウザ拡張ストレージにはIndexedDBと異なりトランザクションの仕組みが存在しないためWeb Locks APIを使用する
-// しかし、このAPIのスコープはオリジンのためcontentから呼び出すと正しく排他制御できない
-// そのためこのファイルはcontentからはインポートしない
+// このAPIのスコープはオリジンなので、このファイルはcontentからはインポートしない
 // https://github.com/nines75/mico/issues/33
 // -------------------------------------------------------------------------------------------
 
@@ -11,7 +10,7 @@ import {
   hasPermission,
   notify,
   sendNativeMessage,
-  tryWithPermission,
+  withPermission,
 } from "./browser";
 import type { AutoRule } from "@/entrypoints/background/rule";
 import type { SetOptional, ValueOf } from "type-fest";
@@ -27,6 +26,40 @@ import type { Thread } from "@/types/api/comment-api.types";
 async function lock(callback: () => Promise<void>) {
   await navigator.locks.request("storage", callback);
 }
+
+// -------------------------------------------------------------------------------------------
+// 書き込みを行う汎用的な関数
+// -------------------------------------------------------------------------------------------
+
+export async function setSettings(
+  value:
+    | Partial<Settings>
+    | ((
+        settings: Partial<Settings>,
+      ) => Partial<Settings> | Promise<Partial<Settings>>),
+) {
+  await lock(async () => {
+    const settings = await getSettings();
+    const newSettings =
+      typeof value === "function" ? await value(settings) : value;
+
+    await settingsStorage.setValue({
+      ...settings,
+      ...newSettings,
+      ...(newSettings.storeId === undefined && { storeId: "" }), // storeIdを必ず上書き
+    });
+  });
+}
+
+export async function setSettingsMeta(value: Record<string, unknown>) {
+  await lock(async () => {
+    await settingsStorage.setMeta(value);
+  });
+}
+
+// -------------------------------------------------------------------------------------------
+// ストレージ操作
+// -------------------------------------------------------------------------------------------
 
 export async function clearStorage() {
   await lock(async () => {
@@ -60,32 +93,6 @@ export async function cleanUpStorage() {
   });
 }
 
-export async function setSettings(
-  value:
-    | Partial<Settings>
-    | ((
-        settings: Partial<Settings>,
-      ) => Partial<Settings> | Promise<Partial<Settings>>),
-) {
-  await lock(async () => {
-    const settings = await getSettings();
-    const newSettings =
-      typeof value === "function" ? await value(settings) : value;
-
-    await settingsStorage.setValue({
-      ...settings,
-      ...newSettings,
-      ...(newSettings.storeId === undefined && { storeId: "" }), // storeIdを必ず上書き
-    });
-  });
-}
-
-export async function setSettingsMeta(value: Record<string, unknown>) {
-  await lock(async () => {
-    await settingsStorage.setMeta(value);
-  });
-}
-
 export async function migrateSettings() {
   await lock(async () => {
     // migrationはsetSettingsを経由せずに書き込みを行うため、
@@ -96,6 +103,10 @@ export async function migrateSettings() {
     await settingsStorage.migrate();
   });
 }
+
+// -------------------------------------------------------------------------------------------
+// その他
+// -------------------------------------------------------------------------------------------
 
 export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
   if (rules.length === 0) return;
@@ -240,15 +251,16 @@ export async function importLocalFilter(type: "load" | "button") {
     return;
   }
 
-  // この関数は設定を更新するため、呼び出し元でロードした設定を流用する意味がない
-  // なぜならこの関数を呼び出した後に設定を読み込まないと設定の更新が後続の処理に反映されないから
+  // importLocalFilter()を呼び出した後に設定を読み込まないと
+  // ここで行った設定の更新が後続の処理に反映されないため、
+  // 呼び出し元で先に設定をロードして流用することはできない
   const settings = await loadSettings();
 
-  // 権限があるか確認する前に設定を確認
   // この機能を使用しないユーザーに余計な通知が行くのを防ぐため
+  // 権限があるか確認する前に設定を確認
   if (type === "load" && !settings.importLocalFilterOnLoad) return;
 
-  await tryWithPermission("nativeMessaging", async () => {
+  await withPermission("nativeMessaging", async () => {
     const response = await sendNativeMessage({
       type: "importLocalFilter",
       path: settings.localFilterPath,
