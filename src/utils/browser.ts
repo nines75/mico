@@ -60,7 +60,16 @@ export async function getActiveTab() {
   return tabs[0];
 }
 
-export async function sendNativeMessage(message: unknown) {
+export async function sendNativeMessage(message: {
+  [key: string]: unknown;
+  path?: string;
+}) {
+  if (message.path === "") {
+    await notify("パスが設定されていません");
+
+    return;
+  }
+
   const errorMessage = "ネイティブメッセージング中にエラーが発生しました\n\n";
 
   try {

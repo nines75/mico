@@ -26,11 +26,6 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
       if (!settings.updateLocalFilterOnMigration) return;
 
       await tryWithPermission("nativeMessaging", async () => {
-        if (settings.localFilterPath === "") {
-          await notify("パスが設定されていません");
-          return;
-        }
-
         const response = await sendNativeMessage({
           type: "updateLocalFilter",
           path: settings.localFilterPath,
@@ -72,11 +67,6 @@ export async function saveBackup(type: "startup" | "button") {
   const { manualFilter, ...rawSettingsWithoutManualFilter } = rawSettings;
 
   await tryWithPermission("nativeMessaging", async () => {
-    if (settings.backupPath === "") {
-      await notify("パスが設定されていません");
-      return;
-    }
-
     const backup: Required<Backup> = {
       settings: settings.saveBackupWithoutManualFilter
         ? rawSettingsWithoutManualFilter

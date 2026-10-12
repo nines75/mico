@@ -249,11 +249,6 @@ export async function importLocalFilter(type: "load" | "button") {
   if (type === "load" && !settings.importLocalFilterOnLoad) return;
 
   await tryWithPermission("nativeMessaging", async () => {
-    if (settings.localFilterPath === "") {
-      await notify("パスが設定されていません");
-      return;
-    }
-
     const response = await sendNativeMessage({
       type: "importLocalFilter",
       path: settings.localFilterPath,
