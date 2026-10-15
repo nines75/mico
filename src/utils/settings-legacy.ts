@@ -2,6 +2,32 @@ import type { AutoRule } from "@/entrypoints/background/rule";
 import type { Settings } from "@/types/storage/settings.types";
 import type { Merge, RenameKeys } from "type-fest";
 
+// -------------------------------------------------------------------------------------------
+// v5 => v6
+// -------------------------------------------------------------------------------------------
+
+type SettingsV5 = RenameKeys<
+  Settings,
+  {
+    showUserIdInCommentMenu: "showUserIdInDropdown";
+    showScoreInCommentMenu: "showScoreInDropdown";
+  }
+>;
+
+export function migrateSettingsToV6(
+  v5: Partial<SettingsV5>,
+): Partial<Settings> {
+  return {
+    ...v5,
+    showUserIdInCommentMenu: v5.showUserIdInDropdown ?? false,
+    showScoreInCommentMenu: v5.showScoreInDropdown ?? false,
+  };
+}
+
+// -------------------------------------------------------------------------------------------
+// v4 => v5
+// -------------------------------------------------------------------------------------------
+
 type SettingsV4 = Merge<
   Settings,
   {
