@@ -1,4 +1,4 @@
-import { mountToCommentMenu } from "./dropdown";
+import { mountToCommentMenu } from "./comment-menu";
 import { defineContentScript } from "#imports";
 import {
   catchAsync,
