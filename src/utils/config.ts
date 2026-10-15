@@ -99,7 +99,7 @@ export const defaultSettings: Settings = {
   ignoreByNicoru: false,
   ignoreByNicoruThreshold: 30,
 
-  // ドロップダウン
+  // コメントメニュー
   showUserIdInDropdown: false,
   showScoreInDropdown: false,
   autoReload: false,

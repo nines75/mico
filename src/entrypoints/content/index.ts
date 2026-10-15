@@ -1,4 +1,4 @@
-import { mountToDropdown } from "./dropdown";
+import { mountToCommentMenu } from "./dropdown";
 import { defineContentScript } from "#imports";
 import {
   catchAsync,
@@ -46,9 +46,9 @@ async function onBodyChange(records: MutationRecord[]) {
     for (const node of record.addedNodes) {
       if (!(node instanceof Element)) continue;
 
-      // ドロップダウン
+      // コメントメニュー
       if (isWatchPage(location.href) && node.className === "z_dropdown") {
-        await mountToDropdown();
+        await mountToCommentMenu();
       }
     }
   }

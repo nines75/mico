@@ -12,7 +12,7 @@ type Fiber = Record<
   }
 >;
 
-export async function getDropdownComment() {
+export async function getMenuComment() {
   const tab = await getActiveTab();
   const tabId = tab?.id;
   if (tabId === undefined) return;
@@ -21,10 +21,10 @@ export async function getDropdownComment() {
     target: { tabId },
     world: "MAIN", // reactFiberプロパティにアクセスするためにMAINで実行
     func: () => {
-      const dropdown = document.querySelector(".z_dropdown");
-      if (dropdown === null) return;
+      const menu = document.querySelector(".z_dropdown");
+      if (menu === null) return;
 
-      for (const [key, value] of Object.entries(dropdown as unknown as Fiber)) {
+      for (const [key, value] of Object.entries(menu as unknown as Fiber)) {
         if (!key.startsWith("__reactFiber$")) continue;
 
         // ここはcontent scriptとして実行されるため、バリデーションは外で行う必要がある

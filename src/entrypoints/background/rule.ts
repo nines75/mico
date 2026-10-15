@@ -42,7 +42,7 @@ export type ManualRule = Rule & ManualRuleOnly;
 interface AutoRuleOnly {
   id: string;
   pattern: string; // 正規表現には対応しない
-  source: "dropdown" | "strict" | "contextMenu" | "popup" | "complement";
+  source: "commentMenu" | "strict" | "contextMenu" | "popup" | "complement";
   context?: string;
   memo?: string;
 }
