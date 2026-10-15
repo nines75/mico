@@ -2,6 +2,42 @@ import type { AutoRule } from "@/entrypoints/background/rule";
 import type { Settings } from "@/types/storage/settings.types";
 import type { Merge, RenameKeys } from "type-fest";
 
+// -------------------------------------------------------------------------------------------
+// v5 => v6
+// -------------------------------------------------------------------------------------------
+
+type SettingsV5 = RenameKeys<
+  Settings,
+  {
+    showUserIdInCommentMenu: "showUserIdInDropdown";
+    showScoreInCommentMenu: "showScoreInDropdown";
+  }
+>;
+
+export function migrateSettingsToV6(
+  v5: Partial<SettingsV5>,
+): Partial<Settings> {
+  const autoFilter =
+    v5.autoFilter?.map((rule) => {
+      const source = rule.source as string;
+      if (source !== "dropdown") return rule;
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      return { ...rule, source: "commentMenu" } as AutoRule;
+    }) ?? [];
+
+  return {
+    ...v5,
+    autoFilter,
+    showUserIdInCommentMenu: v5.showUserIdInDropdown ?? false,
+    showScoreInCommentMenu: v5.showScoreInDropdown ?? false,
+  };
+}
+
+// -------------------------------------------------------------------------------------------
+// v4 => v5
+// -------------------------------------------------------------------------------------------
+
 type SettingsV4 = Merge<
   Settings,
   {

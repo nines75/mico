@@ -3,7 +3,7 @@ import { loadSettings } from "@/utils/storage";
 import { catchAsync } from "@/utils/util";
 import { getLogId, reload } from "./dom";
 
-export async function mountToDropdown() {
+export async function mountToCommentMenu() {
   appendButton();
   await appendInformation();
 }
@@ -25,7 +25,7 @@ function appendButton() {
     {
       text: "ユーザーが投稿したコメントを表示",
       onClick: async () => {
-        const comment = await proxy.getDropdownComment();
+        const comment = await proxy.getMenuComment();
         const userId = comment?.userId;
         if (userId === undefined) {
           await proxy.notify("ユーザー情報の取得に失敗しました");
@@ -68,7 +68,7 @@ function appendButton() {
 function onClickNgUser(videoOnly = false) {
   return async () => {
     const settings = await loadSettings();
-    const comment = await proxy.getDropdownComment();
+    const comment = await proxy.getMenuComment();
     if (comment?.$videoId === undefined) {
       await proxy.notify("NG登録に失敗しました");
       return;
@@ -78,7 +78,7 @@ function onClickNgUser(videoOnly = false) {
       {
         pattern: comment.userId,
         context: `comment-body: ${comment.body}`,
-        source: "dropdown",
+        source: "commentMenu",
         target: { commentUserId: true },
         ...(videoOnly && { enable: { videoIds: [[comment.$videoId]] } }),
       },
@@ -98,13 +98,15 @@ function onClickNgUser(videoOnly = false) {
 // -------------------------------------------------------------------------------------------
 
 async function appendInformation() {
-  const comment = await proxy.getDropdownComment();
+  const comment = await proxy.getMenuComment();
   if (comment === undefined) return;
 
   const settings = await loadSettings();
   const texts = [
-    ...(settings.showUserIdInDropdown ? [`ユーザーID：${comment.userId}`] : []),
-    ...(settings.showScoreInDropdown ? [`スコア：${comment.score}`] : []),
+    ...(settings.showUserIdInCommentMenu
+      ? [`ユーザーID：${comment.userId}`]
+      : []),
+    ...(settings.showScoreInCommentMenu ? [`スコア：${comment.score}`] : []),
   ];
   if (texts.length === 0) return;
 

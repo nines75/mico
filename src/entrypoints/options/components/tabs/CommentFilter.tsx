@@ -69,23 +69,23 @@ const config = [
     ],
   },
   {
-    heading: "ドロップダウン",
+    heading: "コメントメニュー",
     items: [
       {
         type: "checkbox",
-        id: "showUserIdInDropdown",
+        id: "showUserIdInCommentMenu",
         label: "ユーザーIDを表示する",
       },
       {
         type: "checkbox",
-        id: "showScoreInDropdown",
+        id: "showScoreInCommentMenu",
         label: "スコアを表示する",
       },
       {
         type: "checkbox",
         id: "autoReload",
         label: "自動リロードを有効にする",
-        details: `ドロップダウンのユーザーNGボタンを押した際に自動でリロードします。
+        details: `コメントメニューのユーザーNGボタンを押した際に自動でリロードします。
 読み込み後、リロードする前の再生時間が自動で再設定されます。`,
       },
     ],

@@ -68,11 +68,11 @@ describe(cleanUpStorage.name, () => {
 
 describe(addAutoRule.name, () => {
   it("Autoルールを渡した場合、保存される", async () => {
-    await addAutoRule([{ pattern: "rule", source: "dropdown" }]);
+    await addAutoRule([{ pattern: "rule", source: "commentMenu" }]);
 
     const settings = await loadSettings();
     expect(settings.autoFilter).toEqual([
-      { id: expectString, pattern: "rule", source: "dropdown" },
+      { id: expectString, pattern: "rule", source: "commentMenu" },
     ]);
   });
 });
@@ -80,7 +80,7 @@ describe(addAutoRule.name, () => {
 describe(removeAutoRule.name, () => {
   it("保存されているルールID渡した場合、そのルールが削除される", async () => {
     await setSettings({
-      autoFilter: [{ id: "id", pattern: "rule", source: "dropdown" }],
+      autoFilter: [{ id: "id", pattern: "rule", source: "commentMenu" }],
     });
     await removeAutoRule(["id"]);
 
@@ -89,7 +89,9 @@ describe(removeAutoRule.name, () => {
   });
 
   it("保存されていないルールID渡した場合、設定は変化しない", async () => {
-    const rules = [{ id: "id", pattern: "rule", source: "dropdown" as const }];
+    const rules = [
+      { id: "id", pattern: "rule", source: "commentMenu" as const },
+    ];
 
     await setSettings({ autoFilter: rules });
     await removeAutoRule(["id2"]);

@@ -3,7 +3,7 @@
 // そのためこのファイルで定義し、proxy.tsでは型のみをインポートする
 // -------------------------------------------------------------------------------------------
 
-import { getDropdownComment } from "@/entrypoints/background/scripting";
+import { getMenuComment } from "@/entrypoints/background/scripting";
 import { cleanUpDb, clearDb, getLog, setTab } from "./db";
 import { getActiveTab, notify, openLog, setBadgeState } from "./browser";
 import { addAutoRule } from "./storage-write";
@@ -13,7 +13,7 @@ export const proxyService = {
   notify: notify,
   setBadgeState: setBadgeState,
   getActiveTab: getActiveTab,
-  getDropdownComment: getDropdownComment,
+  getMenuComment: getMenuComment,
   openLog: openLog,
   // storage
   addAutoRule: addAutoRule,

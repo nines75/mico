@@ -1,7 +1,7 @@
 import type { Settings } from "../types/storage/settings.types";
 import { defaultSettings } from "./config";
 import { storage } from "#imports";
-import { migrateSettingsToV5 } from "./settings-legacy";
+import { migrateSettingsToV5, migrateSettingsToV6 } from "./settings-legacy";
 import { catchAsync } from "./util";
 import { withPermission, notify, sendNativeMessage } from "./browser";
 import type { Backup } from "@/types/storage/backup.types";
@@ -15,9 +15,10 @@ export const storageArea = "local";
 export const settingsStorage = storage.defineItem<Partial<Settings>>(
   `${storageArea}:settings`,
   {
-    version: 5,
+    version: 6,
     migrations: {
       5: migrateSettingsToV5,
+      6: migrateSettingsToV6,
     },
     onMigrationComplete: catchAsync(async () => {
       const settings = await loadSettings();
