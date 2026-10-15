@@ -17,8 +17,18 @@ type SettingsV5 = RenameKeys<
 export function migrateSettingsToV6(
   v5: Partial<SettingsV5>,
 ): Partial<Settings> {
+  const autoFilter =
+    v5.autoFilter?.map((rule) => {
+      const source = rule.source as string;
+      if (source !== "dropdown") return rule;
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      return { ...rule, source: "commentMenu" } as AutoRule;
+    }) ?? [];
+
   return {
     ...v5,
+    autoFilter,
     showUserIdInCommentMenu: v5.showUserIdInDropdown ?? false,
     showScoreInCommentMenu: v5.showScoreInDropdown ?? false,
   };
