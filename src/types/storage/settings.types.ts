@@ -52,8 +52,8 @@ export interface Settings {
   ignoreByNicoruThreshold: number;
 
   // コメントメニュー
-  showUserIdInDropdown: boolean;
-  showScoreInDropdown: boolean;
+  showUserIdInCommentMenu: boolean;
+  showScoreInCommentMenu: boolean;
   autoReload: boolean;
 
   // -------------------------------------------------------------------------------------------

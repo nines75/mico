@@ -73,12 +73,12 @@ const config = [
     items: [
       {
         type: "checkbox",
-        id: "showUserIdInDropdown",
+        id: "showUserIdInCommentMenu",
         label: "ユーザーIDを表示する",
       },
       {
         type: "checkbox",
-        id: "showScoreInDropdown",
+        id: "showScoreInCommentMenu",
         label: "スコアを表示する",
       },
       {

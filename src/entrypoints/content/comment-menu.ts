@@ -103,8 +103,10 @@ async function appendInformation() {
 
   const settings = await loadSettings();
   const texts = [
-    ...(settings.showUserIdInDropdown ? [`ユーザーID：${comment.userId}`] : []),
-    ...(settings.showScoreInDropdown ? [`スコア：${comment.score}`] : []),
+    ...(settings.showUserIdInCommentMenu
+      ? [`ユーザーID：${comment.userId}`]
+      : []),
+    ...(settings.showScoreInCommentMenu ? [`スコア：${comment.score}`] : []),
   ];
   if (texts.length === 0) return;
 
