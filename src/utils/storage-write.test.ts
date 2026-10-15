@@ -89,7 +89,9 @@ describe(removeAutoRule.name, () => {
   });
 
   it("保存されていないルールID渡した場合、設定は変化しない", async () => {
-    const rules = [{ id: "id", pattern: "rule", source: "commentMenu" as const }];
+    const rules = [
+      { id: "id", pattern: "rule", source: "commentMenu" as const },
+    ];
 
     await setSettings({ autoFilter: rules });
     await removeAutoRule(["id2"]);
