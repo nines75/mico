@@ -1,10 +1,6 @@
 import { useMemo, useState } from "#imports";
 import { escapeNewline } from "@/utils/util";
-import type {
-  ColDef,
-  ITooltipParams,
-  ValueFormatterParams,
-} from "ag-grid-community";
+import type { ColDef, ValueFormatterParams } from "ag-grid-community";
 import { RuleCell, Viewer } from "./Viewer";
 import type { NvComment } from "@/types/api/comment.types";
 import type { FilteredComment } from "@/types/storage/log.types";
@@ -86,9 +82,8 @@ export function CommentViewer() {
         field: "comment.body",
         headerName: "本文",
         width: 350,
+        tooltip: true,
         valueFormatter: (params: ValueFormatterParams<Row, string>) =>
-          escapeNewline(params.value ?? ""),
-        tooltipValueGetter: (params: ITooltipParams<Row, string>) =>
           escapeNewline(params.value ?? ""),
       },
       {
@@ -103,9 +98,9 @@ export function CommentViewer() {
       },
       {
         field: "comment.commands",
-        tooltipField: "comment.commands",
         headerName: "コマンド",
         width: 220,
+        tooltip: true,
       },
     ],
     [rows],

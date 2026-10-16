@@ -77,15 +77,15 @@ export function VideoViewer() {
       },
       {
         field: "video.title",
-        tooltipField: "video.title",
         headerName: "タイトル",
         width: 350,
+        tooltip: true,
       },
       {
         field: "video.owner.name",
-        tooltipField: "video.owner.name",
         headerName: "投稿者",
         width: 220,
+        tooltip: true,
       },
       {
         field: "video.count.view",
