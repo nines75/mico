@@ -2,7 +2,6 @@ import { getSettings, loadSettings } from "@/utils/storage";
 import { describe, expect, it } from "vitest";
 import {
   addAutoRule,
-  addContextToCommentRule,
   addContextToVideoRule,
   cleanUpStorage,
   clearStorage,
@@ -10,9 +9,8 @@ import {
   setSettings,
 } from "./storage-write";
 import type { AutoRule } from "@/entrypoints/background/rule";
-import { expectString, testTab } from "./test";
+import { expectString } from "./test";
 import type { Settings } from "@/types/storage/settings.types";
-import type { PartialComment } from "@/types/storage/log.types";
 import type { Video } from "@/types/api/video.types";
 
 describe(setSettings.name, () => {
@@ -98,108 +96,6 @@ describe(removeAutoRule.name, () => {
 
     const settings = await loadSettings();
     expect(settings.autoFilter).toEqual(rules);
-  });
-});
-
-describe(addContextToCommentRule.name, () => {
-  it.each([
-    {
-      name: "対象のコメントにマッチするManualルールがある場合、コンテキスト情報が補完される",
-      settings: {
-        manualFilter: `
-@comment-body
-foo
-`,
-        autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
-      },
-      comments: [{ body: "foo-bar", userId: "user-id" }], // bodyをfooにするとルールと区別がつかないためfoo-barにする
-      expected: [
-        {
-          pattern: "user-id",
-          target: { commentUserId: true },
-          source: "complement",
-          context: "comment-body: foo-bar",
-        },
-      ],
-    },
-    {
-      name: "strictルールが存在する場合、優先してコンテキスト情報の補完に使用される",
-      settings: {
-        manualFilter: `
-@comment-body
-
-foo
-
-@strict
-bar
-`,
-        autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
-      },
-      comments: [
-        // どちらのルールが優先されたか確認するために、両方のルールにマッチするコメントを用意する
-        { body: "foo", userId: "user-id" },
-        { body: "bar", userId: "user-id" },
-      ],
-      expected: [
-        {
-          pattern: "user-id",
-          target: { commentUserId: true },
-          source: "complement",
-          context: "comment-body: bar",
-        },
-      ],
-    },
-    {
-      name: "コンテキスト情報が登録済みの場合、コンテキスト情報が補完されない",
-      settings: {
-        manualFilter: `
-@comment-body
-foo
-`,
-        autoFilter: [
-          {
-            pattern: "user-id",
-            target: { commentUserId: true },
-            context: "baz",
-          },
-        ],
-      },
-      comments: [{ body: "foo-bar", userId: "user-id" }],
-      expected: [
-        {
-          pattern: "user-id",
-          target: { commentUserId: true },
-          context: "baz", // foo-barに更新されていないことを確認
-        },
-      ],
-    },
-    {
-      name: "設定が無効になっている場合、コンテキスト情報が補完されない",
-      settings: {
-        complementContext: false,
-        manualFilter: `
-@comment-body
-foo
-`,
-        autoFilter: [{ pattern: "user-id", target: { commentUserId: true } }],
-      },
-      comments: [{ body: "foo-bar", userId: "user-id" }],
-      expected: [{ pattern: "user-id", target: { commentUserId: true } }],
-    },
-  ] satisfies {
-    name: string;
-    settings: Partial<Settings>;
-    comments: Partial<PartialComment>[];
-    expected: Partial<AutoRule>[];
-  }[])("$name", async ({ settings, comments, expected }) => {
-    await setSettings(settings);
-    await addContextToCommentRule(comments as PartialComment[], testTab, {
-      complementContext: true,
-      ...settings,
-    } as Settings);
-
-    const newSettings = await loadSettings();
-    expect(newSettings.autoFilter).toEqual(expected);
   });
 });
 

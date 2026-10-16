@@ -17,11 +17,6 @@ import type { SetOptional, ValueOf } from "type-fest";
 import { objectKeys } from "ts-extras";
 import { defaultSettings } from "./config";
 import type { Video } from "@/types/api/video.types";
-import type { PartialComment } from "@/types/storage/log.types";
-import type { Tab } from "@/types/storage/tab.types";
-import { BodyFilter } from "@/entrypoints/background/comment-filter/filter/body-filter";
-import type { NvComment } from "@/types/api/comment.types";
-import type { Thread } from "@/types/api/comment-api.types";
 
 async function lock(callback: () => Promise<void>) {
   await navigator.locks.request("storage", callback);
@@ -138,68 +133,6 @@ export async function removeAutoRule(ids: string[]) {
   });
 }
 
-export async function addContextToCommentRule(
-  comments: PartialComment[],
-  tab: Tab,
-  settings: Settings,
-) {
-  if (!settings.complementContext) return;
-
-  await setSettings(async () => {
-    const currentSettings = await loadSettings();
-    const source = "complement";
-
-    const editRule = (
-      rule: Partial<AutoRule>,
-    ): Partial<AutoRule> | undefined => {
-      // strictルールによるフィルタリング時に除外されないようにAutoFilterを空にする
-      const bodyFilter = new BodyFilter({ ...currentSettings, autoFilter: [] });
-      bodyFilter.filterRules(tab);
-
-      const targetComments = comments.filter(
-        (comment) => comment.userId === rule.pattern,
-      );
-      const threads: Thread[] = [
-        {
-          fork: "main",
-          commentCount: targetComments.length,
-          comments: targetComments as NvComment[],
-        },
-      ];
-
-      // strictルールによるフィルタリングを優先
-      bodyFilter.apply(threads, true);
-      const strictData = bodyFilter.getStrictData()[0];
-      if (strictData !== undefined) {
-        return { ...rule, source, context: strictData.context };
-      }
-
-      // strictルールによってフィルタリングされなかった場合は通常のルールを適用
-      bodyFilter.apply(threads);
-      const filteredComment = bodyFilter.getFilteredComments()[0];
-      if (filteredComment !== undefined) {
-        return {
-          ...rule,
-          source,
-          context: `comment-body: ${filteredComment.comment.body}`,
-        };
-      }
-    };
-
-    return {
-      autoFilter: currentSettings.autoFilter.map((rule) => {
-        if (rule.context !== undefined) return rule;
-
-        if (rule.target?.commentUserId === true) {
-          const newRule = editRule(rule);
-          if (newRule !== undefined) return newRule;
-        }
-
-        return rule;
-      }),
-    };
-  });
-}
 export async function addContextToVideoRule(
   videos: Video[],
   settings: Settings,
