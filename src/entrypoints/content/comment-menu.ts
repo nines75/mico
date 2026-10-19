@@ -45,17 +45,25 @@ function appendButton() {
   if (sample === null) return;
 
   for (const { text, onClick } of data) {
+    const span = document.createElement("span");
+    span.textContent = text;
+    span.style.maxWidth = "130px";
+    span.style.whiteSpace = "nowrap"; // テキストを折り返さない
+    span.style.textOverflow = "ellipsis"; // テキストがはみ出た場合に省略記号を表示する
+    span.style.overflow = "hidden"; // ellipsisとセットで使う
+
+    const img = document.createElement("img");
+    img.src = browser.runtime.getURL("/icons/128.png");
+    img.style.width = "16px"; // サイズを明示的に指定しないと省略される幅に上限ができてしまう
+    img.style.height = "16px";
+
     const button = document.createElement("button");
-    const textContent = `${text}(${browser.runtime.getManifest().name})`;
-
     button.addEventListener("click", catchAsync(onClick));
-    button.textContent = textContent;
-    button.title = textContent;
+    button.title = `${text} (${browser.runtime.getManifest().name})`;
+    button.style.display = "flex";
+    button.style.gap = "4px";
 
-    button.style.maxWidth = "160px";
-    button.style.whiteSpace = "nowrap"; // テキストを折り返さない
-    button.style.textOverflow = "ellipsis"; // テキストがはみ出た場合に省略記号を表示する
-    button.style.overflow = "hidden"; // ellipsisとセットで使う
+    button.append(img, span);
 
     for (const attribute of sample.attributes) {
       button.setAttribute(attribute.name, attribute.value);
