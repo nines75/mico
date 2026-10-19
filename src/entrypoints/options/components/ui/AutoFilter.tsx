@@ -185,14 +185,21 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
         >
           <X size={30} />
         </button>
-        {pattern.startsWith("nvc:") ? (
-          <>
-            <span className="prefix-nvc">nvc:</span>
-            {pattern.slice(4)}
-          </>
-        ) : (
-          pattern
-        )}
+        <span>
+          {pattern.startsWith("nvc:") ? (
+            <>
+              <span className="prefix-nvc">nvc:</span>
+              {pattern.slice(4)}
+            </>
+          ) : (
+            pattern
+          )}
+        </span>
+        {rule.enable?.videoIds?.flat().map((videoId) => (
+          <span key={videoId} title="このルールが有効化される動画ID">
+            ({videoId})
+          </span>
+        ))}
       </div>
       <div className="rule-details">
         <div>
@@ -254,9 +261,6 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
               </Detail>
             );
           })}
-        {rule.enable?.videoIds !== undefined && (
-          <Detail name="enable-if-video-ids">{rule.enable.videoIds}</Detail>
-        )}
         {rule.source !== undefined && (
           <Detail name="ソース">{rule.source}</Detail>
         )}
