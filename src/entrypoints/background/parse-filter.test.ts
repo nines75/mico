@@ -15,7 +15,7 @@ describe(parseFilter.name, () => {
       filter: "",
       expected: mockRules(),
     },
-  ])("$nameをパースできる", ({ filter, expected }) => {
+  ])("$name をパースできる", ({ filter, expected }) => {
     expect(parseFilter(filter)).toEqual(expected);
   });
 
@@ -41,7 +41,7 @@ describe(parseFilter.name, () => {
         filter: "///",
         expected: mockRules({ pattern: /\// }),
       },
-    ])("$nameをパースできる", ({ filter, expected }) => {
+    ])("$name をパースできる", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
     });
   });
@@ -136,7 +136,7 @@ rule
 `,
         expected: mockRules({ enable: { tags: [["foo"], ["bar"]] } }),
       },
-    ])("$nameをパースできる", ({ filter, expected }) => {
+    ])("$name をパースできる", ({ filter, expected }) => {
       expect(parseFilter(filter)).toEqual(expected);
     });
   });
@@ -458,7 +458,7 @@ describe(parseArgs.name, () => {
     { filter: "@enable-if-tags  foo", expected: ["foo"] },
     { filter: "@enable-if-tags foo ", expected: ["foo"] },
     { filter: "@enable-if-tags", expected: [] },
-  ])("$filterを渡した場合、$expectedを返す", ({ filter, expected }) => {
+  ])("$filter を渡した場合、 $expected を返す", ({ filter, expected }) => {
     expect(parseArgs(filter)).toEqual(expected);
   });
 });

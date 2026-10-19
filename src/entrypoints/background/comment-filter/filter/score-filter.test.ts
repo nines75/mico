@@ -62,7 +62,7 @@ describe(ScoreFilter.name, () => {
       { threshold: -1001, ids: ["3"] },
       { threshold: -10_000, ids: [] },
     ])(
-      "閾値が$thresholdのとき、スコアがそれ以下のコメントをフィルタリングする",
+      "閾値が $threshold のとき、スコアがそれ以下のコメントをフィルタリングする",
       ({ threshold, ids }) => {
         assertor.assert(ids, runFilter(true, threshold));
       },

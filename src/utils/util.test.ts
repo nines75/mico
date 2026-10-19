@@ -113,7 +113,7 @@ describe(sum.name, () => {
     { numbers: [1], expected: 1 },
     { numbers: [1, 2, 3], expected: 6 },
   ] satisfies { numbers: number[]; expected: number }[])(
-    `$numbersを渡した場合、$expectedを返す`,
+    `$numbers を渡した場合、$expected を返す`,
     ({ numbers, expected }) => {
       expect(sum(numbers)).toEqual(expected);
     },
