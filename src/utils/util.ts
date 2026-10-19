@@ -39,6 +39,12 @@ export function isSearchPage(url: string | undefined) {
   );
 }
 
+export function createVideoUrl(videoId: string) {
+  const path = videoId.startsWith("ss") ? "shorts" : "watch";
+
+  return `https://www.nicovideo.jp/${path}/${videoId}`;
+}
+
 export function escapeNewline(text: string) {
   return text.replaceAll("\n", String.raw`\n`);
 }

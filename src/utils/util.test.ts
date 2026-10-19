@@ -7,6 +7,7 @@ import {
   isSearchPage,
   isWatchPage,
   sum,
+  createVideoUrl,
 } from "./util";
 
 describe(isNiconicoPage.name, () => {
@@ -87,6 +88,16 @@ describe(isSearchPage.name, () => {
     ])("%s", (url) => {
       expect(isSearchPage(url)).toBe(false);
     });
+  });
+});
+
+describe(createVideoUrl.name, () => {
+  it.each([
+    ["sm0", "https://www.nicovideo.jp/watch/sm0"],
+    ["so0", "https://www.nicovideo.jp/watch/so0"],
+    ["ss0", "https://www.nicovideo.jp/shorts/ss0"],
+  ])("%sを渡した場合、%sを返す", (videoId, expected) => {
+    expect(createVideoUrl(videoId)).toBe(expected);
   });
 });
 

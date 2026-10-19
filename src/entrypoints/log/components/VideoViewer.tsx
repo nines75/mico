@@ -10,6 +10,7 @@ import type { Merge, OmitIndexSignature } from "type-fest";
 import type { Video } from "@/types/api/video.types";
 import { Select } from "./Select";
 import { useLogStore } from "../store";
+import { createVideoUrl } from "@/utils/util";
 
 export type Row = Merge<FilteredVideo, { video: OmitIndexSignature<Video> }>;
 
@@ -65,11 +66,7 @@ export function VideoViewer() {
           if (videoId === null || videoId === undefined) return null;
 
           return (
-            <a
-              href={`https://www.nicovideo.jp/${videoId.startsWith("ss") ? "shorts" : "watch"}/${videoId}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={createVideoUrl(videoId)} target="_blank" rel="noreferrer">
               {videoId}
             </a>
           );

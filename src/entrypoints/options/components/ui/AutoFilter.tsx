@@ -3,7 +3,7 @@ import { BrushCleaning, Pencil, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import type { VListHandle } from "virtua";
 import { VList } from "virtua";
-import { escapeNewline } from "@/utils/util";
+import { createVideoUrl, escapeNewline } from "@/utils/util";
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import type { Settings } from "@/types/storage/settings.types";
@@ -186,18 +186,53 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
           <X size={30} />
         </button>
         <span>
-          {pattern.startsWith("nvc:") ? (
-            <>
-              <span className="prefix-nvc">nvc:</span>
-              {pattern.slice(4)}
-            </>
-          ) : (
-            pattern
-          )}
+          {(() => {
+            if (rule.target?.videoId === true) {
+              return (
+                <a
+                  href={createVideoUrl(pattern)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {pattern}
+                </a>
+              );
+            }
+            if (rule.target?.videoOwnerId === true) {
+              return (
+                <a
+                  href={
+                    pattern.startsWith("ch")
+                      ? `https://ch.nicovideo.jp/${pattern}`
+                      : `https://www.nicovideo.jp/user/${pattern}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {pattern}
+                </a>
+              );
+            }
+
+            if (pattern.startsWith("nvc:")) {
+              return (
+                <>
+                  <span className="prefix-nvc">nvc:</span>
+                  {pattern.slice(4)}
+                </>
+              );
+            }
+
+            return pattern;
+          })()}
         </span>
         {rule.enable?.videoIds?.flat().map((videoId) => (
           <span key={videoId} title="このルールが有効化される動画ID">
-            ({videoId})
+            (
+            <a href={createVideoUrl(videoId)} target="_blank" rel="noreferrer">
+              {videoId}
+            </a>
+            )
           </span>
         ))}
       </div>
