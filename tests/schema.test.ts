@@ -6,6 +6,7 @@ import { searchApiSchema } from "@/types/api/search-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
 import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
+import { watchLazyApiSchema } from "@/types/api/watch-lazy-api.types";
 
 const WATCH_URL = "https://www.nicovideo.jp/watch/sm9";
 const RANKING_URL = "https://www.nicovideo.jp/ranking/genre/";
@@ -21,6 +22,13 @@ for (const { title, url, responseUrl, method, schema, selector } of [
     responseUrl: "https://public.nvcomment.nicovideo.jp/v1/threads",
     method: "POST",
     schema: commentApiSchema,
+  },
+  {
+    title: "WatchLazyApi",
+    url: WATCH_URL,
+    responseUrl: "https://nvapi.nicovideo.jp/v4/watch/lazy",
+    method: "POST",
+    schema: watchLazyApiSchema,
   },
   {
     title: "SearchPlaylistApi",

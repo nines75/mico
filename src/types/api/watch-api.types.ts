@@ -3,55 +3,36 @@
 // -------------------------------------------------------------------------------------------
 
 import { z } from "@/utils/zod";
-import { videoSchema } from "./video.types";
 
 export const watchApiSchema = z.looseObject({
   data: z.looseObject({
-    metadata: z.looseObject({
-      jsonLds: z.array(
-        z.looseObject({
-          author: z
-            .looseObject({
-              name: z.string(),
-              url: z.string(),
-            })
-            .exactOptional(), // jsonLds配列の中でauthorプロパティが存在するのは一部
-        }),
-      ),
-    }),
     response: z.looseObject({
-      series: z
-        .looseObject({
-          id: z.number().int(),
+      $watchV4: z.looseObject({
+        data: z.looseObject({
+          tags: z.looseObject({
+            items: z.array(
+              z.looseObject({
+                name: z.string(),
+              }),
+            ),
+          }),
           video: z.looseObject({
-            next: videoSchema.nullable(), // シリーズの次の動画がなければnull
+            id: z.string(),
+            title: z.string(),
+            duration: z.number().int(),
           }),
-        })
-        .nullable(), // シリーズに登録されていなければnull
-      tag: z.looseObject({
-        items: z.array(
-          z.looseObject({
-            name: z.string(),
+          metadata: z.looseObject({
+            jsonLd: z.looseObject({
+              owner: z
+                .looseObject({
+                  id: z.string(),
+                  name: z.string(),
+                })
+                .nullable(), // ユーザーが退会済みならnull
+            }),
           }),
-        ),
+        }),
       }),
-      video: z.looseObject({
-        id: z.string(),
-        title: z.string(),
-        duration: z.number().int(),
-      }),
-      channel: z
-        .looseObject({
-          id: z.string(),
-          name: z.string(),
-        })
-        .nullable(), // チャンネル動画でなければnull
-      owner: z
-        .looseObject({
-          id: z.number().int(),
-          nickname: z.string(),
-        })
-        .nullable(), // チャンネル動画やユーザーが退会済みならnull
     }),
   }),
 });

@@ -119,9 +119,8 @@ async function onClickNgOwner() {
   const ownerId = usePopupStore.getState().log?.tab?.ownerId;
   const ownerName = usePopupStore.getState().log?.tab?.ownerName;
 
-  // メインリクエストからユーザ名を抽出する場合はユーザーが削除済みでも存在するためどちらも弾く
   if (ownerId === undefined || ownerName === undefined) {
-    alert("NG登録に失敗しました");
+    alert("投稿者が存在しません");
     return;
   }
 

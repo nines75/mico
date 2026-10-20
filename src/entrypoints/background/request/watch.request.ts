@@ -1,6 +1,4 @@
-import { filterVideo } from "../video-filter/filter-video";
 import { loadSettings } from "@/utils/storage";
-import type { Settings } from "@/types/storage/settings.types";
 import { filterResponse, spaFilter } from "./request";
 import type { WatchApi } from "@/types/api/watch-api.types";
 import { watchApiSchema } from "@/types/api/watch-api.types";
@@ -56,49 +54,23 @@ export function watchRequest(
   });
 }
 
-function watchApiFilter(watchApi: WatchApi, settings: Settings): Tab {
+function watchApiFilter(watchApi: WatchApi): Tab {
   const response = watchApi.data.response;
-  const metadata = watchApi.data.metadata;
 
-  const seriesNext = (() => {
-    const video = response.series?.video;
-    if (video === undefined) return;
-
-    const next = video.next;
-    if (next === null) return;
-
-    const data = { items: [next] };
-    filterVideo(data, (item) => item, settings);
-
-    if (data.items.length === 0) {
-      video.next = null;
-    }
-
-    return next;
-  })();
-
-  const ownerId = (
-    response.owner?.id ?? // 通常のユーザー
-    response.channel?.id ?? // チャンネル
-    // ユーザーが退会済み
-    metadata.jsonLds[0]?.author?.url.match(
-      /^https:\/\/www\.nicovideo\.jp\/user\/(\d+)$/, // 誤った値が抽出されないように完全なURLでチェックする
-    )?.[1]
-  )?.toString();
-  const ownerName =
-    response.owner?.nickname ??
-    response.channel?.name ??
-    metadata.jsonLds[0]?.author?.name;
-  const tags = response.tag.items.map(({ name }) => name);
+  const video = response.$watchV4.data.video;
+  const owner = response.$watchV4.data.metadata.jsonLd.owner;
+  const tags = response.$watchV4.data.tags.items.map(({ name }) => name);
 
   return {
-    seriesNext,
-    seriesId: response.series?.id.toString(),
-    videoId: response.video.id,
-    title: response.video.title,
-    duration: response.video.duration,
-    ownerId,
-    ownerName,
+    // 前回のリクエストの値を上書き
+    seriesNext: undefined,
+    seriesId: undefined,
+
+    videoId: video.id,
+    title: video.title,
+    duration: video.duration,
+    ownerId: owner?.id,
+    ownerName: owner?.name,
     tags,
   };
 }

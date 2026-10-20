@@ -15,6 +15,7 @@ import { proxyService } from "@/utils/proxy-service";
 import { getLogIdViaMessage, reloadViaMessage } from "@/utils/messaging";
 import { addRuleFromUrl } from "./context-menu";
 import { saveBackup } from "@/utils/storage";
+import { watchLazyRequest } from "./request/watch-lazy.request";
 
 export default defineBackground(() => {
   // リクエスト監視(メインフレーム,xhr)
@@ -53,6 +54,11 @@ export default defineBackground(() => {
       // コメント
       urls: ["https://public.nvcomment.nicovideo.jp/v1/threads*"],
       callback: commentRequest,
+    },
+    {
+      // 視聴ページ(遅延)
+      urls: ["https://nvapi.nicovideo.jp/v4/watch/lazy/*"],
+      callback: watchLazyRequest,
     },
     {
       // 視聴ページのレコメンド
