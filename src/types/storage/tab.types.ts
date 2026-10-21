@@ -3,6 +3,8 @@ import type { Video } from "../api/video.types";
 export interface Tab {
   seriesNext: Video | undefined;
 
+  watchLazyDone: boolean;
+
   playbackTime?: number;
   duration: number;
 

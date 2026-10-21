@@ -7,11 +7,13 @@ import {
   watchLazyApiSchema,
   type WatchLazyApi,
 } from "@/types/api/watch-lazy-api.types";
+import type { Tab } from "@/types/storage/tab.types";
 
 export function watchLazyRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
   filterResponse(details, "POST", async (filter, encoder, buf) => {
+    const tabId = details.tabId;
     const settings = await loadSettings();
     const result = spaFilter(
       details,
@@ -20,11 +22,18 @@ export function watchLazyRequest(
       watchLazyApiSchema,
       watchLazyApiFilter,
     );
-    if (result === undefined) return true;
+    if (result === undefined) {
+      // バリデーションに失敗した場合も後続のリクエストを止めない
+      await setTab({ watchLazyDone: true }, tabId);
+      notifyDone(tabId);
+
+      return true;
+    }
 
     const { filteredBuf, filteringResult } = result;
 
-    await setTab(filteringResult, details.tabId); // 以降のリクエストで使用するためフィルタを切断する前に保存する
+    await setTab(filteringResult, tabId); // 以降のリクエストで使用するためフィルタを切断する前に保存する
+    notifyDone(tabId);
 
     filter.write(encoder.encode(filteredBuf));
     filter.disconnect();
@@ -33,7 +42,10 @@ export function watchLazyRequest(
   });
 }
 
-function watchLazyApiFilter(watchLazyApi: WatchLazyApi, settings: Settings) {
+function watchLazyApiFilter(
+  watchLazyApi: WatchLazyApi,
+  settings: Settings,
+): Partial<Tab> {
   const response = watchLazyApi.data;
 
   const seriesNext = (() => {
@@ -56,5 +68,12 @@ function watchLazyApiFilter(watchLazyApi: WatchLazyApi, settings: Settings) {
   return {
     seriesNext,
     seriesId: response.series?.id.toString(),
+    watchLazyDone: true,
   };
+}
+
+function notifyDone(tabId: number) {
+  const channel = new BroadcastChannel(`watch-lazy-done-${tabId}`);
+  channel.postMessage("");
+  channel.close();
 }

@@ -65,6 +65,7 @@ function watchApiFilter(watchApi: WatchApi): Tab {
     // 前回のリクエストの値を上書き
     seriesNext: undefined,
     seriesId: undefined,
+    watchLazyDone: false,
 
     videoId: video.id,
     title: video.title,

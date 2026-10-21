@@ -18,7 +18,7 @@ export default function commentRequest(
     const tabId = details.tabId;
     const [settings, tab, { url }] = await Promise.all([
       loadSettings(),
-      getTab(tabId),
+      waitForTab(tabId),
       browser.tabs.get(tabId),
     ]);
 
@@ -74,6 +74,28 @@ export default function commentRequest(
 
     return false;
   });
+}
+
+async function waitForTab(tabId: number) {
+  const { promise, resolve } = Promise.withResolvers();
+  const channel = new BroadcastChannel(`watch-lazy-done-${tabId}`);
+  channel.addEventListener("message", resolve);
+
+  let tab: Tab | undefined;
+  try {
+    tab = await getTab(tabId);
+
+    // undefinedの場合はメインリクエストのバリデーションに失敗しているため何もしない
+    if (tab?.watchLazyDone === false) {
+      await promise; // 遅延リクエストが終わるまで待つ
+      tab = await getTab(tabId);
+    }
+  } finally {
+    // チャンネルは自動で閉じられない
+    channel.close();
+  }
+
+  return tab;
 }
 
 async function restorePlaybackTime(tabId: number, tab: Tab) {
