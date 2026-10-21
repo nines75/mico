@@ -100,7 +100,7 @@ async function onClickNgVideo() {
   const title = usePopupStore.getState().log?.tab?.title;
 
   if (videoId === undefined || title === undefined) {
-    alert("NG登録に失敗しました");
+    await notify("NG登録に失敗しました");
     return;
   }
 
@@ -120,7 +120,7 @@ async function onClickNgOwner() {
   const ownerName = usePopupStore.getState().log?.tab?.ownerName;
 
   if (ownerId === undefined || ownerName === undefined) {
-    alert("投稿者が存在しません");
+    await notify("投稿者が存在しません");
     return;
   }
 
