@@ -7,6 +7,9 @@ import { watchApiSchema } from "@/types/api/watch-api.types";
 import type { z } from "@/utils/zod";
 import { test, expect } from "@playwright/test";
 import { watchLazyApiSchema } from "@/types/api/watch-lazy-api.types";
+import { recommendApiSchema } from "@/types/api/recommend-api.types";
+
+const isCi = process.env.CI === "true";
 
 const WATCH_URL = "https://www.nicovideo.jp/watch/sm9";
 const RANKING_URL = "https://www.nicovideo.jp/ranking/genre/";
@@ -38,6 +41,17 @@ for (const { title, url, responseUrl, method, schema, selector } of [
     schema: searchPlaylistApiSchema,
     selector: "[data-anchor-area='main'][tabindex]",
   },
+  ...(isCi
+    ? []
+    : ([
+        {
+          title: "RecommendApi",
+          url: WATCH_URL,
+          responseUrl: "https://nvapi.nicovideo.jp/v1/recommend/items",
+          method: "POST",
+          schema: recommendApiSchema,
+        },
+      ] as const)),
 ] satisfies {
   title: string;
   url: string;
