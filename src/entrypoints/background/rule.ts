@@ -44,6 +44,7 @@ interface AutoRuleOnly {
   pattern: string; // 正規表現には対応しない
   source: "commentMenu" | "strict" | "contextMenu" | "popup" | "complement";
   context?: string;
+  videoId?: string;
   memo?: string;
 }
 

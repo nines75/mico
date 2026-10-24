@@ -94,6 +94,7 @@ function onClickNgUser(videoOnly = false) {
     await proxy.addAutoRule([
       {
         pattern: comment.userId,
+        videoId: comment.$videoId,
         context: `comment-body${count > 1 ? `(${count}回)` : ""}: ${comment.body}`,
         source: "commentMenu",
         target: { commentUserId: true },

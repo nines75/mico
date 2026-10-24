@@ -61,6 +61,7 @@ export default function commentRequest(
             return {
               pattern: data.userId,
               context: data.context,
+              videoId: tab.videoId,
               source: "strict",
               target: { commentUserId: true },
               ...(data.ruleId !== undefined && { id: data.ruleId }),

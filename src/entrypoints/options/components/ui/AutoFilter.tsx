@@ -297,7 +297,19 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
             );
           })}
         {rule.source !== undefined && (
-          <Detail name="ソース">{rule.source}</Detail>
+          <Detail name="ソース">
+            {rule.videoId === undefined ? (
+              rule.source
+            ) : (
+              <a
+                href={createVideoUrl(rule.videoId)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {rule.source}
+              </a>
+            )}
+          </Detail>
         )}
         {rule.context !== undefined && (
           <Detail name="コンテキスト">{escapeNewline(rule.context)}</Detail>
