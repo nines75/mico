@@ -76,16 +76,25 @@ function appendButton() {
 function onClickNgUser(videoOnly = false) {
   return async () => {
     const settings = await loadSettings();
+
+    const logId = getLogId();
     const comment = await proxy.getMenuComment();
-    if (comment?.$videoId === undefined) {
+    if (logId === undefined || comment?.$videoId === undefined) {
       await proxy.notify("NG登録に失敗しました");
       return;
     }
 
+    const log = await proxy.getLog(logId);
+    const count =
+      log?.comment?.allComments.filter(
+        (target) =>
+          target.userId === comment.userId && target.body === comment.body,
+      ).length ?? 0;
+
     await proxy.addAutoRule([
       {
         pattern: comment.userId,
-        context: `comment-body: ${comment.body}`,
+        context: `comment-body${count > 1 ? `(${count}回)` : ""}: ${comment.body}`,
         source: "commentMenu",
         target: { commentUserId: true },
         ...(videoOnly && { enable: { videoIds: [[comment.$videoId]] } }),
