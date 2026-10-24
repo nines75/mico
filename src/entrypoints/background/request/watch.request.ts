@@ -32,7 +32,7 @@ export function watchRequest(
     );
     if (result === undefined) return true;
 
-    const { filteredBuf, filteringResult: tab } = result;
+    const { filteringResult: tab } = result;
 
     tab.logId = logId;
 
@@ -41,10 +41,12 @@ export function watchRequest(
       setLog({ tab }, logId, tabId),
     ]);
 
-    filter.write(encoder.encode(filteredBuf));
+    // このリクエストではフィルタリングを行わないためtrueを返しキャンセルするべきだが、
+    // ログIDのマウントはフィルタ切断後に行う必要があるため、キャンセルせずにここで切断する
+    filter.write(encoder.encode(buf));
     filter.disconnect();
 
-    // main_frameでは以前のログIDがマウントされていることはないため、必要なときだけマウントする
+    // main_frameでは以前のログIDがマウントされていることはないため、xhrと異なりフィルタリングしたときのみマウントする
     // そもそもmain_frameではフィルタを切断するまでDOM構築が終わらないため、切断前はマウントできない
     if (details.type === "main_frame") {
       await mountLogId(logId, tabId);
