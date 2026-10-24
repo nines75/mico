@@ -22,7 +22,6 @@ export default function Support() {
               className="button button-support"
               href={url}
               target="_blank"
-              rel="noreferrer"
             >
               {icon}
               {name}

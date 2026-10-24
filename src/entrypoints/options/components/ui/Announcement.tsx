@@ -29,7 +29,6 @@ export function Announcement() {
         className="announcement-link"
         href={`https://github.com/nines75/mico/releases/tag/v${majorVersion}.0.0`}
         target="_blank"
-        rel="noreferrer"
       >
         リリースノート
       </a>

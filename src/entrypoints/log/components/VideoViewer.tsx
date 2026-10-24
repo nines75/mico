@@ -66,7 +66,7 @@ export function VideoViewer() {
           if (videoId === null || videoId === undefined) return null;
 
           return (
-            <a href={createVideoUrl(videoId)} target="_blank" rel="noreferrer">
+            <a href={createVideoUrl(videoId)} target="_blank">
               {videoId}
             </a>
           );

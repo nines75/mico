@@ -189,11 +189,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
           {(() => {
             if (rule.target?.videoId === true) {
               return (
-                <a
-                  href={createVideoUrl(pattern)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={createVideoUrl(pattern)} target="_blank">
                   {pattern}
                 </a>
               );
@@ -207,7 +203,6 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
                       : `https://www.nicovideo.jp/user/${pattern}`
                   }
                   target="_blank"
-                  rel="noreferrer"
                 >
                   {pattern}
                 </a>
@@ -229,7 +224,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
         {rule.enable?.videoIds?.flat().map((videoId) => (
           <span key={videoId} title="このルールが有効化される動画ID">
             (
-            <a href={createVideoUrl(videoId)} target="_blank" rel="noreferrer">
+            <a href={createVideoUrl(videoId)} target="_blank">
               {videoId}
             </a>
             )
@@ -301,11 +296,7 @@ function Rule({ rule, isSelected, edit }: RuleProps) {
             {rule.videoId === undefined ? (
               rule.source
             ) : (
-              <a
-                href={createVideoUrl(rule.videoId)}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={createVideoUrl(rule.videoId)} target="_blank">
                 {rule.source}
               </a>
             )}
