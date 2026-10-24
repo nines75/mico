@@ -8,7 +8,7 @@ export function filterResponse(
   onStop: (
     filter: browser.webRequest.StreamFilter,
     encoder: TextEncoder,
-    buf: string,
+    body: string,
   ) => Promise<boolean>,
 ) {
   if (details.method !== method) return;
@@ -17,15 +17,15 @@ export function filterResponse(
   const decoder = new TextDecoder("utf-8");
   const encoder = new TextEncoder();
 
-  let buf = "";
+  let body = "";
   filter.ondata = (event) => {
-    buf += decoder.decode(event.data, { stream: true });
+    body += decoder.decode(event.data, { stream: true });
   };
 
   filter.onstop = catchAsync(async () => {
-    const shouldCancel = await onStop(filter, encoder, buf);
+    const shouldCancel = await onStop(filter, encoder, body);
     if (shouldCancel) {
-      filter.write(encoder.encode(buf));
+      filter.write(encoder.encode(body));
       filter.disconnect();
     }
   });
@@ -33,14 +33,14 @@ export function filterResponse(
 
 export function spaFilter<T, U>(
   details: browser.webRequest._OnBeforeRequestDetails,
-  buf: string,
+  body: string,
   settings: Settings,
   schema: z.ZodType<T>,
   filter: (data: T, settings: Settings) => U,
 ) {
   if (details.type === "main_frame") {
     const parser = new DOMParser();
-    const html = parser.parseFromString(buf, "text/html");
+    const html = parser.parseFromString(body, "text/html");
 
     const meta = html.querySelector("meta[name='server-response']");
     const content = meta?.getAttribute("content");
@@ -52,20 +52,20 @@ export function spaFilter<T, U>(
     meta?.setAttribute("content", JSON.stringify(data));
 
     return {
-      filteredBuf: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
+      filteredBody: `<!DOCTYPE html>${html.documentElement.outerHTML}`,
       filteringResult,
     };
   }
 
   if (details.type === "xmlhttprequest") {
-    const data = safeParseJson(buf, schema);
+    const data = safeParseJson(body, schema);
     if (data === undefined) return;
 
     // filter()ではdataを変更するため先に呼び出す
     const filteringResult = filter(data, settings);
 
     return {
-      filteredBuf: JSON.stringify(data),
+      filteredBody: JSON.stringify(data),
       filteringResult,
     };
   }

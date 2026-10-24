@@ -8,10 +8,10 @@ import { safeParseJson } from "@/utils/util";
 export function searchPlaylistRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "GET", async (filter, encoder, buf) => {
+  filterResponse(details, "GET", async (filter, encoder, body) => {
     const settings = await loadSettings();
     const playlistApi: SearchPlaylistApi | undefined = safeParseJson(
-      buf,
+      body,
       searchPlaylistApiSchema,
     );
     if (playlistApi === undefined) return true;

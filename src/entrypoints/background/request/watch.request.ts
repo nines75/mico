@@ -10,7 +10,7 @@ import { mountLogId } from "@/utils/messaging";
 export function watchRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "GET", async (filter, encoder, buf) => {
+  filterResponse(details, "GET", async (filter, encoder, body) => {
     const tabId = details.tabId;
 
     // xhrでは以前のログIDが残っている可能性があるため、
@@ -25,7 +25,7 @@ export function watchRequest(
     const settings = await loadSettings();
     const result = spaFilter(
       details,
-      buf,
+      body,
       settings,
       watchApiSchema,
       watchApiFilter,
@@ -43,7 +43,7 @@ export function watchRequest(
 
     // このリクエストではフィルタリングを行わないためtrueを返しキャンセルするべきだが、
     // ログIDのマウントはフィルタ切断後に行う必要があるため、キャンセルせずにここで切断する
-    filter.write(encoder.encode(buf));
+    filter.write(encoder.encode(body));
     filter.disconnect();
 
     // main_frameでは以前のログIDがマウントされていることはないため、xhrと異なりフィルタリングしたときのみマウントする

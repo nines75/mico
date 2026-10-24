@@ -12,12 +12,12 @@ import type { Tab } from "@/types/storage/tab.types";
 export function watchLazyRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "POST", async (filter, encoder, buf) => {
+  filterResponse(details, "POST", async (filter, encoder, body) => {
     const tabId = details.tabId;
     const settings = await loadSettings();
     const result = spaFilter(
       details,
-      buf,
+      body,
       settings,
       watchLazyApiSchema,
       watchLazyApiFilter,
@@ -30,12 +30,12 @@ export function watchLazyRequest(
       return true;
     }
 
-    const { filteredBuf, filteringResult } = result;
+    const { filteredBody, filteringResult } = result;
 
     await setTab(filteringResult, tabId); // 以降のリクエストで使用するためフィルタを切断する前に保存する
     notifyDone(tabId);
 
-    filter.write(encoder.encode(filteredBuf));
+    filter.write(encoder.encode(filteredBody));
     filter.disconnect();
 
     return false;

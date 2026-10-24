@@ -15,7 +15,7 @@ import { mountLogId } from "@/utils/messaging";
 export function rankingRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "GET", async (filter, encoder, buf) => {
+  filterResponse(details, "GET", async (filter, encoder, body) => {
     const tabId = details.tabId;
     const logId = crypto.randomUUID();
     if (details.type === "xmlhttprequest") {
@@ -27,17 +27,17 @@ export function rankingRequest(
     const settings = await loadSettings();
     const result = spaFilter(
       details,
-      buf,
+      body,
       settings,
       rankingApiSchema,
       rankingApiFilter,
     );
     if (result === undefined) return true;
 
-    const { filteredBuf, filteringResult } = result;
+    const { filteredBody, filteringResult } = result;
     if (filteringResult === undefined) return true;
 
-    filter.write(encoder.encode(filteredBuf));
+    filter.write(encoder.encode(filteredBody));
     filter.disconnect();
 
     const tasks: Promise<void>[] = [

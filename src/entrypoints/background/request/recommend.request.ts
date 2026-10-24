@@ -12,14 +12,14 @@ import { addContextToVideoRule } from "@/utils/storage-write";
 export function recommendRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "POST", async (filter, encoder, buf) => {
+  filterResponse(details, "POST", async (filter, encoder, body) => {
     const tabId = details.tabId;
     const [settings, tab] = await Promise.all([loadSettings(), getTab(tabId)]);
     const logId = tab?.logId;
     if (logId === undefined) return true;
 
     const recommendApi: RecommendApi | undefined = safeParseJson(
-      buf,
+      body,
       recommendApiSchema,
     );
     if (recommendApi === undefined) return true;

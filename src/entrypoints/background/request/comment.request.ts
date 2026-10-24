@@ -14,7 +14,7 @@ import { sendMessage } from "@/utils/messaging";
 export default function commentRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
-  filterResponse(details, "POST", async (filter, encoder, buf) => {
+  filterResponse(details, "POST", async (filter, encoder, body) => {
     const tabId = details.tabId;
     const [settings, tab, { url }] = await Promise.all([
       loadSettings(),
@@ -32,7 +32,7 @@ export default function commentRequest(
     if (logId === undefined) return true;
 
     const commentApi: CommentApi | undefined = safeParseJson(
-      buf,
+      body,
       commentApiSchema,
     );
     if (commentApi === undefined) return true;
