@@ -63,7 +63,7 @@ export function createCountLog(result: FilteringResult) {
         (filter) => filter.getFilteredComments().length,
       ),
     ),
-    loadedComment: result.loadedCommentCount,
+    loadedComment: result.allComments.length,
     enabled: calc("getEnabledCount"),
     disabled: calc("getDisabledCount"),
     removed: filters.commandsFilter.getRemovedCount(),

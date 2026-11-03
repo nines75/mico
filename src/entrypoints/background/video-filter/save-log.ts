@@ -46,6 +46,6 @@ function createCountLog(result: FilteringResult) {
         (filter) => filter.getFilteredVideos().length,
       ),
     ),
-    loadedVideo: result.loadedVideoCount,
+    loadedVideo: result.allVideos.length,
   } satisfies Count;
 }

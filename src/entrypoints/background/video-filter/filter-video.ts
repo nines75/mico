@@ -21,7 +21,6 @@ export interface FilteringResult {
     ownerNameFilter: OwnerNameFilter;
     titleFilter: TitleFilter;
   };
-  loadedVideoCount: number;
   allVideos: Video[];
 }
 
@@ -32,10 +31,6 @@ export function filterVideo<T>(
   type?: "recommend" | "seriesNext",
 ): FilteringResult | undefined {
   if (!settings.enableVideoFilter) return;
-
-  const loadedVideoCount = data.items
-    .map((item) => pickVideo(item))
-    .filter((video) => video !== undefined).length;
 
   const allVideos = data.items
     .map((item) => pickVideo(item))
@@ -100,7 +95,6 @@ export function filterVideo<T>(
 
   return {
     filters,
-    loadedVideoCount,
     allVideos,
   };
 }

@@ -25,7 +25,6 @@ export interface FilteringResult {
     commandsFilter: CommandsFilter;
     bodyFilter: BodyFilter;
   };
-  loadedCommentCount: number;
   strictData: StrictData[];
   allComments: PartialComment[];
 }
@@ -40,12 +39,6 @@ export function filterComment(
   // -------------------------------------------------------------------------------------------
   // フィルタリングと関係ない処理
   // -------------------------------------------------------------------------------------------
-
-  // 動画の総コメント数を取得
-  const loadedCommentCount = threads.reduce(
-    (sum, thread) => sum + thread.comments.length,
-    0,
-  );
 
   // 全てのコメントを保存
   const allComments = threads.flatMap((thread) =>
@@ -122,7 +115,6 @@ export function filterComment(
 
   return {
     filters,
-    loadedCommentCount,
     strictData,
     allComments,
   };
