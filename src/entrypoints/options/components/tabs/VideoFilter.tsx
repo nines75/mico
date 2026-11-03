@@ -53,6 +53,13 @@ const config = [
           min: 0,
         },
       },
+      {
+        type: "checkbox",
+        id: "enableSeriesNextFilter",
+        label: "次のシリーズ動画のフィルタリングを有効にする",
+        details:
+          "レコメンド最上部に表示される、次のシリーズ動画をフィルタリング対象にします。",
+      },
     ],
   },
 ] satisfies SectionsItem;

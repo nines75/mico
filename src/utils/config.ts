@@ -116,6 +116,7 @@ export const defaultSettings: Settings = {
   enableShortsFilter: false,
   enableViewCountFilter: false,
   viewCountFilterThreshold: 1000,
+  enableSeriesNextFilter: false,
 
   // -------------------------------------------------------------------------------------------
   // 高度な機能

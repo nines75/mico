@@ -68,6 +68,7 @@ export interface Settings {
   enableShortsFilter: boolean;
   enableViewCountFilter: boolean;
   viewCountFilterThreshold: number;
+  enableSeriesNextFilter: boolean;
 
   // -------------------------------------------------------------------------------------------
   // 高度な機能

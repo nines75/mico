@@ -58,7 +58,7 @@ function watchLazyApiFilter(
 
   const log = (() => {
     const video = series?.video;
-    if (video === undefined) return;
+    if (video === undefined || !settings.enableSeriesNextFilter) return;
 
     const next = video.next;
     if (next === null) return;
