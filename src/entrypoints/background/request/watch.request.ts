@@ -65,7 +65,6 @@ function watchApiFilter(watchApi: WatchApi): Tab {
 
   return {
     // 前回のリクエストの値を上書き
-    seriesNext: undefined,
     seriesId: undefined,
     watchLazyDone: false,
 

@@ -24,25 +24,6 @@ export function recommendRequest(
     );
     if (recommendApi === undefined) return true;
 
-    // シリーズの次の動画を追加
-    const seriesNext = tab?.seriesNext;
-    if (seriesNext !== undefined) {
-      const videoId = seriesNext.id;
-
-      if (
-        recommendApi.data.recommendResults[0]?.items.some(
-          (item) => item.contentType === "video" && item.id === videoId,
-        ) === false
-      ) {
-        recommendApi.data.recommendResults[0].items.push({
-          id: videoId,
-          content: seriesNext,
-          contentType: "video",
-          recommendType: "recommend", // スキーマには定義していないが、プロパティが欠けるのは望ましくないため追加
-        });
-      }
-    }
-
     const results: FilteringResult[] = [];
     for (const data of recommendApi.data.recommendResults) {
       const result = filterVideo(

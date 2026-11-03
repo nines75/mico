@@ -40,7 +40,6 @@ export function mockThread(
 }
 
 export const testTab = {
-  seriesNext: undefined,
   watchLazyDone: false,
   duration: 1,
   videoId: "1",

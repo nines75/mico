@@ -1,20 +1,24 @@
 import type { Settings } from "@/types/storage/settings.types";
-import { setTab } from "@/utils/db";
+import { getTab, setTab } from "@/utils/db";
 import { loadSettings } from "@/utils/storage";
-import { filterVideo } from "../video-filter/filter-video";
+import {
+  filterVideo,
+  type FilteringResult,
+} from "../video-filter/filter-video";
 import { filterResponse, spaFilter } from "./request";
 import {
   watchLazyApiSchema,
   type WatchLazyApi,
 } from "@/types/api/watch-lazy-api.types";
 import type { Tab } from "@/types/storage/tab.types";
+import { saveLog } from "../video-filter/save-log";
 
 export function watchLazyRequest(
   details: browser.webRequest._OnBeforeRequestDetails,
 ) {
   filterResponse(details, "POST", async (filter, encoder, body) => {
     const tabId = details.tabId;
-    const settings = await loadSettings();
+    const [settings, tab] = await Promise.all([loadSettings(), getTab(tabId)]);
     const result = spaFilter(
       details,
       body,
@@ -32,11 +36,15 @@ export function watchLazyRequest(
 
     const { filteredBody, filteringResult } = result;
 
-    await setTab(filteringResult, tabId); // 以降のリクエストで使用するためフィルタを切断する前に保存する
+    await setTab(filteringResult.tab, tabId); // 以降のリクエストで使用するためフィルタを切断する前に保存する
     notifyDone(tabId);
 
     filter.write(encoder.encode(filteredBody));
     filter.disconnect();
+
+    if (filteringResult.log !== undefined && tab?.logId !== undefined) {
+      await saveLog(filteringResult.log, tab.logId, tabId, false);
+    }
 
     return false;
   });
@@ -45,30 +53,33 @@ export function watchLazyRequest(
 function watchLazyApiFilter(
   watchLazyApi: WatchLazyApi,
   settings: Settings,
-): Partial<Tab> {
-  const response = watchLazyApi.data;
+): { log: FilteringResult | undefined; tab: Partial<Tab> } {
+  const series = watchLazyApi.data.series;
 
-  const seriesNext = (() => {
-    const video = response.series?.video;
+  const log = (() => {
+    const video = series?.video;
     if (video === undefined) return;
 
     const next = video.next;
     if (next === null) return;
 
     const data = { items: [next] };
-    filterVideo(data, (item) => item, settings, "seriesNext");
+    const result = filterVideo(data, (item) => item, settings, "seriesNext");
 
+    // 実際に非表示にする
     if (data.items.length === 0) {
       video.next = null;
     }
 
-    return next;
+    return result;
   })();
 
   return {
-    seriesNext,
-    seriesId: response.series?.id.toString(),
-    watchLazyDone: true,
+    log,
+    tab: {
+      seriesId: series?.id.toString(),
+      watchLazyDone: true,
+    },
   };
 }
 
