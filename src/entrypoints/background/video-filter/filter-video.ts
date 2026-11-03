@@ -29,7 +29,7 @@ export function filterVideo<T>(
   data: ApplyParams<T>["data"],
   pickVideo: ApplyParams<T>["pickVideo"],
   settings: Settings,
-  forRecommendApi = false,
+  type?: "recommend" | "seriesNext",
 ): FilteringResult | undefined {
   if (!settings.enableVideoFilter) return;
 
@@ -44,6 +44,8 @@ export function filterVideo<T>(
   const shorts = data.items.filter(
     (item) => pickVideo(item)?.contentType === "short",
   );
+
+  const forRecommendApi = type === "recommend" || type === "seriesNext";
 
   const idFilter = new IdFilter(settings);
   const ownerIdFilter = new OwnerIdFilter(settings);
@@ -70,7 +72,7 @@ export function filterVideo<T>(
   // レコメンドAPIのショート動画は一つでもレスポンスから除去するとすべてのショート動画がレンダリングされなくなる
   // これを回避するために一度除去したあとisMutedプロパティをtrueにして再度追加する
   if (
-    forRecommendApi &&
+    type === "recommend" &&
     !settings.enableShortsFilter &&
     // すべてのショート動画がフィルタリングされたときisMutedプロパティをtrueにすると枠が残ってしまうためここで弾く
     data.items.some((item) => pickVideo(item)?.contentType === "short")

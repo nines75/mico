@@ -51,7 +51,7 @@ export function recommendRequest(
           if (item.contentType === "video") return item.content;
         },
         settings,
-        true,
+        "recommend",
       );
       if (result === undefined) continue;
 

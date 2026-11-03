@@ -56,7 +56,7 @@ function watchLazyApiFilter(
     if (next === null) return;
 
     const data = { items: [next] };
-    filterVideo(data, (item) => item, settings);
+    filterVideo(data, (item) => item, settings, "seriesNext");
 
     if (data.items.length === 0) {
       video.next = null;
