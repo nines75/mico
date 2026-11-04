@@ -39,6 +39,11 @@ const config = [
       },
       {
         type: "checkbox",
+        id: "enableVposFilter",
+        label: "動画の長さを超える位置に投稿されたコメントを非表示にする",
+      },
+      {
+        type: "checkbox",
         id: "enableScoreFilter",
         label: "スコアによるフィルタリングを有効にする",
         input: {
@@ -46,11 +51,6 @@ const config = [
           label: "以下の場合にフィルタリング",
           max: 0,
         },
-      },
-      {
-        type: "checkbox",
-        id: "enableVposFilter",
-        label: "動画の長さを超える位置に投稿されたコメントを非表示にする",
       },
       {
         type: "checkbox",

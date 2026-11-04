@@ -92,9 +92,9 @@ export const defaultSettings: Settings = {
   // フィルタリング
   enableEasyCommentFilter: false,
   enableCommentAssistFilter: false,
+  enableVposFilter: false,
   enableScoreFilter: false,
   scoreFilterThreshold: -4800,
-  enableVposFilter: false,
   ignoreMyComments: true,
   ignoreByNicoru: false,
   ignoreByNicoruThreshold: 30,
@@ -111,12 +111,12 @@ export const defaultSettings: Settings = {
   enableVideoFilter: true,
 
   // フィルタリング
-  hideCommentPreview: false,
   enablePaidFilter: false,
   enableShortsFilter: false,
+  hideCommentPreview: false,
+  enableSeriesNextFilter: false,
   enableViewCountFilter: false,
   viewCountFilterThreshold: 1000,
-  enableSeriesNextFilter: false,
 
   // -------------------------------------------------------------------------------------------
   // 高度な機能

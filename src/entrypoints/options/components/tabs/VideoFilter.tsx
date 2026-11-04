@@ -28,12 +28,6 @@ const config = [
     items: [
       {
         type: "checkbox",
-        id: "hideCommentPreview",
-        label: "コメントプレビューを非表示にする",
-        url: "https://github.com/nines75/mico/wiki/用語集#コメントプレビュー",
-      },
-      {
-        type: "checkbox",
         id: "enablePaidFilter",
         label: "有料動画を非表示にする",
       },
@@ -45,6 +39,19 @@ const config = [
       },
       {
         type: "checkbox",
+        id: "hideCommentPreview",
+        label: "コメントプレビューを非表示にする",
+        url: "https://github.com/nines75/mico/wiki/用語集#コメントプレビュー",
+      },
+      {
+        type: "checkbox",
+        id: "enableSeriesNextFilter",
+        label: "次のシリーズ動画のフィルタリングを有効にする",
+        details:
+          "レコメンド最上部に表示される、次のシリーズ動画をフィルタリング対象にします。",
+      },
+      {
+        type: "checkbox",
         id: "enableViewCountFilter",
         label: "再生回数によるフィルタリングを有効にする",
         details: "対象となるのは視聴ページのレコメンドのみです。",
@@ -53,13 +60,6 @@ const config = [
           label: "再生以下だった場合にフィルタリング",
           min: 0,
         },
-      },
-      {
-        type: "checkbox",
-        id: "enableSeriesNextFilter",
-        label: "次のシリーズ動画のフィルタリングを有効にする",
-        details:
-          "レコメンド最上部に表示される、次のシリーズ動画をフィルタリング対象にします。",
       },
     ],
   },

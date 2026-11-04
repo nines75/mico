@@ -44,9 +44,9 @@ export interface Settings {
   // フィルタリング
   enableEasyCommentFilter: boolean;
   enableCommentAssistFilter: boolean;
+  enableVposFilter: boolean;
   enableScoreFilter: boolean;
   scoreFilterThreshold: number;
-  enableVposFilter: boolean;
   ignoreMyComments: boolean;
   ignoreByNicoru: boolean;
   ignoreByNicoruThreshold: number;
@@ -63,12 +63,12 @@ export interface Settings {
   enableVideoFilter: boolean;
 
   // フィルタリング
-  hideCommentPreview: boolean;
   enablePaidFilter: boolean;
   enableShortsFilter: boolean;
+  hideCommentPreview: boolean;
+  enableSeriesNextFilter: boolean;
   enableViewCountFilter: boolean;
   viewCountFilterThreshold: number;
-  enableSeriesNextFilter: boolean;
 
   // -------------------------------------------------------------------------------------------
   // 高度な機能
