@@ -25,9 +25,7 @@ describe(setSettings.name, () => {
 
   it("設定を返す関数を渡した場合、その関数の戻り値が保存される", async () => {
     // eslint-disable-next-line @typescript-eslint/require-await
-    await setSettings(async () => {
-      return { enableCommentFilter: true };
-    });
+    await setSettings(async () => ({ enableCommentFilter: true }));
 
     expect(await getSettings()).toEqual({
       enableCommentFilter: true,

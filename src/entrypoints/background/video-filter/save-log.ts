@@ -15,13 +15,11 @@ export async function saveLog(
 
   await Promise.all([
     setLog(
-      async () => {
-        return {
-          // レコメンドは複数回ログを保存するためマージが必要
-          video: await mergeVideo(video, logId),
-          count: await mergeCount(count, logId),
-        };
-      },
+      async () => ({
+        // レコメンドは複数回ログを保存するためマージが必要
+        video: await mergeVideo(video, logId),
+        count: await mergeCount(count, logId),
+      }),
       logId,
       tabId,
     ),

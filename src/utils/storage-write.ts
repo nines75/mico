@@ -106,31 +106,25 @@ export async function migrateSettings() {
 export async function addAutoRule(rules: SetOptional<AutoRule, "id">[]) {
   if (rules.length === 0) return;
 
-  await setSettings((settings) => {
-    return {
-      autoFilter: [
-        ...rules.map((rule) => {
-          return {
-            ...rule,
-            id: rule.id ?? crypto.randomUUID(),
-          } satisfies AutoRule;
-        }),
-        ...(settings.autoFilter ?? []),
-      ],
-    };
-  });
+  await setSettings((settings) => ({
+    autoFilter: [
+      ...rules.map(
+        (rule) =>
+          ({ ...rule, id: rule.id ?? crypto.randomUUID() }) satisfies AutoRule,
+      ),
+      ...(settings.autoFilter ?? []),
+    ],
+  }));
 }
 
 export async function removeAutoRule(ids: string[]) {
   if (ids.length === 0) return;
 
-  await setSettings((settings) => {
-    return {
-      autoFilter: (settings.autoFilter ?? []).filter(
-        ({ id }) => id !== undefined && !ids.includes(id),
-      ),
-    };
-  });
+  await setSettings((settings) => ({
+    autoFilter: (settings.autoFilter ?? []).filter(
+      ({ id }) => id !== undefined && !ids.includes(id),
+    ),
+  }));
 }
 
 export async function addContextToVideoRule(

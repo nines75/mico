@@ -41,9 +41,7 @@ export const settingsStorage = storage.defineItem<Partial<Settings>>(
     // インポート含めそこで書き込んだ値が次の読み込み時にmigrationによって消えることがある
     // そのためイニシャライザを設定することで、値がありバージョンが最新であることが常に保証されるようにして
     // 余計なmigrationの実行を防ぐ
-    init: () => {
-      return {};
-    },
+    init: () => ({}),
   },
 );
 

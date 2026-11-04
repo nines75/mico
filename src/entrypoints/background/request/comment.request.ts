@@ -57,16 +57,14 @@ export default function commentRequest(
       // strictルールによってフィルタリングされたユーザーIDをNG登録
       tasks.push(
         addAutoRule(
-          strictData.map((data) => {
-            return {
-              pattern: data.userId,
-              context: data.context,
-              videoId: tab.videoId,
-              source: "strict",
-              target: { commentUserId: true },
-              ...(data.ruleId !== undefined && { id: data.ruleId }),
-            };
-          }),
+          strictData.map((data) => ({
+            pattern: data.userId,
+            context: data.context,
+            videoId: tab.videoId,
+            source: "strict",
+            target: { commentUserId: true },
+            ...(data.ruleId !== undefined && { id: data.ruleId }),
+          })),
         ),
       );
     }

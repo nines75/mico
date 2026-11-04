@@ -19,23 +19,21 @@ export function mockThread(
   return {
     fork,
     commentCount: comments.length,
-    comments: comments.map((comment) => {
-      return {
-        id: "1",
-        no: 1,
-        vposMs: 0,
-        body: "foo",
-        commands: [],
-        isMyPost: false,
-        isPremium: false,
-        nicoruCount: 0,
-        nicoruId: null,
-        postedAt: "2025-05-07T15:00:00+09:00",
-        score: 0,
-        userId: "user-id",
-        ...comment,
-      };
-    }),
+    comments: comments.map((comment) => ({
+      id: "1",
+      no: 1,
+      vposMs: 0,
+      body: "foo",
+      commands: [],
+      isMyPost: false,
+      isPremium: false,
+      nicoruCount: 0,
+      nicoruId: null,
+      postedAt: "2025-05-07T15:00:00+09:00",
+      score: 0,
+      userId: "user-id",
+      ...comment,
+    })),
   };
 }
 

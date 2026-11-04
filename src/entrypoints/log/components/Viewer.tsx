@@ -31,9 +31,7 @@ export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
       }),
     [],
   );
-  const localeText = useMemo<LocaleText>(() => {
-    return AG_GRID_LOCALE_JP;
-  }, []);
+  const localeText = useMemo<LocaleText>(() => AG_GRID_LOCALE_JP, []);
 
   return (
     <div className="log">

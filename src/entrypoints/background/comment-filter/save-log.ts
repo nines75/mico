@@ -17,12 +17,10 @@ export async function saveLog(
 
   await Promise.all([
     setLog(
-      async () => {
-        return {
-          comment,
-          count: await mergeCount(count, logId),
-        };
-      },
+      async () => ({
+        comment,
+        count: await mergeCount(count, logId),
+      }),
       logId,
       tabId,
     ),
