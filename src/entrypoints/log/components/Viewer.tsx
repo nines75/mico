@@ -23,6 +23,7 @@ export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
   // コンポーネントに渡すプロパティのうちobjectであるものにはuseMemoを使う
   // https://www.ag-grid.com/react-data-grid/react-hooks/#object-properties
   const defaultColDef = useMemo<ColDef>(() => ({ filter: true }), []);
+  const localeText = useMemo<LocaleText>(() => AG_GRID_LOCALE_JP, []);
   const theme = useMemo<Theme>(
     () =>
       themeQuartz.withPart(colorSchemeDark).withParams({
@@ -31,7 +32,6 @@ export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
       }),
     [],
   );
-  const localeText = useMemo<LocaleText>(() => AG_GRID_LOCALE_JP, []);
 
   return (
     <div className="log">
@@ -39,8 +39,8 @@ export function Viewer<T>({ rows, cols }: ViewerProps<T>) {
         rowData={rows}
         columnDefs={cols}
         defaultColDef={defaultColDef}
-        theme={theme}
         localeText={localeText}
+        theme={theme}
         // テキストの選択を有効化
         enableCellTextSelection={true}
         // セルの値が同じ場合に結合する

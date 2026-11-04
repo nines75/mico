@@ -16,8 +16,8 @@ export async function addRuleFromUrl(url: string | undefined) {
   const logId = await getLogIdViaMessage();
   const log = logId === undefined ? undefined : await getLog(logId);
 
-  for (const getRule of [getVideoIdRule, getOwnerIdRule]) {
-    const result = getRule(url, log);
+  for (const createRule of [createVideoIdRule, createOwnerIdRule]) {
+    const result = createRule(url, log);
     if (result === undefined) continue;
 
     await addAutoRule([{ source: "contextMenu", ...result.rule }]);
@@ -32,7 +32,7 @@ export async function addRuleFromUrl(url: string | undefined) {
   await notify("NG登録に失敗しました");
 }
 
-function getVideoIdRule(url: string | undefined, log: Log | undefined) {
+function createVideoIdRule(url: string | undefined, log: Log | undefined) {
   const videoId = url?.match(
     /^https:\/\/www\.nicovideo\.jp\/(?:watch|shorts)\/([^?]+)/,
   )?.[1];
@@ -54,7 +54,7 @@ function getVideoIdRule(url: string | undefined, log: Log | undefined) {
   };
 }
 
-function getOwnerIdRule(url: string | undefined, log: Log | undefined) {
+function createOwnerIdRule(url: string | undefined, log: Log | undefined) {
   const ownerId = url?.match(
     /^https:\/\/(?:www\.nicovideo\.jp\/user|ch\.nicovideo\.jp\/channel)\/([^?]+)/,
   )?.[1];
