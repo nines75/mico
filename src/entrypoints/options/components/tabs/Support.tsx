@@ -15,7 +15,7 @@ export default function Support() {
   return (
     <div className="tab-content">
       {config.map(({ heading, items }) => (
-        <H2 key={heading} name={heading}>
+        <H2 key={heading} {...{ heading }}>
           {items.map(({ name, url, icon }) => (
             <a
               key={name}

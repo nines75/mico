@@ -25,7 +25,7 @@ export default function General() {
   return (
     <div className="tab-content">
       <Sections sections={config} />
-      <H2 name="バックアップ">
+      <H2 heading="バックアップ">
         <Button label="インポート" onClick={() => inputRef.current?.click()}>
           <Download size={ICON_SIZE} />
         </Button>
@@ -40,7 +40,7 @@ export default function General() {
           onChange={catchAsync(importBackup)}
         />
       </H2>
-      <H2 name="ストレージ">
+      <H2 heading="ストレージ">
         <Button
           label="クリーンアップ"
           onClick={catchAsync(async () => {

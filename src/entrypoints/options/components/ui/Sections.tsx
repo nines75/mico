@@ -18,7 +18,7 @@ export interface SectionsProps {
 
 export default function Sections({ sections }: SectionsProps) {
   return sections.map(({ heading, url, items }) => (
-    <H2 name={heading} url={url} key={items[0]?.id}>
+    <H2 key={items[0]?.id} {...{ heading, url }}>
       {items.map((item) => {
         switch (item.type) {
           case "checkbox": {
