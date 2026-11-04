@@ -18,7 +18,7 @@ h2 {
   border-bottom: 2px solid gray;
   font-size: 18px;
   width: fit-content;
-  margin-block: 20px;
+  margin-block: 10px;
 }
 input[type="checkbox"] {
   margin: 3px;
@@ -37,6 +37,11 @@ input[type="checkbox"] {
   margin: 4px;
   margin-left: 25px;
   white-space: pre-wrap; /* 改行コードで改行する */
+}
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 .checkbox-input {
   margin-left: 20px;
@@ -57,6 +62,10 @@ input[type="checkbox"] {
 .info-container {
   display: flex;
   gap: 10px;
+}
+.anchor-reset {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -211,10 +220,6 @@ button
 }
 .button-filter {
   padding: 8px 12px;
-}
-.button-support {
-  text-decoration: none;
-  color: inherit;
 }
 
 /* -------------------------------------------------------------------------------------------

@@ -3,6 +3,7 @@ import type { ConditionalPick } from "type-fest";
 import { useShallow } from "zustand/shallow";
 import type { Settings } from "@/types/storage/settings.types";
 import { useSettingsStore } from "../../store";
+import { Info } from "lucide-react";
 
 export type CheckboxItem = CheckboxProps & { type: "checkbox" };
 
@@ -10,6 +11,7 @@ export interface CheckboxProps {
   id: keyof ConditionalPick<Settings, boolean>;
   label: string;
   details?: string;
+  url?: string;
   input?: {
     id: keyof ConditionalPick<Settings, number>;
     label: string;
@@ -23,6 +25,7 @@ export default function Checkbox({
   id,
   label,
   details,
+  url,
   input,
   childrenProps,
 }: CheckboxProps) {
@@ -32,16 +35,23 @@ export default function Checkbox({
 
   return (
     <div className="setting">
-      <label className="setting-label">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(event) => {
-            save({ [id]: event.target.checked });
-          }}
-        />
-        {label}
-      </label>
+      <div className="icon-container">
+        <label className="setting-label">
+          <input
+            type="checkbox"
+            checked={value}
+            onChange={(event) => {
+              save({ [id]: event.target.checked });
+            }}
+          />
+          {label}
+        </label>
+        {url !== undefined && (
+          <a className="anchor-reset" href={url} target="_blank">
+            <Info size={20} />
+          </a>
+        )}
+      </div>
       {input !== undefined && <CheckboxInput {...input} />}
       {details !== undefined && (
         <div className="setting-details">{details}</div>

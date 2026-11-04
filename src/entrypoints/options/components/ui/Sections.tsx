@@ -11,13 +11,14 @@ export type SectionsItem = SectionsProps["sections"];
 export interface SectionsProps {
   sections: {
     heading?: string;
+    url?: string;
     items: (CheckboxItem | InputItem | ButtonItem)[];
   }[];
 }
 
 export default function Sections({ sections }: SectionsProps) {
-  return sections.map(({ heading, items }) => (
-    <H2 name={heading} key={items[0]?.id}>
+  return sections.map(({ heading, url, items }) => (
+    <H2 name={heading} url={url} key={items[0]?.id}>
       {items.map((item) => {
         switch (item.type) {
           case "checkbox": {

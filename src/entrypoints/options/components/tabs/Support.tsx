@@ -19,7 +19,7 @@ export default function Support() {
           {items.map(({ name, url, icon }) => (
             <a
               key={name}
-              className="button button-support"
+              className="button anchor-reset"
               href={url}
               target="_blank"
             >

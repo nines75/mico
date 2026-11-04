@@ -30,6 +30,7 @@ const config = [
         type: "checkbox",
         id: "hideCommentPreview",
         label: "コメントプレビューを非表示にする",
+        url: "https://github.com/nines75/mico/wiki/用語集#コメントプレビュー",
       },
       {
         type: "checkbox",

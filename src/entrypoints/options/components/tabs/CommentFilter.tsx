@@ -35,6 +35,7 @@ const config = [
         type: "checkbox",
         id: "enableCommentAssistFilter",
         label: "コメントアシストによって投稿されたコメントを非表示にする",
+        url: "https://github.com/nines75/mico/wiki/コメントフィルター#コメントアシスト",
       },
       {
         type: "checkbox",
@@ -70,6 +71,7 @@ const config = [
   },
   {
     heading: "コメントメニュー",
+    url: "https://github.com/nines75/mico/wiki/用語集#コメントメニュー",
     items: [
       {
         type: "checkbox",
