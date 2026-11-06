@@ -193,13 +193,12 @@ export async function importLocalFilter(type: "load" | "button") {
       path: settings.localFilterPath,
       shouldCheckWsl: type === "load" && settings.importOnlyWhenWslRunning,
     });
+    if (response?.status !== "completed") return;
 
-    if (response?.status === "completed") {
-      await setSettings(response.data as Partial<Settings>);
+    await setSettings(response.data as Partial<Settings>);
 
-      if (type === "button") {
-        await notify("ローカルフィルターをインポートしました");
-      }
+    if (type === "button") {
+      await notify("ローカルフィルターをインポートしました");
     }
   });
 }

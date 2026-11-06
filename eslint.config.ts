@@ -90,9 +90,9 @@ export default defineConfig(
       "unicorn/no-break-in-nested-loop": "off",
       "unicorn/require-array-sort-compare": "off", // @typescript-eslint/require-array-sort-compareの下位互換
       "unicorn/max-nested-calls": "off",
-      "unicorn/prefer-else-if": "off",
       "unicorn/isolated-functions": "off",
       "unicorn/consistent-boolean-name": "off",
+      "unicorn/prefer-ternary": "off",
 
       // -------------------------------------------------------------------------------------------
       // 有効化

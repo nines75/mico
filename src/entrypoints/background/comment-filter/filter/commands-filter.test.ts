@@ -43,6 +43,8 @@ describe(CommandsFilter.name, () => {
 
     return commandsFilter;
   };
+
+  // eslint-disable-next-line unicorn/no-unnecessary-parameters
   const hasCommand = (target: string) =>
     threads.some((thread) =>
       thread.comments.some(({ commands }) =>

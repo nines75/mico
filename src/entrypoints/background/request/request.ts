@@ -24,10 +24,10 @@ export function filterResponse(
 
   filter.onstop = catchAsync(async () => {
     const shouldCancel = await onStop(filter, encoder, body);
-    if (shouldCancel) {
-      filter.write(encoder.encode(body));
-      filter.disconnect();
-    }
+    if (!shouldCancel) return;
+
+    filter.write(encoder.encode(body));
+    filter.disconnect();
   });
 }
 
@@ -57,6 +57,7 @@ export function spaFilter<T, U>(
     };
   }
 
+  // eslint-disable-next-line unicorn/prefer-early-return
   if (details.type === "xmlhttprequest") {
     const data = safeParseJson(body, schema);
     if (data === undefined) return;

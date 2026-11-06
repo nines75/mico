@@ -92,21 +92,25 @@ function createKeydownHandler(setTab: (tab: LogTab) => void) {
       return;
     }
 
-    // タブ
-    if (event.key === "c") {
-      setTab("commentFilter");
-    }
-    if (event.key === "v") {
-      setTab("videoFilter");
-    }
+    switch (event.key) {
+      case "c": {
+        setTab("commentFilter");
 
-    if (event.key === "s") {
-      // select要素のショートカットを無効化
-      event.preventDefault();
+        break;
+      }
+      case "v": {
+        setTab("videoFilter");
 
-      const select = document.querySelector("select");
-      if (select instanceof HTMLElement) {
-        select.focus();
+        break;
+      }
+      case "s": {
+        // select要素のショートカットを無効化
+        event.preventDefault();
+
+        const select = document.querySelector("select");
+        if (select instanceof HTMLElement) {
+          select.focus();
+        }
       }
     }
   };

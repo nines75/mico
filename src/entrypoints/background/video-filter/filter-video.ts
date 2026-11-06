@@ -74,10 +74,12 @@ export function filterVideo<T>(
   ) {
     for (const short of shorts) {
       const video = pickVideo(short);
-      if (video === undefined) continue;
-
-      // フィルタリングされなかった場合は何もしない
-      if (data.items.some((item) => pickVideo(item)?.id === video.id)) continue;
+      if (
+        video === undefined ||
+        // フィルタリングされなかった場合は何もしない
+        data.items.some((item) => pickVideo(item)?.id === video.id)
+      )
+        continue;
 
       video.isMuted = true;
       data.items.push(short);

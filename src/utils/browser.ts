@@ -49,9 +49,13 @@ export async function withPermission(
   permission: Browser.runtime.ManifestPermission,
   onGranted: () => void | Promise<void>,
 ) {
-  await ((await hasPermission(permission))
-    ? onGranted()
-    : notify(`以下の権限が必要です\n\n${permission}`));
+  if (!(await hasPermission(permission))) {
+    await notify(`以下の権限が必要です\n\n${permission}`);
+
+    return;
+  }
+
+  await onGranted();
 }
 
 export async function getActiveTab() {

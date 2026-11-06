@@ -81,19 +81,23 @@ export default defineBackground(() => {
   // ショートカットキーが押された際の処理
   browser.commands.onCommand.addListener(
     catchAsync(async (command) => {
-      if (command === "reload") {
-        await reloadViaMessage();
-      }
+      switch (command) {
+        case "reload": {
+          await reloadViaMessage();
 
-      if (command === "open-settings") {
-        await browser.tabs.create({
-          url: browser.runtime.getURL("/options.html"),
-        });
-      }
+          break;
+        }
+        case "open-settings": {
+          await browser.tabs.create({
+            url: browser.runtime.getURL("/options.html"),
+          });
 
-      if (command === "open-log") {
-        const logId = await getLogIdViaMessage();
-        await openLog(logId);
+          break;
+        }
+        case "open-log": {
+          const logId = await getLogIdViaMessage();
+          await openLog(logId);
+        }
       }
     }),
   );

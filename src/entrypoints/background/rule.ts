@@ -32,8 +32,8 @@ export const targetKeyMap = {
 
 interface ManualRuleOnly {
   /**
-   * 元のフィルターを改行区切りで配列にしたときのインデックス
-   */
+  元のフィルターを改行区切りで配列にしたときのインデックス
+  */
   index: number;
 }
 

@@ -57,8 +57,6 @@ async function onBodyChange(records: MutationRecord[]) {
 // メッセージリスナー登録
 // -------------------------------------------------------------------------------------------
 
-/* eslint-disable unicorn/no-top-level-side-effects */
-
 onMessage("reload", reload);
 onMessage("getLogId", getLogId);
 
@@ -81,12 +79,9 @@ onMessage("mountLogId", ({ data: logId }) => {
 onMessage("setPlaybackTime", ({ data: time }) => {
   const id = setInterval(() => {
     const video = document.querySelector("video");
-    if (video !== null) {
-      clearInterval(id);
+    if (video === null) return;
 
-      video.currentTime = time;
-    }
+    clearInterval(id);
+    video.currentTime = time;
   }, 10);
 });
-
-/* eslint-enable unicorn/no-top-level-side-effects */

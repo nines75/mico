@@ -1,6 +1,7 @@
 import { commentSchema } from "@/types/api/comment.types";
 import { getActiveTab } from "@/utils/browser";
 
+// eslint-disable-next-line unicorn/prefer-smaller-scope
 type Fiber = Record<
   string,
   {

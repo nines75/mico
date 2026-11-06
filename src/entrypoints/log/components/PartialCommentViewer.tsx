@@ -6,9 +6,9 @@ import type { PartialComment } from "@/types/storage/log.types";
 import { useShallow } from "zustand/shallow";
 import { useLogStore } from "../store";
 
-type Row = PartialComment;
-
 export function PartialCommentViewer() {
+  type Row = PartialComment;
+
   const [allComments, userId] = useLogStore(
     useShallow((state) => [state.log?.comment?.allComments, state.userId]),
   );

@@ -164,21 +164,23 @@ function keydownHandler(event: KeyboardEvent) {
   ] as const) {
     if (event.key === key) {
       saveSettings({ selectedSettingsTab: tab });
+
+      return;
     }
   }
+
+  // タブ(高度な機能)
   if (event.key === "a" && settings.showAdvancedFeatures) {
     saveSettings({ selectedSettingsTab: "advancedFeatures" });
   }
-
-  // フィルター
-  if (event.key === "t" && settings.selectedSettingsTab === "filter") {
+  // フィルター切り替え
+  else if (event.key === "t" && settings.selectedSettingsTab === "filter") {
     saveSettings({
       selectedFilter: settings.selectedFilter === "manual" ? "auto" : "manual",
     });
   }
-
   // 入力要素
-  if (event.key === "/") {
+  else if (event.key === "/") {
     // ブラウザの検索欄へのフォーカスや/が入力されるのを防ぐ
     event.preventDefault();
 

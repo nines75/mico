@@ -51,7 +51,7 @@ export default function AutoFilter() {
     if (index === -1) {
       // 見つからなかった場合、現在の位置を維持する
       // ただし末尾を選択していた場合にはみ出ることがあるため調整
-      setPosition((previous) => Math.min(previous ?? 0, newRules.length - 1));
+      setPosition((previous = 0) => Math.min(previous, newRules.length - 1));
     } else {
       // 見つかった場合、その位置に移動
       setPosition(index);
@@ -66,21 +66,24 @@ export default function AutoFilter() {
     if (rules.length === 0 || event.ctrlKey || event.metaKey || event.altKey)
       return;
 
-    if (event.key === "ArrowUp") {
-      event.preventDefault();
+    switch (event.key) {
+      case "ArrowUp": {
+        event.preventDefault();
 
-      const next = position === undefined ? 0 : Math.max(position - 1, 0);
-      setPosition(next);
-      scroll(next);
-    }
+        const next = position === undefined ? 0 : Math.max(position - 1, 0);
+        setPosition(next);
+        scroll(next);
 
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
+        break;
+      }
+      case "ArrowDown": {
+        event.preventDefault();
 
-      const next =
-        position === undefined ? 0 : Math.min(position + 1, rules.length - 1);
-      setPosition(next);
-      scroll(next);
+        const next =
+          position === undefined ? 0 : Math.min(position + 1, rules.length - 1);
+        setPosition(next);
+        scroll(next);
+      }
     }
   });
 
