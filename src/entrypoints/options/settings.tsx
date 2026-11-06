@@ -184,9 +184,12 @@ function keydownHandler(event: KeyboardEvent) {
     // ブラウザの検索欄へのフォーカスや/が入力されるのを防ぐ
     event.preventDefault();
 
+    // レンダリングされていないinput要素にはフォーカスを当てない
     const input = document.querySelector("input:not([type='checkbox'])");
-    if (input instanceof HTMLElement) {
+    if (input instanceof HTMLElement && input.checkVisibility()) {
       input.focus();
+
+      return;
     }
 
     const codeMirror = document.querySelector(".cm-content");
