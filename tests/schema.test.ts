@@ -120,6 +120,7 @@ for (const { title, url, schema } of [
       const html = parser.parseFromString(str, "text/html");
 
       const meta = html.querySelector("meta[name='server-response']");
+
       return meta?.getAttribute("content");
     }, text);
 

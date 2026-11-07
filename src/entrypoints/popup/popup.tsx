@@ -101,6 +101,7 @@ async function onClickNgVideo() {
 
   if (videoId === undefined || title === undefined) {
     await notify("NG登録に失敗しました");
+
     return;
   }
 
@@ -121,6 +122,7 @@ async function onClickNgOwner() {
 
   if (ownerId === undefined || ownerName === undefined) {
     await notify("投稿者が存在しません");
+
     return;
   }
 

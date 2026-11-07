@@ -39,6 +39,7 @@ export abstract class RuleFilter extends Filter {
         matches(disable.seriesIds, (arg) => arg === seriesId)
       ) {
         this.disabledCount++;
+
         return false;
       }
 
@@ -50,6 +51,7 @@ export abstract class RuleFilter extends Filter {
         matches(enable.seriesIds, (arg) => arg === seriesId)
       ) {
         this.enabledCount++;
+
         return true;
       }
 

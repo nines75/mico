@@ -105,6 +105,7 @@ export async function sendNativeMessage(message: {
 export async function openLog(logId: string | undefined, params = "") {
   if (logId === undefined) {
     await notify("ログが存在しません");
+
     return;
   }
 

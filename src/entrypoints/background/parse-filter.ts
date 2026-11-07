@@ -93,6 +93,7 @@ export function parseFilter(filter: string): {
     for (const directive of argsDirectives) {
       if (line === `@${directive}`) {
         errors.push({ index, type: "args" });
+
         continue lineLoop;
       }
 
@@ -100,10 +101,12 @@ export function parseFilter(filter: string): {
         const args = parseArgs(line);
         if (args.length === 0) {
           errors.push({ index, type: "args" });
+
           continue lineLoop;
         }
 
         directives.push({ type: directive, args });
+
         continue lineLoop;
       }
     }
@@ -112,6 +115,7 @@ export function parseFilter(filter: string): {
     for (const directive of noArgsDirectives) {
       if (trimmedLine === `@${directive}`) {
         directives.push({ type: directive });
+
         continue lineLoop;
       }
     }
@@ -129,12 +133,14 @@ export function parseFilter(filter: string): {
       }
 
       strictAlias = true;
+
       continue;
     }
 
     // 有効なディレクティブでなくても@から始まる行はルールとして解釈しない
     if (line.startsWith("@")) {
       errors.push({ index, type: "directive" });
+
       continue;
     }
 
@@ -150,76 +156,93 @@ export function parseFilter(filter: string): {
         // 引数あり(enable)
         case "enable-if-tags": {
           enable.tags.push(directive.args);
+
           break;
         }
         case "enable-if-video-ids": {
           enable.videoIds.push(directive.args);
+
           break;
         }
         case "enable-if-user-ids": {
           enable.userIds.push(directive.args);
+
           break;
         }
         case "enable-if-series-ids": {
           enable.seriesIds.push(directive.args);
+
           break;
         }
 
         // 引数あり(disable)
         case "disable-if-tags": {
           disable.tags.push(directive.args);
+
           break;
         }
         case "disable-if-video-ids": {
           disable.videoIds.push(directive.args);
+
           break;
         }
         case "disable-if-user-ids": {
           disable.userIds.push(directive.args);
+
           break;
         }
         case "disable-if-series-ids": {
           disable.seriesIds.push(directive.args);
+
           break;
         }
 
         // 引数なし
         case "strict": {
           rule.strict = true;
+
           break;
         }
         case "remove": {
           rule.remove = true;
+
           break;
         }
 
         // 引数なし(target)
         case "comment-user-id": {
           rule.target.commentUserId = true;
+
           break;
         }
         case "comment-commands": {
           rule.target.commentCommands = true;
+
           break;
         }
         case "comment-body": {
           rule.target.commentBody = true;
+
           break;
         }
         case "video-id": {
           rule.target.videoId = true;
+
           break;
         }
         case "video-owner-id": {
           rule.target.videoOwnerId = true;
+
           break;
         }
         case "video-owner-name": {
           rule.target.videoOwnerName = true;
+
           break;
         }
         case "video-title": {
           rule.target.videoTitle = true;
+
           break;
         }
       }
@@ -245,6 +268,7 @@ export function parseFilter(filter: string): {
       // 想定外のフラグが含まれている場合はルールとして解釈しない
       if (!/^[isuvm]*$/.test(flags)) {
         errors.push({ index, type: "regex_flag" });
+
         continue;
       }
 
@@ -252,6 +276,7 @@ export function parseFilter(filter: string): {
         regex = new RegExp(regexStr, flags);
       } catch {
         errors.push({ index, type: "regex" });
+
         continue;
       }
     }

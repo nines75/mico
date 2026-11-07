@@ -29,6 +29,7 @@ function appendButton() {
         const userId = comment?.userId;
         if (userId === undefined) {
           await proxy.notify("ユーザー情報の取得に失敗しました");
+
           return;
         }
 
@@ -81,6 +82,7 @@ function onClickNgUser(videoOnly = false) {
     const comment = await proxy.getMenuComment();
     if (logId === undefined || comment?.$videoId === undefined) {
       await proxy.notify("NG登録に失敗しました");
+
       return;
     }
 

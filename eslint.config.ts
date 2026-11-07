@@ -6,6 +6,7 @@ import { importX } from "eslint-plugin-import-x";
 import unicorn from "eslint-plugin-unicorn";
 import regex from "eslint-plugin-regexp";
 import react from "@eslint-react/eslint-plugin";
+import stylistic from "@stylistic/eslint-plugin";
 
 const isCi = process.env.CI === "true";
 
@@ -20,6 +21,9 @@ export default defineConfig(
       parserOptions: {
         projectService: true, // tsconfig.jsonを自動で検索
       },
+    },
+    plugins: {
+      "@stylistic": stylistic,
     },
     extends: [
       // https://typescript-eslint.io/getting-started
@@ -144,6 +148,14 @@ export default defineConfig(
             },
           ],
         },
+      ],
+
+      // stylistic
+      "@stylistic/padding-line-between-statements": [
+        "error",
+        { blankLine: "always", prev: "*", next: "break" },
+        { blankLine: "always", prev: "*", next: "continue" },
+        { blankLine: "always", prev: "*", next: "return" },
       ],
     },
   },
