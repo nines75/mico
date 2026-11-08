@@ -71,14 +71,18 @@ async function importBackup(event: ChangeEvent<HTMLInputElement>) {
   const text = await event.target.files?.[0]?.text();
   if (text === undefined) return;
 
-  const backup = JSON.parse(text) as Backup;
-  if (backup.settings === undefined) return;
+  try {
+    const backup = JSON.parse(text) as Backup;
+    if (backup.settings === undefined) return;
 
-  if (backup.settingsMeta !== undefined) {
-    await setSettingsMeta(backup.settingsMeta);
+    if (backup.settingsMeta !== undefined) {
+      await setSettingsMeta(backup.settingsMeta);
+    }
+
+    saveSettings(backup.settings, migrateSettings);
+  } catch (error) {
+    alert(`インポート中にエラーが発生しました\n\n${String(error)}`);
   }
-
-  saveSettings(backup.settings, migrateSettings);
 }
 
 async function exportBackup() {
