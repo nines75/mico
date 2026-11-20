@@ -32,7 +32,7 @@ export default defineConfig({
   srcDir: "src",
   imports: false,
   zip: {
-    artifactTemplate: "firefox.xpi", // 出力ファイル名を変更
+    artifactTemplate: "firefox.xpi",
   },
   hooks: {
     // WXTはViteによるビルドを複数回実行するため、ライセンスデータ生成も複数回行われる

@@ -11,15 +11,13 @@ import stylistic from "@stylistic/eslint-plugin";
 const isCi = process.env.CI === "true";
 
 export default defineConfig(
-  // 下に行くほど優先される
-
   globalIgnores([".output/", ".wxt/"]),
 
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
-        projectService: true, // tsconfig.jsonを自動で検索
+        projectService: true,
       },
     },
     plugins: {
@@ -51,8 +49,8 @@ export default defineConfig(
       "no-empty": "warn",
       "@typescript-eslint/no-empty-function": "warn",
       "@typescript-eslint/no-empty-object-type": "warn",
-      "@typescript-eslint/require-await": "warn", // awaitを使用していないasync関数を検出
-      "@typescript-eslint/no-unnecessary-condition": "warn", // 不要なオプショナルチェーンなどを検出
+      "@typescript-eslint/require-await": "warn",
+      "@typescript-eslint/no-unnecessary-condition": "warn",
 
       // -------------------------------------------------------------------------------------------
       // オプション変更
@@ -63,7 +61,7 @@ export default defineConfig(
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
-          ignoreRestSiblings: true, // objectの構造分解での未使用変数を許可
+          ignoreRestSiblings: true,
         },
       ],
       "@typescript-eslint/restrict-template-expressions": [
@@ -92,7 +90,7 @@ export default defineConfig(
       "unicorn/name-replacements": "off",
       "unicorn/no-null": "off",
       "unicorn/no-break-in-nested-loop": "off",
-      "unicorn/require-array-sort-compare": "off", // @typescript-eslint/require-array-sort-compareの下位互換
+      "unicorn/require-array-sort-compare": "off",
       "unicorn/max-nested-calls": "off",
       "unicorn/isolated-functions": "off",
       "unicorn/consistent-boolean-name": "off",
@@ -160,6 +158,5 @@ export default defineConfig(
     },
   },
 
-  // Prettierと競合する可能性のあるルールを無効化
   prettier,
 );
