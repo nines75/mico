@@ -22,25 +22,20 @@ jobs:
           run_install: true
           cache: true
 
-      - name: チェック
+      - name: Check
         run: pnpm check
 
-      - name: URL生成
+      - name: Build
+        run: pnpm zip
+
+      - name: Generate URL
         id: generate_url
         run: |
           git fetch --tags -f
           PREVIOUS_TAG=$(git tag | sort -V --reverse | sed -n 2p)
-          echo "一つ前のタグ: $PREVIOUS_TAG"
-          if [ -n "$PREVIOUS_TAG" ]; then
-              echo "url=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          else
-              echo "url=https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          fi
+          echo "url=https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
-      - name: ビルド
-        run: pnpm zip
-
-      - name: リリース作成
+      - name: Release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: .output/firefox.xpi
@@ -49,7 +44,7 @@ jobs:
           body: |
             **Full Changelog**: ${{ steps.generate_url.outputs.url }}
 
-      - name: ストアに提出
+      - name: Submit
         run: |
           pnpm wxt submit \
           --firefox-zip .output/firefox.xpi \

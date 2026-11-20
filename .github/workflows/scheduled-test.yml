@@ -19,8 +19,8 @@ jobs:
           run_install: true
           cache: true
 
-      - name: ブラウザをインストール
+      - name: Install Browser
         run: pnpm playwright:install
 
-      - name: テスト実行
+      - name: Test
         run: pnpm test:scheduled
