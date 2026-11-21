@@ -1,6 +1,3 @@
-allowBuilds:
-  sharp: true
-  unrs-resolver: false # https://github.com/unrs/unrs-resolver/issues/193
 update:
   githubActions: true
 minimumReleaseAge: 4320 # 3日
