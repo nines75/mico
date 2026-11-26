@@ -6,9 +6,22 @@ import { saveBackup } from "@/utils/storage";
 
 export default function AdvancedFeatures() {
   return (
-    <div className="tab-content">
-      <Sections sections={config} />
-    </div>
+    <>
+      <span className="warning">
+        高度な機能を使用するためには
+        <a
+          className="anchor-decorated"
+          href="https://github.com/nines75/mico-native"
+          target="_blank"
+        >
+          mico-native
+        </a>
+        のインストールが必要です。
+      </span>
+      <div className="tab-content">
+        <Sections sections={config} />
+      </div>
+    </>
   );
 }
 

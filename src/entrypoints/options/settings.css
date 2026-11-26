@@ -67,6 +67,14 @@ input[type="checkbox"] {
   text-decoration: none;
   color: inherit;
 }
+.anchor-decorated {
+  text-decoration: underline;
+  color: inherit;
+  font-weight: bold;
+}
+.warning {
+  color: gold;
+}
 
 /* -------------------------------------------------------------------------------------------
 アナウンス
@@ -78,11 +86,6 @@ input[type="checkbox"] {
   /* アイコンを揃える */
   display: flex;
   align-items: center;
-}
-.announcement-link {
-  text-decoration: underline;
-  color: inherit;
-  font-weight: bold;
 }
 .announcement-dismiss-button {
   border: none;

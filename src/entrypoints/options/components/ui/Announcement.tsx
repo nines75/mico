@@ -26,7 +26,7 @@ export function Announcement() {
       </button>
       v{majorVersion}に更新されました。
       <a
-        className="announcement-link"
+        className="anchor-decorated"
         href={`https://github.com/nines75/mico/releases/tag/v${majorVersion}.0.0`}
         target="_blank"
       >
