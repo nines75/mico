@@ -87,6 +87,7 @@ export default defineConfig(
       // 無効化
       // -------------------------------------------------------------------------------------------
 
+      "@eslint-react/dom-no-unsafe-target-blank": "off",
       "unicorn/name-replacements": "off",
       "unicorn/no-null": "off",
       "unicorn/no-break-in-nested-loop": "off",

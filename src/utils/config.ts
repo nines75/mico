@@ -20,11 +20,7 @@ export const defaultSettings: Settings = {
   selectedFilter: "manual",
 
   // Manual
-  manualFilter: `# フィルター構文の詳細: https://github.com/nines75/mico/wiki/フィルター構文
-
-#============================================================
-
-@comment-user-id
+  manualFilter: `@comment-user-id
 
 # ここに非表示にしたいコメントのユーザーIDを入力
 

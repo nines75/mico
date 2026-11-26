@@ -1,5 +1,5 @@
 import { catchAsync } from "@/utils/util";
-import { Download } from "lucide-react";
+import { BookText, Download } from "lucide-react";
 import { useRef } from "react";
 import Editor from "./Editor";
 import { useShallow } from "zustand/shallow";
@@ -45,6 +45,14 @@ export default function ManualFilter() {
             save({ manualFilter: text });
           })}
         />
+        <a
+          className="button button-filter anchor-reset"
+          href={"https://github.com/nines75/mico/wiki/フィルター構文"}
+          target="_blank"
+        >
+          <BookText size={ICON_SIZE} />
+          wiki
+        </a>
         <button
           type="button"
           className="button button-filter"
